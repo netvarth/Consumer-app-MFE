@@ -7,11 +7,6 @@
     "test": "ng test",
     "root": "ng serve root --configuration development",
     "template": "ng serve template --configuration development",
-    "home": "ng serve home --configuration development",
-    "order-template1": "ng serve order-template1",
-    "template1": "ng serve template1 --configuration development --port 4202 -o",
-    "start": "concurrently \"ng run root:serve\" \"ng run template:serve\" \"ng run home:serve\" \"ng run order-template1:serve\" ",
-    "build": "ng run root:build && ng run template:build && ng run home:build && ng run order-template1:build",
     "compress": "node scripts/compress.js"
   },
   "private": true,
