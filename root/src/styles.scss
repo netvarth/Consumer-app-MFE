@@ -1,0 +1,401 @@
+@charset "UTF-8";
+@import url('https://fonts.googleapis.com/css2?family=Figtree&display=swap');
+@import './assets/scss/_variables.scss';
+@import './assets/scss/_modal.scss';
+@import './assets/scss/_material.scss';
+@font-face {
+  font-family: "custom-ynw";
+  src: url("./assets/fonts/custom/custom-ynw.eot");
+  src: url("./assets/fonts/custom/custom-ynw.eot?#iefix") format("embedded-opentype"), url("./assets/fonts/custom/custom-ynw.woff") format("woff"), url("./assets/fonts/custom/custom-ynw.ttf") format("truetype"), url("./assets/fonts/custom/custom-ynw.svg#custom-ynw") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+html,
+body,
+// div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+// li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+}
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
+}
+
+html {
+  height: 100%;
+}
+
+@media only screen and (max-width: 575px) {
+  html {
+    font-size: 14px !important;
+  }
+}
+
+body {
+  font-family: 'Figtree', sans-serif;
+  // font-size: 14px;
+  font-size: 1rem;
+  line-height: 1.42857143;
+}
+
+h1,h2,h3,h4,h5,h6 {
+  font-weight: 500;
+  margin-top: 0
+}
+
+h1,
+.h1 {
+  font-size: 2em;
+}
+
+h2,
+.h2 {
+  font-size: 1.5em;
+}
+
+h3,
+.h3 {
+  font-size: 1.17em;
+}
+
+h4,
+.h4 {
+  font-size: 1em;
+}
+
+h5,
+.h5 {
+  font-size: .83em;
+}
+
+h6,
+.h6 {
+  font-size: .67em;
+}
+
+ol,
+ul {
+  list-style: none;
+}
+.popup-class h1.mat-dialog-title {
+  padding: 15px 10px !important;
+  background: #1e4079;
+  color: #fff;
+  font-size: 1rem !important;
+}
+
+.popup-class .mat-dialog-title .modal_close i:before {
+  font-size: 75% !important;
+}
+
+.cdk-overlay-container .mat-dialog-container form .form-group {
+  margin-bottom: 1.25em;
+}
+
+.mat-form-field-wrapper {
+  padding-bottom: 0 !important;
+}
+
+.commonpopupmainclass div {
+  font-size: .875rem;
+}
+
+@media only screen and (max-width: 500px) {
+  .commonpopupmainclass {
+    max-width: 100vw !important;
+    height: 100vh;
+  }
+
+  .commonpopupmainclass div {
+    font-size: 12.25px;
+  }
+}
+
+.commonpopupmainclass .mat-dialog-actions .bt1 {
+  margin-left: 10px;
+}
+
+.commonpopupmainclass {
+  width: 600px !important;
+}
+
+@media (min-width:451px) and (max-width:830px) {
+  .loginmainclass {
+    width: 100% !important;
+  }
+}
+
+@media (max-width:450px) {
+  .loginmainclass {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+.commonpopupmainclass .mat-dialog-container {
+  width: 100% !important;
+}
+
+.rupee-font {
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+
+[data-icon]:before {
+  font-family: "custom-ynw" !important;
+  content: attr(data-icon);
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  speak-as: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+[class^="icon-"]:before,
+[class*=" icon-"]:before {
+  font-family: "custom-ynw" !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  speak-as: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.card {
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, .05) !important;
+  border-radius: 5px;
+  background: #fff;
+  background-clip: padding-box;
+  border: none !important;
+  width: 100%;
+}
+.mgn-bt-50 {
+  margin-bottom: 50px !important;
+}
+.mgn-up-50 {
+  margin-top: 50px !important;
+}
+.mgn-lt-1{
+  margin-left: 1px !important;
+}
+.p-accordion .p-accordion-header .p-accordion-header-link {
+  padding: 1.5rem;
+  color: #000000de;
+  background: #ffffff;
+  font-weight: 400;
+  cursor: pointer;
+  align-items: center;
+  -webkit-user-select: none;
+  user-select: none;
+  text-decoration: none;
+}
+
+.modal_close {
+  position: absolute;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: #fff;
+  right: 0;
+  top: 50%;
+  margin-top: -30px;
+  z-index: 121;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal_close i:before {
+  font-family: custom-ynw!important;
+  content: "i";
+  font-size: 1rem!important;
+  width: 20px;
+  height: 20px;
+  font-weight: 600;
+}
+
+.mat-dialog-title {
+  position: relative;
+}
+
+@media only screen and (max-width: 575px) {
+  .no-padding-small {
+    padding: 0 !important;
+  }
+}
+
+.zoom-icon {
+  content: url(https://d2199iy1o5ikw9.cloudfront.net/assets/images/teleservice/Zoom-01.svg);
+  top: 4px;
+  position: relative;
+  padding-right: 1px;
+  width: 25px;
+}
+
+.meet-icon {
+  content: url(https://d2199iy1o5ikw9.cloudfront.net/assets/images/teleservice/gmeet.svg);
+  top: 3px;
+  position: relative;
+  padding-right: 1px;
+  width: 15px;
+}
+
+.wtsapaud-icon {
+  content: url(https://d2199iy1o5ikw9.cloudfront.net/assets/images/teleservice/whatsapp_audio.svg);
+  top: 4px !important;
+  position: relative;
+  padding-right: 1px;
+  width: 26px;
+  object-fit: cover;
+}
+
+.wtsapvid-icon {
+  content: url(https://d2199iy1o5ikw9.cloudfront.net/assets/images/teleservice/whatsapVideo.svg);
+  top: 4px;
+  position: relative;
+  padding-right: 1px;
+  width: 24px;
+}
+
+.jaldeevideo-icon {
+  content: url(https://d2199iy1o5ikw9.cloudfront.net/assets/images/teleservice/jaldeevideo.svg);
+  top: 3px;
+  position: relative;
+  padding-right: 1px;
+  width: 100%;
+}
+
+.jvideo-icon {
+  content: url(https://d2199iy1o5ikw9.cloudfront.net/assets/images/teleservice/video-icon-small.png);
+  position: relative;
+  padding-right: 1px;
+}
+.consumer-reschedule-icon {
+  content: url(https://d2199iy1o5ikw9.cloudfront.net/assets/images/Reschedule-01-01.svg);
+  width: 20px;
+}
+.jvideo-icon-s {
+  width: 20px !important;
+}
+
+.jvideo-icon-sm {
+  width: 28px !important;
+}
+
+.phon-icon {
+  content: url(https://d2199iy1o5ikw9.cloudfront.net/assets/images/teleservice/audio.svg);
+  top: 3px;
+  position: relative;
+  padding-right: 1px;
+  width: 15px;
+}
+.ks-modal-gallery-backdrop {
+  background: #000 !important;;
+  opacity: 0.85 !important;;
+}
+.ks-modal-gallery-panel {
+  z-index: 90000 !important;
+}
+.pointer-cursor {
+  cursor: pointer;
+}

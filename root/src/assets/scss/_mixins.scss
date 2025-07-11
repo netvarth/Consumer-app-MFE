@@ -1,0 +1,379 @@
+// Mixins ####
+
+// Bootstrap Button Variant
+@mixin button-variant($color, $background, $border) {
+  color: $color;
+  border-color: $border;
+  background-color: $background;
+  &.focus,
+  &:focus {
+    color: $color;
+    border-color: darken($border, 25%);
+    background-color: darken($background, 10%);
+  }
+  &:hover {
+    color: $color;
+    border-color: darken($border, 12%);
+    background-color: darken($background, 10%);
+  }
+  &.active,
+  &:active,
+  .open > &.dropdown-toggle {
+    color: $color;
+    border-color: darken($border, 12%);
+    background-color: darken($background, 10%);
+    &.focus,
+    &:focus,
+    &:hover {
+      color: $color;
+      border-color: darken($border, 25%);
+      background-color: darken($background, 17%);
+    }
+  }
+  &.active,
+  &:active,
+  .open > &.dropdown-toggle {
+    background-image: none;
+  }
+  &.disabled,
+  &[disabled],
+  fieldset[disabled] & {
+    &.focus,
+    &:focus,
+    &:hover {
+      border-color: $border;
+      background-color: $background;
+    }
+  }
+  .badge {
+    color: $background;
+    background-color: $color;
+  }
+}
+
+// Button sizes
+@mixin button-size($padding-vertical, $padding-horizontal, $font-size, $line-height, $border-radius) {
+  padding: $padding-vertical $padding-horizontal;
+  font-size: $font-size;
+  line-height: $line-height;
+  border-radius: $border-radius;
+}
+
+// Background Cover Mixin
+@mixin background-cover {
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+// border-radius
+
+@mixin border-radius($radius) {
+    -webkit-border-radius: $radius;
+    border-radius: $radius;
+    background-clip: padding-box;
+    /* stops bg color from leaking outside the border: */
+}
+
+// Single side border-radius
+
+@mixin border-top-radius($radius) {
+  -webkit-border-top-right-radius: $radius;
+  border-top-right-radius: $radius;
+   -webkit-border-top-left-radius: $radius;
+   border-top-left-radius: $radius;
+   background-clip: padding-box;
+}
+@mixin border-right-radius($radius) {
+  -webkit-border-bottom-right-radius: $radius;
+  border-bottom-right-radius: $radius;
+     -webkit-border-top-right-radius: $radius;
+     border-top-right-radius: $radius;
+     background-clip: padding-box;
+}
+@mixin border-bottom-radius($radius) {
+  -webkit-border-bottom-right-radius: $radius;
+  border-bottom-right-radius: $radius;
+   -webkit-border-bottom-left-radius: $radius;
+   border-bottom-left-radius: $radius;
+   background-clip: padding-box;
+}
+@mixin border-left-radius($radius) {
+  -webkit-border-bottom-left-radius: $radius;
+  border-bottom-left-radius: $radius;
+     -webkit-border-top-left-radius: $radius;
+     border-top-left-radius: $radius;
+     background-clip: padding-box;
+}
+
+//clearfix
+
+@mixin clearfix() {
+    &:before,
+    &:after {
+        content: "";
+        display: table;
+    }
+    &:after {
+        clear: both;
+    }
+}
+
+//placeholder styling
+@mixin placeholder {
+  :-webkit-input-placeholder {@content}
+  :-moz-placeholder           {@content}
+  :-moz-placeholder          {@content}
+  :-ms-input-placeholder      {@content}  
+}
+
+//radial gradient
+
+@mixin radial-gradient($center, $end) {
+    background-image: -moz-radial-gradient($center, $end); /* FF3.6+ */
+    background-image: -webkit-radial-gradient($center, $end); /* Chrome10+,Safari5.1+ */
+    background-image: -o-radial-gradient($center, $end); /* Opera 11.10+ */
+    background-image: -ms-radial-gradient($center, $end); /* IE10+ */
+    background-image: radial-gradient($center, $end); /* W3C */
+}
+
+//gradient top-to-bottom
+
+@mixin linear-gradient($top, $bottom) {
+    background: $top; /* Old browsers */
+    background: -moz-linear-gradient(top,  $top 0%, $bottom 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$top), color-stop(100%,$bottom)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  $top 0%,$bottom 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  $top 0%,$bottom 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  $top 0%,$bottom 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  $top 0%,$bottom 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#000000',GradientType=0 ); /* IE6-9 */
+}
+
+//gradient left-to-right
+
+@mixin left-gradient($left, $right) {
+    background: $left; /* Old browsers */
+    background: -moz-linear-gradient(left,  $left 0%, $right 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$left), color-stop(100%,$right)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(left,  $left 0%,$right 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(left,  $left 0%,$right 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(left,  $left 0%,$right 100%); /* IE10+ */
+    background: linear-gradient(to right,  $left 0%,$right 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1873f2', endColorstr='#00aef2',GradientType=0 ); /* IE6-9 */
+}
+
+//gradient top-to-bottom
+
+@mixin top-to-bottom($top, $bottom) {
+    background: $top; /* Old browsers */
+    background: -moz-linear-gradient(top,  $top 0%, $bottom 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$top), color-stop(100%,$bottom)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  $top 0%,$bottom 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  $top 0%,$bottom 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  $top 0%,$bottom 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  $top 0%,$bottom 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1873f2', endColorstr='#00aef2',GradientType=0 ); /* IE6-9 */
+}
+
+//border-gradient-color
+@mixin border-left-to-right($left, $right) {
+    border-width: 3px 0 3px 3px;
+    border-style: solid;
+    -webkit-border-image: 
+      -webkit-gradient(linear, 100% 0, 0 0, from($left), to($right)) 1 100%;
+    -webkit-border-image: 
+      -webkit-linear-gradient(right, $left, $right) 1 100%;
+    -moz-border-image:
+      -moz-linear-gradient(right, $left, $right) 1 100%;  
+    -o-border-image:
+      -o-linear-gradient(right, $left, $right) 1 100%;
+    border-image:
+      linear-gradient(to right, $left, $right) 1 100%; 
+}
+
+//transitions
+
+@mixin transition($transition...) {
+    -moz-transition:    $transition;
+    -o-transition:      $transition;
+    -webkit-transition: $transition;
+    transition:         $transition;
+}
+
+//box-shadow
+
+@mixin box-shadow($top, $left, $blur, $color, $inset:"") {
+    -webkit-box-shadow:$top $left $blur $color #{$inset};
+    -moz-box-shadow:$top $left $blur $color #{$inset};
+    box-shadow:$top $left $blur $color #{$inset};
+}
+
+
+//transform
+
+// generic transform
+@mixin transform($transforms) {
+	   -moz-transform: $transforms;
+	     -o-transform: $transforms;
+	    -ms-transform: $transforms;
+	-webkit-transform: $transforms;
+          transform: $transforms;
+}
+// rotate
+@mixin rotate ($deg) {
+  @include transform(rotate(#{$deg}deg));
+}
+ 
+// scale
+@mixin scale($scale) {
+	 @include transform(scale($scale));
+}
+// translate
+@mixin translate ($x, $y) {
+   @include transform(translate($x, $y));
+}
+// skew
+@mixin skew ($x, $y) {
+   @include transform(skew(#{$x}deg, #{$y}deg));
+}
+// transform style
+@mixin transform-style ($style) {
+    moz-transform-style: $style;
+	     -o-transform-style: $style;
+	    -ms-transform-style: $style;
+	-webkit-transform-style: $style;
+          transform-style: $style;
+} 
+//transform origin
+@mixin transform-origin ($origin) {
+    moz-transform-origin: $origin;
+	     -o-transform-origin: $origin;
+	    -ms-transform-origin: $origin;
+	-webkit-transform-origin: $origin;
+          transform-origin: $origin;
+}
+
+
+
+
+/*test*/
+
+// Font Mixins
+@mixin script-font {
+  font-family: 'Roboto Slab', sans-serif;
+}
+@mixin body-font {
+  font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    letter-spacing: .2px;
+}
+@mixin heading-font {
+  font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+  /*text-transform: uppercase;*/
+}
+@mixin font-light {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+}
+@mixin font-regular {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: normal;
+}
+@mixin font-medium {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+}
+@mixin font-bold {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
+}
+@mixin font-custom {
+    font-family: "custom-ynw" !important;
+}
+
+@mixin font-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: $cc-gray;
+}
+
+@mixin font-explanation {
+    font-size: 0.75rem;
+    font-weight: 500;
+    font-style: italic;
+    color: $cc-mediumgray;
+}
+@mixin font-script {
+  font-family: 'Roboto Slab', sans-serif;
+}
+
+
+// Responsive Breakpoints //
+
+$break-767: 767px;
+$break-400: 400px;
+$break-500: 500px;
+$break-575: 575px;
+$break-768: 768px;
+$break-991: 991px;
+$break-992: 992px;
+$break-1199: 1199px;
+$break-1200: 1200px;
+
+@mixin respond-to($media) {
+    // Small devices (landscape phones, less than 768px)
+  @if $media == ynw-767 {
+    @media only screen and (max-width: $break-767) { @content; }
+  }
+    // Custom for YNW (custom created for ynw less than 401px)
+  @else if $media == ynw-400 {
+    @media only screen and (max-width: $break-400) { @content; }
+  }
+    // Custom for YNW (custom created for ynw less than 501px)
+  @else if $media == ynw-500 {
+    @media only screen and (max-width: $break-500) { @content; }
+  }
+    // Extra small devices (portrait phones, less than 576px)
+  @else if $media == ynw-575 {
+    @media only screen and (max-width: $break-575) { @content; }
+  }
+    // Medium devices (tablets, 768px and up)
+  @else if $media == ynw-768-991 {
+    @media (min-width:$break-768) and (max-width:$break-991) { @content; }
+  }
+    // Large devices (desktops, 992px and up)
+  @else if $media == ynw-992-1199 {
+    @media (min-width:$break-992) and (max-width:$break-1199) { @content; }
+  }
+    // Extra large devices (large desktops, 1200px and up)
+  @else if $media == ynw-1200 {
+    @media only screen and (min-width: $break-1200) { @content; }
+  }
+}
+
+// Anchor Tag Border style ***
+@mixin anchor-border{
+    position: relative;
+    cursor: pointer;
+    @include transition(all 300ms);
+    
+    &:hover {
+        color: $linkblack;
+    }
+    
+}
+
+// Align icons to text ***
+@mixin align-icon{
+    position: relative;
+    
+    &:before {
+        display: flex;
+        align-items: center;
+        height: 20px;
+        position: absolute;
+    }
+}

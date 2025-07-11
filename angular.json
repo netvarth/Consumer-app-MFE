@@ -1,7 +1,343 @@
 {
-  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
-  "version": 1,
-  "newProjectRoot": "projects",
-  "projects": {
-  }
+	"$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+	"version": 1,
+	"newProjectRoot": "projects",
+	"projects": {
+		"root": {
+			"projectType": "application",
+			"schematics": {
+				"@schematics/angular:component": {
+					"style": "scss"
+				}
+			},
+			"root": "projects/root",
+			"sourceRoot": "projects/root/src",
+			"prefix": "app",
+			"architect": {
+				"build": {
+					"builder": "@angular-architects/native-federation:build",
+					"options": {},
+					"configurations": {
+						"production": {
+							"target": "root:esbuild:production"
+						},
+						"development": {
+							"target": "root:esbuild:development",
+							"dev": true
+						}
+					},
+					"defaultConfiguration": "production"
+				},
+				"serve": {
+					"builder": "@angular-architects/native-federation:build",
+					"options": {
+						"target": "root:serve-original:development",
+						"rebuildDelay": 0,
+						"dev": true,
+						"port": 0
+					}
+				},
+				"extract-i18n": {
+					"builder": "@angular-devkit/build-angular:extract-i18n"
+				},
+				"test": {
+					"builder": "@angular-devkit/build-angular:karma",
+					"options": {
+						"polyfills": [
+							"zone.js",
+							"zone.js/testing"
+						],
+						"tsConfig": "projects/root/tsconfig.spec.json",
+						"inlineStyleLanguage": "scss",
+						"assets": [
+							{
+								"glob": "**/*",
+								"input": "projects/root/public"
+							},
+							{
+								"glob": "**/*",
+								"input": "projects/root/src/assets",
+								"output": "assets"
+							}
+						],
+						"styles": [
+							"projects/root/src/styles.scss"
+						],
+						"scripts": []
+					}
+				},
+				"esbuild": {
+					"builder": "@angular-devkit/build-angular:application",
+					"options": {
+						"outputPath": "dist/ROOT",
+						"baseHref": "/",
+						"index": "projects/root/src/index.html",
+						"browser": "projects/root/src/main.ts",
+						"polyfills": [
+							"zone.js",
+							"es-module-shims"
+						],
+						"tsConfig": "projects/root/tsconfig.app.json",
+						"inlineStyleLanguage": "scss",
+						"assets": [
+							{
+								"glob": "**/*",
+								"input": "projects/root/public"
+							},
+							{
+								"glob": "**/*",
+								"input": "projects/root/src/assets",
+								"output": "assets"
+							}
+						],
+						"styles": [
+							"node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
+							"node_modules/ngx-owl-carousel-o/lib/styles/prebuilt-themes/owl.carousel.min.css",
+							"node_modules/ngx-owl-carousel-o/lib/styles/prebuilt-themes/owl.theme.default.min.css",
+							"node_modules/bootstrap/dist/css/bootstrap.min.css",
+							"node_modules/primeng/resources/primeng.min.css",
+							"node_modules/primeng/resources/themes/md-light-indigo/theme.css",
+							"node_modules/font-awesome/css/font-awesome.min.css",
+							"node_modules/intl-tel-input/build/css/intlTelInput.min.css",
+							"projects/root/src/styles.scss"
+						],
+						"scripts": [
+							"node_modules/intl-tel-input/build/js/intlTelInput.min.js",
+							"node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
+						]
+					},
+					"configurations": {
+						"production": {
+							"budgets": [
+								{
+									"type": "initial",
+									"maximumWarning": "500kB",
+									"maximumError": "2MB"
+								},
+								{
+									"type": "anyComponentStyle",
+									"maximumWarning": "2kB",
+									"maximumError": "2MB"
+								}
+							],
+							"optimization": {
+								"scripts": true,
+								"styles": {
+									"minify": true,
+									"inlineCritical": true
+								}
+							},
+							"outputHashing": "all",
+							"sourceMap": false,
+							"namedChunks": false,
+							"extractLicenses": true
+						},
+						"development": {
+							"optimization": {
+								"scripts": true,
+								"styles": {
+									"minify": true,
+									"inlineCritical": true
+								}
+							},
+							"sourceMap": false,
+							"namedChunks": false,
+							"extractLicenses": false
+						}
+					},
+					"defaultConfiguration": "production"
+				},
+				"serve-original": {
+					"builder": "@angular-devkit/build-angular:dev-server",
+					"configurations": {
+						"production": {
+							"buildTarget": "root:esbuild:production"
+						},
+						"development": {
+							"buildTarget": "root:esbuild:development"
+						}
+					},
+					"defaultConfiguration": "development",
+					"options": {
+						"port": 4300
+					}
+				}
+			}
+		},
+		"template": {
+			"projectType": "application",
+			"schematics": {
+				"@schematics/angular:component": {
+					"style": "scss"
+				}
+			},
+			"root": "projects/template",
+			"sourceRoot": "projects/template/src",
+			"prefix": "app",
+			"architect": {
+				"build": {
+					"builder": "@angular-architects/native-federation:build",
+					"options": {},
+					"configurations": {
+						"production": {
+							"target": "template:esbuild:production"
+						},
+						"development": {
+							"target": "template:esbuild:development",
+							"dev": true
+						}
+					},
+					"defaultConfiguration": "production"
+				},
+				"serve": {
+					"builder": "@angular-architects/native-federation:build",
+					"options": {
+						"target": "template:serve-original:development",
+						"rebuildDelay": 0,
+						"dev": true,
+						"port": 0
+					}
+				},
+				"extract-i18n": {
+					"builder": "@angular-devkit/build-angular:extract-i18n"
+				},
+				"test": {
+					"builder": "@angular-devkit/build-angular:karma",
+					"options": {
+						"polyfills": [
+							"zone.js",
+							"zone.js/testing"
+						],
+						"tsConfig": "projects/template/tsconfig.spec.json",
+						"inlineStyleLanguage": "scss",
+						"assets": [
+							{
+								"glob": "**/*",
+								"input": "projects/template/public"
+							}
+						],
+						"styles": [
+							"projects/template/src/styles.scss"
+						],
+						"scripts": []
+					}
+				},
+				"esbuild": {
+					"builder": "@angular-devkit/build-angular:application",
+					"options": {
+						"outputPath": "dist/template",
+						"index": "projects/template/src/index.html",
+						"browser": "projects/template/src/main.ts",
+						"polyfills": [
+							"zone.js",
+							"es-module-shims"
+						],
+						"tsConfig": "projects/template/tsconfig.app.json",
+						"inlineStyleLanguage": "scss",
+						"assets": [
+							{
+								"glob": "**/*",
+								"input": "projects/template/public"
+							}
+						],
+						"styles": [
+							"projects/template/src/styles.scss"
+						],
+						"scripts": []
+					},
+					"configurations": {
+						"production": {
+							"budgets": [
+								{
+									"type": "initial",
+									"maximumWarning": "500kB",
+									"maximumError": "2MB"
+								},
+								{
+									"type": "anyComponentStyle",
+									"maximumWarning": "2kB",
+									"maximumError": "2MB"
+								}
+							],
+							"optimization": {
+								"scripts": true,
+								"styles": {
+									"minify": true,
+									"inlineCritical": true
+								}
+							},
+							"outputHashing": "all",
+							"sourceMap": false,
+							"namedChunks": false,
+							"extractLicenses": true
+						},
+						"development": {
+							"optimization": {
+								"scripts": true,
+								"styles": {
+									"minify": true,
+									"inlineCritical": true
+								}
+							},
+							"sourceMap": false,
+							"namedChunks": false,
+							"extractLicenses": false
+						}
+					},
+					"defaultConfiguration": "production"
+				},
+				"serve-original": {
+					"builder": "@angular-devkit/build-angular:dev-server",
+					"configurations": {
+						"production": {
+							"buildTarget": "template:esbuild:production"
+						},
+						"development": {
+							"buildTarget": "template:esbuild:development"
+						}
+					},
+					"defaultConfiguration": "development",
+					"options": {
+						"port": 4201
+					}
+				}
+			}
+		},
+		"jconsumer-shared": {
+			"projectType": "library",
+			"root": "projects/jconsumer-shared",
+			"sourceRoot": "projects/jconsumer-shared/src",
+			"prefix": "lib",
+			"architect": {
+				"build": {
+					"builder": "@angular-devkit/build-angular:ng-packagr",
+					"options": {
+						"project": "projects/jconsumer-shared/ng-package.json"
+					},
+					"configurations": {
+						"production": {
+							"tsConfig": "projects/jconsumer-shared/tsconfig.lib.prod.json"
+						},
+						"development": {
+							"tsConfig": "projects/jconsumer-shared/tsconfig.lib.json"
+						}
+					},
+					"defaultConfiguration": "production"
+				},
+				"test": {
+					"builder": "@angular-devkit/build-angular:karma",
+					"options": {
+						"tsConfig": "projects/jconsumer-shared/tsconfig.spec.json",
+						"polyfills": [
+							"zone.js",
+							"zone.js/testing"
+						]
+					}
+				}
+			}
+		}
+	},
+	"cli": {
+		"analytics": "526575c9-c85a-4d89-89a9-4920226c5270"
+	}
 }

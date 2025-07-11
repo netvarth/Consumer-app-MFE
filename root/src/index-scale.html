@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Loading...</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- href="favicon.ico" -->
+  <link rel="icon" type="image/x-icon" id="dynamic-favicon">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="preconnect" href="https://d2199iy1o5ikw9.cloudfront.net" crossorigin> <!-- Jaldee Static Assets for Scale/Local Includes Images, Css etc. -->
+  <link rel="preconnect" href="https://d34s9pj4wr6ijb.cloudfront.net" crossorigin> <!-- Jaldee UI Scale Bucket-->
+  <meta name="description" content=".">
+  <style>
+    @keyframes zoomInOut {
+
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+
+      50% {
+        transform: scale(1.5);
+        opacity: 0.8;
+      }
+    }
+  </style>
+</head>
+
+<body class="hold-transition sidebar-mini" style="height: auto;min-height: 100%;">
+    <div id="globalLoading" style="background-color: white; width: 100%; height: 100vh; display: flex; align-items: center;justify-content: center;">
+     <img src="https://d34s9pj4wr6ijb.cloudfront.net/{UNIQUEID}/site_assets/logo.webp"
+      style="width: 200px; height: auto;animation: zoomInOut 2s ease-in-out infinite;" />
+  </div>
+  <app-root></app-root>
+  <noscript>Please enable JavaScript to continue using this application.</noscript>
+  <script>
+    var DEBUG_MODE_ON = false;
+    // hide browser console in production
+    if (!DEBUG_MODE_ON) {
+      console = console || {};
+      console.log = function () { };
+    }
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,7 @@
+
+<p-toast class="p-toast-container" [breakpoints]="{'920px': {width: '100%', right: '0', left: '0'}}"></p-toast>
+<router-outlet />
+<div class="overlay" *ngIf="loading">
+    <div class="spinner"></div>
+    <span class="spinnertext" *ngIf="loadingFile">Uploading file...</span>
+</div>

@@ -1,0 +1,345 @@
+.mat-mdc-menu-item {
+    font-family: $con-font-primary !important;
+}
+
+.mat-mdc-menu-panel .mat-mdc-menu-content .mat-mdc-menu-item {
+    display: flex;
+    font-size: .875rem;
+    font-weight: 500 !important;
+    height: 40px;
+    line-height: 40px;
+    align-items: center;
+    font-weight: 400;
+    transition: all .3s;
+}
+
+.mat-mdc-menu-panel .mat-mdc-menu-content .mat-mdc-menu-item i {
+    margin-right: 10px;
+    margin-top: 3px;
+    font-size: 1rem;
+}
+
+.mat-mdc-menu-content:not(:empty) {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+.mdc-button,
+.mat-mdc-button {
+    box-shadow: none;
+    outline: none !important;
+    color: $con-btn-color !important;
+    font-size: .875rem !important;
+    font-weight: 400;
+    font-weight: 500;
+    position: relative;
+    display: inline-block;
+    margin-bottom: 0;
+    text-align: center !important;
+    vertical-align: middle;
+    touch-action: manipulation;
+    cursor: pointer !important;
+    border: none !important;
+    white-space: nowrap !important;
+    padding: 10px 40px !important;
+    line-height: inherit !important;
+    z-index: 2;
+    text-transform: uppercase !important;
+    border-radius: 3px !important;
+    background-clip: padding-box;
+    transition: all .3s;
+    background-color: $con-btn-bgcolor !important;
+}
+
+.mdc-button:hover {
+    background: $con-btn-bgcolor-hover !important;
+}
+
+.mdc-button:disabled {
+    background: $con-btn-bgcolor-disabled !important;
+    opacity: .3;
+    cursor: default !important;
+}
+
+.mat-datepicker-content .mat-calendar {
+    box-shadow: 0px 4px 11px rgb(0 0 0 / 12%) !important;
+}
+
+.mat-calendar-table {
+    border-collapse: separate !important;
+    border-spacing: 0.5em !important;
+}
+
+.mat-calendar-body-label {
+    visibility: hidden;
+}
+
+.mat-calendar-body-cell-content {
+    top: 5% !important;
+    left: 5% !important;
+    z-index: 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+    width: 90% !important;
+    height: 90% !important;
+    line-height: 1 !important;
+    background: #E5E8E8;
+    border: 1.02933px solid #DFDFDF;
+    border-width: 1px !important;
+    border-style: solid !important;
+    border-radius: 5px !important;
+    color: $con-calendar-color;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 600 !important;
+}
+
+.mat-calendar-body-disabled .mat-calendar-body-cell-content {
+    cursor: not-allowed !important;
+    background: #E5E8E8;
+    color: #000000;
+    border: 1.02933px solid #DFDFDF;
+}
+
+mat-calendar-body-cell mat-calendar-body-active,
+.mat-calendar-body-cell-content.mat-calendar-body-selected {
+    color: #ffffff;
+}
+
+.mat-calendar-body-today.mat-calendar-body-selected {
+    border-radius: 5px !important;
+    border: 1.02933px solid #DFDFDF !important;
+    background: #0D2348;
+    color: #fff !important;
+    width: 100%;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.example-custom-date-class .mat-calendar-body-cell-content {
+    background: rgb(133, 233, 133);
+    border-radius: 5px;
+}
+
+.example-custom-date-class .mat-calendar-body-selected,
+.mat-calendar-body-selected.mat-calendar-body-cell-content {
+    background-color: #0D2348;
+    color: #ffffff !important;
+}
+
+
+.mat-mdc-standard-chip,
+mat-chip {
+    border: none !important;
+    border-radius: 5px !important;
+    cursor: pointer;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+@media(min-width:320px) and (max-width:767px) {
+    .freeslots.appt mat-chip {
+        width: 47% !important;
+        margin: 3px 5px 10px 3px !important;
+        padding: 5px;
+    }
+
+    .freeslots.token mat-chip {
+        width: 40% !important;
+        font-size: 0.79rem !important;
+        margin: 3px !important;
+    }
+}
+
+@media (min-width:768px) and (max-width:991px) {
+    .freeslots.appt mat-chip {
+        width: 95% !important;
+    }
+}
+
+@media (min-width:992px) and (max-width:1199px) {
+    .freeslots.appt mat-chip {
+        width: 32% !important;
+    }
+}
+
+@media (min-width:1200px) {
+    .freeslots.appt mat-chip {
+        width: 30% !important;
+    }
+}
+
+.mat-mdc-standard-chip.mat-primary {
+    color: #0D2348 !important;
+    background-color: white;
+    border: none !important;
+    cursor: pointer;
+}
+
+.mdc-evolution-chip__cell--primary {
+    justify-content: center;
+}
+
+mat-chip.mat-chip-selected.mat-mdc-standard-chip:not(.mdc-evolution-chip--disabled),
+mat-chip.selected.mat-mdc-standard-chip:not(.mdc-evolution-chip--disabled) {
+    background-color: $con-btn-bgcolor !important;
+}
+
+.mat-mdc-standard-chip:not(.mdc-evolution-chip--disabled) {
+    background-color: $con-btn-color !important;
+    border: none !important;
+    cursor: pointer;
+}
+
+.mdc-evolution-chip__text-label {
+    color: $con-btn-bgcolor !important;
+    font-weight: 600 !important;
+}
+
+mat-chip.mat-chip-selected,
+mat-chip.selected {
+    background-color: $con-btn-bgcolor !important;
+    font-weight: 900 !important;
+    color: $con-btn-color !important;
+}
+
+mat-chip.mat-chip-selected .mdc-evolution-chip__text-label,
+mat-chip.selected .mdc-evolution-chip__text-label {
+    color: $con-btn-color !important;
+}
+
+.mat-chip-disabled {
+    background-color: $con-btn-disabled !important;
+}
+
+.mat-mdc-dialog-title {
+    background: #1e4079;
+    color: #222223 !important;
+    // font: 500 20px/32px Roboto, Helvetica Neue, sans-serif;
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    position: relative !important;
+    letter-spacing: normal;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#1873f2", endColorstr="#00aef2", GradientType=0);
+}
+
+.commonpopupmainclass .mat-mdc-dialog-content,
+.commonpopupmainclass .mat-dialog-content {
+    margin: 0;
+    padding: 20px !important;
+    overflow: auto;
+}
+
+.modal_close i:before {
+    font-family: custom-ynw !important;
+    content: "\69";
+    font-size: 1rem !important;
+    width: 20px;
+    height: 20px;
+    font-weight: 600;
+}
+
+.modal_close:focus-visible {
+    outline: none !important;
+}
+
+.modal_close {
+    position: absolute;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    top: 50%;
+    z-index: 121;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.mat-mdc-dialog-content .mat-mdc-form-field {
+    width: 100%;
+}
+
+.mat-mdc-dialog-actions {
+    border: none !important;
+    box-shadow: none !important;
+    display: block;
+    margin-bottom: 0;
+    display: flex;
+    z-index: 99;
+    padding: 20px !important;
+    position: relative;
+    box-shadow: 0 0 30px rgb(0 0 0 / 10%);
+}
+
+.mat-mdc-dialog-actions .mdc-button,
+.mat-mdc-dialog-actions button {
+    margin-right: 10px !important;
+}
+
+mat-radio-button.pay-rad .mdc-form-field {
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    width: 100%;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+@media (max-width:400px) {
+    mat-radio-button.pay-rad .mdc-form-field {
+        padding-left: 0px !important;
+    }
+}
+
+.mat-radio-container {
+    display: block !important;
+    top: 5px !important;
+    right: 5px;
+    float: right;
+}
+
+.mat-radio-label {
+    display: flex !important;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row-reverse;
+}
+
+mat-radio-button .mat-mdc-radio-checked {
+    box-shadow: 0 4px 8px 0 rgb(0 0 0 / 10%), 0 6px 20px 0 rgb(0 0 0 / 0%) !important;
+    background: #F1FFFF !important;
+    border: 1.25px solid #45C3D3 !important;
+    border-radius: 5px !important;
+}
+
+.mat-mdc-radio-button .mdc-radio__native-control:enabled:checked+.mdc-radio__background .mdc-radio__outer-circle,
+.mat-mdc-radio-button .mdc-radio__native-control:enabled:checked+.mdc-radio__background .mdc-radio__inner-circle {
+    border-color: $con-btn-bgcolor !important;
+}
+
+.payment-mode-fw mat-radio-button.pay-rad .mdc-form-field {
+    flex-direction: column;
+}
+
+.payment-mode-fw .mat-mdc-radio-button .mdc-radio {
+    margin-top: -5px;
+    margin-right: -90px;
+}
+
+@media(max-width:767px) {
+    .payment-mode-fw .mat-mdc-radio-button .mdc-radio {
+        margin-right: -80px;
+    }
+}
+
+.payment-mode-fw .mat-internal-form-field>label {
+    margin-top: -25px;
+    font-size: 10px;
+    font-weight: 600;
+    padding-left: 0 !important;
+}
+
+.mat-datepicker-content .mat-calendar {
+    height: 100% !important;
+}
