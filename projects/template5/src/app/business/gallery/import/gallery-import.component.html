@@ -1,0 +1,48 @@
+<form [ngClass]="this.data.theme">
+  <h1 class="mat-dialog-title"> {{header_caption}} <button mat-dialog-close class="modal_close"
+      [disabled]="canceldisabled"><i class="fa fa-window-close" aria-hidden="true"></i></button></h1>
+  <mat-dialog-content>
+    <div *ngIf="selectedFiles.files">
+      <ul class="galul">
+        <li *ngFor="let file of selectedFiles.files;let i = index ">
+          <div class="galimg_outer">
+            <div class="gal_img">
+              <img [src]="getImage(selectedFiles.base64[i], file)" *ngIf="selectedFiles.base64[i]" alt="">
+            </div>{{file.name}}
+            <div *ngIf="source_id ==='gallery'" class="gal_caption"><input type="text" matInput
+                [(ngModel)]="selectedFiles.caption[i]" placeholder="Caption" autocomplete="off"></div>
+            <div class="gal_action" *ngIf="!canceldisabled">
+              <button type="button" mat-icon-button [matMenuTriggerFor]="menu">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu">
+                <button type="button" mat-menu-item (click)="deleteTempImage(i)">
+                  <i class="icon-delete"></i>
+                  <span>{{delete_btn}}</span>
+                </button>
+              </mat-menu>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="upload-doc" (click)="filed.click()" *ngIf="!canceldisabled">
+      <label class="col-form-label">{{select_image_cap}}</label>
+      <span class="select-wrapper ">
+        <input type="file" multiple name="image_src" id="image_src" accept="/*;capture=camera" #filed
+          (change)="filesSelected($event,'photo')">
+      </span>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <div class="col-md-12" style="margin-top: 15px;display: inline-flex;">
+      <button type="button" mat-dialog-close class="cs-btn bt1 text-uppercase" [disabled]="canceldisabled">{{cancel_btn}}</button>
+      <button (click)="saveImages()" *ngIf="selectedFiles.files.length >0" mat-button class="cs-btn bt1"
+        [disabled]="api_loading">{{img_save_caption}}</button>
+    </div>
+  </mat-dialog-actions>
+  <app-field-error-display [displayError]="(error_list.length > 0) ? true : false" [errorMsg]="error_msg">
+  </app-field-error-display>
+  <app-form-success-display [displayMsg]="true" *ngIf="api_success" successMsg="{{api_success}}">
+  </app-form-success-display>
+</form>

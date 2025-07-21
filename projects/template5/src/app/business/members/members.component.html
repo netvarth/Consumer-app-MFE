@@ -1,0 +1,76 @@
+<section [ngClass]="{'container no-padding no-padding-small': true}">
+    <div class="content p0 see-pages cons-members">
+        <div class="card title-gb">
+            <h5 class="mgn-up-10"> {{'Family Members' | translate}}<span class="addbt mgn-lt-20"
+                    (click)="addMember()"></span><a class="pull-left mgn-rt-20 back-btn" (click)="goBack()"><i
+                        class="fa fa-arrow-left"></i></a></h5>
+        </div>
+        <div class="related-links">
+            <div class="outer-card">
+                <div class="card members-card">
+                    <div class="no-dta" *ngIf="member_list.length ==0 && query_executed == true">
+                        <p>{{emptyMsg}}</p>
+                        <span class="cs-btn bt3" (click)="addMember()">{{add_fam_memb_cap}}</span>
+                    </div>
+                    <div class="table-outer d-tbl" *ngIf="member_list.length !=0">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>{{first_name_cap}}</th>
+                                    <th>{{last_name_cap}}</th>
+                                    <th>{{gender_cap}}</th>
+                                    <th>{{date_of_birth}}</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let member of member_list">
+                                    <td data-title="First Name" class="fname">{{member.userProfile.firstName |
+                                        capitalizeFirst}}</td>
+                                    <td data-title="Last Name" class="lname">{{member.userProfile.lastName |
+                                        capitalizeFirst}}</td>
+                                    <td data-title="Gender" class="payment">{{member.userProfile.gender}}</td>
+                                    <td data-title="Date of Birth" class="message">{{member.userProfile.dob | date:
+                                        newDateFormat }}</td>
+                                    <td class="mre"><span class="mbt">
+                                            <button type="button" mat-icon-button [matMenuTriggerFor]="menu">
+                                                <mat-icon>more_vert</mat-icon>
+                                            </button>
+                                            <mat-menu #menu="matMenu">
+                                                <button type="button" (click)="editMember(member)" mat-menu-item>
+                                                    <i class="icon-edit"></i>
+                                                    {{edit_btn_cap}}
+                                                </button>
+                                                <button type="button" (click)="doRemoveMember(member)" mat-menu-item>
+                                                    <i class="icon-delete"></i>
+                                                    {{delete_btn_cap}}
+                                                </button>
+                                            </mat-menu>
+                                        </span>
+                                        <span class="mbt-mobile-show">
+                                            <button class="editcls" type="button"
+                                                (click)="editMember(member)">{{edit_btn_cap}}</button>
+                                            <button class="deletecls" type="button"
+                                                (click)="doRemoveMember(member)">{{delete_btn_cap}}</button>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="right-menu">
+                    <div class="right-menu-header">{{related_links_cap}}</div>
+                    <ul class="related-link">
+                        <li (click)="redirectto('dashboard')" class="icon-dashboard">
+                            {{dashboard_cap}}
+                        </li>
+                        <li (click)="redirectto('profile')" class="icon-profile">
+                            {{user_profile_cap}}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,370 @@
+.total {
+    color: #283B53;
+    font-size: 17.978px;
+    font-weight: 600;
+}
+
+.tax-msg {
+    color: #283B53;
+    font-size: 12.805px;
+    font-weight: 400;
+}
+
+.discount {
+    color: #008A00;
+    font-size: 15.863px;
+    font-weight: 600;
+}
+
+.btn-checkout,
+.btn-additems {
+    border: 2.643px solid rgba(255, 187, 17, 0.13);
+    background: #436B50;
+    font-size: 14px;
+    justify-content: center;
+}
+
+.btn-checkout {
+    width: 100%;
+}
+
+::ng-deep .items .p-datatable .p-datatable-thead>tr>th {
+    padding: 15px !important;
+}
+
+::ng-deep .cart .p-datatable .p-datatable-thead>tr>th {
+    background: #F0F1F2 !important;
+}
+
+
+.netPrice {
+    color: #008A00;
+    font-size: 15.863px;
+    font-weight: 600;
+}
+
+.price {
+    text-decoration: line-through;
+}
+
+.price-section {
+    gap: 30px;
+}
+
+::ng-deep .items .p-datatable .p-datatable-tbody>tr>td {
+    vertical-align: middle !important;
+    padding: 15px !important;
+}
+
+::ng-deep .p-inputnumber-buttons-horizontal .p-inputnumber-input {
+    width: 65px;
+    text-align: center;
+    padding: 0.75rem 0.75rem;
+}
+
+::ng-deep .p-button.p-button-secondary {
+    background-color: #fff !important;
+    color: #283B53;
+    border: 1px solid rgba(0, 0, 0, 0.38);
+}
+
+::ng-deep .p-inputnumber-buttons-horizontal .p-button.p-inputnumber-button-down {
+    border-right: none !important;
+}
+
+::ng-deep .p-inputnumber-buttons-horizontal .p-button.p-inputnumber-button-up {
+    border-left: none !important;
+}
+
+::ng-deep .p-button.p-button-secondary:enabled:hover {
+    color: #283B53;
+    border: 1px solid rgba(0, 0, 0, 0.38) !important;
+}
+
+.inputnumber {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+ng-deep .items .p-datatable .p-datatable-thead>tr>th {
+    text-align: center;
+}
+
+.remove:hover {
+    // border: 1px solid grey !important;
+    text-decoration: underline;
+    cursor: pointer !important;
+}
+
+.remove {
+    margin-top: 5px;
+    color: red;
+}
+
+::ng-deep .disabled-decrement .p-inputnumber-buttons-horizontal .p-button.p-inputnumber-button-down {
+    pointer-events: none;
+    /* Disable click events */
+    opacity: 0.5;
+    /* Optionally reduce opacity to indicate disabled state */
+    cursor: not-allowed;
+    /* Change cursor to indicate disabled state */
+}
+
+::ng-deep .p-inputnumber-buttons-horizontal .p-button.p-inputnumber-button-down {
+    background-color: #fff !important;
+    color: #283B53;
+    border: 1px solid rgba(0, 0, 0, 0.38);
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-right: none !important;
+}
+
+.customCard {
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .05) !important;
+    border-radius: 5px;
+    background: #fff;
+    background-clip: padding-box;
+    border: none !important;
+    width: 100%;
+}
+
+.headerBorder {
+    border-bottom: 1.21389px solid #DADCE0 !important;
+    display: flex;
+    gap: 5px;
+    flex-direction: row !important;
+    padding: 15px !important;
+}
+
+.cart-container {
+    display: grid;
+    // gap: 10px;
+    grid-template-columns: 60% 40%;
+    // padding: 20px;
+}
+
+@media screen and (max-width:767px) {
+    .cart-container {
+        gap: 5px;
+        grid-template-columns: 100%;
+        padding: 0;
+    }
+
+}
+
+::ng-deep {
+    @media screen and (max-width:767px) {
+        .cart-container .p-datatable .p-datatable-tbody>tr>td {
+            padding: 0.25rem 0.25rem !important;
+        }
+    }
+}
+
+.item-container-tbl {
+    display: grid;
+    grid-template-columns: 30% 70%;
+    align-items: center;
+}
+
+.aspect-ratio {
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.item-container-tbl img {
+    position: relative;
+    height: 100px;
+    width: 100px;
+    top: 0;
+    left: 0;
+    padding: 10px;
+    object-fit: fill;
+}
+
+.small_item_container .inputnumber {
+    align-items: flex-start;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    justify-content: space-between;
+}
+
+.remove .fa-trash {
+    color: #ff0000;
+    font-weight: normal;
+    font-size: 20px;
+}
+
+.item_name {
+    font-weight: 600;
+}
+
+.item_price {
+    font-weight: 600;
+    color: green;
+}
+
+// .btn-addMore {
+//     border-radius: 4.26px;
+//     border: 2px solid #436B50;
+//     background: #FFF;
+//     color: #436B50;
+//     font-size: 14px;
+//     font-weight: 500;
+//     cursor: pointer;
+//     justify-content: center;
+//     padding: 10px;
+//     margin: 10px;
+// }
+
+// @media (max-width:767px) {
+//     .cart-wrapper {
+//         margin-bottom: 70px !important;
+//     }
+// }
+
+.continue {
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+.item-mrp {
+    color: #686868;
+    text-decoration: line-through;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.item-name,
+.item_name {
+    // font-size: 14px;
+    // font-weight: 600;
+    text-overflow: ellipsis;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 1 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden;
+}
+
+
+.coupon-section {
+    background: #F8FAFC !important;
+    border-radius: 6px !important;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #B9D2C1;
+    box-shadow: 0px 0px 0px 3.945px #DEE9FC;
+}
+
+.coupon-text {
+    color: #667085 !important;
+}
+
+.adjust-Qty {
+    height: 35px !important;
+}
+
+::ng-deep .small_item_container .p-inputnumber-buttons-horizontal .p-inputnumber-input {
+    width: 50px !important;
+}
+
+::ng-deep .small_item_container .p-inputnumber-buttons-horizontal .p-button.p-inputnumber-button-up,
+::ng-deep .small_item_container .p-inputnumber-buttons-horizontal .p-button.p-inputnumber-button-down {
+    width: 35px !important;
+}
+
+.attribute-box {
+    border: 1px solid #dddddb;
+    padding: 5px 10px;
+    border-radius: 30px;
+    font-weight: 600 !important;
+    width: fit-content !important;
+    font-size: 12px !important;
+}
+
+.attribute-row {
+    display: flex;
+    flex-wrap: wrap;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    gap: 3px !important;
+}
+
+.btn-viewDetails {
+    background-color: #dddddb;
+    color: black;
+    padding: 5px 10px;
+}
+
+::ng-deep .p-dropdown-panel .p-dropdown-items .p-dropdown-item {
+    padding: 7px;
+}
+ ::ng-deep .p-tabmenu {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 0.2rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+::ng-deep .p-tabmenu-nav {
+  display: flex;
+  justify-content: flex-start;
+  border: none;
+}
+
+::ng-deep .p-tabmenuitem {
+  position: relative;
+  margin-right: 1rem;
+  padding:1rem 1rem 1rem .1rem;
+  transition: color 0.3s ease;
+  border-radius: 5px;
+}
+
+::ng-deep .p-tabmenuitem a {
+  color:#5F6D7E99;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+::ng-deep .p-tabmenuitem.p-highlight a {
+  color:#001C30;
+  font-weight: 600;
+}
+
+::ng-deep .p-tabmenuitem.p-highlight::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+::ng-deep .p-tabmenuitem:hover a {
+  color: #001C30;
+}
+
+::ng-deep .p-tabmenu .p-tabmenu-nav .p-tabmenu-ink-bar {
+    color:#001C30 !important;
+    transition: .5s cubic-bezier(.35,0,.25,1) !important;
+}
+::ng-deep .p-tabmenu .tab-img {
+  height: 20px;
+  width: 20px;
+  margin-right: 8px;
+  vertical-align: middle;
+  object-fit: contain;
+}
+::ng-deep .tab-icon {
+  margin-right: 8px;
+  font-size: 18px;
+  vertical-align: middle;
+}

@@ -1,0 +1,26 @@
+<div class="card callback  col-12 mgn-bt-10">
+    <div *ngIf="callBack" class="row d-flex justify-content-between">
+        <div class="col-5 no-padding">
+            <span class="title">Created Date</span><br>
+            <span class="content">{{callBack.createdDateTime |date: newDateFormat}}</span>
+        </div>
+        <div class="col-4 no-padding">
+            <span class="title">Created Time</span><br>
+            <span class="content">{{callBack.createdDate |date: newTimeFromat}}</span>
+        </div>
+        <div class="col-2 no-padding">
+            <span class="title">Language</span><br>
+            <span class="content">{{callBack.language}}</span>
+        </div>
+    </div>
+    <hr *ngIf="callBack.callduration" class="mgn-up-10 mgn-bt-10">
+    <div *ngIf="callBack.callduration" class="row d-flex justify-content-between align-items-center">
+        <div class="col-7 no-padding">
+            <span class="title">Call Duration</span><br>
+            <span class="content">{{callBack.callduration}}</span>
+        </div>
+        <div class="col-4 no-padding">
+            <!-- <button>View Details</button> -->
+        </div>
+    </div>
+</div>

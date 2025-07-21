@@ -1,0 +1,299 @@
+<section class="container consumer-appthistory no-padding-small">
+    <div class="row">
+        <div class="c-outer">
+            <div class="c-body">               
+                <app-common-innerloading-spinner *ngIf="loading"></app-common-innerloading-spinner>
+                <div class="loading-hgt my-1 login-form_custom" *ngIf="!loading && !loggedIn">
+                    <div class="card card-custom no-margin hgt-adjust">
+                        <div class="card-body p-0">
+                            <app-authentication (actionPerformed)="actionPerformed($event)"
+                                [accountId]="accountId" ></app-authentication>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 history one" *ngIf="!loading && loggedIn">
+                    <div class="card title-gb">
+                        <h5 class="mgn-up-10">
+                            <!-- Check-ins/Tokens -->
+                            {{'History' | translate}} <a class="pull-left mgn-rt-20 back-btn" (click)="goback()"><i
+                                    class="fa fa-arrow-left"></i></a>
+                        </h5>
+                    </div>
+                    <div class="table-outer history-tbl card no-padding" *ngIf="entire_history && entire_history.length > 0">
+                        <table class="table" *ngIf="entire_history && entire_history.length > 0">
+                            <thead>
+                                <tr>
+                                    <th class="th3">{{date_cap}} & {{'Time' | translate}}</th>
+                                    <th class="th1" *ngIf="!customId">{{service_provider_cap}}</th>
+                                    <th *ngIf="!showOrderHist" class="th2">{{location_cap}}</th>
+                                    <th *ngIf="showOrderHist"> {{ 'Order for' | translate}}</th>
+                                    <th *ngIf="!showOrderHist">{{'Service for' | translate}} </th>
+                                    <th *ngIf="!showOrderHist" class="th6">{{service_cap}}</th>
+                                    <th *ngIf="showOrderHist" class="th6">{{'No of items' | translate}}</th>
+                                    <th class="th4">{{status_cap}}</th>
+                                    <th class="th5"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Checkin + Appointment -->
+                                <tr *ngFor="let his_wait of entire_history">
+                                    <ng-container *ngIf="his_wait.waitlistStatus">
+                                        <td data-title="Date & Time" class="pointer-cursor"
+                                            (click)="showBookingDetails(his_wait)">
+                                            <div class="disp-flex">
+                                                <div class="circle-htokens" *ngIf="!small_device_display">
+                                                    <i *ngIf="his_wait.token" [matTooltip]="'Token'"
+                                                        class="fa token-icon"></i>
+                                                    <i *ngIf="!his_wait.token" [matTooltip]="'check-ins'"
+                                                        class="fa chckn-icon"></i>
+                                                </div>
+                                                <span>&nbsp;{{his_wait.date | date: newDateFormat
+                                                    }},<br>&nbsp;{{his_wait.queue.queueStartTime}}
+                                                    -
+                                                    {{his_wait.queue.queueEndTime}}</span>
+                                            </div>
+                                        </td>
+                                        <td data-title="Service Provider" *ngIf="!customId"
+                                            (click)="providerDetail(his_wait.providerAccount)"
+                                            class="td1 provider-name pointer-cursor">
+                                            <span class="name">{{his_wait.providerAccount.businessName || '' |
+                                                capitalizeFirst}}</span>
+                                        </td>
+                                        <td data-title="Location">
+                                            <span class="mgn-lt-15"> {{his_wait.queue.location.place || '' |
+                                                capitalizeFirst}}</span>
+                                        </td>
+                                        <td data-title="Service for">
+                                            {{his_wait.waitlistingFor[0].firstName || '' | capitalizeFirst}}
+                                            {{his_wait.waitlistingFor[0].lastName || '' | capitalizeFirst}}</td>
+                                        <td data-title="Service">
+                                            <span class="service-icon"
+                                                *ngIf="his_wait.service.serviceType == 'virtualService'">
+                                                <i class="fa phon-icon"
+                                                    *ngIf="his_wait.service.virtualCallingModes && his_wait.service.virtualCallingModes[0].callingMode === 'Phone'"></i>
+                                                <i class="fa meet-icon"
+                                                    *ngIf="his_wait.service.virtualCallingModes && his_wait.service.virtualCallingModes[0].callingMode === 'GoogleMeet'"></i>
+                                                <i class="fa zoom-icon"
+                                                    *ngIf="his_wait.service.virtualCallingModes && his_wait.service.virtualCallingModes[0].callingMode === 'Zoom'"></i>
+                                                <i class="fa jvideo-icon jvideo-icon-s jvideo-icon-mgm5"
+                                                    *ngIf="his_wait.service.virtualCallingModes  && his_wait.service.virtualCallingModes[0].callingMode === 'VideoCall'"></i>
+                                                <i class="fa wtsapaud-icon"
+                                                    *ngIf="his_wait.service.virtualCallingModes && his_wait.service.virtualCallingModes[0].callingMode === 'WhatsApp' && his_wait.service.virtualServiceType ==='audioService'"></i>
+                                                <i class="fa wtsapvid-icon"
+                                                    *ngIf="his_wait.service.virtualCallingModes && his_wait.service.virtualCallingModes[0].callingMode === 'WhatsApp' && his_wait.service.virtualServiceType ==='videoService'"></i>
+                                            </span>
+                                            <span>{{his_wait.service.name || '' | capitalizeFirst}}
+                                            </span>
+                                        </td>
+                                        <td data-title="Status">
+                                            <span class="{{his_wait.waitlistStatus}}">
+                                                <span *ngIf="his_wait.waitlistStatus == 'done'">Completed</span>
+                                                <span
+                                                    *ngIf="his_wait.waitlistStatus !== 'done'">{{getStatusLabel(his_wait.waitlistStatus)}}</span>
+                                                <span></span>
+                                            </span>
+                                        </td>
+                                        <td data-title="">
+                                            <button class="d-small-none" mat-icon-button [matMenuTriggerFor]="appMenu">
+                                                <mat-icon>more_vert</mat-icon>
+                                            </button>
+                                            <mat-menu #appMenu="matMenu">
+                                                <button class="pointer-cursor" mat-menu-item
+                                                    (click)="showBookingDetails(his_wait)">
+                                                    <i class="fa fa-file-text"></i>&nbsp;View Booking</button>
+                                                <button mat-menu-item   (click)="addWaitlistMessage(his_wait)">
+                                                    <i class="fa chat-icon"></i>
+                                                    {{send_message_cap}}</button>
+
+                                                <button mat-menu-item
+                                                    *ngIf="his_wait.billStatus && his_wait.billStatus == 'Settled'"
+                                                    (click)="getWaitlistBill(his_wait)">
+                                                    <i class="bill-icon-history"></i>
+                                                    Invoice</button>
+                                                <button mat-menu-item class="d-flex align-items-center"
+                                                    *ngIf="his_wait.billStatus && his_wait.billStatus !== 'Settled'"
+                                                    (click)="getWaitlistBill(his_wait)">
+                                                    <i class="bill-icon-history"></i>
+                                                    Invoice</button>
+                                                <button class="custId-cursor" mat-menu-item *ngIf="his_wait.prescShared"
+                                                    (click)="viewprescription(his_wait)">
+                                                    <i class="mr-rx-icon-customer"></i>view
+                                                    prescription</button>
+                                                <button mat-menu-item *ngIf="his_wait.waitlistStatus == 'done'"
+                                                    [class.rated]="isRated(his_wait)" (click)="rateService(his_wait)"><i
+                                                        class="fa fa-star-o" aria-hidden="true"></i>
+                                                    Rate Your
+                                                    Visit</button>
+                                            </mat-menu>
+                                        </td>
+                                    </ng-container>
+                                    <ng-container *ngIf="his_wait.apptStatus">
+                                        <td data-title="Date & Time" class="pointer-cursor"
+                                            (click)="showBookingDetails(his_wait)">
+                                            <div class="disp-flex">
+                                                <div class="circle-htokens" *ngIf="!small_device_display">
+                                                    <i class="fa appt-icon" [matTooltip]="'Appointment'"></i>
+                                                </div>
+                                                <span> &nbsp;{{his_wait.date | date: newDateFormat }},<br>
+                                                    <span *ngIf="his_wait.appmtTime">{{getSingleTime(his_wait.appmtTime)}}</span></span>
+                                            </div>
+                                        </td>
+                                        <td data-title="Service Provider" *ngIf="!customId"
+                                            (click)="providerDetail(his_wait.providerAccount)"
+                                            class="td1 provider-name pointer-cursor">
+                                            <span class="name">{{his_wait.providerAccount.businessName || '' |
+                                                capitalizeFirst}}</span>
+                                        </td>
+                                        <td data-title="Location">
+                                            <span class="mgn-lt-15">{{his_wait.location.place || '' |
+                                                capitalizeFirst}}</span>
+                                        </td>
+                                        <td data-title="Service for">
+                                            {{his_wait.appmtFor[0].firstName || '' | capitalizeFirst}}
+                                            {{his_wait.appmtFor[0].lastName || '' | capitalizeFirst}}</td>
+                                        <td data-title="Service">
+                                            <span class="service-icon"
+                                                *ngIf="his_wait.service.serviceType == 'virtualService'">
+                                                <i class="fa phon-icon"
+                                                    *ngIf="his_wait.service.virtualCallingModes && his_wait.service.virtualCallingModes[0].callingMode === 'Phone'"></i>
+                                                <i class="fa meet-icon"
+                                                    *ngIf="his_wait.service.virtualCallingModes && his_wait.service.virtualCallingModes[0].callingMode === 'GoogleMeet'"></i>
+                                                <i class="fa zoom-icon"
+                                                    *ngIf="his_wait.service.virtualCallingModes && his_wait.service.virtualCallingModes[0].callingMode === 'Zoom'"></i>
+                                                <i class="fa jvideo-icon jvideo-icon-s jvideo-icon-mgm5"
+                                                    *ngIf="his_wait.service.virtualCallingModes  && his_wait.service.virtualCallingModes[0].callingMode === 'VideoCall'"></i>
+                                                <i class="fa wtsapaud-icon"
+                                                    *ngIf="his_wait.service.virtualCallingModes && his_wait.service.virtualCallingModes[0].callingMode === 'WhatsApp' && his_wait.service.virtualServiceType ==='audioService'"></i>
+                                                <i class="fa wtsapvid-icon"
+                                                    *ngIf="his_wait.service.virtualCallingModes && his_wait.service.virtualCallingModes[0].callingMode === 'WhatsApp' && his_wait.service.virtualServiceType ==='videoService'"></i>
+                                            </span>
+                                            <span>{{his_wait.service.name || '' | capitalizeFirst}}</span>
+                                        </td>
+                                        <td data-title="Status">
+                                            <span
+                                                class="{{his_wait.apptStatus}}">{{getStatusLabel(his_wait.apptStatus)}}</span>
+                                        </td>
+                                        <td data-title="">
+                                            <button class="d-small-none" mat-icon-button [matMenuTriggerFor]="appMenu">
+                                                <mat-icon>more_vert</mat-icon>
+                                            </button>
+                                            <!-- <button class="cs-btn bt3 d-md-none" [matMenuTriggerFor]="appMenu">
+                                                       Actions
+                                                    </button> -->
+                                            <mat-menu #appMenu="matMenu">
+                                                <button class="pointer-cursor" mat-menu-item
+                                                    (click)="showBookingDetails(his_wait)">
+                                                    <i class="fa fa-file-text"></i>&nbsp;View Booking</button>
+                                                <button mat-menu-item   (click)="addApptMessage(his_wait)">
+                                                    <i class="fa chat-icon"></i>
+                                                    {{send_message_cap}}</button>
+
+                                                <button mat-menu-item
+                                                    *ngIf="his_wait.billStatus && his_wait.billStatus == 'Settled'"
+                                                    (click)="getApptBill(his_wait)">
+                                                    <i class="bill-icon-history"></i>
+                                                    <!-- *ngIf="booking.prescShared" -->
+                                                    Invoice</button>
+                                                <button mat-menu-item
+                                                    *ngIf="his_wait.billStatus && his_wait.billStatus !== 'Settled'"
+                                                    (click)="getApptBill(his_wait)">
+                                                    <i class="bill-icon-history"></i>
+                                                    <!-- *ngIf="booking.prescShared" -->
+                                                    Invoice</button>
+                                                <button class="custId-cursor" mat-menu-item *ngIf="his_wait.prescShared"
+                                                    (click)="viewprescription(his_wait)">
+                                                    <i class="mr-rx-icon-customer"></i>view
+                                                    prescription</button>
+                                                <button mat-menu-item *ngIf="his_wait.apptStatus == 'Completed'"
+                                                    [class.rated]="isRated(his_wait)"
+                                                    (click)="rateApptService(his_wait)"><i class="fa fa-star-o"
+                                                        aria-hidden="true"></i>
+                                                    Rate Your
+                                                    Visit</button>
+                                            </mat-menu>
+                                        </td>
+                                    </ng-container>
+
+                                    <!-- order history -->
+                                    <ng-container *ngIf="his_wait.orderStatus">
+                                        <td data-title="Date & Time" class="td3" class="pointer-cursor"
+                                            (click)="showBookingDetails(his_wait)">
+                                            <div class="disp-flex">
+                                                <div class="circle-htokens" *ngIf="!small_device_display">
+                                                    <div *ngIf="his_wait.storePickup"> <img class="ordericon home"
+                                                            src="./assets/images/Delivery.svg" alt=""/></div>
+                                                    <div *ngIf="his_wait.homeDelivery"><img class="ordericon pickup"
+                                                            src="./assets/images/Storepickup.svg" alt=""/></div>
+                                                    <div *ngIf="!his_wait.homeDelivery &&!his_wait.storePickup"><img
+                                                            class="ordericon pickup" alt=""
+                                                            src="./assets/images/e-delivery.png"
+                                                            style="height:40px;width:40px" /></div>
+                                                    <!-- <i class="fa fa-shopping-cart shop_cart_icon"></i> -->
+                                                </div>
+                                                <span> &nbsp;{{his_wait.orderDate | date: newDateFormat }}<br>
+                                                    <ng-container *ngIf="his_wait.timeSlot">
+                                                        {{his_wait.timeSlot.sTime}} -
+                                                        {{his_wait.timeSlot.eTime}}</ng-container>
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td data-title="Service Provider" *ngIf="!customId"
+                                            (click)="providerDetail(his_wait.providerAccount)"
+                                            class="td1 provider-name pointer-cursor">
+                                            <span class="name">{{his_wait.providerAccount.businessName || '' |
+                                                capitalizeFirst}}</span>
+                                        </td>
+                                        <!-- <td data-title="Location" class="td2">
+                                                    {{his_wait.location.place || '' | capitalizeFirst}}</td> -->
+                                        <td data-title="Order for">
+                                            {{his_wait.orderFor.firstName || '' | capitalizeFirst}}
+                                            {{his_wait.orderFor.lastName || '' | capitalizeFirst}}</td>
+                                        <td data-title="No of items" class="td6">
+                                            <span *ngIf="his_wait.orderItem">{{his_wait.orderItem.length}}</span>
+                                        </td>
+                                        <td data-title="Status" class="td4">
+                                            <span>{{his_wait.orderStatus==='Order Received' ? 'Order Placed - Waiting
+                                                for confirmation':his_wait.orderStatus| capitalizeFirst}}</span>
+                                        </td>
+
+                                        <td data-title="" class="td5">
+                                            <button mat-icon-button [matMenuTriggerFor]="appMenu">
+                                                <mat-icon>more_vert</mat-icon>
+                                            </button>
+                                            <mat-menu #appMenu="matMenu">
+                                                <button class="pointer-cursor" mat-menu-item
+                                                    (click)="showBookingDetails(his_wait)">
+                                                    <i class="fa fa-file-text"></i>&nbsp;View Order</button>
+                                                <button mat-menu-item   (click)="addordertMessage(his_wait)">
+                                                    <i class="fa chat-icon"></i>
+                                                    {{send_message_cap}}</button>
+                                                <button mat-menu-item [class.rated]="isRated(his_wait)"
+                                                    (click)="rateOrderService(his_wait)">
+                                                    <i class="fa fa-star-o" aria-hidden="true"></i>Rate Your
+                                                    Order</button>
+                                                    <button mat-menu-item
+                                                    *ngIf="his_wait.bill && his_wait.bill.billViewStatus == 'Show' && his_wait.bill.billStatus == 'Settled'"
+                                                    (click)="getOrderBill(his_wait)">
+                                                    <i class="bill-icon-history"></i>
+                                                    Invoice</button>
+                                                <button mat-menu-item
+                                                    *ngIf="his_wait.bill && his_wait.bill.billViewStatus == 'Show' && his_wait.bill.billStatus !== 'Settled'"
+                                                    (click)="getOrderBill(his_wait)">
+                                                    <i class="bill-icon-history"></i>
+                                                    Invoice</button>
+                                            </mat-menu>
+                                        </td>
+                                    </ng-container>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div *ngIf="this.loadcomplete.history && entire_history && entire_history.length == 0 && !loading"
+                    class="noprevhist card col-12">
+                    <div class="col-12 mgn-up-20">No previous history available</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

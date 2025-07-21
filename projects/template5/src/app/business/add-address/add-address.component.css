@@ -1,0 +1,73 @@
+.address {
+    border-radius: 10px;
+}
+
+.mobPrefix {
+    display: flex;
+    align-items: center;
+    padding: 0.55rem 1rem;
+    margin-bottom: 0;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #3F4254;
+    text-align: center;
+    white-space: nowrap;
+    background-color: #F3F6F9;
+    border: 1px solid #E4E6EF;
+    border-radius: 0.42rem;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.input-group {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+}
+
+.form-group textarea {
+    min-height: 60px !important;
+    line-height: 1.5;
+}
+
+.form-group input[type=text],
+.form-group input[type=email] {
+    height: 40px !important;
+}
+
+.form-control {
+    border-radius: 0px !important;
+}
+
+::ng-deep ngx-intl-tel-input .iti {
+    width: 100% !important;
+}
+
+::ng-deep ngx-intl-tel-input input::-webkit-input-placeholder {
+    color: #ddd !important;
+}
+
+::ng-deep ngx-intl-tel-input input:focus {
+    outline: none !important;
+    border-color: #E1E2E3 !important;
+}
+
+::ng-deep ngx-intl-tel-input input {
+    height: 40px !important;
+    width: 100% !important;
+    background: #FFFF !important;
+    border: 1.39032px solid #E1E2E3 !important;
+    border-radius: 5px !important;
+    padding: 15px;
+    font-size: 15px;
+}
+
+::ng-deep .address-add ngx-intl-tel-input input.custom:focus {
+    color: #495057 !important;
+    background-color: #fff !important;
+    border-color: #3c8dbc !important;
+    outline: 0 !important;
+    box-shadow: 0 0 0 0 #fff !important;
+}

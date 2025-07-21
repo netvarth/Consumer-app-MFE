@@ -1,0 +1,5 @@
+<div class="auth-modal">
+    <button class="close-btn" (click)="closeModal()">×</button>
+    <app-authentication (actionPerformed)="actionPerformed($event)" [accountId]="data.accountId" [accountConfig]="data.accountConfig"
+    ></app-authentication>
+  </div>

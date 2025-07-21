@@ -1,0 +1,279 @@
+<section class="container no-padding confirm-aptckn no-padding-small" [ngClass]="theme?theme:''">
+    <div class="content p0 loc-list">
+        <div class="copy locd" *ngIf="!apiloading">
+            <div class="card col-sm-12 col-md-12 col-lg-12 post-info no-padding hgt-adjust"
+                *ngIf="appointment && appointment.apptStatus !== 'Requested'">
+                <div id="scriptContainer"></div>
+                <div class="details">
+                    <div class="book-head" *ngIf="type !== 'reschedule'"> {{'Booking Confirmed' | translate}} </div>
+                    <div class="book-head" *ngIf="type === 'reschedule'"> {{'Appointment rescheduled' | translate}} </div>
+                    <div class="book-details"> {{'Booking details' | translate}} </div>
+                    <table class="book-details-sub chkntoknappt-details">
+                        <tbody>
+                            <tr *ngIf="!appointment.provider">
+                                <td width="48%" align="right">
+                                    {{'Provider' | translate}}</td>
+                                <td width="2%">&nbsp;:&nbsp;</td>
+                                <td class="name-line-ht">{{appointment.providerAccount?.businessName}}</td>
+                            </tr>
+                            <tr *ngIf="appointment.provider">
+                                <td width="48%" align="right">
+                                    {{'Provider' | translate}}</td>
+                                <td width="2%">&nbsp;:&nbsp;</td>
+                                <td class="name-line-ht"> {{(appointment.provider.businessName) ?
+                                    appointment.provider.businessName : appointment.provider.firstName +
+                                    ' ' + appointment.provider.lastName}},
+                                    {{appointment.providerAccount?.businessName}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="48%" align="right">{{'Location' | translate}} </td>
+                                <td width="2%">&nbsp;:&nbsp;</td>
+                                <td>{{appointment.location?.place}}<a
+                                        *ngIf="appointment && appointment.location && appointment.location.googleMapUrl"
+                                        [href]="appointment.location.googleMapUrl" target="_blank" class="fa fa-map-marker icon ms-1"
+                                        matTooltip="Click to navigate">
+                                    </a></td>
+                            </tr>
+                            <tr>
+                                <td width="48%" align="right">{{'Service' | translate}}</td>
+                                <td width="2%">&nbsp;:&nbsp;</td>
+                                <td>
+                                    <span class="service-icon pull-left"
+                                        *ngIf="appointment.service && appointment.service.serviceType == 'virtualService'">
+                                        <i class="fa phon-icon"
+                                            *ngIf="appointment.service.virtualCallingModes && appointment.service.virtualCallingModes[0] && appointment.service.virtualCallingModes[0].callingMode === 'Phone'"></i>
+                                        <i class="fa meet-icon"
+                                            *ngIf="appointment.service.virtualCallingModes && appointment.service.virtualCallingModes[0] && appointment.service.virtualCallingModes[0].callingMode === 'GoogleMeet'"></i>
+                                        <i class="fa zoom-icon"
+                                            *ngIf="appointment.service.virtualCallingModes && appointment.service.virtualCallingModes[0] && appointment.service.virtualCallingModes[0].callingMode === 'Zoom'"></i>
+                                        <i class="fa jvideo-icon jvideo-icon-s jvideo-icon-mgm5"
+                                            *ngIf="appointment.service.virtualCallingModes  && appointment.service.virtualCallingModes[0] && appointment.service.virtualCallingModes[0].callingMode === 'VideoCall'"></i>
+                                        <i class="fa wtsapaud-icon"
+                                            *ngIf="appointment.service.virtualCallingModes && appointment.service.virtualCallingModes[0] && appointment.service.virtualCallingModes[0].callingMode === 'WhatsApp' && appointment.service.virtualServiceType ==='audioService'"></i>
+                                        <i class="fa wtsapvid-icon"
+                                            *ngIf="appointment.service.virtualCallingModes && appointment.service.virtualCallingModes[0] && appointment.service.virtualCallingModes[0].callingMode === 'WhatsApp' && appointment.service.virtualServiceType ==='videoService'"></i>
+                                    </span>
+                                    {{appointment.service?.name}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="48%" align="right">{{'Appointment for' | translate}}</td>
+                                <td width="2%">&nbsp;:&nbsp;</td>
+                                <td *ngFor="let member of appointment.appmtFor"><span>{{member.title}}&nbsp;</span>{{member.firstName}}
+                                    {{member.lastName}}</td>
+                            </tr>
+                            <tr>
+                                <td width="48%" align="right">{{'Appointment Time' | translate}} </td>
+                                <td width="2%">&nbsp;:&nbsp;</td>
+                                <td> {{appointment.appmtDate | date: newDateFormat }},
+                                    <span *ngIf="selectedApptsTime">{{selectedApptsTime}}</span>
+                                    <span
+                                        *ngIf="!selectedApptsTime && appointment.appmtTime">{{getSingleTime(appointment.appmtTime)}}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="48%" align="right">{{'Booking Id' | translate}}</td>
+                                <td width="2%">&nbsp;:&nbsp;</td>
+                                <td> {{appointment.appointmentEncId}}</td>
+                            </tr>
+                            <tr
+                                *ngIf="appointment.service?.minPrePaymentAmount && type !== 'reschedule' && infoParams.prepayment">
+                                <td width="48%" align="right">{{'Amount paid' | translate}}</td>
+                                <td width="2%">&nbsp;:&nbsp;</td>
+                                <td><span class="rupee-font">{{infoParams.prepayment | currency:'&#8377;'}}
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr
+                                *ngIf="appointment.service?.minPrePaymentAmount && type == 'reschedule' && appointment.amountPaid > 0">
+                                <td width="48%" align="right">{{'Amount paid' | translate}}</td>
+                                <td width="2%">&nbsp;:&nbsp;</td>
+                                <td><span class="rupee-font">
+                                        {{appointment.amountPaid | currency:'&#8377;'}}
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr *ngIf="appointment.batchId">
+                                <td width="48%" align="right">{{'Batch' | translate}}</td>
+                                <td width="2%">&nbsp;:&nbsp;</td>
+                                <td> {{appointment.batchId}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div style="text-align: center;" class=" mgn-up-10">
+                    </div>
+                    <div style="text-align: center;" class="green mgn-up-10" *ngIf="appointment.apptStatus">
+                        {{'Appointment' | translate}} {{appointment.apptStatus | translate}}
+                    </div>
+                    <div class="notes"
+                        *ngIf="appointment.service && appointment.service.postInfoEnabled && appointment.service.postInfoTitle">
+                        <div class="preinfo-title">{{appointment.service.postInfoTitle}} </div>
+                        <div [innerHTML]="appointment.service.postInfoText">
+                        </div>
+                    </div>
+                    <div class="text-center mgn-up-10">
+                        <a href="{{calendarUrl}}" class="link cal-btn " target="_blank"><i
+                                class="fa fa-calendar"></i><span class="mgn-lt-5">{{'Add to Calendar' | translate}}</span></a>
+                    </div>
+                    <div class="ok-btn">
+                        <span class="pointer-cursor hf-btn" (click)="okClick(appointment)">
+                            <strong>{{'OK' | translate}}</strong>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-12 col-lg-12 post-info no-padding"
+                *ngIf="appointment && appointment.apptStatus === 'Requested'">
+                <div class="info-img">
+                    <img src="assets/images/bg-01.png">
+                </div>
+                <div class="details">
+                    <div class="book-head" *ngIf="type !== 'reschedule'"> {{'Request Sent Successfully' | translate}} </div>
+                    <div class="book-head" *ngIf="type === 'reschedule'"> {{'Request rescheduled' | translate}} </div>
+                    <div class="book-details"> {{'Request details' | translate}} </div>
+                    <table class="book-details-sub chkntoknappt-details">
+                        <tbody>
+                            <tr *ngIf="!appointment.provider">
+                                <td width="48%" align="right">
+                                    <!-- Name of the -->
+                                    {{'Provider' | translate}}
+                                </td>
+                                <td width="2%">&nbsp;:&nbsp;</td>
+                                <td class="name-line-ht">{{appointment.providerAccount?.businessName}}</td>
+                            </tr>
+                            <tr *ngIf="appointment.provider">
+                                <td width="48%" align="right">
+                                    <!-- Name of the -->
+                                    {{'Provider' | translate}}
+                                </td>
+                                <td width="2%">&nbsp;:&nbsp;</td>
+                                <!-- <td class="name-line-ht">{{appointment.provider.businessName}},
+                                        {{appointment.providerAccount?.businessName}}
+                                    </td> -->
+                                <td class="name-line-ht"> {{(appointment.provider.businessName) ?
+                                    appointment.provider.businessName : appointment.provider.firstName +
+                                    ' ' + appointment.provider.lastName}},
+                                    {{appointment.providerAccount?.businessName}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="48%" align="right">{{'Location' | translate}} </td>
+                                <td width="2%">&nbsp;:&nbsp;</td>
+                                <td>{{appointment.location?.place}}<a
+                                        *ngIf="appointment && appointment.location && appointment.location.googleMapUrl"
+                                        [href]="appointment.location.googleMapUrl" target="_blank" class="icon-location"
+                                        matTooltip="Click to navigate">
+                                    </a></td>
+                            </tr>
+                            <tr>
+                                <td width="48%" align="right">{{'Service' | translate}}</td>
+                                <td width="2%">&nbsp;:&nbsp;</td>
+                                <td>
+                                    <span class="service-icon pull-left"
+                                        *ngIf="appointment.service && appointment.service.serviceType == 'virtualService'">
+                                        <i class="fa phon-icon"
+                                            *ngIf="appointment.service.virtualCallingModes && appointment.service.virtualCallingModes[0] && appointment.service.virtualCallingModes[0].callingMode === 'Phone'"></i>
+                                        <i class="fa meet-icon"
+                                            *ngIf="appointment.service.virtualCallingModes && appointment.service.virtualCallingModes[0] && appointment.service.virtualCallingModes[0].callingMode === 'GoogleMeet'"></i>
+                                        <i class="fa zoom-icon"
+                                            *ngIf="appointment.service.virtualCallingModes && appointment.service.virtualCallingModes[0] && appointment.service.virtualCallingModes[0].callingMode === 'Zoom'"></i>
+                                        <i class="fa jvideo-icon jvideo-icon-s jvideo-icon-mgm5"
+                                            *ngIf="appointment.service.virtualCallingModes  && appointment.service.virtualCallingModes[0] && appointment.service.virtualCallingModes[0].callingMode === 'VideoCall'"></i>
+                                        <i class="fa wtsapaud-icon"
+                                            *ngIf="appointment.service.virtualCallingModes && appointment.service.virtualCallingModes[0] && appointment.service.virtualCallingModes[0].callingMode === 'WhatsApp' && appointment.service.virtualServiceType ==='audioService'"></i>
+                                        <i class="fa wtsapvid-icon"
+                                            *ngIf="appointment.service.virtualCallingModes && appointment.service.virtualCallingModes[0] && appointment.service.virtualCallingModes[0].callingMode === 'WhatsApp' && appointment.service.virtualServiceType ==='videoService'"></i>
+                                    </span>
+                                    {{appointment.service?.name}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="48%" align="right">{{'Request for' | translate}}</td>
+                                <td width="2%">&nbsp;:&nbsp;</td>
+                                <td *ngFor="let member of appointment.appmtFor">{{member.firstName}}
+                                    {{member.lastName}}</td>
+                            </tr>
+                            <tr *ngIf="appointment.appmtDate && appointment.appmtTime">
+                                <!-- *ngIf="appointment.dateTime" -->
+                                <td width="48%" align="right">{{'Request Time' | translate}} </td>
+                                <td width="2%">&nbsp;:&nbsp;</td>
+                                <td> {{appointment.appmtDate | date: newDateFormat }},
+                                    <span *ngIf="selectedApptsTime">{{selectedApptsTime}}</span>
+                                    <span
+                                        *ngIf="!selectedApptsTime && appointment.appmtTime">{{getSingleTime(appointment.appmtTime)}}</span>
+                                </td>
+                                <!-- <td> {{appointment.appmtDate | date: newDateFormat }}
+                                        <span *ngIf="selectedApptsTime && appointment.dateTime">{{selectedApptsTime}}</span>
+                                        <span *ngIf="appointment.dateTime">{{getSingleTime(appointment.appmtTime)}}</span>
+                                       </td> -->
+                            </tr>
+                            <tr
+                                *ngIf="appointment.appmtDate && (appointment.appmtTime === undefined || appointment.appmtTime === '')">
+                                <!-- *ngIf="appointment.date" -->
+                                <td width="48%" align="right">{{'Request Date' | translate}} </td>
+                                <td width="2%">&nbsp;:&nbsp;</td>
+                                <td> {{appointment.appmtDate | date: newDateFormat }}
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td width="48%" align="right">{{'Request Id' | translate}}</td>
+                                <td width="2%">&nbsp;:&nbsp;</td>
+                                <td> {{appointment.appointmentEncId}}</td>
+                            </tr>
+                            <tr
+                                *ngIf="appointment.service?.minPrePaymentAmount && type !== 'reschedule' && infoParams.prepayment">
+                                <td width="48%" align="right">{{'Amount paid' | translate}}</td>
+                                <td width="2%">&nbsp;:&nbsp;</td>
+                                <td><span class="rupee-font">{{infoParams.prepayment | currency:'&#8377;'}}
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr
+                                *ngIf="appointment.service?.minPrePaymentAmount && type == 'reschedule' && appointment.amountPaid > 0">
+                                <td width="48%" align="right">{{'Amount paid' | translate}}</td>
+                                <td width="2%">&nbsp;:&nbsp;</td>
+                                <td><span class="rupee-font">
+                                        {{appointment.amountPaid | currency:'&#8377;'}}
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr *ngIf="appointment.batchId">
+                                <td width="48%" align="right">{{'Batch' | translate}}</td>
+                                <td width="2%">&nbsp;:&nbsp;</td>
+                                <td> {{appointment.batchId}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div style="text-align: center;" class=" mgn-up-10">
+                        <!-- <mat-checkbox [(ngModel)]="calender"  (change)="calendarCheckEvent($event)">Add to calender</mat-checkbox><br> -->
+                        <!-- <span class="settings_info" *ngIf="calender">(Open the downloaded file to add  booking to your calendar)</span> -->
+                        <!-- <div *ngIf="calender">
+                            </div>                                     -->
+                    </div>
+                    <!-- <div class="book-status chkntoknappt-details"> Current status </div> -->
+                    <div style="text-align: center;" class="green mgn-up-10" *ngIf="appointment.apptStatus">
+                        <!-- Appointment {{appointment.apptStatus}} -->
+                        {{'Your Request have been sent to Provider' | translate}}
+                    </div>
+                    <div class="notes"
+                        *ngIf="appointment.service && appointment.service.postInfoEnabled && appointment.service.postInfoTitle">
+                        <div class="preinfo-title">{{appointment.service.postInfoTitle}} </div>
+                        <div [innerHTML]="appointment.service.postInfoText">
+                        </div>
+                    </div>
+                    <!-- <div class="text-center mgn-up-10">
+                            <a href="{{calendarUrl}}" class="link cal-btn " target="_blank"><i class="fa fa-calendar"></i><span class="mgn-lt-5">Add to Calendar</span></a>
+                        </div> -->
+                    <div class="ok-btn">
+                        <span class="pointer-cursor hf-btn" (click)="okClick(appointment)">
+                            <strong>{{'OK' | translate }}</strong>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <app-common-innerloading-spinner *ngIf="apiloading"></app-common-innerloading-spinner>
+    </div>
+</section>

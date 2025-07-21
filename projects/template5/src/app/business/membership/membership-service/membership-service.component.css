@@ -1,0 +1,21 @@
+.btn {
+    padding: 5px 15px;
+}
+
+.appl-submit {
+    font-size: 18px;
+    font-weight: 500;
+}
+.mgn-up-50{
+    margin-top: 50px;
+}
+.loading-hgt {
+    height: 85vh;
+  }
+.my-auto {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+.hgt-adjust {
+    min-height: calc(100vh - 55px);
+  }

@@ -1,0 +1,81 @@
+.back-btn i {
+    color: #000;
+}
+.title-gb i {    
+    cursor: pointer;
+}
+h5 {
+    font-size: 1.25rem;
+    margin-bottom: 10px !important;
+}
+.content .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid rgba(0,0,0,.125);
+    border-radius: 0.25rem;
+}
+.title-gb {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+.mgn-rt-20 {
+    margin-right: 20px!important;
+}
+.content .c-outer {
+    display: flex;
+    width: 100%;
+    margin-bottom: 30px;
+    position: relative;
+}
+@media (max-width: 575px) {
+    .content.comn-cls .lbl .card .c-details {
+        font-size: .875rem;
+    }  
+    h5 {
+        font-size: 17.5px;
+    }
+}
+
+.content.comn-cls .lbl .card .c-details .tp {
+    border-bottom: 1px solid #f2f2f2;
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+}
+.content.comn-cls .lbl .card .c-details .tp .item {
+    font-weight: 600;
+    // width: 33%;
+    margin-bottom: 20px;
+}
+.checkin-details .lbl .card .c-details .tp .item {
+    width: 50%!important;
+}
+.content.comn-cls .lbl .card .c-details .tp .item .ttle, .inv-ttle {
+    color: #999;
+    display: block;
+    font-weight: 500;
+}
+.content .c-outer .c-body {
+    flex-grow: 1;
+    position: relative;
+    transition: all .3s;
+}
+a:hover {
+    color: #222223;
+    text-decoration: none!important;
+}
+.row {
+    margin-left: 0px !important;
+    margin-right: 0px !important;
+}
+.rupee-font {
+    font-family: Arial,Helvetica,sans-serif!important;
+}
+.content.comn-cls .lbl .card .c-details .tp .item {
+    font-weight: 600;
+}

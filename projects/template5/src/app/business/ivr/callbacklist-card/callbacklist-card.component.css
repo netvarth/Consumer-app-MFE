@@ -1,0 +1,14 @@
+.title {
+    color: rgba(53, 54, 79, 0.62);
+    font-size: 12px !important;
+    font-weight: 400;
+}
+
+.content {
+    color: #35364F;
+    font-size: 12px !important;
+    font-weight: 500;
+}
+.callback {
+    box-shadow: 0 0 10px rgb(204 202 221 / 87%) !important;
+}

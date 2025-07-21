@@ -1,0 +1,107 @@
+<section class="container no-padding no-padding-small">
+    <div class="content p0 comn-cls checkin-details">
+        <div class="row">
+            <div class="c-outer">
+                <div class="c-body">
+                    <div class="card title-gb">
+                        <h5 class="mt-2">Payment Details
+                            <a class="pull-left me-4 back-btn" (click)="gotoPrev()"><i
+                                    class="fa fa-arrow-left"></i></a>
+                        </h5>
+                    </div>
+                    <div class="card" *ngIf="api_loading">
+                        <app-common-innerloading-spinner> </app-common-innerloading-spinner>
+                    </div>
+                    <div class="lbl col-sm-12 col-md-8 col-lg-8 col-xl-8 no-padding-small" *ngIf="!api_loading">
+                        <div class="card">
+                            <div class="c-details">
+                                <!-- <h2>Payment details</h2> -->
+                                <div class="tp" *ngIf="payments">
+                                    <div class="item"><span class="ttle">Date & Time</span> <span>
+                                            {{stringtoDate(payments.paymentOn,
+                                            'date')}} & {{stringtoDate(payments.paymentOn,
+                                            'time')}}
+                                        </span></div>
+                                    <div class="item"><span class="ttle">Provider</span> <a
+                                            (click)="providerDetail($event)">
+                                            {{provider_name}}
+                                        </a></div>
+                                    <div class="item" *ngIf="payments.paymentMode"><span class="ttle">Payment
+                                            Mode</span><span>{{payments.paymentModeName}}</span></div>
+                                    <div class="item" *ngIf="payments.paymentGateway"><span class="ttle">Payment
+                                            Gateway</span>
+                                        <span class="waitlist_for">
+                                            {{payments.paymentGateway}}</span>
+                                    </div>
+                                    <div class="item" *ngIf="payments.customerPaidCharges>0"><span
+                                            class="ttle">Processing Fee</span>
+                                        <span class="waitlist_for rupee-font">
+                                            {{payments.customerPaidCharges |
+                                            currency:'&#8377; ' }}</span>
+                                    </div>
+                                    <div class="item" *ngIf="payments.amount"><span class="ttle">Amount</span>
+                                        <span class="waitlist_for rupee-font">
+                                            {{payments.amount |
+                                            currency:'&#8377; ' }}</span>
+                                    </div>
+                                    <div class="item" *ngIf="payments.status"><span class="ttle">Status</span>
+                                        <span class="waitlist_for">
+                                            {{payments.status
+                                            | capitalizeFirst}}</span>
+                                    </div>
+                                </div>
+                                <div class="bill-section"
+                                    *ngIf=" payments && payments.refundDetails&& payments.refundDetails.length>0">
+                                    <div class="bill-section-content">
+                                        <div class="bill-wrapper">
+                                            <h2>Refund Details</h2>
+                                            <div class="section-four">
+                                                <div class="list-outer">
+                                                    <div class="table-th">
+                                                        <div class="th one">Status</div>
+                                                        <div class="th two">Mode</div>
+                                                        <div class="th three">Amount</div>
+                                                    </div>
+                                                    <div class="listing" *ngFor="let refund of payments.refundDetails">
+                                                        <div class="wrap">
+                                                            <div class="td one">
+                                                                <span
+                                                                    [class]="refund.status | lowercase">{{refund.status
+                                                                    | capitalizeFirst}}</span>
+                                                            </div>
+                                                            <div class="td two">
+                                                                {{refund.refundMode | capitalizeFirst }}</div>
+                                                            <div class="td three rupee-font">{{refund.amount |
+                                                                currency:'&#8377; ' }}</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Questionnaire starts-->
+                    <div class="lbl col-sm-12 col-md-8 col-lg-8 col-xl-8 no-padding-small" *ngIf="!api_loading">
+                        <div class="card"
+                            *ngIf="donationDetails && donationDetails.questionnaire && donationDetails.questionnaire.questionAnswers && donationDetails.questionnaire.questionAnswers.length > 0">
+                            <div class="">
+                                <h5 class="">
+                                    {{questionnaire_heading}}
+                                </h5>
+                            </div>
+                            <div class="c-details">
+                                <app-questionnaire [source]="'consDonationDetails'" [donationDetails]="donationDetails">
+                                </app-questionnaire>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Questionnaire end-->
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

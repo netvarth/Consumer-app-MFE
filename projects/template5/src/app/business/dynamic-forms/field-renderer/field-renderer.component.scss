@@ -1,0 +1,75 @@
+
+label {
+    font-size: 16px !important;
+    margin: 10px 0px 0px !important;
+}
+
+.radio-btn-text {
+    font-size: 18px !important;
+    margin-top: 10px !important;
+}
+
+.form-hint
+{
+    font-size: 13px !important;
+}
+
+::ng-deep .p-inputtext {
+    padding: 8px !important;
+}
+
+
+
+
+.quadrant-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  width: 100%;
+  overflow: auto;
+  white-space: nowrap;
+  margin-top: 10px;
+}
+
+.quadrant {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  // flex-wrap: wrap;
+  border: 1px solid black;
+}
+
+
+.shade-container {
+  display: flex;  
+  // flex-wrap: wrap;
+  width: 100%;
+  overflow: auto;
+}
+
+.circle {
+  width: 30px;
+  height: 30px;
+  border: 2px solid black;
+  border-radius: 50%;
+  margin: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+
+  &.shade {
+    width: 45px;
+    height: 45px;
+  }
+}
+
+.circle.selected {
+  background-color: #33009C;
+  color: #fff;
+}
+
+.shade.selected {
+  border: 2px solid #33009C;
+  border-radius: 5px !important;
+}

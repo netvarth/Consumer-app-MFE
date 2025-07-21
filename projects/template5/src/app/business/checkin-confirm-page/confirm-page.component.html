@@ -1,0 +1,252 @@
+<section class="container no-padding confirm-aptckn hf-no-bg no-padding-small" [ngClass]="theme?theme:''">
+    <div class="content p0 loc-list hf-bg-white hf-no-padding">
+        <div class="copy locd block-level" *ngIf="!apiloading">
+            <div id="scriptContainer"></div>
+            <div class="card col-sm-12 col-md-12 col-lg-12 post-info no-padding hgt-adjust"
+                *ngFor="let wtlst of waitlist;let i=index">
+                <div class="details">
+                    <div class="book-head" *ngIf="type !== 'waitlistreschedule'"> Booking Confirmed
+                    </div>
+                    <div class="book-head" *ngIf="type === 'waitlistreschedule' &&  wtlst.token"> Token
+                        rescheduled </div>
+                    <div class="book-head" *ngIf="type === 'waitlistreschedule' &&  !wtlst.token">
+                        Checkin rescheduled </div>
+                    <div class="book-details"> {{'Booking details' | translate}} </div>
+                    <table class="book-details-sub chkntoknappt-details">
+                        <tbody>
+                            <tr *ngIf="!wtlst.provider">
+                                <td width="48%" align="right">
+                                    {{'Provider' | translate}}</td>
+                                <td width="2%">&nbsp;:&nbsp;</td>
+                                <td class="name-line-ht">{{wtlst.providerAccount?.businessName}}</td>
+                            </tr>
+                            <tr *ngIf="wtlst.provider">
+                                <td width="48%" align="right">
+                                    {{'Provider' | translate}}</td>
+                                <td width="2%">&nbsp;:&nbsp;</td>
+                                <td class="name-line-ht"> {{(wtlst.provider.businessName) ?
+                                    wtlst.provider.businessName : wtlst.provider.firstName +
+                                    ' ' + wtlst.provider.lastName}},
+                                    {{wtlst.providerAccount?.businessName}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="48%" align="right">{{'Location' | translate}} </td>
+                                <td width="2%">&nbsp;:&nbsp;</td>
+                                <td>{{wtlst.location?.place}}<a
+                                        *ngIf="wtlst && wtlst.location && wtlst.location.googleMapUrl"
+                                        [href]="wtlst.location.googleMapUrl" target="_blank"
+                                        class="fa fa-map-marker icon ms-1" matTooltip="Click to navigate">
+                                    </a></td>
+                            </tr>
+                            <tr>
+                                <td width="48%" align="right">{{'Service' | translate}}</td>
+                                <td width="2%">&nbsp;:&nbsp;</td>
+                                <td>
+                                    <span class="service-icon pull-left"
+                                        *ngIf="wtlst.service && wtlst.service.serviceType == 'virtualService'">
+                                        <i class="fa phon-icon"
+                                            *ngIf="wtlst.service.virtualCallingModes && wtlst.service.virtualCallingModes[0] && wtlst.service.virtualCallingModes[0].callingMode === 'Phone'"></i>
+                                        <i class="fa meet-icon"
+                                            *ngIf="wtlst.service.virtualCallingModes && wtlst.service.virtualCallingModes[0] && wtlst.service.virtualCallingModes[0].callingMode === 'GoogleMeet'"></i>
+                                        <i class="fa zoom-icon"
+                                            *ngIf="wtlst.service.virtualCallingModes && wtlst.service.virtualCallingModes[0] && wtlst.service.virtualCallingModes[0].callingMode === 'Zoom'"></i>
+                                        <i class="fa jvideo-icon jvideo-icon-s jvideo-icon-mgm5"
+                                            *ngIf="wtlst.service.virtualCallingModes  && wtlst.service.virtualCallingModes[0] && wtlst.service.virtualCallingModes[0].callingMode === 'VideoCall'"></i>
+                                        <i class="fa wtsapaud-icon"
+                                            *ngIf="wtlst.service.virtualCallingModes && wtlst.service.virtualCallingModes[0] && wtlst.service.virtualCallingModes[0].callingMode === 'WhatsApp' && wtlst.service.virtualServiceType ==='audioService'"></i>
+                                        <i class="fa wtsapvid-icon"
+                                            *ngIf="wtlst.service.virtualCallingModes && wtlst.service.virtualCallingModes[0] && wtlst.service.virtualCallingModes[0].callingMode === 'WhatsApp' && wtlst.service.virtualServiceType ==='videoService'"></i>
+                                    </span>
+                                    {{wtlst.service?.name}}
+                                </td>
+                            </tr>
+                            <tr *ngIf="wtlst.token">
+                                <td width="48%" align="right">{{'Token for' | translate}}</td>
+                                <td width="2%">&nbsp;:&nbsp;</td>
+                                <td><span>{{wtlst.waitlistingFor[0].title}}&nbsp;</span>{{wtlst.waitlistingFor[0].firstName}}
+                                    {{wtlst.waitlistingFor[0].lastName}}</td>
+                            </tr>
+                            <tr *ngIf="!wtlst.token">
+                                <td width="48%" align="right">{{'Check-in for' | translate}}</td>
+                                <td width="2%">&nbsp;:&nbsp;</td>
+                                <td><span>{{wtlst.waitlistingFor[0].title}}&nbsp;</span>{{wtlst.waitlistingFor[0].firstName}}
+                                    {{wtlst.waitlistingFor[0].lastName}}</td>
+                            </tr>
+                            <tr>
+                                <td width="48%" align="right">{{'Time window' | translate}} </td>
+                                <td width="2%">&nbsp;:&nbsp;</td>
+                                <td> {{wtlst.date | date: newDateFormat }},
+                                    {{wtlst.queue.queueStartTime}} -
+                                    {{wtlst.queue.queueEndTime}}
+                                </td>
+                            </tr>
+                            <tr *ngIf="wtlst.personsAhead>=0">
+                                <td width="48%" align="right">{{'Persons Ahead' | translate}}</td>
+                                <td width="2%">&nbsp;:&nbsp;</td>
+                                <td> {{wtlst.personsAhead}}</td>
+                            </tr>
+                            <tr *ngIf="getWaitTime(wtlst)">
+                                <td width="48%" align="right">{{'Est. wait Time ' | translate}}</td>
+                                <td width="2%">&nbsp;:&nbsp;</td>
+                                <td> {{getWaitTime(wtlst)}}</td>
+                            </tr>
+                            <tr>
+                                <td width="48%" align="right">{{'Booking Id' | translate}}</td>
+                                <td width="2%">&nbsp;:&nbsp;</td>
+                                <td> {{wtlst.checkinEncId}}</td>
+                            </tr>
+                            <tr
+                            *ngIf="!wtlst.parentUuid && wtlst.service?.minPrePaymentAmount && infoParams.type != 'waitlistreschedule' && infoParams.prepayment">
+                                <td width="48%" align="right">{{'Amount paid' | translate}}</td>
+                                <td width="2%">&nbsp;:&nbsp;</td>
+                                <td><span class="rupee-font">{{infoParams.prepayment | currency:'&#8377;'}}
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr
+                            *ngIf="wtlst.service?.minPrePaymentAmount && infoParams.type === 'waitlistreschedule' && wtlst.amountPaid > 0">
+                                <td width="48%" align="right">{{'Amount paid' | translate}}</td>
+                                <td width="2%">&nbsp;:&nbsp;</td>
+                                <td><span class="rupee-font">
+                                        {{wtlst.amountPaid | currency:'&#8377;'}}
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr *ngIf="wtlst.batchId">
+                                <td width="48%" align="right">{{'Batch' | translate}}</td>
+                                <td width="2%">&nbsp;:&nbsp;</td>
+                                <td> {{wtlst.batchId}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- <div class="bookdetails">
+                        <div class="disp-flex" *ngIf="!wtlst.provider" style="margin-bottom: 5px !important;">
+                            <span class="billing-head">
+                                Provider</span>
+                            <span style="line-height: normal !important;">:&nbsp;</span>
+                            <span class="billing-value">{{wtlst.providerAccount?.businessName}}</span>
+                        </div>
+                        <div class="disp-flex" *ngIf="wtlst.provider" style="margin-bottom: 5px !important;">
+                            <span class="billing-head">
+                                Provider
+                            </span>
+                            <span style="line-height: normal !important;">:&nbsp;</span>
+                            <span class="billing-value">
+                                {{(wtlst.provider.businessName) ? wtlst.provider.businessName :
+                                wtlst.provider.firstName +
+                                ' ' + wtlst.provider.lastName}},
+                                {{wtlst.providerAccount?.businessName}}
+                            </span>
+                        </div>
+                        <div class="disp-flex" style="margin-bottom: 5px !important;">
+                            <span class="billing-head">Location </span>
+                            <span style="line-height: normal !important;">:&nbsp;</span>
+                            <span class="billing-value"> {{wtlst.queue?.location.place}}<a
+                                    *ngIf="wtlst && wtlst.queue && wtlst.queue.location && wtlst.queue.location.googleMapUrl"
+                                    [href]="wtlst.queue.location.googleMapUrl" target="_blank" class="fa fa-map-marker icon ms-1"
+                                    matTooltip="Click to navigate">
+                                </a>
+
+                            </span>
+                        </div>
+                        <div class="disp-flex" style="margin-bottom: 5px !important;">
+                            <span class="billing-head">Service</span>
+                            <span style="line-height: normal !important;">:&nbsp;</span>
+                            <span class="billing-value" style="display: inline;">
+                                <span class="service-icon contact-section" style="display: inline-block !important;"
+                                    *ngIf="wtlst.service && wtlst.service.serviceType == 'virtualService'">
+                                    <i class="fa phon-icon"
+                                        *ngIf="wtlst.service.virtualCallingModes && wtlst.service.virtualCallingModes[0] && wtlst.service.virtualCallingModes[0].callingMode === 'Phone'"></i>
+                                    <i class="fa meet-icon"
+                                        *ngIf="wtlst.service.virtualCallingModes && wtlst.service.virtualCallingModes[0] && wtlst.service.virtualCallingModes[0].callingMode === 'GoogleMeet'"></i>
+                                    <i class="fa zoom-icon"
+                                        *ngIf="wtlst.service.virtualCallingModes && wtlst.service.virtualCallingModes[0] && wtlst.service.virtualCallingModes[0].callingMode === 'Zoom'"></i>
+                                    <i class="fa jvideo-icon jvideo-icon-s jvideo-icon-mgm5"
+                                        *ngIf="wtlst.service.virtualCallingModes  && wtlst.service.virtualCallingModes[0] && wtlst.service.virtualCallingModes[0].callingMode === 'VideoCall'"></i>
+                                    <i class="fa wtsapaud-icon"
+                                        *ngIf="wtlst.service.virtualCallingModes && wtlst.service.virtualCallingModes[0] && wtlst.service.virtualCallingModes[0].callingMode === 'WhatsApp' && wtlst.service.virtualServiceType ==='audioService'"></i>
+                                    <i class="fa wtsapvid-icon"
+                                        *ngIf="wtlst.service.virtualCallingModes && wtlst.service.virtualCallingModes[0] && wtlst.service.virtualCallingModes[0].callingMode === 'WhatsApp' && wtlst.service.virtualServiceType ==='videoService'"></i>
+                                </span>
+                                <span>{{wtlst.service?.name}}</span>
+                            </span>
+                        </div>
+                        <div class="disp-flex" *ngIf="wtlst.token" style="margin-bottom: 5px !important;">
+                            <span class="billing-head">Token for</span>
+                            <span style="line-height: normal !important;">:&nbsp;</span>
+                            <span class="billing-value">{{wtlst.waitlistingFor[0].firstName}}
+                                {{wtlst.waitlistingFor[0].lastName}}</span>
+                        </div>
+                        <div class="disp-flex" *ngIf="!wtlst.token" style="margin-bottom: 5px !important;">
+                            <span class="billing-head">Check-in for</span>
+                            <span style="line-height: normal !important;">:&nbsp;</span>
+                            <span class="billing-value">{{wtlst.waitlistingFor[0].firstName}}
+                                {{wtlst.waitlistingFor[0].lastName}}</span>
+                        </div>
+                        <div class="disp-flex" style="margin-bottom: 5px !important;">
+                            <span class="billing-head">Time window </span>
+                            <span style="line-height: normal !important;">:&nbsp;</span>
+                            <span class="billing-value"> {{wtlst.date | date: newDateFormat }},
+                                {{wtlst.queue.queueStartTime}} -
+                                {{wtlst.queue.queueEndTime}}</span>
+                        </div>
+                        <div class="disp-flex" style="margin-bottom: 5px !important;"
+                            *ngIf="!wtlst.parentUuid && wtlst.service?.minPrePaymentAmount && infoParams.type != 'waitlistreschedule' && infoParams.prepayment">
+                            <span class="billing-head">Amount paid</span>
+                            <span style="line-height: normal !important;">:&nbsp;</span>
+                            <span class="billing-value"><span class="rupee-font">{{infoParams.prepayment |
+                                    currency:'&#8377;'}}
+                                </span>
+                            </span>
+                        </div>
+                        <div class="disp-flex" style="margin-bottom: 5px !important;"
+                            *ngIf="wtlst.service?.minPrePaymentAmount && infoParams.type === 'waitlistreschedule' && wtlst.amountPaid > 0">
+                            <span class="billing-head">Amount paid</span>
+                            <span style="line-height: normal !important;">:&nbsp;</span>
+                            <span class="billing-value"><span class="rupee-font">
+                                    {{wtlst.amountPaid | currency:'&#8377;'}}</span>
+                            </span>
+                        </div>
+                        <div class="disp-flex" style="margin-bottom: 5px !important;" *ngIf="wtlst.personsAhead>=0">
+                            <span class="billing-head">Persons Ahead</span>
+                            <span style="line-height: normal !important;">:&nbsp;</span>
+                            <span class="billing-value">{{wtlst.personsAhead}}</span>
+                        </div>
+                        <div class="disp-flex" style="margin-bottom: 5px !important;" *ngIf="getWaitTime(wtlst)">
+                            <span class="billing-head">Est. wait Time </span>
+                            <span style="line-height: normal !important;">:&nbsp;</span>
+                            <span class="billing-value">{{getWaitTime(wtlst)}}</span>
+                        </div>
+                    </div> -->
+
+                    <div class="containerAppt mt-3 mb-3 textcenter" style="padding-bottom: 10px !important;">
+                        <!-- <div class="mgn-up-10 no-mgn-bt bold" style="font-size: 14px !important;">Booking Id
+                        </div>
+                        <div class="mgn-up-10 no-mgn-bt bold" style="font-size: 1.3rem !important;">
+                            {{wtlst.checkinEncId}}</div> -->
+                        <div *ngIf="wtlst.token" class="mgn-bt-5"
+                            style="font-size: 1.7rem !important; margin-top: 5px !important; margin-bottom: 5px !important;">
+                            Token No: {{wtlst.token}}
+                        </div>
+                    </div>
+                    <div class="notes"
+                        *ngIf="wtlst.service && wtlst.service.postInfoEnabled && wtlst.service.postInfoTitle">
+                        <div class="preinfo-title" *ngIf="!theme || theme != 'heartfulness_theme1'">
+                            {{wtlst.service.postInfoTitle}} </div>
+                        <div class="preinfo-title" *ngIf="!(!theme || theme != 'heartfulness_theme1')">Post
+                            Instructions </div>
+                        <div class="value-text" [innerHTML]="wtlst.service.postInfoText">
+                        </div>
+                    </div>
+                    <div class="ok-btn" *ngIf="i == (waitlist.length-1)">
+                        <span class="pointer-cursor hf-btn" (click)="okClick(wtlst)">
+                            <strong>OK</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <app-common-innerloading-spinner *ngIf="apiloading"></app-common-innerloading-spinner>
+    </div>
+</section>

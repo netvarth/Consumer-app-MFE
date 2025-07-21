@@ -1,0 +1,77 @@
+<form [formGroup]="amForm" class="ynw-common-form addinboxstyle" novalidate (keyup)="resetApiErrors()"
+    [ngClass]="this.data.theme">
+    <h1 class="mat-dialog-title">{{title | translate}}
+        <button #queue mat-dialog-close class="modal_close">
+            <i class="fa fa-window-close" aria-hidden="true"></i>
+        </button>
+    </h1>
+    <div class="mat-dialog-content">
+        <div class="form-group">
+            <div class="card-head-grey mgn-bt-5">{{message_label | translate}} *</div>
+            <textarea matInput class="form-control" id="message" placeholder="Message" formControlName="message"
+                (keypress)="keyPressed($event.target.value)" maxlength="330">
+            </textarea>
+            <app-field-error-display [displayError]="fed_service.isFieldValid(amForm,'message')"
+                errorMsg="Please enter a message.">
+            </app-field-error-display>
+        </div>
+    </div>
+    <div class="mat-dialog-actions mat-scrool">
+        <ng-container *ngIf="selectedFiles.files">
+            <div class="row m-0 col-md-12 no-padding-small attach_sendmsg" style="display: flex;"
+                *ngFor="let item of selectedFiles.files; let i = index">
+                <div class="col-md-7 no-padding-small">
+                    <span class="ln-hgt-40">{{item.name}}</span>
+                </div>
+                <div class="col-md-5 no-padding-small">
+                    <span class="mbt comm-menu-imgs">
+                        <button type="button" mat-icon-button [matMenuTriggerFor]="menu">
+                            <mat-icon>more_vert</mat-icon>
+                        </button>
+                        <mat-menu #menu="matMenu">
+                            <button type="button" (click)="deleteTempImage(i,item)" mat-menu-item>
+                                <i class="icon-delete"></i>
+                                <span>{{'delete' | translate}}</span>
+                            </button>
+                        </mat-menu>
+                    </span>
+                </div>
+                <div style="margin-top: 15px" class="col-md-12 col-sm-12 col-lg-12 col-12 no-padding"
+                    *ngIf="showCaptionBox[i]">
+                    <div class="input-group">
+                        <input placeholder="Enter image caption" type="text" class="form-control"
+                            [(ngModel)]="activeImageCaption[i]" [ngModelOptions]="{standalone: true}">
+                        <span class="input-group-btn">
+                            <button class="btn bt3 btn-default coupon-apply-btn" (click)="closeCaptionMenu(i)"
+                                type="button">{{'Cancel' | translate}}</button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+        <div class="col-md-12 no-padding mat-mdc-dialog-actions">
+            <button type="button" class="cs-btn bt1 text-uppercase" mat-dialog-close [disabled]="disableButton">{{cancel_btn_cap |
+                translate}}</button>
+            <button type="button" (click)="amForm.valid && onSubmit(amForm.value)" mat-button
+                [disabled]="disableButton || typeOfMsg === 'single' && source ==='provider-waitlist' && !email_id && (!phone || phone === 'null')"
+                class="mat-button mdc-button mgn-lt-5">
+                <span *ngIf="!disableButton">{{send_btn_cap | translate}}</span>
+                <app-common-innerloading-spinner *ngIf="disableButton" [spinnerParams]="{diameter:20}">
+                </app-common-innerloading-spinner>
+            </button>
+            <button type="button"
+                *ngIf="source === 'customer-list' || source === 'donation-list' || source=='provider-waitlist' || source === 'provider-sendAll' || source === 'provider-sendAll_group' ||(typeOfMsg === 'single' && (source=='consumer-waitlist' || source == 'provider-waitlist-inbox' || source === 'consumer-common' || source === 'provider-common'))"
+                class="cs-btn btn-attach bt_attach" (click)="logofile.click()" [matTooltip]="'Upload files'">
+                <input #logofile type="file" accept="/*;capture=camera" style="display:none;" multiple
+                    (change)="filesSelected($event,'photo')">
+                <span><i class="material-icons">attach_file</i></span>
+            </button>
+        </div>
+        <div class="col-12 no-padding">
+            <app-field-error-display [displayError]="true" *ngIf="api_error" errorMsg="{{api_error}}">
+            </app-field-error-display>
+            <app-form-success-display [displayMsg]="true" *ngIf="api_success" successMsg="{{api_success}}">
+            </app-form-success-display>
+        </div>
+    </div>
+</form>

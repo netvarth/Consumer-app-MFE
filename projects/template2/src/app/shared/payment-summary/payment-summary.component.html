@@ -1,0 +1,212 @@
+<div class="payment-section-details ms-2" *ngIf="paymentDetails['amountToPay'] > 0 || paymentDetails.showPrice">
+    <label class="question-header bold mt-2">{{'Payment Details' | translate}}</label>
+</div>
+<div class="bill-content">
+    <div class="section-three bill-responsive no-padding-small">
+        <div class="bill-breakup">
+            <div class="list bill-summary">
+                <div class="list-content">
+                    <ng-container *ngIf="paymentDetails.showPrice">
+                        <div class="c-row two section-two" *ngIf="paymentDetails.showPrice && !serviceOption">
+                            <div class="name-row two-col">
+                                <div class="name">
+                                    Service Price
+                                </div>
+                                <div class="price rupee-font">
+                                    {{paymentDetails.servicePrice | currency:'&#8377; '}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="c-row two section-two" *ngIf="paymentDetails.showPrice && serviceOption">
+                            <div class="name-row two-col">
+                                <div class="name">
+                                    Service Price
+                                </div>
+                                <div class="price rupee-font">
+                                    {{total_servicefee | currency:'&#8377;'}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="c-row two section-two" *ngIf="paymentDetails.showPrice">
+                            <div class="discount-row two-col" *ngIf="paymentDetails.jdnDiscount > 0">
+                                <div class="name">JDN</div>
+                                <div class="price rupee-font">
+                                    (-){{paymentDetails.jdnDiscount
+                                    |
+                                    currency:'&#8377; '}}</div>
+                            </div>
+                        </div>
+                        <div class="c-row two section-two"
+                            *ngFor="let jcoupon of paymentDetails.jCouponList | keyvalue">
+                            <div class="discount-row two-col">
+                                <div class="name">
+                                    {{jcoupon.key}}
+                                </div>
+                                <div class="price rupee-font">
+                                    <span>(-)</span>
+                                    <span [class.couponAmt]="jcoupon.value.value === '0.0'">{{jcoupon.value.value
+                                        | currency:'&#8377; '}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="c-row two section-two"
+                            *ngFor="let coupon of paymentDetails.proCouponList | keyvalue">
+                            <div class="discount-row two-col">
+                                <div class="name">{{coupon.key}}</div>
+                                <div class="price rupee-font">
+                                    <span>(-)</span>
+                                    <span [class.couponAmt]="coupon.value.value === '0.0'">{{coupon.value.value
+                                        | currency:'&#8377; '}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="c-row two section-two" *ngIf="paymentDetails.netTaxAmount">
+                            <div class="discount-row two-col">
+                                <div class="name">
+                                    <span class="tax-top">Tax</span>
+                                </div>
+                                <div class="price rupee-font">
+                                    (+){{paymentDetails.netTaxAmount
+                                    | currency:'&#8377; '}}</div>
+                            </div>
+                        </div>                        
+                        <div class="c-row two section-two" *ngIf="paymentDetails.netTotal > 0">
+                            <div class="name-row two-col">
+                                <div class="name">
+                                    Net Total
+                                </div>
+                                <div class="price rupee-font">
+                                    {{paymentDetails.netTotal | currency:'&#8377; '}}
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <div class="c-row two section-two" *ngIf="paymentDetails['amountToPay'] > 0 && convenientFee > 0">
+                        <div class="discount-row two-col">
+                            <div class="name">
+                                <span class="tax-top">Convenience Fee</span>
+                            </div>
+                            <div class="price rupee-font">
+                                (+){{convenientFee | currency:'&#8377; '}}</div>
+                        </div>
+                    </div>
+                    <div class="c-row two section-two" *ngIf="paymentMode  && paymentDetails['amountToPay'] > 0 && gatewayFee > 0">
+                        <div class="discount-row two-col">
+                            <div class="name">
+                                <span class="tax-top">Gateway Fee</span>
+                            </div>
+                            <div class="price rupee-font">
+                                (+){{gatewayFee | currency:'&#8377; '}}</div>
+                        </div>
+                    </div>
+                    <div class="c-row two section-two" *ngIf="paymentDetails['amountToPay'] > 0">
+                        <div class="name-row two-col">
+                            <div class="name">
+                                Payment Required Now
+                            </div>
+                            <div class="price rupee-font">
+                                {{ paymentDetails['amountToPay'] | currency:'&#8377; '}}
+                            </div>
+                        </div>
+                    </div>
+                    <ng-container *ngIf="paymentDetails['amountToPay'] > 0">
+                        <div class="ser_price mb-0 mt-2 bold customTxtpaymentDetails dateError">
+                            {{'Booking Will be confirmed only after the payment' | translate}}
+                        </div>
+                        <ng-container *ngIf="service.taxable">
+                            <div class="mt-1 ser_price bold customTxtpaymentDetails dateError"
+                                *ngIf="paymentDetails.totalDiscount > 0">
+                                * Any discounts and taxes will be applied only in the final bill
+                            </div>
+                            <div class="mt-1 ser_price bold customTxtpaymentDetails dateError"
+                                *ngIf="paymentDetails.totalDiscount === 0">
+                                * Taxes will be applied only in the final bill
+                            </div>
+                        </ng-container>
+                        <ng-container *ngIf="!service.taxable">
+                            <div class="mt-1 ser_price bold customTxtpaymentDetails dateError"
+                                *ngIf="paymentDetails.totalDiscount > 0">
+                                * Any discounts will be applied only in the final bill
+                            </div>
+                        </ng-container>
+                    </ng-container>
+                    <!-- 
+                    
+                    
+                    <div class="c-row two section-two"
+                        *ngIf="bill_data.customerPaidCharges > 0">
+                        <div class="discount-row two-col">
+                            <div class="name">
+                                Processing Fee
+                            </div>
+                            <div class="price rupee-font">
+                                {{bill_data.customerPaidCharges
+                                |
+                                currency:'&#8377; '}}</div>
+                        </div>
+                    </div>
+                    <div class="c-row two section-two"
+                        *ngIf="bill_data.totalAmountPaid > 0">
+                        <div class="discount-row two-col">
+                            <div class="name">
+                                Amount Paid
+                            </div>
+                            <div class="price rupee-font">
+                                {{bill_data.totalAmountPaid
+                                |
+                                currency:'&#8377; '}}</div>
+                        </div>
+                    </div>
+                    <div class="c-row one two-col"
+                        *ngIf="bill_data.amountDue >= 0">
+                        <div class="name">
+                            Amount Due
+                        </div>
+                        <div class="price rupee-font">
+                            {{checkJcash ?
+                            ((bill_data.amountDue -
+                            jcashamount) |
+                            currency:'&#8377;' ):
+                            (bill_data.amountDue |
+                            currency:'&#8377;') }}
+                        </div>
+                    </div>
+                    <div class="c-row one two-col"
+                        *ngIf="bill_data.amountDue < 0">
+                        <div class="name">Refundable Amount
+                        </div>
+                        <div class="price rupee-font">
+                            {{refund_value |
+                            currency:'&#8377; '}}</div>
+                    </div>
+                    <div class="c-row one two-col"
+                        *ngIf="bill_data.refundedAmount > 0">
+                        <div class="name">Amount Refunded
+                        </div>
+                        <div class="price rupee-font">
+                            {{bill_data.refundedAmount |
+                            currency:'&#8377; '}}</div>
+                    </div>
+                    <div class="amountSaved"
+                        *ngIf="bill_data.totalAmountSaved > 0 && bill_data.billPaymentStatus != 'FullyPaid'">
+                        <div class="price rupee-font"> You
+                            will save
+                            {{bill_data.totalAmountSaved |
+                            currency:'&#8377;'}}
+                        </div>
+                    </div>
+                    <div class="amountSaved"
+                        *ngIf="bill_data.totalAmountSaved > 0 && bill_data.billPaymentStatus == 'FullyPaid'">
+                        <div class="price rupee-font"> You
+                            have saved
+                            {{bill_data.totalAmountSaved |
+                            currency:'&#8377;'}}
+                        </div>
+                    </div> -->
+                    <!-- </div> -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

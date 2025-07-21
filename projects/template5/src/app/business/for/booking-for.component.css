@@ -1,0 +1,74 @@
+.user-name {
+    font-size: 1.175rem;
+    font-weight: inherit !important;
+    color: #2F3032;
+    padding-left: 15px !important;
+    padding-top: 7px !important;
+}
+.user-detail {   
+    color: rgba(47, 48, 50, 0.59);
+    display: flex;
+    gap: 25px !important; 
+    margin-top: -25px !important;
+}
+@media (max-width: 400px) {
+    .user-detail {
+        gap: 10px !important; 
+    }
+}
+.edit {
+    display: flex;
+    justify-content: right;
+    margin-right: 20px;
+    font-weight: 400 !important;
+    font-size: 1rem;    
+    color: #1e4079;   
+}
+.booking-for-card {    
+    background: rgba(240, 242, 246, 0.81);
+    border-radius: 6px !important;
+    height: 90px !important;
+    padding: 15px;
+}
+.email {
+    font-weight: 300 !important;
+    font-size: .8rem ;    
+}
+@media (max-width: 490px) {
+    .email {        
+        width: 120px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        height: 1.2rem;
+        white-space: nowrap;
+    }
+}
+.phone {
+    padding-left: 80px !important;
+    font-weight: 300 !important;
+    font-size: .8rem;
+}
+.symbol, .symbol-label {
+    display: flex;
+    background: #FFFFFF;
+    border: 0.437143px solid #1e4079;
+    width: 51px !important;
+    height: 51px !important;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    color: #1e4079;        
+    border-radius: 48px !important;
+    font-size: 26px !important;
+}
+.user-head {
+    display: flex;
+    padding-left: 15px !important;
+    margin-top: -2.5px !important;
+}
+.begin {
+    margin-top: 10px;
+}
+a{
+    text-decoration: none;
+}

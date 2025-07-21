@@ -1,0 +1,200 @@
+<section class=" no-padding myaccount no-padding-small consumer-profile container">
+    <div class="content p0 see-pages cons-members">
+        <div class="panel panel-default">
+            <div class="panel-body no-padding">
+                <div class="customCard title-gb headerBorder">
+                    <div (click)="goBack()"><i class="fa fa-arrow-left clrChangeHeader"></i> </div>
+                    <div (click)="goBack()" class="clrChangeHeader">Back</div>
+                </div>
+                <div class="customCard">
+                    <div>
+                        <div class="p-2">
+                            <div class="myAcText">My Account</div>
+                            <div class="accountEditText">Update your Personal Info.</div>
+                        </div>
+                        <div class="mainFlex">
+                            <div class="relatedLinksSmall">                                
+                                <div class="memberInfo">
+                                    <div class="relatedLink customwidth" (click)="deactiveaccount('deactive')">
+                                        <span class="text-center">
+                                            <i class="fa fa-trash tabImgCustom tabImgCustomSmall"
+                                                aria-hidden="true"></i>
+                                        </span>
+                                        <span class="deleteac">{{'Delete Your Account' | translate}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flexClassImg card mb-2" >
+                                    <div>
+                                        <img class="userImg" *ngIf="!profilePicture"
+                                            src="./assets/images/myjaldee/defultUser.png" />
+                                        <img class="userImg" *ngIf="profilePicture" src="{{profilePicture}}" />
+                                    </div>
+                                    <div *ngIf="!profilePicture">
+                                        <button mat-button type="submit" class="newImgUpload cursor-pointer"
+                                            (click)="imagefile.click()">
+                                            <input #imagefile type="file" accept="/*;capture=camera"
+                                                style="display:none;" (change)="filesSelected($event)">
+                                            <span class="btntxt">{{'Upload New Image' | translate}}</span>
+                                        </button>
+                                    </div>
+                                    <div *ngIf="profilePicture">
+                                        <button mat-button type="submit" class="deleteBtn cursor-pointer"
+                                            (click)="removeUser()"><span class="btntxtClr">{{'Delete' |
+                                                translate}}</span></button>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="mgn-up-15">
+                                        <form *ngIf="!loading" [formGroup]="editProfileForm" novalidate (ngSubmit)="editProfileForm['valid'] &&
+                                            onSubmit(editProfileForm['value'])" (keyup)="resetApiErrors()">
+                                            <div class="profile_grid_container form-group">
+                                                <div class="mgn-up-10">
+                                                    <label class="p-0 pt-1 m-0 form-text-light">{{'First Name' |
+                                                        translate}}</label>
+                                                    <div class="d-flex">
+                                                        <div>
+                                                            <mat-select pInputText class="form-control" id="titles"
+                                                                formControlName="titles" placeholder="Select">
+                                                                <mat-option [value]="salutation.displayName"
+                                                                    *ngFor="let salutation of salutation">
+                                                                    <div *ngIf="salutation && salutation.name">
+                                                                        {{salutation.displayName}}</div>
+                                                                </mat-option>
+                                                            </mat-select>
+                                                        </div>
+                                                        <div class="flex-grow-1 no-padding">
+                                                            <input pInputText type="text" class="form-control"
+                                                                id="first_name" formControlName="first_name" placeholder="{{'First Name' | translate}}"
+                                                                autocomplete="off">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="mgn-up-10">
+                                                    <label class="p-0 pt-1 m-0 form-text-light">{{'Last Name' |
+                                                        translate}} </label>
+                                                    <input pInputText type="text" class="form-control" id="last_name"
+                                                        placeholder="{{'Last Name' | translate}}"
+                                                        formControlName="last_name" autocomplete="off">
+                                                    <app-field-error-display
+                                                        [displayError]="fed_service.isFieldValid(editProfileForm,'last_name')"
+                                                        [errorMsgs]="fed_service.getErrorMessage(editProfileForm,'last_name',
+                                                                                        {
+                                                                                        'required' : 'Please give last name' | translate,
+                                                                                        'pattern' : 'alpha_nameerror' | translate
+                                                                                        })">
+                                                    </app-field-error-display>
+                                                    <app-field-error-display [displayError]="true"
+                                                        *ngIf="lnameerror != null && !fed_service.isFieldValid(editProfileForm,'last_name')"
+                                                        errorMsg="{{'lnameerror' | translate}}">
+                                                    </app-field-error-display>
+                                                </div>
+                                                <div class="mgn-up-10">
+                                                    <label class="p-0 pt-1 m-0 form-text-light">{{'Email'
+                                                        | translate}} </label>
+                                                    <input pInputText type="text" class="form-control" id="email"
+                                                        formControlName="email" placeholder="Email(user@xyz.com)"
+                                                        autocomplete="off" (keyup)="showConfrmEmail($event)" />
+                                                    <app-field-error-display [displayError]="true"
+                                                        *ngIf="emailerror != null && !fed_service.isFieldValid(editProfileForm,'email')"
+                                                        errorMsg="{{'Please give emailid' | translate }}">
+                                                    </app-field-error-display>
+                                                </div>
+                                                <div class="mgn-up-10" *ngIf="confrmshow">
+                                                    <label class="p-0 pt-1 m-0 form-text-light">{{'Confirm Mail' |
+                                                        translate}} </label>
+                                                    <input pInputText type="text" class="form-control" id="email1"
+                                                        formControlName="email1"
+                                                        placeholder="Re-enter Email(user@xyz.com)" autocomplete="off"
+                                                        (ngModelChange)="reemailhandle(editProfileForm.value)" />
+                                                    <app-field-error-display [displayError]="true"
+                                                        *ngIf="emailerror != null && !fed_service.isFieldValid(editProfileForm,'email1')"
+                                                        errorMsg="{{'Please give emailid' | translate }}">
+                                                    </app-field-error-display>
+                                                </div>
+                                                <div class="mgn-up-10">
+                                                    <label class="p-0 pt-1 m-0 form-text-light">{{'Phone Number' |
+                                                        translate}}</label>
+                                                    <ngx-intl-tel-input [cssClass]="'custom'"
+                                                        [preferredCountries]="preferredCountries"
+                                                        [enableAutoCountrySelect]="true" [enablePlaceholder]="true"
+                                                        [searchCountryFlag]="true"
+                                                        [searchCountryField]="[SearchCountryField.Iso2, SearchCountryField.Name]"
+                                                        [selectFirstCountry]="false" [phoneValidation]="true"
+                                                        [maxLength]="15" [selectedCountryISO]="selectedCountry"
+                                                        [separateDialCode]="separateDialCode"
+                                                        [numberFormat]="PhoneNumberFormat.National" name="phoneNo"
+                                                        formControlName="phoneNo">
+                                                    </ngx-intl-tel-input>
+                                                </div>
+                                                <div class="mgn-up-10">
+                                                    <label class="p-0 pt-1 m-0 form-text-light">{{'WhatsApp Number' |
+                                                        translate}}</label>
+                                                    <ngx-intl-tel-input [cssClass]="'custom'"
+                                                        [preferredCountries]="preferredCountries"
+                                                        [enableAutoCountrySelect]="true" [enablePlaceholder]="true"
+                                                        [searchCountryFlag]="true"
+                                                        [searchCountryField]="[SearchCountryField.Iso2, SearchCountryField.Name]"
+                                                        [selectFirstCountry]="false" [phoneValidation]="true"
+                                                        [maxLength]="15" [selectedCountryISO]="selectedCountry"
+                                                        [separateDialCode]="separateDialCode"
+                                                        [numberFormat]="PhoneNumberFormat.National"
+                                                        name="whatsappnumber" formControlName="whatsappnumber">
+                                                    </ngx-intl-tel-input>
+                                                </div>
+                                                <div class="mgn-up-10">
+                                                    <label class="p-0 pt-1 m-0 form-text-light">{{'Telegram Number' |
+                                                        translate}} </label>
+                                                    <ngx-intl-tel-input [cssClass]="'custom'"
+                                                        [preferredCountries]="preferredCountries"
+                                                        [enableAutoCountrySelect]="true" [enablePlaceholder]="true"
+                                                        [searchCountryFlag]="true"
+                                                        [searchCountryField]="[SearchCountryField.Iso2, SearchCountryField.Name]"
+                                                        [selectFirstCountry]="false" [phoneValidation]="true"
+                                                        [maxLength]="15" [selectedCountryISO]="selectedCountry"
+                                                        [separateDialCode]="separateDialCode"
+                                                        [numberFormat]="PhoneNumberFormat.National"
+                                                        name="telegramnumber" formControlName="telegramnumber">
+                                                    </ngx-intl-tel-input>
+                                                </div>
+                                                <div class="mgn-up-10">
+                                                    <div class="form-group normalpicker">
+                                                        <label class="p-0 pt-1 m-0 form-text-light"> Date of
+                                                            birth</label>
+                                                        <p-calendar [readonlyInput]="true" #inputdob
+                                                            formControlName="dob" [style]="{'width':'100%'}"
+                                                            dateFormat="dd/mm/yy" [maxDate]="tday" [minDate]="minday"
+                                                            [showIcon]="true" placeholder="DD/MM/YYYY"></p-calendar>
+                                                    </div>
+                                                </div>
+                                                <div class="mgn-up-10">
+                                                    <label class="p-0 pt-1 m-0 form-text-light">{{gender_cap}} </label>
+                                                    <p-dropdown [options]="genderList" class="text-capitalize"
+                                                        [style]="{'width':'100%'}" formControlName="gender"
+                                                        placeholder="Gender" ropdownIcon="fa fa-caret-down">
+                                                        <ng-template let-item pTemplate="item">
+                                                            {{item | capitalizeFirst}}
+                                                        </ng-template>
+                                                    </p-dropdown>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="mgn-up-20 updateBtnInfo">
+                                        <button mat-button (click)="onSubmit(editProfileForm.value)" type="submit"
+                                            [disabled]="isFormInvalid()" class="activityBtn cursor-pointer">
+                                            <span class="updateBtnText"
+                                                *ngIf="update_btn">{{update_btn.toUpperCase()}}</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="empty" ></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

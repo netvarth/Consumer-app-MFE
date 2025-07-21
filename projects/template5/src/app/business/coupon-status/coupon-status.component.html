@@ -1,0 +1,29 @@
+<div *ngFor="let coupon of paymentDetails.jCouponList | keyvalue" style="text-align: initial;" class="col-12 mgn-up-5">
+    <small class="black rupee-font" *ngIf="coupon.value.value !== '0.0'">
+        {{'You saved' | translate}} {{coupon.value.value | currency:'&#8377;'}} {{'on' | translate}}
+        {{coupon.key}}
+    </small>
+    <div *ngIf="!(coupon.value.systemNote.length === 1 && coupon.value.systemNote.includes('COUPON_APPLIED')) && coupon.value.value === '0.0'"
+        class="black rupee-font customTxtpaymentDetails pl-15 mgn-up-10">
+        <div style="margin-bottom: 10px; color: red">
+            Sorry!! This coupon is rejected because it doesn't meet the following requirements: </div>
+        <ul *ngFor="let msg of coupon.value.systemNote">
+            <li *ngIf="msg !== 'COUPON_APPLIED'"> {{coupon_notes[msg]}}</li>
+        </ul>
+    </div>
+</div>
+<div *ngFor="let coupon of paymentDetails.proCouponList | keyvalue" class="col-12 mgn-up-5">
+    <small class="black rupee-font" *ngIf="coupon.value.value !== '0.0'">
+        {{'You saved' | translate}} {{coupon.value.value | currency:'&#8377;'}} {{'on' | translate}}
+        {{coupon.key}}
+    </small>
+    <div class="clearfix"></div>
+    <div *ngIf="!(coupon.value.systemNote.length === 1 && coupon.value.systemNote.includes('COUPON_APPLIED')) && coupon.value.value === '0.0'"
+        class="black rupee-font customTxtpaymentDetails pl-15 mgn-up-10">
+        <div style="margin-bottom: 10px; color: red">
+            Sorry!! This coupon is rejected because it doesn't meet the following requirements: </div>
+        <ul *ngFor="let msg of coupon.value.systemNote">
+            <li *ngIf="msg !== 'COUPON_APPLIED'"> {{coupon_notes[msg]}}</li>
+        </ul>
+    </div>
+</div>

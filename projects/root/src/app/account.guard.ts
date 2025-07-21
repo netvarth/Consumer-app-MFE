@@ -13,12 +13,14 @@ export class AccountGuard implements CanLoad {
     console.log("Account Guard Constructor");
 
   }
+
   canLoad(route: Route, segments: UrlSegment[]): Observable<boolean> | Promise<boolean> | boolean {
     if (this.sharedService.getAccountCache()) {
       console.log('Returning cached account info:', this.sharedService.getAccountCache());
       return true;
     }
-    const id = segments.length > 0 ? segments[0].path : null;
+    // For a route like customapp/:id, segments[0] is 'customapp', segments[1] is the id
+    const id = segments.length > 1 ? segments[1].path : null;
     return this.accountResolver.fetchUniqueID(id).then((accountInfo: any) => {
       this.sharedService.setAccountCache(accountInfo);
       return true;

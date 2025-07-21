@@ -1,0 +1,164 @@
+.content.see-pages .outer-card .card .form-group .form-control {
+  width: 50% !important;
+}
+
+@media only screen and (max-width: 767px) {
+  .content.see-pages .outer-card .card .form-group .form-control {
+    width: 50% !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .content.see-pages .outer-card .card .form-group .form-control {
+    width: 50% !important;
+  }
+}
+
+.email-border {
+  border: 1px solid #cccc;
+}
+
+.width100 {
+  width: 100%;
+}
+
+.height40 {
+  height: 32px;
+  font-size: 12px !important;
+}
+
+.input-field {
+  padding: 5px;
+}
+
+.email-field {
+  padding: 5px;
+}
+
+.code-field {
+  width: 40px !important;
+}
+
+.codenumber {
+  display: flex;
+  margin-left: auto;
+  width: 100%;
+}
+
+.codenumber #countryCode,
+.codenumber #whatsappCountryCode {
+  border-right: none;
+}
+a {
+  color: inherit;
+  text-decoration: none !important;
+}
+h5 {
+  font-size: 1.25rem;
+  margin-bottom: 10px;
+}
+.title-gb {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+.content.see-pages .outer-card .card {
+  width: 60%;
+}
+.content.see-pages .outer-card {
+  display: flex;
+  width: 100%!important;
+}
+.related-links {
+  margin-bottom: 30px!important;
+}
+.content .card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  word-wrap: break-word;
+  background-color: #fff;
+  background-clip: border-box;
+  border: 1px solid rgba(0,0,0,.125);
+  border-radius: 0.25rem;
+}
+.info-lst li {
+  padding-top: 5px;
+}
+label {
+  margin-bottom: 5px;
+}
+.mgn-up-20 {
+  margin-top: 20px!important;
+}
+.mgn-rt-20 {
+  margin-right: 20px!important;
+}
+.info-lst li {
+  font-size: .75rem;
+}
+.outer-card label {
+  font-size: .875rem;
+  font-weight: 500;
+}
+.mr-2 {
+  margin-right: 0.5rem!important;
+}
+.info-lst {
+  padding: 0 0 0 20px!important;
+  background: url(../../../assets/images/icon-bulb.svg) no-repeat scroll 0 0/15px 24px!important;
+}
+li::marker {
+  content: none !important;
+}
+@media only screen and (max-width: 575px){
+  .content.see-pages .outer-card .card {
+    margin-bottom: 30px;
+    width: 100%;
+  }
+  h5 {
+    font-size: 17.5px !important;
+  }
+  .info-lst li {
+    font-size: 10.5px !important;
+  }
+  .outer-card label {
+    font-size: 12.25px !important;
+  }
+  .mdc-button {
+    font-size: 12.25px !important;
+  }
+}
+.input-field:focus-visible {
+  outline: none !important;
+}
+
+::ng-deep ngx-intl-tel-input .iti {
+  width: 100% !important;
+}
+
+::ng-deep ngx-intl-tel-input input::-webkit-input-placeholder {
+  color: #ddd !important;
+}
+
+::ng-deep ngx-intl-tel-input input:focus {
+  outline: none !important;
+  border-color: #E1E2E3 !important;
+}
+
+::ng-deep ngx-intl-tel-input input {
+  height: 40px !important;
+  width: 100% !important;
+  background: #FFFF !important;
+  border: 1.39032px solid #E1E2E3 !important;
+  border-radius: 5px !important;
+  padding: 15px;
+  font-size: 15px;
+}
+::ng-deep .change-mobile ngx-intl-tel-input input.custom:focus {
+  color: #495057 !important;
+  background-color: #fff !important;
+  border-color: #3c8dbc !important;
+  outline: 0 !important;
+  box-shadow: 0 0 0 0 #fff !important;
+}

@@ -1,0 +1,64 @@
+<section [ngClass]="theme" class="aboutus">
+    <div class="card shadow d-flex flex-row p-2">
+        <div class="my-auto">
+            <a class="" (click)="goBack()"><i class="fa fa-arrow-left"></i>&emsp;</a>
+        </div>
+    </div>
+    <div class="col-12 no-padding">
+        <app-basic-profile-new (actionPerformed)="profileActionPerformed($event)" [profile]="basicProfile"
+            [selectedLocation]="selectedLocation" [extras]="extras"></app-basic-profile-new>
+    </div>
+    <div class="clearfix"></div>
+    <div class="px-3">
+        <div class="col-12 no-padding">
+            <div class="col-12 question-header">{{'About' | translate}}
+                <div class="mgn-up-10">
+                    <p class="about">{{accountProfile.businessDesc}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 contact mgn-lt-30">
+            <p class="smalltext" *ngIf="accountProfile.phoneNumbers && accountProfile.phoneNumbers.length>0">
+
+                <span *ngFor="let phoneNo of accountProfile.phoneNumbers">
+                    <a href="tel:{{phoneNo.instance}}" target="_blank"><i
+                            class="fa fa-phone"></i>&nbsp;{{accountProfile.countryCode}}
+                        {{phoneNo.instance}}</a></span>
+            </p>
+            <p class="smalltext" *ngIf="accountProfile.emails && accountProfile.emails.length>0">
+                <span *ngFor="let email of accountProfile.emails"><a class="cut-text" href="mailto:{{email.instance}}"
+                        target="_blank"><i class="fa fa-envelope-o"></i>&nbsp;{{email.instance}}
+                    </a></span>
+            </p>
+        </div>
+        <div class="col-12 specialities-header mgn-lt-30 mgn-up-10" *ngIf="this.accountProfile.specialization">
+            {{'Specialities' | translate}}
+            <div class="details">
+                <div class="pop-box-cont " *ngFor="let speci of this.accountProfile.specialization">
+                    {{speci}}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 question-main-outer" *ngFor="let vfield of virtualfieldsCombinedjson">
+            <div class="question-outer" *ngIf="vfield.value">
+                <ng-container>
+                    <div class="question-header">{{vfield.displayName}}</div>
+                    <div class="question-value1 pop-box-cont" *ngIf="vfield.type!= 'object'"
+                        [innerHTML]="wordProcessor.firstToUpper(vfield.value) | nl2br">
+                    </div>
+                    <div class="question-valuearr" *ngIf="vfield.type== 'object'">
+                        <ul class="virtual-field-ul" *ngFor="let vals of vfield.value">
+                            <li class="vfield-row pop-box-cont" *ngIf="vals.length">
+                                <span *ngFor="let field of vals; let i=index" class="morevalspan  ">
+                                    {{field}}<span *ngIf="i <= (vals.length-2)">,
+                                    </span>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</section>

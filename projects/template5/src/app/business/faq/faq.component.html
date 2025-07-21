@@ -1,0 +1,13 @@
+<section class="faq">
+    <div class="card title-gb clearfix">
+        <h5 class="col-12 col-md-12 col-sm-12 col-lg-12 mgn-up-10 no-padding clearfix">
+             <a class="pull-left mgn-rt-20 back-btn" (click)="goback()"><i
+                    class="fa fa-arrow-left">&nbsp;</i>  {{'Frequently Asked Questions'}}</a>
+        </h5> 
+    </div>
+    <div class="col-12 mgn-up-10" *ngFor="let faq of questions">
+        <p class="question justify">{{faq.question}}</p>
+        <p class="answer justify">{{faq.answer}}</p>
+    </div>
+
+</section>

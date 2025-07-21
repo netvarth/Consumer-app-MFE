@@ -1,0 +1,181 @@
+<!--begin::Main-->
+<div class="d-flex flex-column flex-root login-cont" [ngClass]="theme?theme:''">
+  <!--begin::Login-->
+  <!-- <div class="child" *ngIf="loading">
+      <app-common-innerloading-spinner>
+      </app-common-innerloading-spinner>
+  </div> -->
+  <!-- *ngIf="!loading" -->
+  <div class="d-flex loading-overlay" *ngIf="loading">
+    <div class="loading-overlay-inner">
+      <app-common-innerloading-spinner></app-common-innerloading-spinner>
+    </div>
+  </div>
+  <div class="login login-3 wizard d-flex flex-column flex-lg-row flex-column-fluid no-padding" *ngIf="!loading">
+    <!--begin::Aside-->
+    <div class="login-aside d-flex flex-column flex-row-auto">
+      <!--begin::Aside Top-->
+      <div class="d-flex flex-column-auto flex-column">
+        <!--begin::Aside header-->
+        <!-- <a href="#" class="login-logo text-center pt-lg-25 pb-10">
+            <img src="./assets/images/jaldee-businesslogo.png" class="max-h-70px" alt="" />
+          </a> -->
+        <!--end::Aside header-->
+        <!--begin::Aside Title-->
+        <h3 class="font-weight-bolder text-center font-size-h4 text-dark-50 line-height-xl">
+          <!-- Jaldee se jaldee.<br />
+            Expand your practice or business. -->
+        </h3>
+        <!--end::Aside Title-->
+      </div>
+      <!--end::Aside Top-->
+      <!--begin::Aside Bottom-->
+      <div *ngIf="imgPath" class="aside-img d-flex flex-row-fluid bgi-no-repeat bgi-position-x-center"
+        [ngStyle]="{'background-image': 'url(' + imgPath + ')'}" style="background-position-y: calc(50%);">
+      </div>
+      <div *ngIf="!imgPath" class="aside-img d-flex flex-row-fluid bgi-no-repeat bgi-position-x-center"
+        style="background-position-y: calc(50%);">
+        <img class="img" src="./assets/images/signup.png" alt=""/>
+      </div>
+      <!--end::Aside Bottom-->
+    </div>
+    <!--begin::Aside-->
+    <!--begin::Content-->
+    <div class="login-content flex-row-fluid d-flex flex-column ">
+      <!--begin::Wrapper-->
+      <div class="d-flex flex-row-fluid flex-center">
+        <!--begin::Signin-->
+        <div class="login-form">
+          <!--begin::Form-->
+          <div class="authentication">
+            <div class="px-3">
+              <div class="check-mobile-exist px-3" *ngIf="step===1">
+                <h1>{{'Let\'s Start' | translate}}</h1>
+                <div class="form-group mobile-no mgn-up-50 px-3">
+                  <!-- <label for="phone">{{'Enter your Mobile Number' | translate}}</label> -->
+                  <ngx-intl-tel-input [cssClass]="'custom'" [preferredCountries]="preferredCountries"
+                    [enableAutoCountrySelect]="true" [enablePlaceholder]="true" customPlaceholder="Enter your number" [searchCountryFlag]="true"
+                    [searchCountryField]="[SearchCountryField.Iso2, SearchCountryField.Name]"
+                    [selectFirstCountry]="false"  [phoneValidation]="true"
+                    [selectedCountryISO]="selectedCountry" [separateDialCode]="separateDialCode"
+                    [numberFormat]="PhoneNumberFormat.National" name="phone" [(ngModel)]="phoneNumber" (ngModelChange)="clearPhoneExists()">
+                  </ngx-intl-tel-input>
+                  <div class="sts-msg error" *ngIf="phoneError">{{phoneError}}</div>
+                  <div class="form-group email mgn-up-20" *ngIf="phoneNumber && phoneNumber.dialCode != '+91'  && !isLogin">
+                    <!-- <label for="phone">{{'Enter your Email' | translate}}</label> -->
+                    <input type="text" class="form-control" id="emailId" placeholder="Enter your email" [(ngModel)]="emailId" autocomplete="off"
+                      (keypress)="resetApiErrors()">
+                  </div>
+                  <!-- <div class="sts-msg error" *ngIf="emailError">{{emailError}}</div> -->
+                  <button class="cust-logpg-submt mgn-up-20 mat-button mdc-button continue-button" type="button"
+                    [disabled]="api_loading || btnClicked" (click)="sendOTP()" >
+                    <span class="continue" *ngIf="!api_loading">{{'Continue' | translate}}</span>
+                    <app-common-innerloading-spinner [spinnerParams]="{diameter:30}" *ngIf="api_loading">
+                    </app-common-innerloading-spinner>
+                  </button>
+                  <div class="centeralign mgn-bt-20 mgn-up-30 color-grey" *ngIf="googleIntegration">----------------OR-----------------</div>
+                  <!-- <div class="form-group mobile-no mgn-up-30" *ngIf="googleIntegration">
+                    <div id="googleBtn" class="g-container" #googleBtn></div>
+                  </div> -->
+                </div>
+              </div>
+              <div *ngIf="step===3" class="px-3 text-center">
+                <div class="form-group otp">
+                  <app-common-innerloading-spinner [spinnerParams]="{diameter:30}" *ngIf="loading">
+                  </app-common-innerloading-spinner>
+                  <h1>{{'Verification' | translate}}</h1>
+                  <label *ngIf="phoneNumber && phoneNumber.dialCode==='+91'" for="phone" class="mgn-bt-20">
+                    {{'Please type the verification code sent to' | translate}} {{phoneNumber.e164Number}}</label>
+                  <label *ngIf="phoneNumber && phoneNumber.dialCode!=='+91'" for="phone" class="mgn-bt-20">
+                    {{'Please type the verification code sent to' | translate}} {{emailId?emailId:'email'}}</label>
+                    <!-- <label *ngIf="isSmsEmail" for="phone" class="mgn-bt-20">
+                      {{'Please type the verification code sent to' | translate}} {{phoneNumber.e164Number}} or {{emailId}}</label> -->
+                  <ng-otp-input class="bkgclr" (onInputChange)="onOtpChange($event)" [config]="config"></ng-otp-input>
+                  <button class="cust-logpg-submt mgn-up-20 mat-button mdc-button continue-button" type="button"
+                    [disabled]="api_loading" (click)="!btnClicked && verifyOTPs()">
+                    <span class="continue" *ngIf="!api_loading">Next</span>
+                    <app-common-innerloading-spinner [spinnerParams]="{diameter:30}" *ngIf="api_loading">
+                    </app-common-innerloading-spinner>
+                </button>      
+                  <p class="mgn-up-20">{{'Not received yet' | translate}}! <a class="pointer-cursor link"
+                      (click)="sendOTP('resent')">{{'Resend OTP' | translate}}</a>
+                  </p>
+                  <p class="mgn-up-20">If you are not getting OTP via SMS, Use Google Login
+                </p>
+                </div>
+              </div>
+              
+              <div *ngIf="step===2" class="px-3">
+                <h1>{{'Let\'s get to know you' | translate}}...</h1>
+                <label for="phone">{{'First Name' | translate}}</label>
+                <div class="input-group d-flex first-name">
+                  <div class="">
+                      <mat-select  class="form-control field-size form-group otp" id="titles"
+                      [(ngModel)]="title" placeholder="Select">
+                          <mat-option [value]="salutation.displayName"
+                              *ngFor="let salutation of salutation">
+                              <div *ngIf="salutation && salutation.name">
+                                  {{salutation.displayName}}</div>
+                          </mat-option>
+                      </mat-select>
+                  </div>
+                  <div class="flex-grow-1 no-padding mgn-lt-1">
+                    <div class="form-group otp">
+                      <input type="text" class="form-control" id="first_name" [(ngModel)]="firstName" autocomplete="off" />
+                    </div>
+                  </div>
+              </div>
+                <div class="form-group otp">
+                  <label for="phone">{{'Last Name' | translate}}</label>
+                  <input type="text" class="form-control" id="first_name" [(ngModel)]="lastName" autocomplete="off" />
+                </div>
+                <div class="form-group otp" *ngIf="googleLogin">
+                  <!-- <label for="phone">{{'Mobile Number' | translate}}</label> -->
+                  <ngx-intl-tel-input [cssClass]="'custom'" [preferredCountries]="preferredCountries"
+                    [enableAutoCountrySelect]="true" [enablePlaceholder]="true" customPlaceholder="Mobile Number" [searchCountryFlag]="true"
+                    [searchCountryField]="[SearchCountryField.Iso2, SearchCountryField.Name]"
+                    [selectFirstCountry]="false" [phoneValidation]="true"
+                    [selectedCountryISO]="selectedCountry" [separateDialCode]="separateDialCode"
+                    [numberFormat]="PhoneNumberFormat.National" name="phone" [(ngModel)]="phoneNumber">
+                  </ngx-intl-tel-input>
+                  <div class="sts-msg error" *ngIf="phoneError">{{phoneError}}</div>
+                </div>
+                <div class="form-group otp"
+                  style="display: flex !important; justify-content: space-between !important;">
+                  <button class="mgn-up-20 mat-button mdc-button signup-button" type="button" [disabled]="api_loading"
+                    (click)="goBack()">
+                    <span *ngIf="!api_loading">{{'Back' | translate}}</span>
+                    <app-common-innerloading-spinner [spinnerParams]="{diameter:30}" *ngIf="api_loading">
+                    </app-common-innerloading-spinner>
+                  </button>
+                  <button class="mgn-up-20 mat-button mdc-button signup-button" type="button" [disabled]="api_loading"
+                    (click)="signUpConsumer()">
+                    <span *ngIf="!api_loading || !otpEntered">{{'Next' | translate}}</span>
+                    <app-common-innerloading-spinner [spinnerParams]="{diameter:30}" *ngIf="api_loading">
+                    </app-common-innerloading-spinner>
+                  </button>
+                </div>
+              </div>
+              <div class="clearfix"></div>
+              <div class="check-mobile-exist text-center" *ngIf="step===3 || step === 1">
+              
+                <div class="form-group mobile-no mgn-up-30">
+                  <div id="googleBtn" class="g-container" #googleBtn></div>
+                </div>
+              
+              </div>             
+            </div>
+          </div>
+          <!--end::Form-->
+        </div>
+        <!--end::Signin-->
+      </div>
+      <!--end::Wrapper-->
+    </div>
+    <!--end::Content-->
+  </div>
+  <!--end::Login-->
+  <div class="clearfix"></div>
+</div>
+<!--end::Main-->
+<!--end::Body-->

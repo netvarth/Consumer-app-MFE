@@ -1,0 +1,100 @@
+<div class="dynamic-forms">
+    <div class="dynamic-forms-sections" *ngFor="let section of sections">
+        <div *ngIf="section?.type == 'object' || sourceType == 'array'">
+            <div class="bg-grey p-2" *ngIf="sourceType != 'array' && (section.title || section.description)">
+                <div class="fw-bold" *ngIf="section.title">{{ section.title }}</div>
+                <div class="fs-6" *ngIf="section.description">{{ section.description }}</div>
+            </div>
+
+            <div *ngFor="let field of section.fields">
+
+                <div>
+                    <app-field-renderer [field]="field" [section]="section" [sourceType]="sourceType"
+                        [formData]="formData" (fieldDataEmit)="emittedFieldData($event)"></app-field-renderer>
+                </div>
+
+
+                <div *ngIf="field.type === 'array' || field.type === 'object'">
+                    <div>
+                        <app-dynamic-forms [sections]="[field]"
+                            [sourceType]="field.type === 'array' ? 'array' : 'general'" type="'recursive'"
+                            [formData]="formData[section.sectionKey] || {}" (fieldDataEmit)="emittedFieldData($event)"></app-dynamic-forms>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="!(section?.type == 'object') && sourceType != 'array'">
+            <div *ngIf="(section.type != 'array' && section.type != 'object')">
+                <app-field-renderer [field]="section" [section]="section" [sourceType]="sourceType"
+                    [formData]="formData" (fieldDataEmit)="emittedFieldData($event)"
+                    [sectionType]="'general'"></app-field-renderer>
+            </div>
+
+            <div *ngIf="section.type === 'object'">
+                <div>
+                    <app-dynamic-forms [sections]="[section]"
+                        [sourceType]="'general'" type="'recursive'"
+                        [formData]="formData" (fieldDataEmit)="emittedFieldData($event)"></app-dynamic-forms>
+                </div>
+            </div>
+
+            <div *ngIf="section.type === 'array'" class="mt-2">
+                <div class="section-container">
+                    <div class="d-flex justify-content-between bg-primary">
+                        <div class="section-title p-2" *ngIf="section?.title">{{section.title}}</div>
+                        <div>
+                            <button pButton class="p-button-light" (click)="addArrayItem(section)" icon="pi pi-plus">&nbsp;Add</button>
+                        </div>
+                    </div>
+                    <div class="accordion" [attr.id]="'accordion_' + section.sectionKey" *ngIf="formData?.[section.sectionKey]?.length > 0">
+                        <div class="accordion-item m-2" *ngFor="let data of formData[section.sectionKey]; let i = index">
+                    
+                            <h2 class="accordion-header" [attr.id]="'heading_' + section.sectionKey + '_' + i">
+                                <button class="accordion-button fw-bold" [class.collapsed]="lastOpenedIndexMap[section.sectionKey] !== i"
+                                    type="button" data-bs-toggle="collapse"
+                                    [attr.data-bs-target]="'#collapse_' + section.sectionKey + '_' + i"
+                                    [attr.aria-expanded]="lastOpenedIndexMap[section.sectionKey] === i"
+                                    [attr.aria-controls]="'collapse_' + section.sectionKey + '_' + i">
+                                    {{ (section?.title || "") + (' Data ' + (i + 1)) }}
+                                </button>
+                            </h2>
+                    
+                            <div [attr.id]="'collapse_' + section.sectionKey + '_' + i" class="accordion-collapse collapse"
+                                [class.show]="lastOpenedIndexMap[section.sectionKey] === i"
+                                [attr.aria-labelledby]="'heading_' + section.sectionKey + '_' + i"
+                                [attr.data-bs-parent]="'#accordion_' + section.sectionKey">
+                    
+                                <div class="accordion-body">
+                                    <div class="d-flex justify-content-end mb-2" *ngIf="formData?.[section.sectionKey]?.length > 0">
+                                        <button pButton type="button" icon="pi pi-trash" class="p-button-danger p-button-sm"
+                                            (click)="deleteArrayItem(section, i)">
+                                            &nbsp;Delete
+                                        </button>
+                                    </div>
+                    
+                                    <app-dynamic-forms [sections]="section.fields" [sourceType]="'array-item'" type="'recursive'"
+                                        [formData]="data" (fieldDataEmit)="emittedFieldData($event)">
+                                    </app-dynamic-forms>
+
+                                    <div class="mt-2">
+                                        <button pButton type="button" icon="pi pi-check" class="p-button-light"
+                                            (click)="closeCurrentAccordion(section, i)">
+                                            &nbsp;Save
+                                        </button>
+                                    </div>
+
+                                </div>
+                            </div>
+                    
+                        </div>
+                    </div>
+
+                    <div class="p-2" *ngIf="!(formData?.[section.sectionKey]?.length > 0)">
+                        <span class="fw-bold">No Data Added</span>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

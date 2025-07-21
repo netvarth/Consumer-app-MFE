@@ -1,0 +1,106 @@
+<form [formGroup]="amForm" novalidate (ngSubmit)="onSubmit(amForm.value)" class="drugdetail">
+  <h1 class="mat-dialog-title">{{address_title}}
+    <button #queue mat-dialog-close class="modal_close" tabindex="-1" (click)="close()">
+      <i class="fa fa-window-close" aria-hidden="true"></i>
+    </button>
+  </h1>
+  <mat-dialog-content>
+    <div class="lbl col-sm-6 col-md-6 col-lg-6 col-xl-6 no-padding-small mgn-bt-10 address-add ">
+      <div class="form-group">
+        <label>Mobile*</label>
+        <ngx-intl-tel-input [cssClass]="'custom'" [preferredCountries]="preferredCountries"
+          [enableAutoCountrySelect]="true" [enablePlaceholder]="true" [searchCountryFlag]="true"
+          [searchCountryField]="[SearchCountryField.Iso2, SearchCountryField.Name]" [selectFirstCountry]="false"
+          [phoneValidation]="true" [maxLength]="15" [selectedCountryISO]="selectedCountry"
+          [separateDialCode]="separateDialCode" [numberFormat]="PhoneNumberFormat.National" name="phoneNumber"
+          formControlName="phoneNumber">
+        </ngx-intl-tel-input>
+      </div>
+      <div class="form-group">
+        <label>First Name*</label>
+        <input type="text" class="form-control" formControlName="firstName" />
+        <app-field-error-display [displayError]="fed_service.isFieldValid(amForm,'firstName')" [errorMsgs]="fed_service.getErrorMessage(amForm,'firstName',
+                                      {
+                                        'required' : 'First name is required',
+                                        'pattern' : 'Only alphabets are allowed'
+                                      })">
+        </app-field-error-display>
+      </div>
+      <div class="form-group">
+        <label>Last name*</label>
+        <input type="text" class="form-control" formControlName="lastName" />
+        <app-field-error-display [displayError]="fed_service.isFieldValid(amForm,'lastName')" [errorMsgs]="fed_service.getErrorMessage(amForm,'lastName',
+                                    {
+                                      'required' : 'Last name is required',
+                                      'pattern' : 'Only alphabets are allowed'
+                                    })">
+        </app-field-error-display>
+      </div>
+      <div class="form-group">
+        <label>Email*</label>
+        <input type="email" class="form-control" formControlName="email" />
+        <app-field-error-display [displayError]="fed_service.isFieldValid(amForm,'email')" [errorMsgs]="fed_service.getErrorMessage(amForm,'email',
+                                {
+                                  'required' : 'Email is required',
+                                  'pattern' : 'Please enter valid email'
+                                })">
+        </app-field-error-display>
+      </div>
+    </div>
+    <div class="lbr col-sm-6 col-md-6 col-lg-6 col-xl-6 no-padding-small">
+      <div class="form-group">
+        <label>City*</label>
+        <input type="text" class="form-control" formControlName="city" />
+        <app-field-error-display [displayError]="fed_service.isFieldValid(amForm,'city')" [errorMsgs]="fed_service.getErrorMessage(amForm,'city',
+        {
+          'required' : 'Please enter city name',
+          'pattern' : 'Only alphabets are allowed'
+        })">
+        </app-field-error-display>
+      </div>
+
+      <div class="form-group">
+        <label>Postal Code /ZIP*</label>
+        <input type="text" class="form-control" formControlName="postalCode" />
+        <app-field-error-display [displayError]="fed_service.isFieldValid(amForm,'postalCode')" [errorMsgs]="fed_service.getErrorMessage(amForm,'postalCode',
+      {
+        'required' : 'Please enter Postal Code ',
+        'minlength' : 'Enter a 6 digit Postal Code',
+        'maxlength' : 'Enter a 6 digit Postal Code',
+        'pattern' : 'Only numbers are allowed'
+      })">
+        </app-field-error-display>
+      </div>
+
+      <div class="form-group">
+        <label>Landmark*</label>
+        <input type="text" class="form-control" formControlName="landMark" />
+        <app-field-error-display [displayError]="fed_service.isFieldValid(amForm,'landMark')" [errorMsgs]="fed_service.getErrorMessage(amForm,'landMark',
+    {
+      'required' : 'Please enter landmark'
+    })">
+        </app-field-error-display>
+      </div>
+      <div class="form-group">
+        <label>Address*</label>
+        <div class="input-group">
+          <div class="input-group-prepend"></div>
+          <textarea type="text" class="form-control" formControlName="address"></textarea>
+        </div>
+        <app-field-error-display [displayError]="fed_service.isFieldValid(amForm,'address')" [errorMsgs]="fed_service.getErrorMessage(amForm,'address',
+          {
+            'required' : 'Please enter address'
+          })">
+        </app-field-error-display>
+      </div>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <div class="col-md-10 no-padding mgn-up-10 glbl-seting-heder">
+      <button type="submit" mat-button [disabled]="isFormInvalid()"
+        class="cs-btn bt1 style-button">{{submitBtn}}</button>
+    </div>
+  </mat-dialog-actions>
+</form>
+<app-field-error-display [displayError]="true" *ngIf="api_error" errorMsg="{{api_error}}"></app-field-error-display>
+<app-form-success-display [displayMsg]="true" *ngIf="api_success" successMsg="{{api_success}}">

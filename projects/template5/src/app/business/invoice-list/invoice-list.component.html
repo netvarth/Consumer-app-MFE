@@ -1,0 +1,46 @@
+<div class="mat-dialog-title">
+  <div class="headerText">
+    Invoices
+    <button #queue mat-dialog-close class=" modalCloseTemp" (click)="onClick()">
+      <i class="fa fa-window-close hoverCross" aria-hidden="true"></i>
+    </button>
+  </div>
+</div>
+<mat-dialog-content>
+  <table class="table table-borderless">
+    <tbody>
+      <tr  *ngFor="let invoice of filteredInvoice;">
+        <td class="details-title">ID : {{invoice.invoiceId}}
+          <br>
+          <span class="serviceChargeTxt" *ngIf="invoice && invoice.amountPaid">{{ 'Amount Paid' |
+            translate }} :
+          </span>
+          <span class="amountPaid" *ngIf="invoice && invoice.amountPaid">{{invoice.amountPaid |
+            currency:'&#8377;'}}
+          </span>
+        </td>
+        <td class="details-title">{{invoice.netRate |
+          currency:'&#8377;'}}
+        </td>
+        <td  class="details-title">
+          {{invoice.invoiceDate| date:newDateFormat}}
+        </td>
+        <td  class="details-title">{{getStatusDisplayName(invoice.billPaymentStatus)}}&nbsp;
+          <span *ngIf="invoice.billStatus === 'Settled'">(Settled)</span>
+          <span class="red" *ngIf="invoice.billStatus === 'Cancel'">(Cancelled)</span>
+          <span *ngIf="invoice.billStatus === 'Draft'">(Draft)</span>
+        </td>
+        <td  class="details-sub-title">
+          <span>
+            <button class="amountDueBtn" *ngIf="invoice.amountPaid === 0"
+              (click)="actionClick(invoice.invoiceUid)">{{'Pay' | translate}}
+            </button>
+            <button class="amountDueBtn" *ngIf="invoice.amountPaid >0"
+              (click)="actionClick(invoice.invoiceUid)">{{'View' | translate}}
+            </button>
+          </span>&nbsp;
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</mat-dialog-content>

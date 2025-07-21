@@ -1,0 +1,58 @@
+<section [ngClass]="theme">
+<mat-toolbar class="mat-elevation-z8" >
+    <span class="fa fa-arrow-left pointer-cursor mgn-rt-15" (click)="goBack()"></span>
+    <button mat-icon-button *ngIf="sidenav.mode === 'over'" (click)="sidenav.toggle()">
+        <mat-icon *ngIf="!sidenav.opened">
+            menu
+        </mat-icon>
+        <mat-icon *ngIf="sidenav.opened">
+            close
+        </mat-icon>
+    </button>
+</mat-toolbar>
+
+<mat-sidenav-container>
+    <mat-sidenav #sidenav="matSidenav" class="mat-elevation-z8">
+        <img class="avatar mat-elevation-z8" src="{{bLogo}}" alt=""/>
+        <hr/>
+        <h4 class="name">{{businessName}}</h4>
+        <hr/>
+        <mat-divider></mat-divider>
+        <button mat-button class="menu-button" [ngClass]="{'active':selectedMenu === 'contact' }"
+            (click)="menuClicked('contact')">
+            <span> Contact us</span>
+        </button>
+        <button mat-button class="menu-button" [ngClass]="{'active':selectedMenu === 'terms' }"
+            (click)="menuClicked('terms')">
+            <span>Terms & Conditions</span>
+        </button>
+        <button mat-button class="menu-button" [ngClass]="{'active':selectedMenu === 'privacy' }"
+            (click)="menuClicked('privacy')">
+            <span>Privacy Policy</span>
+        </button>
+        <button mat-button class="menu-button" [ngClass]="{'active':selectedMenu === 'refund' }"
+            (click)="menuClicked('refund')">
+            <span>Refund & Cancellation Policy</span>
+        </button>
+        <mat-divider></mat-divider>
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <div class="content mat-elevation-z8" *ngIf="selectedMenu === 'contact'">
+            <app-contact [content]="customConf['contact']" [emailList]="emaillist" [phoneList]="phonelist"></app-contact>
+        </div>
+        <div class="content mat-elevation-z8" *ngIf="selectedMenu === 'terms'">
+            <app-termscondition *ngIf="!customConf"></app-termscondition>
+            <app-termscondition [content]="customConf['terms']" *ngIf="customConf && !customConf['terms_type']"></app-termscondition>
+            <app-termscondition [path]="customConf['terms']" *ngIf="customConf && customConf['terms_type']"></app-termscondition>
+        </div>
+        <div class="content mat-elevation-z8" *ngIf="selectedMenu === 'privacy'">
+            <app-privacy *ngIf="!customConf"></app-privacy>
+            <app-privacy [content]="customConf['privacy']" *ngIf="customConf && !customConf['privacy_type']"></app-privacy>
+            <app-privacy  [path]="customConf['privacy']" *ngIf="customConf && customConf['privacy_type']"></app-privacy>
+        </div>
+        <div class="content mat-elevation-z8" *ngIf="selectedMenu === 'refund'">
+            <app-refundcancel [detail]="customConf['refund']"></app-refundcancel>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>
+</section>

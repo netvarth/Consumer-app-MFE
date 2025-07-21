@@ -1,0 +1,142 @@
+<form [ngClass]="this.data.theme">
+    <h1 *ngIf="!fromOrderDetails" class="mat-dialog-title" style="font-size: 1.2rem !important;">
+        {{'Select an action to perform' | translate}}
+        <button mat-dialog-close class="modal_close" tabindex="-1"><i class="fa fa-window-close"
+                aria-hidden="true"></i></button>
+    </h1>
+    <div *ngIf="!fromOrderDetails" class="action-section consumer-action col-md-12 no-padding">
+        <div class=" col-122 col-md-12 col-lg-12 pad-30">
+            <!-- For large devices -->
+            <mat-grid-list cols="4" rowHeight="120px" [gutterSize]="'30px'" class="action-big">
+                <mat-grid-tile *ngIf="showRescheduleAppt" (click)="gotoAptmtReschedule()" style="cursor: pointer;">
+                    <img src="assets/images/Reschedule-01-01.svg" class="width-45" alt="">
+                    <mat-grid-tile-footer>
+                        <div class="footer-text">{{'Reschedule' | translate}}</div>
+                    </mat-grid-tile-footer>
+                </mat-grid-tile>
+                <mat-grid-tile *ngIf="showRescheduleWtlist" (click)="gotoWaitlistReschedule()" style="cursor: pointer;">
+                    <img src="assets/images/Reschedule-01-01.svg" class="width-45" alt="">
+                    <mat-grid-tile-footer>
+                        <div class="footer-text">{{'Reschedule' | translate}}</div>
+                    </mat-grid-tile-footer>
+                </mat-grid-tile>
+                <mat-grid-tile *ngIf="showcheckinCancel || showapptCancel" (click)="doCancelWaitlist()"
+                    style="cursor: pointer;">
+                    <img src="assets/images/error.svg" class="width-45" alt="">
+                    <mat-grid-tile-footer>
+                        <div class="footer-text">{{'Cancel' | translate}}
+                            <span *ngIf="showapptCancel">{{'Appointment' | translate}}</span>
+                            <span *ngIf="showcheckinCancel && !bookingDetails.token">{{'Checkin' | translate}}</span>
+                            <span *ngIf="showcheckinCancel && bookingDetails.token">{{'Token' | translate}}</span>
+                        </div>
+                    </mat-grid-tile-footer>
+                </mat-grid-tile>
+                <mat-grid-tile (click)="addWaitlistMessage()" style="cursor: pointer;"><img
+                        src="assets/images/icon-chat.svg" class="width-70" style="cursor: pointer;" alt="">
+                    <mat-grid-tile-footer>
+                        <div class="footer-text">{{'Send Message' | translate}}</div>
+                    </mat-grid-tile-footer>
+                </mat-grid-tile>
+                <mat-grid-tile (click)="sendAttachment()" style="cursor: pointer;">
+                    <i class="material-icons">attach_file</i>
+                    <mat-grid-tile-footer>
+                        <div class="footer-text">{{'Send Attachments' | translate}}</div>
+                    </mat-grid-tile-footer>
+                </mat-grid-tile>
+
+                <mat-grid-tile *ngIf="showcheckinMeet || showapptMeet" (click)="getMeetingDetails()"
+                    style="cursor: pointer;">
+                    <img src="assets/images/sticky-notes.svg" class="width-45" alt="">
+                    <mat-grid-tile-footer>
+                        <div class="footer-text">{{'Meeting Details' | translate}}</div>
+                    </mat-grid-tile-footer>
+                </mat-grid-tile>
+                <mat-grid-tile *ngIf="apptLvTrackoff || chekinLvTrackoff" (click)="gotoLivetrack('false')"
+                    style="cursor: pointer;">
+                    <img src="assets/images/myjaldee/location.svg" class="width-45" alt="">
+                    <mat-grid-tile-footer>
+                        <div class="footer-text">{{'Tracking Off' | translate}}</div>
+                    </mat-grid-tile-footer>
+                </mat-grid-tile>
+                <mat-grid-tile *ngIf="apptLvTrackon || chekinLvTrackon" (click)="gotoLivetrack('true')"
+                    style="cursor: pointer;">
+                    <img src="assets/images/myjaldee/placeholder.svg" class="width-45">
+                    <mat-grid-tile-footer>
+                        <div class="footer-text">{{'Tracking On' | translate}}</div>
+                    </mat-grid-tile-footer>
+                </mat-grid-tile>
+            </mat-grid-list>
+            <!-- For small devices -->
+            <mat-grid-list cols="3" rowHeight="100px" [gutterSize]="'10px'" class="action-small">
+                <mat-grid-tile *ngIf="showRescheduleAppt" (click)="gotoAptmtReschedule()">
+                    <img src="assets/images/Reschedule-01-01.svg" class="width-30" alt="">
+                    <mat-grid-tile-footer>
+                        <div class="footer-text">{{'Reschedule' | translate}}</div>
+                    </mat-grid-tile-footer>
+                </mat-grid-tile>
+                <mat-grid-tile *ngIf="showRescheduleWtlist" (click)="gotoWaitlistReschedule()">
+                    <img src="assets/images/Reschedule-01-01.svg" class="width-30" alt="">
+                    <mat-grid-tile-footer>
+                        <div class="footer-text">{{'Reschedule' | translate}}</div>
+                    </mat-grid-tile-footer>
+                </mat-grid-tile>
+                <mat-grid-tile *ngIf="showcheckinCancel || showapptCancel" (click)="doCancelWaitlist()"><img
+                        src="assets/images/error.svg" class="width-30" alt="">
+                    <mat-grid-tile-footer>
+                        <div class="footer-text">{{'Cancel' | translate}}
+                            <span *ngIf="showapptCancel">{{'Appointment' | translate}}</span>
+                            <span *ngIf="showcheckinCancel && !bookingDetails.token">{{'Checkin' | translate}}</span>
+                            <span *ngIf="showcheckinCancel && bookingDetails.token">{{'Token' | translate}}</span>
+                        </div>
+                    </mat-grid-tile-footer>
+                </mat-grid-tile>
+                <mat-grid-tile (click)="addWaitlistMessage()"><img src="assets/images/icon-chat.svg" class="width-45"
+                        alt="">
+                    <mat-grid-tile-footer>
+                        <div class="footer-text">{{'Send Message' | translate}}</div>
+                    </mat-grid-tile-footer>
+                </mat-grid-tile>
+                <mat-grid-tile (click)="sendAttachment()">
+                    <i class="material-icons">attach_file</i>
+                    <mat-grid-tile-footer>
+                        <div class="footer-text">{{'Send Attachments' | translate}}</div>
+                    </mat-grid-tile-footer>
+                </mat-grid-tile>
+                <mat-grid-tile *ngIf="showcheckinMeet || showapptMeet" (click)="getMeetingDetails()">
+                    <img src="assets/images/myjaldee/sticky-notes.svg" class="width-30" alt="">
+                    <mat-grid-tile-footer>
+                        <div class="footer-text">{{'Meeting Details' | translate}}</div>
+                    </mat-grid-tile-footer>
+                </mat-grid-tile>
+                <mat-grid-tile *ngIf="apptLvTrackoff || chekinLvTrackoff" (click)="gotoLivetrack('false')">
+                    <img src="assets/images/myjaldee/location.svg" class="width-30" alt="">
+                    <mat-grid-tile-footer>
+                        <div class="footer-text">{{'Tracking Off' | translate}}</div>
+                    </mat-grid-tile-footer>
+                </mat-grid-tile>
+                <mat-grid-tile *ngIf="apptLvTrackon || chekinLvTrackon" (click)="gotoLivetrack('true')">
+                    <img src="assets/images/myjaldee/placeholder.svg" class="width-30" alt="">
+                    <mat-grid-tile-footer>
+                        <div class="footer-text">{{'Tracking On' | translate}}</div>
+                    </mat-grid-tile-footer>
+                </mat-grid-tile>
+            </mat-grid-list>
+        </div>
+    </div>
+    <mat-dialog-content class="consumer-action" *ngIf="fromOrderDetails">
+        <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 no-padding">
+            <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4 col-4 no-padding">
+                <img class="img-msg" src="assets/images/order/chat.svg" alt="messsage">
+            </div>
+            <div class="col-sm-8 col-md-8 col-lg-8 col-xl-8 col-8 mgn-bt-10">
+                <div class="textCard">
+                    <h4 class="mx-2 my-2 text-secondary">{{'Notes' | translate}} :</h4>
+                    <span> {{bookingDetails.consumerNote}} </span>
+                </div>
+                <div class="disp-flex">
+                    <button class="cancel-btn" mat-dialog-close>{{'Close' | translate}}</button>
+                </div>
+            </div>
+        </div>
+    </mat-dialog-content>
+</form>

@@ -1,0 +1,23 @@
+.goBack {
+    padding: 15px;
+    font-size: 15px !important;
+}
+::ng-deep .ivr-section .p-dropdown, ::ng-deep .ivr-section .p-button {
+    width: 100% !important;
+    margin-top: 10px !important;
+    border-radius: 0px !important;
+}
+::ng-deep .ivr-section .p-button { 
+    height: 48px !important;
+    color: #fff !important;
+    background: #9A401E !important;
+}
+.callback-msg {
+    color: #35364F;
+    text-align: center;
+    font-size: 16.542px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 20.067px; /* 121.308% */
+    letter-spacing: 0.331px;
+}

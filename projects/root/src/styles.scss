@@ -3,6 +3,13 @@
 @import './assets/scss/_variables.scss';
 @import './assets/scss/_modal.scss';
 @import './assets/scss/_material.scss';
+@import './assets/scss/_custom.scss';
+@font-face {
+    font-family: 'Poppins';
+    src: url('https://d2199iy1o5ikw9.cloudfront.net/customapp/assets/fonts/Poppins/Poppins-Regular.ttf')  format('ttf');
+    font-weight: normal;
+    font-style: normal;
+}
 @font-face {
   font-family: "custom-ynw";
   src: url("./assets/fonts/custom/custom-ynw.eot");
@@ -123,13 +130,18 @@ html {
 }
 
 body {
-  font-family: 'Figtree', sans-serif;
+  font-family: 'Poppins', sans-serif;
   // font-size: 14px;
   font-size: 1rem;
   line-height: 1.42857143;
 }
 
-h1,h2,h3,h4,h5,h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-weight: 500;
   margin-top: 0
 }
@@ -168,6 +180,7 @@ ol,
 ul {
   list-style: none;
 }
+
 .popup-class h1.mat-dialog-title {
   padding: 15px 10px !important;
   background: #1e4079;
@@ -257,6 +270,7 @@ ul {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
 .card {
   padding: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, .05) !important;
@@ -266,15 +280,19 @@ ul {
   border: none !important;
   width: 100%;
 }
+
 .mgn-bt-50 {
   margin-bottom: 50px !important;
 }
+
 .mgn-up-50 {
   margin-top: 50px !important;
 }
-.mgn-lt-1{
+
+.mgn-lt-1 {
   margin-left: 1px !important;
 }
+
 .p-accordion .p-accordion-header .p-accordion-header-link {
   padding: 1.5rem;
   color: #000000de;
@@ -306,9 +324,9 @@ ul {
 }
 
 .modal_close i:before {
-  font-family: custom-ynw!important;
+  font-family: custom-ynw !important;
   content: "i";
-  font-size: 1rem!important;
+  font-size: 1rem !important;
   width: 20px;
   height: 20px;
   font-weight: 600;
@@ -325,7 +343,7 @@ ul {
 }
 
 .zoom-icon {
-  content: url(https://d2199iy1o5ikw9.cloudfront.net/assets/images/teleservice/Zoom-01.svg);
+  content: url(https://d2199iy1o5ikw9.cloudfront.net/customapp/assets/images/teleservice/Zoom-01.svg);
   top: 4px;
   position: relative;
   padding-right: 1px;
@@ -333,7 +351,7 @@ ul {
 }
 
 .meet-icon {
-  content: url(https://d2199iy1o5ikw9.cloudfront.net/assets/images/teleservice/gmeet.svg);
+  content: url(https://d2199iy1o5ikw9.cloudfront.net/customapp/assets/images/teleservice/gmeet.svg);
   top: 3px;
   position: relative;
   padding-right: 1px;
@@ -341,7 +359,7 @@ ul {
 }
 
 .wtsapaud-icon {
-  content: url(https://d2199iy1o5ikw9.cloudfront.net/assets/images/teleservice/whatsapp_audio.svg);
+  content: url(https://d2199iy1o5ikw9.cloudfront.net/customapp/assets/images/teleservice/whatsapp_audio.svg);
   top: 4px !important;
   position: relative;
   padding-right: 1px;
@@ -350,7 +368,7 @@ ul {
 }
 
 .wtsapvid-icon {
-  content: url(https://d2199iy1o5ikw9.cloudfront.net/assets/images/teleservice/whatsapVideo.svg);
+  content: url(https://d2199iy1o5ikw9.cloudfront.net/customapp/assets/images/teleservice/whatsapVideo.svg);
   top: 4px;
   position: relative;
   padding-right: 1px;
@@ -358,7 +376,7 @@ ul {
 }
 
 .jaldeevideo-icon {
-  content: url(https://d2199iy1o5ikw9.cloudfront.net/assets/images/teleservice/jaldeevideo.svg);
+  content: url(https://d2199iy1o5ikw9.cloudfront.net/customapp/assets/images/teleservice/jaldeevideo.svg);
   top: 3px;
   position: relative;
   padding-right: 1px;
@@ -366,14 +384,16 @@ ul {
 }
 
 .jvideo-icon {
-  content: url(https://d2199iy1o5ikw9.cloudfront.net/assets/images/teleservice/video-icon-small.png);
+  content: url(https://d2199iy1o5ikw9.cloudfront.net/customapp/assets/images/teleservice/video-icon-small.png);
   position: relative;
   padding-right: 1px;
 }
+
 .consumer-reschedule-icon {
-  content: url(https://d2199iy1o5ikw9.cloudfront.net/assets/images/Reschedule-01-01.svg);
+  content: url(https://d2199iy1o5ikw9.cloudfront.net/customapp/assets/images/Reschedule-01-01.svg);
   width: 20px;
 }
+
 .jvideo-icon-s {
   width: 20px !important;
 }
@@ -383,19 +403,24 @@ ul {
 }
 
 .phon-icon {
-  content: url(https://d2199iy1o5ikw9.cloudfront.net/assets/images/teleservice/audio.svg);
+  content: url(https://d2199iy1o5ikw9.cloudfront.net/customapp/assets/images/teleservice/audio.svg);
   top: 3px;
   position: relative;
   padding-right: 1px;
   width: 15px;
 }
+
 .ks-modal-gallery-backdrop {
-  background: #000 !important;;
-  opacity: 0.85 !important;;
+  background: #000 !important;
+  ;
+  opacity: 0.85 !important;
+  ;
 }
+
 .ks-modal-gallery-panel {
   z-index: 90000 !important;
 }
+
 .pointer-cursor {
   cursor: pointer;
 }

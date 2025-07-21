@@ -1,0 +1,170 @@
+<div *ngIf="type && type!='repeat'">
+  <div *ngFor="let questions of labels">
+    <div
+      *ngIf="questions && questions.question && questions.question.dataGridListProperties && questions.question.dataGridListProperties.dataGridListColumns">
+      <div *ngIf="questions.question && questions.question.sequnceId && questions.question.sequnceId == timeType">
+        <div
+          *ngFor="let question of getDataGridListColumns(questions.question.dataGridListProperties.dataGridListColumns);let i=index">
+          <div *ngIf="questions && questions.question">
+            <div class="mt-3">
+              <h6 class="question-label">{{question.label}}
+                <span class="red" *ngIf="question.mandatory">*</span>
+              </h6>
+            </div>
+            <div>
+              <div
+                *ngIf="question && question.listPropertie && question.dataType && question.dataType == 'list' && question.listPropertie.maxAnswerable && question.listPropertie.maxAnswerable==1">
+                <div *ngFor="let value of question.listPropertie.values" class="p-field-checkbox">
+                  <p-card styleClass="primengCard">
+                    <div class="d-flex justify-content-between">
+                      <div>
+                        <!-- (onClick)="getTotalPrice(question)" -->
+                        <p-radioButton #category name="category" [value]="value" [inputId]="value"
+                          [(ngModel)]="answers[i]"
+                          (ngModelChange)="saveAnswers(questions,question,i,value)"></p-radioButton>
+                        <label [for]="value">&nbsp;{{value}}</label>
+                      </div>
+                      <div class="price-value"
+                        *ngIf="question && question.listPropertie && question.listPropertie && question.listPropertie.basePrice">
+                        <b>
+                          <i
+                            class="fa fa-inr"></i>&nbsp;{{getPriceValue(question.listPropertie,value)}}
+                        </b>
+                      </div>
+                      <div class="price-value"
+                        *ngIf="question && question.listPropertie && !question.listPropertie.basePrice">
+                        <b *ngIf="questions.question && questions.question.priceGridList">
+                          <i
+                            class="fa fa-inr"></i>&nbsp;{{getPriceValueFromGridList(questions.question.priceGridList,question.columnId,value)}}
+                        </b>
+                      </div>
+                    </div>
+                  </p-card>
+                </div>
+              </div>
+              <div
+                *ngIf="question && question.listPropertie && question.dataType && question.dataType == 'list' && question.listPropertie.maxAnswerable && question.listPropertie.maxAnswerable>1">
+                <div *ngFor="let value of question.listPropertie.values" class="p-field-checkbox">
+                  <p-card styleClass="primengCard">
+                    <div class="d-flex justify-content-between">
+                      <div>
+                        <p-checkbox #category name="category" [value]="value" [(ngModel)]="answers[i]"
+                          (ngModelChange)="saveAnswers(questions,question,i,value)"></p-checkbox>
+                        <label [for]="value">&nbsp;{{value}}</label>
+                      </div>
+                      <div class="price-value"
+                        *ngIf="question && question.listPropertie && question.listPropertie && question.listPropertie.basePrice">
+                        <b>
+                          <i
+                            class="fa fa-inr"></i>&nbsp;{{getPriceValue(question.listPropertie,value)}}
+                        </b>
+                      </div>
+                      <div class="price-value"
+                        *ngIf="question && question.listPropertie && !question.listPropertie.basePrice">
+                        <b *ngIf="questions.question && questions.question.priceGridList">
+                          <i
+                            class="fa fa-inr"></i>&nbsp;{{getPriceValueFromGridList(questions.question.priceGridList,question.columnId,value)}}
+                        </b>
+                      </div>
+                    </div>
+                  </p-card>
+                </div>
+              </div>
+              <div *ngIf="question && question.dataType && question.dataType == 'plainText'">
+                <div>
+                  <p-card styleClass="primengCard">
+                    <div>
+                      <textarea style="width: 100%" pInputTextarea [(ngModel)]="answers[i]"
+                        (ngModelChange)="saveAnswers(questions,question,i)"></textarea>
+                    </div>
+                  </p-card>
+                </div>
+              </div>
+              <div *ngIf="question && question.dataType && question.dataType == 'date'">
+                <div>
+                  <p-card styleClass="primengCard">
+                    <div>
+                      <p-calendar [(ngModel)]="answers[i]" [showTime]="false" dateFormat="dd-mm-yy"
+                        (ngModelChange)="convertDate($event,questions,question,i)" [showIcon]="true"
+                        [touchUI]="true"></p-calendar>
+                    </div>
+                  </p-card>
+                </div>
+              </div>
+              <div *ngIf="question && question.dataType && question.dataType == 'number'">
+                <div>
+                  <p-card styleClass="primengCard">
+                    <div>
+                      <p-inputNumber [style]="{'width':'100%'}" [showButtons]="true"
+                        [min]="question.numberPropertie.start" [max]="question.numberPropertie.end"
+                        [(ngModel)]="answers[i]" (ngModelChange)="saveAnswers(questions,question,i)"></p-inputNumber>
+                    </div>
+                  </p-card>
+                </div>
+              </div>
+              <div *ngIf="question && question.dataType && question.dataType == 'bool'">
+                <div>
+                  <p-card styleClass="primengCard">
+                    <div>
+                      <p-dropdown [style]="{'width':'100%'}" [options]="boolTypeValues" dropdownIcon="fa fa-caret-down"
+                        [(ngModel)]="answers[i]" optionLabel="name" optionValue="value"
+                        (ngModelChange)="saveAnswers(questions,question,i)" [placeholder]="question.label"></p-dropdown>
+                    </div>
+                  </p-card>
+                </div>
+              </div>
+              <div *ngIf="question && question.dataType && question.dataType == 'fileUpload'">
+                <div *ngIf="question.filePropertie">
+                  <p-card styleClass="primengCard">
+                    <div>
+                      <p-fileUpload [customUpload]="true"
+                        (uploadHandler)="filesUpload($event,questions,question.columnId,question,i)" name="myfile[]"
+                        accept=".{{question.filePropertie.fileTypes}}" maxFileSize="{{question.filePropertie.maxSize}}"
+                        [auto]="true">
+                      </p-fileUpload>
+                    </div>
+                  </p-card>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="totalPrice">
+          <span><b>Total Price : </b><i class="fa fa-inr small-inr"></i>&nbsp;{{totalPrice}}</span>
+        </div>
+        <div class="text-center mt-3">
+          <button pButton pRipple type="button" class="p-button-primary btn-primary"
+            (click)="next(questions.question.sequnceId)">{{questions.question &&
+            questions.question.sequnceId &&
+            questions.question.sequnceId < timeType?"Next":"Done"}}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="type && type=='repeat'">
+  <div class="d-flex justify-content-between mt-3">
+    <div
+      *ngIf="lastCustomization && lastCustomization.itemData && lastCustomization.itemData.item && lastCustomization.itemData.item.displayName ">
+      <span class="font-weight-bold font-medium">{{lastCustomization.itemData.item.displayName}}</span>
+      
+      <p *ngIf="lastCustomization && lastCustomization.answersData[0]">{{lastCustomization.answersData[0]}} 
+      <span *ngIf="lastCustomization && lastCustomization.answersData[1]">[{{lastCustomization.answersData[1]}}]</span></p>
+    </div>
+    <div *ngIf="lastCustomization && lastCustomization.postData && lastCustomization.postData.totalPrice">
+      <span class="font-weight-bold font-medium"><i
+          class="fa fa-inr"></i>&nbsp;{{lastCustomization.postData.totalPrice}}</span>
+    </div>
+  </div>
+  <div class="d-flex justify-content-between mt-5">
+    <div>
+      <button pButton type="button" class="p-button-outlined p-button-primary" label="Repeat Last"
+        (click)="repeatLastItemOptions()"></button>
+    </div>
+    <div>
+      <button pButton type="button" class="p-button-outlined p-button-danger" label="Add New"
+        (click)="addNewItemOptions()"></button>
+    </div>
+  </div>
+</div>

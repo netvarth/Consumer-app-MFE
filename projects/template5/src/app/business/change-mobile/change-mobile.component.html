@@ -1,0 +1,53 @@
+<section class="container no-padding no-padding-small" [ngClass]="theme?theme:''">
+  <div class="content p0 see-pages cons-members">
+    <div class="card title-gb">
+      <h5 class="mgn-up-10">{{mobile_cap}} <a class="pull-left mgn-rt-20 back-btn" (click)="goBack()"><i
+            class="fa fa-arrow-left"></i></a></h5>
+    </div>
+    <div class="related-links">
+      <div class="outer-card">
+        <div class="card">
+          <div *ngIf="step==1" class="change-phone-div">
+            <form [formGroup]="spForm" novalidate (ngSubmit)=" onSubmit(spForm.value)" (keyup)="resetApiErrors()"
+              class="form">
+              <div class="mr-2">
+                <ul class="info-lst serviceadd-info">
+                  <li> <a>The new mobile number will be updated as the login mobile number too.</a>
+                  </li>
+                </ul>
+              </div>
+              <div class="form-group phonenumber mgn-up-20">
+                <label for="phonenumber">{{your_curmob_msg}} <b>{{currentcountryCode}} {{prev_phonenumber}}</b>
+                </label>
+              </div>
+              <div class="phonenumber">
+                <label for="phonenumber">New Mobile Number :
+                </label>
+              </div>
+              <div class="codenumber">
+                <ngx-intl-tel-input [cssClass]="'custom'" [preferredCountries]="preferredCountries"
+                  [enableAutoCountrySelect]="true" [enablePlaceholder]="true" [searchCountryFlag]="true"
+                  [searchCountryField]="[SearchCountryField.Iso2, SearchCountryField.Name]" [selectFirstCountry]="false"
+                  [phoneValidation]="true" [selectedCountryISO]="selectedCountry" [separateDialCode]="separateDialCode"
+                  [numberFormat]="PhoneNumberFormat.National" name="phonenumber" formControlName="phonenumber">
+                </ngx-intl-tel-input>
+              </div>
+              <br>
+              <div class="form-group mgn-up-10">
+                <button type="submit" mat-button class="" [disabled]="isFormInvalid()">{{save_btn_cap}}</button>
+              </div>
+            </form>
+          </div>
+          <div class="example-container otpouter" *ngIf="step==2">
+            <app-otp-form [type]="'change-mobile'" [submitdata]="submit_data" (retonOtpSubmit)="onOtpSubmit($event)"
+              (resetApiErrors)="resetApiErrors()" (resendOtp)="resendOtp($event)"></app-otp-form>
+          </div>
+          <app-field-error-display [displayError]="true" *ngIf="api_error" errorMsg="{{api_error}}">
+          </app-field-error-display>
+          <app-form-success-display [displayMsg]="true" *ngIf="api_success" successMsg="{{api_success}}">
+          </app-form-success-display>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

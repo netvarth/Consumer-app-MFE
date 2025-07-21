@@ -1,0 +1,52 @@
+<section class="container consumer-appthistory no-padding-small" [ngClass]="theme" *ngIf="!loggedIn">
+    <div class="col-12 col-sm-12 co-md-12 col-lg-12 no-padding">
+        <div class="loading-hgt my-1 login-form_custom">
+            <div class="card card-custom no-margin hgt-adjust">
+                <div class="card-body p-0">
+                    <app-authentication (actionPerformed)="actionPerformed($event)"
+                        [accountId]="accountId"></app-authentication>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div *ngIf="loggedIn">
+    <div class="card shadow d-flex flex-row header" [ngClass]="theme"
+        *ngIf="!registrationDone && questionaireList  && questionaireList.id && questionaireList.id!==0">
+        <div class="my-auto">
+            <a class="" (click)="goBack()"><i class="fa fa-arrow-left"></i>&nbsp;&nbsp;&nbsp;&nbsp; Back</a>
+        </div>
+    </div>
+    <div class="col-12"
+        *ngIf="!registrationDone && questionaireList  && questionaireList.id && questionaireList.id!==0">
+        <app-questionnaire [questionnaireList]="questionaireList" [accountId]="accountId" [source]="''"
+            [questionAnswers]="questionAnswers" (returnAnswers)="getAnswers($event)" (fileChanged)="uploadFile($event)">
+        </app-questionnaire>
+
+        <div class="col-12 mgn-bt-20">
+            <button class="btn btn-primary Register-btn" (click)="register()">Register</button>
+        </div>
+    </div>
+    <div class="col-12 text-center appl-submit" *ngIf="memberShip && memberShip.status">
+        <div *ngIf="memberShip.status == 'Hold'" class="mgn-up-50 mgn-bt-20" >
+            Your application is submitted for registration.
+        </div>
+        <div *ngIf="memberShip.status == 'Rejected'" class="mgn-up-50 mgn-bt-20" >
+            Your application is rejected.
+        </div>
+        <div *ngIf="memberShip.status == 'Approved'" class="mgn-up-50 mgn-bt-20" >
+            Your application is approved.
+        </div>
+        <button class="btn btn-primary" (click)="goBack()">Back to Home</button>
+    </div>
+    <div class="col-12 text-center appl-submit" *ngIf="registrationDone">
+        <div class="mgn-up-50 mgn-bt-20">
+            <img src="./assets/images/thanks.gif" width="100">
+        </div>
+        <div class="mgn-up-50 mgn-bt-20">
+            Thank you for registering for the course! We have received your application and it is currently under review. We will notify you once a decision has been made.
+        </div>
+        <button class="btn btn-primary" (click)="goBack()">Ok</button>
+    </div>
+</div>

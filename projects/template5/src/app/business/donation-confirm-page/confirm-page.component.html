@@ -1,0 +1,70 @@
+<section class="container no-padding confirm-aptckn no-padding-small" [ngClass]="theme">
+    <div class="content p0 loc-list">
+        <div class="card p0">
+            <div class="copy locd block-level" *ngIf="!apiloading">
+                <div class="col-sm-12 col-md-12 col-lg-12 post-info no-padding">
+                    <div class="details">
+                        <div class="book-head"> Donation Successful </div>
+                        <div class="book-details"> Donation details </div>
+                        <table class="book-details-sub  chkntoknappt-details">
+                            <tbody>
+                                <tr>
+                                    <td width="48%" align="right">Name of the provider</td>
+                                    <td width="2%">&nbsp;:&nbsp;</td>
+                                    <td class="name-line-ht">{{donation.providerAccount.businessName}}</td>
+                                </tr>
+                                <tr>
+                                    <td width="48%" align="right">Location </td>
+                                    <td width="2%">&nbsp;:&nbsp;</td>
+                                    <td> {{donation.location.place}}
+                                        <a *ngIf="donation && donation.location && donation.location.googleMapUrl"
+                                            [href]="donation.location.googleMapUrl" target="_blank"
+                                            class="fa fa-map-marker icon ms-1" matTooltip="Click to navigate">
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="48%" align="right">Donor</td>
+                                    <td width="2%">&nbsp;:&nbsp;</td>
+                                    <td>{{donation.donor.firstName}} {{donation.donor.lastName}}</td>
+                                </tr>
+                                <tr>
+                                    <td width="48%" align="right">Cause</td>
+                                    <td width="2%">&nbsp;:&nbsp;</td>
+                                    <td>
+                                        <span>{{donation.service.name}}</span>
+                                    </td>
+                                </tr>
+                                <tr *ngIf="donation.customerPaidCharges > 0">
+                                    <td width="48%" align="right">Processing fee</td>
+                                    <td width="2%">&nbsp;:&nbsp;</td>
+                                    <td class="rupee-font">
+                                        {{donation.customerPaidCharges | currency:'&#8377;'}}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="48%" align="right">Amount paid</td>
+                                    <td width="2%">&nbsp;:&nbsp;</td>
+                                    <td class="rupee-font">
+                                        {{donation.donationAmount | currency:'&#8377;'}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="notes"
+                            *ngIf="donation.service && donation.service.postInfoEnabled && donation.service.postInfoTitle">
+                            <div class="preinfo-title">{{donation.service.postInfoTitle}} </div>
+                            <div [innerHTML]="donation.service.postInfoText">
+                            </div>
+                        </div>
+                        <div class="ok-btn">
+                            <span class="pointer-cursor hf-btn" (click)="okClick()">
+                                <strong>OK</strong></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <app-common-innerloading-spinner *ngIf="apiloading"></app-common-innerloading-spinner>
+        </div>
+    </div>
+</section>

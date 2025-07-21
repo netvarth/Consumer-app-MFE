@@ -1,0 +1,85 @@
+<header class="consumer consumer-header" [ngClass]="theme">
+    <div class="no-padding">
+        <div class="col-md-12 col-12 col-sm-12 no-padding">
+            <div class="tp-1 d-flex  justify-content-around">
+                <div class="tp-l">
+                    <a (click)="gotoActiveHome()" class="logo pointer-cursor">
+                        <span class="logo-custom" *ngIf="!logo">
+                            <img class="img-circle" src="assets/images/home.png" alt="Home">
+                        </span>
+                        <span class="logo-custom" *ngIf="logo">
+                            <img class="img-circle" [src]="logo" alt="Home">
+                        </span>
+                    </a>
+                </div>
+                <div class="tp-r ml-auto">
+                    <div class="tc1">
+                        <div class="topsignouter">
+                            <ng-container *ngIf="isLoggedIn">
+                                <div class="bnps">
+                                    <div class="inbx pointer-cursor" (click)="inboxiconClick()"
+                                        [matTooltipClass]="tooltipcls" [matTooltip]="inboxiconTooltip">
+                                        <div class="ot-bx">
+                                            <i data-icon="H"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </ng-container>
+                            <div class="lgmem">
+                                <span class="lgin cust location" *ngIf="showLocation">
+                                    <button mat-icon-button [matMenuTriggerFor]="menu">
+                                        <i class="fa fa-map-marker"></i>
+                                    </button>
+                                    <mat-menu #menu="matMenu">
+                                        <button class="header-loc" mat-menu-item *ngFor="let loc of locations"
+                                            [ngClass]="{'active': selectedLocation.id === loc.id}"
+                                            (click)="changeLocation(loc)">
+                                            <span>{{loc.place}}</span>
+                                        </button>
+                                    </mat-menu>
+                                </span>
+                                <span class="lgin cust" *ngIf="isLoggedIn">
+                                    <button mat-icon-button [matMenuTriggerFor]="menu">
+                                        <i class="fa fa-user-circle-o"></i>
+                                    </button>
+                                    <mat-menu #menu="matMenu">
+                                        <button mat-menu-item (click)="redirectto('dashboard')">
+                                            <i class="icon-dashboard"></i>
+                                            <span>{{dashboard_cap | translate}}</span>
+                                        </button>
+                                        <button mat-menu-item (click)="redirectto('profile')">
+                                            <i class="icon-profile"></i>
+                                            <span>{{user_profile | translate}}</span>
+                                        </button>
+                                        <button mat-menu-item (click)="redirectto('members')">
+                                            <i class="icon-members"></i>
+                                            <span>{{family_members | translate}}</span>
+                                        </button>
+                                        <button mat-menu-item (click)="doLogout()">
+                                            <i class="icon-logout"></i>
+                                            <span>{{logout_cap | translate}}</span>
+                                        </button>
+                                    </mat-menu>
+                                </span>
+                            </div>
+                            <ng-container *ngIf="!isLoggedIn && !hideBookings">
+                                <div class="lgmem">
+                                    <a class="pointer-cursor" (click)="dashboardClicked()">{{'My Bookings' |
+                                        translate}}</a>
+                                </div>
+                            </ng-container>
+                            <!-- <div *ngIf="onlineOrder" class="d-flex align-items-center cart-section pe-1" (click)="goToCart()">
+                                <div class="d-flex justify-content-end align-items-center cart-container">
+                                    <i class="fa fa-shopping-cart ms-2 shopping-cart"></i>
+                                    <img class="ms-1" src="assets/images/order/Frame.svg" alt="">
+                                    <span *ngIf="cartCount > 0" class="cart-count">{{cartCount}}</span>
+                                    <span class="ms-1 display-large">Cart</span>
+                                </div>
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>

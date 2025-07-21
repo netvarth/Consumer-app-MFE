@@ -1,8 +1,6 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
+import { Injectable, RendererFactory2 } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { SharedService, ThemeService } from 'jconsumer-shared';
-import * as pako from 'pako';
+import { ServiceMeta, SharedService, ThemeService } from 'jconsumer-shared';
 
 @Injectable({
   providedIn: 'root'
@@ -16,10 +14,10 @@ export class TemplateService {
     private sharedService: SharedService,
     private themeService: ThemeService,
     private titleService: Title,
-    private http: HttpClient,
+    private servicemeta: ServiceMeta,
     private rendererFactory: RendererFactory2
 ) {
-      this.renderer = rendererFactory.createRenderer(null, null);
+      this.renderer = this.rendererFactory.createRenderer(null, null);
 
 }
 
@@ -54,20 +52,17 @@ export class TemplateService {
         }
         resolve(_this.sharedService.getTemplateJSON().template);
       } else {
-        _this.getSiteTemplateJSON().subscribe((templateJsonZip: any) => {
-          console.log(templateJsonZip);
-          
-          let templateJson = JSON.parse(pako.ungzip(templateJsonZip, { to: 'string' }));
-          console.log("Template",templateJson);
-          _this.titleService.setTitle(templateJson.header.title);
-          if(templateJson.logo) {
-            _this.setIcon(templateJson.logo);
-          }
-          if(templateJson.secondaryFont) {
-            _this.renderer.setStyle(document.body, 'font-family', templateJson.secondaryFont);
-          }
+        _this.getTemplateJSON().subscribe((templateJson: any) => {
+          // console.log("Template",templateJson);
+          // _this.titleService.setTitle(templateJson.header.title);
+          // if(templateJson.logo) {
+          //   _this.setIcon(templateJson.logo);
+          // }
+          // if(templateJson.secondaryFont) {
+          //   _this.renderer.setStyle(document.body, 'font-family', templateJson.secondaryFont);
+          // }
           _this.sharedService.setTemplateJSON(templateJson);
-          let themeURL = _this.sharedService.getCDNPath() + `assets/scss/themes/`;
+          let themeURL = _this.sharedService.getCDNPath() + `customapp/assets/scss/themes/`;
           if(templateJson['theme']) {
             _this.themeService.loadTheme(themeURL, templateJson['theme']);
           }          
@@ -75,37 +70,20 @@ export class TemplateService {
           resolve(templateJson.template);
         }, (error)=>{
           console.error("API Error:", error);
-          _this.sharedService.setTemplateID('template1');
+          _this.sharedService.setTemplateID('template2');
           _this.sharedService.setTemplateJSON(null);
           resolve(null);
         });
       }
     })    
   }
-
-  // getSiteTemplateJSON() {
-  //   const path = this.sharedService.getConfigPath() + this.sharedService.getUniqueID() + '/site_template.gz?t=' + new Date();
-  //   return this.serviceMeta.httpGet(path, { responseType: 'arraybuffer' });
-  // }
-
-  // getAccountConfig() {
-  //   const path = this.sharedService.getConfigPath() + this.sharedService.getUniqueID() + '/account_config.json?t=' + new Date();
-  //   return this.serviceMeta.httpGet(path)
-  // }
-
-  getSiteTemplateJSON() {
+  getTemplateJSON() {
     console.log(this.sharedService);
     console.log(this.sharedService.getConfigPath());
     console.log(this.sharedService.getUniqueID());
     
-    const path = this.sharedService.getConfigPath() + this.sharedService.getUniqueID() + '/site_template.gz?t=' + new Date();
-    return this.http.get(path, { responseType: 'arraybuffer' });
-  }
-
-  
-  getAccountConfig() {
-    const path = this.sharedService.getConfigPath() + this.sharedService.getUniqueID() + '/account_config.gz?t=' + new Date();
-    return this.http.get(path, { responseType: 'arraybuffer' });
+    const path = this.sharedService.getConfigPath() + this.sharedService.getUniqueID() + '/template.json?t=' + new Date();
+    return this.servicemeta.httpGet(path);
   }
 
 }

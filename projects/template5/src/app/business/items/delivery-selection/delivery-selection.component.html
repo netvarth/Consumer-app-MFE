@@ -1,0 +1,41 @@
+<div  [ngClass]="theme">
+    <div class="confirm-box">
+ <hr class="hr-style">
+    <div class="gap-5 delivery-margin">
+        <!-- Home Delivery Card -->
+        <div class="d-flex mgn-bt-20 delivery-card" [ngClass]="{ 'selected-card': selectedService === 'HOME_DELIVERY' }"
+            (click)="selectedService = 'HOME_DELIVERY'">
+
+            <div class="col-3">
+                <img src="assets/images/homed.svg" alt="" style="width:70px; height:50px">
+            </div>
+            <div class="fw-bold mgn-up-10 col-9">
+                Home Delivery
+                <div class="sub-label">We will deliver in your preferred location</div>
+            </div>
+        </div>
+
+        <!-- Store Pickup Card -->
+        <div class="d-flex delivery-card" [ngClass]="{ 'selected-card': selectedService === 'STORE_PICKUP' }"
+            (click)="selectedService = 'STORE_PICKUP'">
+
+            <div class="col-3">
+                <img src="assets/images/storep.svg" alt="" style="width:70px; height:50px">
+            </div>
+            <div class="fw-bold mgn-up-10 col-9">
+                Store Pickup
+                <div class="sub-label">Pick up your orders from our store</div>
+            </div>
+        </div>
+    </div>
+
+    <hr class="hr-style">
+    <div class="ok-btn">
+        <button class="btn btn-primary btn-style" (click)="onServiceSelect()">Continue
+                <!-- <img src="assets/images/mdi_arrow-left.svg" alt="" style="width:15px; height:15px;"> -->
+                 <i class="mgn-lt-10 fa fa-angle-right"></i>
+            </button>
+    </div>
+    </div>
+   
+</div>

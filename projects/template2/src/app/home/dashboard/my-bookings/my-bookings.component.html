@@ -1,0 +1,92 @@
+<div class="panel container mt-1" [ngClass]="theme">
+    <div class="loading-hgt my-1 login-form_custom" *ngIf="!loggedIn">
+        <div class="card card-custom no-margin hgt-adjust">
+            <div class="card-body p-0">
+                <app-authentication (actionPerformed)="actionPerformed($event)"
+                    [accountId]="accountId"></app-authentication>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="loggedIn">
+        <div class="col-12 col-sm-12 co-md-12 col-lg-12 p-0 cstmHeader" >
+            <div (click)="goBack()" class="backFlex pointer-cursor">
+                <div><i class="fa fa-arrow-left" aria-hidden="true"></i></div>
+                <div class="col-12 col-sm-12 col-md-12 col-lg-12 my-2 ms-1 mb">
+                    <div class="cstmHeaderTemp">{{'My Bookings' | translate}}</div>
+                    <div class="sub_cstmHeader">{{'Choose and view your bookings' | translate}}</div>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="table-outer1 booking-dash mt-4 col-12 col-sm-12 col-md-12 col-lg-12 p-0"
+            *ngIf="appointmentRequests && appointmentRequests.length > 0">
+            <div class="text-start my-2 pad-5 head-title">
+                <span class="stats-head-card-title">Requests</span>
+            </div>
+            <div>
+                <div *ngIf="appointmentRequests.length !== 0" class="my-2 grid-card">
+                    <div>
+                        <div *ngFor="let booking of appointmentRequests | slice:0:requestLimit"
+                            (click)="bookingDetails(booking, 'request')">
+                            <ng-container *ngIf="booking.apptStatus">
+                                <app-appt-card [booking]="booking" type="request" [extras]="extras"
+                                    (actionPerformed)="cardClicked($event)" [smallDevice]="smallDevice"></app-appt-card>
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="appointmentRequests.length > requestLimit" (click)="showMore('requests')"
+                class="my-3 pad-lt-10">
+                <span><a class="show_more">{{'Show more' | translate}}</a></span>
+            </div>
+            <div *ngIf="(appointmentRequests.length > limit) && appointmentRequests.length <= requestLimit"
+                (click)="showLess('requests')" class="my-3 ps-1">
+                <span><a class="show_more">{{'Show less' | translate}}</a></span>
+            </div>
+        </div>
+        <div class="table-outer1 booking-dash mt-4">
+            <div class="text-start mb-4 head-title p-0">
+                <mat-select class="form-control form-control1" [(ngModel)]="bookingTitle"
+                    (selectionChange)="bookingTitleChanged(bookingTitle)">
+                    <mat-option *ngFor="let bookingTitle of bookingTitles"
+                        [value]="bookingTitle"><span>{{bookingTitle.displayName}}</span></mat-option>
+                </mat-select>
+            </div>
+            <div *ngIf="bookings && bookings.length > 0 && !loading" class="grid-card">
+                <div *ngFor="let booking of bookings | slice:0:bookingsLimit"
+                    (click)="bookingDetails(booking)">
+                    <ng-container *ngIf="booking.apptStatus">
+                        <app-appt-card [booking]="booking" type={{bookingTitle.caption}}
+                            (actionPerformed)="cardClicked($event)"
+                            [booking]="bookingTitle.caption!=='previous'?booking:undefined"
+                            [history]="bookingTitle.caption==='previous'?booking:undefined"
+                            [smallDevice]="smallDevice"></app-appt-card>
+                    </ng-container>    
+                    <ng-container *ngIf="booking.waitlistStatus">
+                        <app-wl-card [booking]="booking" type={{bookingTitle.caption}}
+                            (actionPerformed)="cardClicked($event)"
+                            [booking]="bookingTitle.caption!=='previous'?booking:undefined"
+                            [history]="bookingTitle.caption==='previous'?booking:undefined"
+                            [smallDevice]="smallDevice"></app-wl-card>
+                    </ng-container>                 
+                </div>
+            </div>
+            <div *ngIf="bookings && bookings.length === 0 && !loading"
+                class="p-3 mt-4 nocheckins">
+                <p class="locate-customer">{{'No Bookings' | translate}}</p>
+                <div class="text-center">
+                    <img class="emptyOrderImg" src="{{cdnPath}}assets/images/myjaldee/Nobookings.png" />
+                </div>
+            </div>
+            <div *ngIf="bookings.length > bookingsLimit" (click)="showMore('bookings')"
+                class="mt-2 mb-4 ps-2">
+                <span><a class="show_more">{{'Show more' | translate}}</a></span>
+            </div>
+            <div *ngIf="(bookings.length > limit) && bookings.length <= bookingsLimit" (click)="showLess('bookings')"
+                class="mt-2 mb-4 ps-2">
+                <span><a class="show_more">{{'Show less' | translate}}</a></span>
+            </div>
+        </div>
+    </div>
+</div>

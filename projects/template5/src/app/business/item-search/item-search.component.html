@@ -1,0 +1,26 @@
+<div class="lucene-search" style="position: relative;">
+  <p-autoComplete #autocomplete [suggestions]="filteredItems" placeholder="what are you looking for?"
+    (completeMethod)="filterItems($event)" [(ngModel)]="selectedItem" (onSelect)="onItemSelected($event)"
+    (keydown.enter)="autocomplete.hide();onSearchSubmit($event)"
+    [style]="{'width':'100%'}" [inputStyle]="{'width':'100%'}">
+    <ng-template let-item pTemplate="item">
+      <div>
+        <div class="flex align-items-center gap-2">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="fw-bold" *ngIf="item.name">
+                {{capitalizeFirstLetter(item.name)}}
+              </div>
+              <div *ngIf="item.sOrderCatalogName">
+                {{capitalizeFirstLetter(item.sOrderCatalogName)}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </p-autoComplete>
+  <i class="pi pi-search pointer-cursor"       
+     (click)="onSearchSubmit($event)">
+  </i>
+</div>

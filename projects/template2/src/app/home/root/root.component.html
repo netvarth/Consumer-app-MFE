@@ -1,0 +1,64 @@
+<div id="page" *ngIf="templateJson">
+    <div id="footer-bar" class="footer-bar-1">
+        <a (click)="menuSelected(templateJson.section1)"
+            [ngClass]="{'active-nav' : selectedIndex === templateJson.section1.title }" *ngIf="templateJson.section1"><i
+                class="fa"
+                [ngClass]="[templateJson.section1.theme?templateJson.section1.theme:'',templateJson.section1.icon?templateJson.section1.icon:'fa-home']"></i><span>{{templateJson.section1.title
+                | translate}}</span></a>
+        <a (click)="menuSelected(templateJson.section2)"
+            [ngClass]="{'active-nav' : selectedIndex === templateJson.section2.title }" *ngIf="templateJson.section2"><i
+                class="fa fa-medkit"
+                [ngClass]="[templateJson.section2.theme?templateJson.section.theme:'',templateJson.section2.icon?templateJson.section2.icon:'fa-medkit']"></i><span>{{templateJson.section2.title
+                | translate}}</span></a>
+        <a (click)="menuSelected(templateJson.section3)" class="middle"
+            [ngClass]="{'active-nav' : selectedIndex === templateJson.section3.title }" *ngIf="templateJson.section3"><i
+                class="fa fa-users"
+                [ngClass]="[templateJson.section1.theme?templateJson.section1.theme:'',templateJson.section3.icon?templateJson.section3.icon:'fa-users']"></i><span>{{templateJson.section3.title
+                | translate}}</span></a>
+        <a (click)="menuSelected(templateJson.section4)"
+            [ngClass]="{'active-nav' : selectedIndex === templateJson.section4.title }" *ngIf="templateJson.section4"><i
+                class="fa fa-gear"
+                [ngClass]="[templateJson.section1.theme?templateJson.section1.theme:'',templateJson.section4.icon?templateJson.section4.icon:'fa-gear']"></i><span>{{templateJson.section4.title
+                | translate}}</span></a>
+        <a (click)="menuSelected(templateJson.section5)"
+            [ngClass]="{'active-nav' : selectedIndex === templateJson.section5.title }" *ngIf="templateJson.section5"><i
+                class="fa fa-address-book"
+                [ngClass]="templateJson.section5.theme?templateJson.section5.theme:'fa-address-book'"></i><span>{{templateJson.section5.title}}</span></a>
+    </div>
+    <div class="page-content header-clear-small pb-100">
+        <section class="pageitem" *ngIf="templateJson.section1 && selectedIndex==templateJson.section1.title">
+            <app-template [section]="templateJson.section1" [terminologiesjson]="terminologiesjson" [templateJson]="templateJson"
+            [accountProfile]="accountProfile" [selectedLocation]="selectedLocation" [settings]="settings" 
+            [apptSettings]="apptSettings" [galleryJson]="galleryJson" [accountConfig]="accountConfig" [apptServices]="apptServices"
+            [checkinServices]="checkinServices" [donationServices]="donationServices"></app-template>
+        </section>
+        <section class="pageitem mgn-bt-70 col-12 no-padding"
+            *ngIf="templateJson.section2 && selectedIndex==templateJson.section2.title">             
+            <app-template [section]="templateJson.section2" [terminologiesjson]="terminologiesjson" [templateJson]="templateJson"
+            [accountProfile]="accountProfile" [selectedLocation]="selectedLocation" [settings]="settings" [apptSettings]="apptSettings"
+             [galleryJson]="galleryJson" [accountConfig]="accountConfig" [apptServices]="apptServices" [checkinServices]="checkinServices"
+             [donationServices]="donationServices"></app-template>
+        </section>
+        <section class="col-12 no-padding"
+            *ngIf="templateJson.section3 && selectedIndex==templateJson.section3.title">
+            <app-template [section]="templateJson.section3" [terminologiesjson]="terminologiesjson" [templateJson]="templateJson"
+            [accountProfile]="accountProfile" [selectedLocation]="selectedLocation" [settings]="settings"
+            [apptSettings]="apptSettings" [galleryJson]="galleryJson" [accountConfig]="accountConfig" [apptServices]="apptServices"
+            [checkinServices]="checkinServices" [donationServices]="donationServices"> </app-template>
+        </section>
+        <section class="ftco-section bg-light" id="counselling-section"
+            *ngIf="templateJson.section4 && selectedIndex==templateJson.section4.title">
+            <app-template [section]="templateJson.section4" [terminologiesjson]="terminologiesjson" [templateJson]="templateJson"
+            [accountProfile]="accountProfile" [selectedLocation]="selectedLocation" [settings]="settings"  
+            [apptSettings]="apptSettings" [galleryJson]="galleryJson" [accountConfig]="accountConfig" [apptServices]="apptServices"
+            [checkinServices]="checkinServices" [donationServices]="donationServices"></app-template>
+        </section>
+        <section class="ftco-section contact-section" id="contact-section"
+            *ngIf="templateJson.section5 && selectedIndex==templateJson.section5.title">
+            <app-template [section]="templateJson.section5" [terminologiesjson]="terminologiesjson" [templateJson]="templateJson"
+            [accountProfile]="accountProfile" [selectedLocation]="selectedLocation" [settings]="settings"
+            [apptSettings]="apptSettings" [galleryJson]="galleryJson" [accountConfig]="accountConfig" [apptServices]="apptServices"
+            [checkinServices]="checkinServices" [donationServices]="donationServices"></app-template>
+        </section>
+    </div>
+</div>

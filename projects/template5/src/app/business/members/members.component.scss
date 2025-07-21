@@ -1,0 +1,260 @@
+h5 {
+    font-size: 1.25rem;
+    margin-bottom: 10px;
+}
+.content .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid rgba(0,0,0,.125);
+    border-radius: 0.25rem;
+}
+.title-gb {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+.back-btn {
+    font-size: 1.25rem!important;
+}
+.mgn-rt-20 {
+    margin-right: 20px!important;
+}
+.mgn-lt-20 {
+    margin-left: 20px!important;
+}
+.addbt {
+    position: relative;
+    cursor: pointer;
+    color: #00aef2;
+}
+.content.see-pages .outer-card {
+    display: flex;
+    width: 100%!important;
+}
+.content.see-pages .outer-card .card.members-card {
+    width: 75%;
+    margin-left: 5px!important;
+}
+.content.see-pages .outer-card .right-menu {
+    flex-grow: 1;
+    margin-left: 40px;
+}
+.content.see-pages .outer-card .right-menu .right-menu-header {
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+.addbt:before {
+    font-family: custom-ynw!important;
+    content: "\45";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.fa-arrow-left {
+    color: black;
+}
+.table-outer table {
+    border: 1px solid #f2f2f2;
+}
+.content.see-pages .outer-card .card .d-tbl .table {
+    margin-bottom: 0;
+}
+.content.see-pages .outer-card .right-menu ul li {
+    list-style: none;
+    font-size: .875rem;
+    color: #00aef2;
+    margin-bottom: 10px;
+    cursor: pointer;
+    display: table;
+    padding-left: 30px;
+    position: relative;
+}
+.related-links {
+    margin-bottom: 30px!important;
+}
+.table-outer table thead th {
+    font-size: .875rem;
+    font-weight: 600;
+    vertical-align: top;
+    border: none;
+}
+.table-outer table tbody tr td {
+    font-size: .875rem;
+    border-color: #f2f2f2;
+    vertical-align: top;
+    min-height: 45px;
+}
+.table-outer table tbody tr:nth-of-type(odd) {
+    background: rgba(0,0,0,.03);
+}
+.mat-icon-button .mat-icon {
+    line-height: 24px;
+}
+.content.see-pages .outer-card .card .d-tbl .table tbody tr td.mre {
+    text-align: center;
+}
+.content.see-pages .outer-card .right-menu ul {
+    margin: 0;
+    padding: 0;
+}
+@media (min-width: 768px) and (max-width: 991px){
+.d-tbl table, .d-tbl tbody, .d-tbl td, .d-tbl th, .d-tbl thead, .d-tbl tr {
+    display: block;
+    font-size: .875rem;
+}
+}
+@media only screen and (max-width: 767px){
+.table-outer table, .table-outer tbody, .table-outer td, .table-outer th, .table-outer thead, .table-outer tr {
+    display: block;
+    font-size: .875rem;
+}
+}
+@media only screen and (max-width: 767px){
+.table-outer td {
+    border: none;
+    border-bottom: 1px solid #eee;
+    position: relative;
+    white-space: normal;
+    text-align: left;
+    display: flex;
+}
+}
+@media only screen and (max-width: 767px){
+.table-outer thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+}
+}
+@media (min-width: 768px) and (max-width: 991px){
+.d-tbl thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+}
+}
+@media only screen and (max-width: 767px){
+.table-outer td:before {
+    top: 12px;
+    left: 10px;
+    width: 45%;
+    padding-right: 10px;
+    white-space: pre-wrap;
+    text-align: left;
+    font-weight: 600;
+    content: attr(data-title);
+}
+}
+@media (min-width: 768px) and (max-width: 991px){
+.d-tbl td:before {
+    top: 12px;
+    left: 10px;
+    width: 45%;
+    padding-right: 10px;
+    white-space: pre-wrap;
+    text-align: left;
+    font-weight: 600;
+    content: attr(data-title);
+}
+}
+@media (min-width: 768px) and (max-width: 991px){
+.d-tbl td {
+    border: none;
+    border-bottom: 1px solid #eee;
+    position: relative;
+    white-space: normal;
+    text-align: left;
+    display: flex;
+}
+}
+@media (max-width: 992px){
+.content.see-pages .outer-card .card.members-card {
+    width: 60% !important;
+}
+}
+.mbt-mobile-show {
+    display: none;
+}
+@media (max-width: 575px) {
+.content.see-pages .outer-card .card.members-card {
+    width: 100% !important;
+}
+}
+@media only screen and (max-width: 766px){
+.content.see-pages .outer-card .card .d-tbl .table tbody tr td.mre .mbt-mobile-show {
+    display: block;
+    text-align: right;
+}
+}
+.content.see-pages .outer-card .card .d-tbl .table tbody tr td.mre .mbt-mobile-show {
+    width: 100%;
+    justify-content: flex-end;
+}
+@media only screen and (max-width: 767px){
+    .mbt .mat-icon-button {
+        display: none;
+    }
+}
+.content.see-pages .outer-card .card .d-tbl .table tbody tr td.mre .mbt-mobile-show .deletecls, .content.see-pages .outer-card .card .d-tbl .table tbody tr td.mre .mbt-mobile-show .editcls {
+    position: relative;
+    border: none;
+    background: transparent;
+    padding-left: 20px;
+    font-weight: 500;
+    margin-right: 15px;
+    cursor: pointer;
+}
+@media only screen and (max-width: 575px){
+.content.see-pages .outer-card {
+    flex-direction: column;
+}
+}
+@media only screen and (max-width: 575px){
+    h5 {
+        font-size: 17.5px !important;
+    }
+    .table-outer table tbody tr td {
+        font-size: 12.25px !important;
+    }
+}
+.content.see-pages .outer-card .card .d-tbl .table tbody tr td.mre .mbt-mobile-show .deletecls:before {
+    content: "\4b";
+    font-family: custom-ynw!important;
+    position: absolute;
+    left: 0;
+    font-size: .875rem;
+}
+.content.see-pages .outer-card .card .d-tbl .table tbody tr td.mre .mbt-mobile-show .editcls:before {
+    font-family: custom-ynw!important;
+    content: "\78";
+    position: absolute;
+    left: 0;
+    font-size: .875rem;
+}
+.content.see-pages .outer-card .right-menu ul li:before {
+    position: absolute;
+    left: 0;
+    top: 3px;
+}
+.icon-dashboard:before {
+    content: "\77";
+}
+.icon-profile:before {
+    content: "\6c";
+}
+.icon-password:before {
+    content: "\23";
+}
+.icon-mobile:before {
+    content: "\22";
+}

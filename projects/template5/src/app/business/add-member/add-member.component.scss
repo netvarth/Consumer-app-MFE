@@ -1,0 +1,581 @@
+.mobPrefix {
+  display: flex;
+  align-items: center;
+  padding: 0.55rem 1rem;
+  margin-bottom: 0;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #3F4254;
+  text-align: center;
+  white-space: nowrap;
+  background-color: #F3F6F9;
+  border: 1px solid #E4E6EF;
+  border-radius: 0.42rem;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.mobclass {
+  width: 80% !important;
+  height: 38px !important;
+}
+
+.deleteIcon {
+  height: 85px;
+  width: 85px;
+  background: #F7F7F7;
+  box-shadow: inset 0px 4.875px 4.875px rgb(0 0 0 / 25%);
+  border-radius: 50%;
+
+  padding: 5px
+}
+
+.deletePosition {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.confirmation {
+  text-align: center;
+  margin-top: 10px
+}
+
+.confirmationTxt {
+  color: #E67367;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.confirmationdlt {
+  text-align: center;
+  margin-top: 10px
+}
+
+.confirmationTxtDlt {
+  color: #464646;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.btnActive {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.noBtn {
+  background: #ECEBEB;
+  border-radius: 6.89189px;
+  border: none;
+  padding: 10px;
+  width: 5rem;
+  box-shadow: 0px 4.51106px 4.51106px rgb(0 0 0 / 25%);
+}
+
+.yesBtn {
+  border: none;
+  padding: 10px;
+  width: 5rem;
+  background: #FF4343;
+  box-shadow: 0px 4.51106px 4.51106px rgb(0 0 0 / 25%);
+  border-radius: 6.89189px;
+  color: #fff;
+  font-weight: 600;
+}
+
+.modal_close {
+  border: none !important;
+}
+
+.goodByText {
+  font-size: 45px;
+  color: #000000;
+  font-weight: 400;
+}
+
+.padIng {
+  padding: 10px;
+}
+
+.textCenter {
+  text-align: center;
+}
+
+.mobPrefix {
+  display: flex;
+  align-items: center;
+  padding: 0.55rem 1rem;
+  margin-bottom: 0;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #3F4254;
+  text-align: center;
+  white-space: nowrap;
+  background-color: #F3F6F9;
+  border: 1px solid #E4E6EF;
+  border-radius: 0.42rem;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.mobclass {
+  width: 80% !important;
+  height: 38px !important;
+}
+
+.headerBorder {
+  border-bottom: 1.21389px solid #DADCE0 !important;
+  display: flex;
+  gap: 5px;
+  flex-direction: row !important;
+  padding: 15px !important;
+}
+
+.clrChangeHeader {
+  color: #464849 !important;
+  cursor: pointer;
+}
+
+.accountEditText {
+  color: #5F6368;
+  font-size: 13px;
+  margin-top: 5px;
+}
+
+.myAcText {
+  color: rgba(0, 0, 0, 0.87) !important;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.customCard {
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, .05) !important;
+  border-radius: 5px;
+  background: #fff;
+  background-clip: padding-box;
+  border: none !important;
+  width: 100%;
+}
+
+.mainFlex {
+  display: flex;
+  margin-top: 15px;
+  gap: 30px;
+  width: 100%;
+}
+
+.tabText {
+  font-weight: 500;
+  font-size: 14px;
+  color: #5F6368;
+  margin-top: 15px;
+  cursor: pointer;
+  font-family: 'Open Sans';
+  font-style: normal;
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.tabText:hover {
+  color: #0D2348 !important;
+  font-weight: bold;
+}
+
+.fullWidth {
+  width: 100%;
+  padding: 20px;
+  box-shadow: 0 0 10px rgb(0 0 0 / 5%) !important;
+  border-radius: 5px;
+  background: #fff;
+  background-clip: padding-box;
+  border: none !important;
+  width: 100%;
+}
+
+.fullWidthLinks {
+  width: 25%;
+}
+
+.userImg {
+  border: 1px solid #AAACAF;
+  border-radius: 50%;
+  padding: 10px;
+  height: 65px;
+  width: 65px;
+}
+
+.position {
+  margin-top: -15px;
+  margin-bottom: 10px;
+}
+
+.newImgUpload {
+  box-shadow: 0.417685px 2.50611px 8.77138px 1.25305px rgb(30 64 121 / 15%) !important;
+  border-radius: 3.75916px !important;
+  border: 0px solid !important;
+  padding: 6px 12px;
+  background: #0D2348 !important;
+}
+
+.flexClassImg {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+
+}
+
+.deleteBtn {
+  box-shadow: 0.417685px 2.50611px 8.77138px 1.25305px rgb(30 64 121 / 15%);
+  border-radius: 3.75916px !important;
+  padding: 6px 12px;
+  background: #FFFFFF;
+  border: 1.03704px solid #AAACAF;
+  color: #AAACAF;
+}
+
+.btntxt {
+  color: #fff;
+  font-weight: 500 !important;
+  font-size: 15px;
+  font-family: 'Open Sans';
+}
+
+.btntxtClr {
+  color: #AAACAF;
+  font-weight: 500 !important;
+  font-size: 15px;
+  font-family: 'Open Sans';
+}
+
+.forMFieldInput {
+  border: none !important;
+  height: 40px;
+  font-weight: 400;
+  font-size: 15px;
+  color: #403B48 !important;
+}
+
+.labeltag {
+  font-size: 15px;
+  color: rgba(58, 53, 65, 0.68);
+}
+
+.formFieldFlex {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.widthCls {
+  width: 100%;
+}
+
+.is-invalid {
+  border: 2px solid #ff6a6a !important;
+}
+
+.dateIcon {
+  height: 30px;
+  background: #AAACAF;
+  object-fit: cover;
+}
+
+.whatsappFlex {
+  display: flex;
+  align-items: center;
+}
+
+.tempmatFormField {
+  width: 15% !important;
+}
+
+.whatsappFlex {
+  display: flex;
+  gap: 2px;
+  margin-bottom: 15px;
+}
+
+.telegramFlex {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.telegtamNoText {
+  color: #403B48;
+  font-size: 15px;
+}
+
+.telegramCls {
+  color: #29b6f6;
+  font-size: 25px;
+}
+
+.mailSend {
+  color: #1B1B1B !important;
+}
+
+.mailTo {
+  color: #ff6a6a !important;
+}
+
+.supprtmail {
+  color: #ff6a6a !important;
+}
+
+.fontSize {
+  font-size: 14px;
+}
+
+.activityBtn {
+  box-shadow: 0.417685px 2.50611px 8.77138px 1.25305px rgb(30 64 121 / 15%);
+  border-radius: 3.75916px !important;
+  border: none !important;
+  background: #0D2348;
+  width: 25%;
+  padding: 11px;
+  color: #fff;
+  letter-spacing: 3px;
+}
+
+.matFormFieldPhNo {
+  width: 41% !important;
+}
+
+.tempmatFormFieldPhNoDial {
+  width: 7.5% !important;
+}
+
+.tabTextCstmClr {
+  color: #0D2348;
+  font-weight: bold;
+}
+
+.formfielderror {
+  margin-top: -10px;
+  margin-bottom: 10px;
+  color: #ff6a6a;
+}
+
+.labeltagCstm {
+  font-size: 15px;
+  color: rgba(58, 53, 65, 0.68);
+  color: #ff6a6a;
+}
+
+.webErrorClass {
+  display: flex;
+  justify-content: space-between;
+}
+
+.formfielderrorTelegram {
+  display: none;
+}
+
+.formfielderrorWhatsapp {
+  display: none;
+}
+
+.formFieldFlex {
+  gap: 10px !important;
+}
+
+@media (max-width: 768px) {
+  .formFieldFlex {
+    flex-wrap: wrap;
+  }
+
+  .fullWidth {
+    width: 100%;
+  }
+
+  .mainFlex {
+    flex-wrap: wrap;
+  }
+
+  .fullWidthLinks {
+    width: 100%;
+  }
+
+  .matFormFieldPhNo {
+    width: 100% !important;
+  }
+
+  .tempmatFormFieldPhNoDial {
+    width: 14.5% !important;
+  }
+
+  .webErrorClass {
+    display: none;
+  }
+
+  .formfielderrorTelegram {
+    display: block;
+  }
+
+  .formfielderrorWhatsapp {
+    display: block;
+  }
+
+  .flexClassImg {
+    justify-content: center !important;
+  }
+
+  .dateIcon {
+    background: none !important;
+  }
+
+  .flexClassImg {
+    justify-content: center !important;
+  }
+}
+
+$cursorDisable: not-allowed !important;
+$dateSelectedBgC: #84CFAE !important;
+$noneProperty: none !important;
+$top: 5% !important;
+$left: 5% !important;
+$height: 90% !important;
+$width: 90% !important;
+$width_1: 100% !important;
+$matBtnBGC: #0D2348 !important;
+
+::ng-deep .add-member .mdc-button {
+  background-color: #FBFBFB !important;
+  color: #000000 !important;
+  font-weight: 500;
+  background-color: $matBtnBGC;
+  color: #ffffff !important;
+}
+
+::ng-deep .add-member .mdc-button:hover {
+  background: $matBtnBGC;
+}
+
+::ng-deep .add-member .mat-icon-button.mdc-button-disabled {
+  cursor: $cursorDisable;
+}
+
+.disable {
+  cursor: $cursorDisable;
+}
+
+.sts-msg.error {
+  text-align: left !important;
+}
+
+.labeltag {
+  font-size: 16px;
+  color: rgba(58, 53, 65, 0.68);
+}
+
+::ng-deep ngx-intl-tel-input .iti {
+  width: 100% !important;
+}
+
+::ng-deep ngx-intl-tel-input input::-webkit-input-placeholder {
+  color: #ddd !important;
+}
+
+::ng-deep ngx-intl-tel-input input:focus {
+  outline: none !important;
+  border-color: #E1E2E3 !important;
+}
+
+::ng-deep ngx-intl-tel-input input {
+  height: 40px !important;
+  width: 100% !important;
+  background: #FFFF !important;
+  border: 1.39032px solid #E1E2E3 !important;
+  border-radius: 5px !important;
+  padding: 15px;
+  font-size: 15px;
+}
+
+::ng-deep .add-member ngx-intl-tel-input input.custom:focus {
+  color: #495057 !important;
+  background-color: #fff !important;
+  border-color: #3c8dbc !important;
+  outline: 0 !important;
+  box-shadow: 0 0 0 0 #fff !important;
+}
+
+::ng-deep .add-member .p-calendar-w-btn .p-datepicker-trigger.p-button {
+  background-color: rgba(0, 0, 0, 0.38) !important;
+  border-radius: 3px !important;
+}
+
+::ng-deep .add-member .p-calendar {
+  height: 40px !important;
+}
+
+::ng-deep .add-member .p-dropdown-panel .p-dropdown-items .p-dropdown-item {
+  padding: 8px !important;
+}
+
+::ng-deep .add-member .p-inputtext {
+  padding: 8px !important;
+  height: 40px !important;
+}
+
+.form-group {
+  margin-bottom: 0.1rem !important;
+}
+
+.form-text-light {
+  font-size: 0.8rem !important;
+}
+
+label {
+  margin: 0 !important
+}
+
+::ng-deep .add-member-new .p-calendar {
+  width: 100% !important;
+}
+
+::ng-deep .add-member-new sts-msg.error {
+  padding-left: 0 !important;
+  font-weight: 500 !important;
+  font-size: 0.8rem !important;
+  color: red !important;
+}
+
+input[type=text] {
+  height: 40px !important;
+  padding: 8px !important;
+}
+
+::ng-deep {
+  @media (min-width:768px) {
+
+    .add-member-new .p-datepicker table td {
+      padding: 0.1rem;
+    }
+
+    .add-member-new .p-datepicker table td>span {
+      width: 1.5rem !important;
+      height: 1.5rem !important;
+      font-size: 0.75rem !important;
+    }
+
+    .add-member-new .p-datepicker .p-datepicker-header .p-datepicker-title .p-datepicker-year,
+    .add-member-new .p-datepicker .p-datepicker-header .p-datepicker-title .p-datepicker-month {
+      font-size: 0.75rem !important;
+      padding: 0.1rem !important;
+    }
+
+    .add-member-new .p-datepicker .p-datepicker-header,
+    .add-member-new .p-datepicker {
+      padding-top: 0 !important;
+      padding-bottom: 0 !important;
+    }
+  }
+}

@@ -1,0 +1,55 @@
+.pay-rad {
+  width: 100%;
+  height: 100%;
+  float: left;
+  background: #FFFFFF;
+    border: 1.24514px solid #E3E3E3;
+    border-radius: 6px;
+  margin: 5px;
+  font-size: 10px;
+}
+
+.pay-icons {
+  height: 50px;
+  object-fit: cover !important;
+}
+
+@media (max-width: 768px) {
+  .pay-rad {
+    width: 100%;
+    height: 100%;
+  }
+
+}
+@media (min-width: 768px) {
+  .pay-rad {
+    width: 100%;
+    height: 100%;
+  }
+
+}
+
+.font-weight-normal {
+  font-weight: normal !important;
+}
+
+@media (max-width: 768px) {
+  .font-weight-normal {
+    font-weight: normal !important;
+    font-size: 13px !important;
+  }
+}
+
+.paymentFlex{
+  display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.cstmWidth{
+  width:6rem
+}
+.paymentText{
+  color: #A2ACC6;
+    font-size: 12px;
+    font-weight: 600;
+}

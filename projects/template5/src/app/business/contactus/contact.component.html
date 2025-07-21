@@ -1,0 +1,34 @@
+<!-- Card -->
+<div class="fb">
+    <h1>Contact us</h1>
+</div>
+<hr>
+<div class="col-12 col-sm-12 col-md-12 col-lg-12 no-padding" *ngIf="!showCustom && !loading">
+    <div class="col-12 col-sm-12 col-md-6 col-lg-6 no-padding block1 centeralign" *ngIf="(!customPhone && !customEmail) || customEmail">
+        <div class="col-12 no-padding">
+            <div class="mgn-bt-10">
+                <i class="fa fa-envelope"></i>
+            </div>
+            We will reply as soon as possible <br/>
+            <div class="head" *ngIf="!customEmail">info&#64;jaldee.com</div>
+            <div *ngIf="customEmail">
+            <div class="head" *ngFor="let email of emailList">{{email.instance}}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-sm-12 col-md-6 col-lg-6 no-padding block1 centeralign" *ngIf="!loading && (!customPhone && !customEmail) || customPhone">
+        <div class="col-12" class="mgn-bt-10">
+            <i class="fa fa-phone-square"></i>
+        </div>
+        <div class="col-12 no-padding">Mon - Sat 9:00 AM - 6:00 PM <br/>
+            <div *ngIf="customPhone">
+                <div class="head" *ngFor="let phone of phoneList">{{phone.instance}}</div>
+                </div>
+            <div class="head" *ngIf="!customPhone">+91 73068 23011</div>  
+            <!-- 88801 25000  -->
+        </div>
+    </div>
+</div>
+<div class="col-12 col-sm-12 col-md-12 col-lg-12" *ngIf="showCustom">
+    {{content}}
+</div>

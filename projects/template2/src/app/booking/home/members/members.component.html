@@ -1,0 +1,59 @@
+<div class="member-outer">
+    <div class="member-list mgn-up-10">
+        <ul class="member-ul">
+            <!-- <ng-container
+                *ngIf="multiple && allowSelection">
+                <li class="members">
+                    <mat-checkbox (change)="handleMemberSelect(parentCustomer.id, parentCustomer.firstName, parentCustomer.lastName,parentCustomer.title, $event)"
+                        [value]="parentCustomer.id" [checked]="isChecked(parentCustomer.id)">
+                        <span *ngIf="parentCustomer.title"> {{parentCustomer.title}}</span>
+                        {{parentCustomer.firstName}}
+                        {{parentCustomer.lastName}}
+                    </mat-checkbox>
+                </li>
+                <li *ngFor="let memb of familyMembers">
+                    <mat-checkbox
+                        (change)="handleMemberSelect(memb.id, memb.firstName, memb.lastName, memb.title, $event)"
+                        [value]="memb.id"
+                        [checked]="isChecked(memb.id)">
+                        <span *ngIf="memb.title"> {{memb.title}}</span>
+                        {{memb.firstName + '
+                        ' +
+                        memb.lastName |
+                        capitalizeFirst}}
+                    </mat-checkbox>
+                </li>
+            </ng-container> -->
+            <ng-container
+                *ngIf="!multiple && allowSelection">
+                <mat-radio-group>
+                    <li class="members">
+                        <mat-radio-button
+                            (change)="handleOneMemberSelect(parentCustomer.id, parentCustomer.firstName, parentCustomer.lastName, parentCustomer.email, parentCustomer.title)"
+                            [value]="parentCustomer.id" [checked]="isChecked(parentCustomer.id)">
+                            <span *ngIf="parentCustomer.title"> {{ parentCustomer.title }}</span>
+                            {{ parentCustomer.firstName }} {{ parentCustomer.lastName }}
+                        </mat-radio-button>
+                    </li>
+                    <li *ngFor="let memb of familyMembers" class="members">
+                        <mat-radio-button
+                            (change)="handleOneMemberSelect(memb.id, memb.firstName, memb.lastName, memb.email, memb.title)"
+                            [value]="memb.id" [checked]="isChecked(memb.id)" [disabled]="memb.status === 'INACTIVE'">
+                            <span *ngIf="memb.title"> {{ memb.title }}</span>
+                            {{ (memb.firstName + ' ' + memb.lastName) | capitalizeFirst }}
+                        </mat-radio-button>
+                    </li>
+                </mat-radio-group>
+            </ng-container>
+            <ng-container
+                *ngIf="!allowSelection">
+                <div class="card-title service mgn-bt-10"
+                    *ngFor="let member of selectedMember">
+                    <span *ngIf="parentCustomer.title"> {{parentCustomer.title}}</span>
+                    {{member.firstName | capitalizeFirst}}
+                    {{member.lastName | capitalizeFirst}}
+                </div>
+            </ng-container>
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,167 @@
+<p-toast [breakpoints]="{'920px': {width: '100%', right: '0', left: '0'}}"></p-toast>
+<div class="container items mt-1 p_consumer_items" [ngClass]="theme">
+    <div class="mt-5" *ngIf="loading">
+        <app-skeleton-loading></app-skeleton-loading>
+    </div>
+    <div class="my-1 login-form_custom" *ngIf="!loading && !loggedIn">
+        <div class="card card-custom no-margin hgt-adjust">
+            <div class="card-body p-0">
+                <app-authentication (actionPerformed)="actionPerformed($event)"
+                    [accountId]="accountId"></app-authentication>
+            </div>
+        </div>
+    </div>
+    <!-- 
+    <div *ngIf="isCartCreated" class="mini-cart">
+        <app-cart-notification [quantity]="quantity"  [theme]="theme"  [itemData]="selectedItem" (actionPerformed)="cartModalActionPerformed($event)"></app-cart-notification>
+    </div> -->
+    <div class="row" *ngIf="!loading && loggedIn">
+        <div class="customCard headerBorder">
+            <div (click)="goBack()" class="pointer-cursor"><i class="fa fa-arrow-left pointer-cursor me-2"></i>Back
+            </div>
+        </div>
+        <div *ngIf="config && config.products && (config.productsTitle || config.productsTitle)" class="customCard headerBorder product-title">
+            <div><h3 class="fw-bold">{{config.productsTitle}}</h3></div>
+            <div><h4>{{config.productsSubTitle}}</h4></div>
+        </div>
+        <div class="items-main-container" [ngClass]="{'single-column': !showFilter}">
+            <div class="card for-large-screen" *ngIf="showFilter">
+                <div class="">
+                    <h3 class="fw-bold mgn-bt-20">Filters</h3>
+                    <p-accordion [multiple]="true" [activeIndex]="[0]">
+                        <p-accordionTab header="Store" *ngIf="showStores">
+                            <div class="stocks">
+                                <p-dropdown class="text-capitalize" [options]="stores" (onChange)="valuechange($event)"
+                                    [(ngModel)]="storeEncId" placeholder="Select" ropdownIcon="fa fa-caret-down"
+                                    optionLabel="name" optionValue="encId">
+                                    <ng-template let-store pTemplate="storeName">
+                                        {{store.name}}
+                                    </ng-template>
+                                </p-dropdown>
+                            </div>
+                        </p-accordionTab>
+                        <p-accordionTab header="Category">
+                            <div class="mgn-bt-5" *ngFor="let category of itemCategories" class="field-checkbox">
+                                <mat-checkbox
+                                    [checked]="selectedCategories && selectedCategories.indexOf(category.id)!==-1"
+                                    (change)="categorySelected(category, $event)" class="text-capitalize">
+                                    {{category.categoryName}}</mat-checkbox>
+                            </div>
+                        </p-accordionTab>
+                    </p-accordion>
+                </div>
+            </div>
+            <div class="no-padding">
+                <div class="card no-padding p-2" *ngIf="itemsLoading">
+                    <app-skeleton-loading></app-skeleton-loading>
+                </div>
+                <div class="card itemGrid no-padding p-2" *ngIf="!itemsLoading">
+                    <!-- <div class="p-2 for-small-screen" *ngIf="categoryNames && categoryNames.length > 0">
+                        <span>{{ categoryNames.length > 1 ? 'Categories:' : 'Category:' }}</span>                        <span class="fw-bold">
+                            <span *ngFor="let cat of categoryNames; let last = last">
+                                &nbsp;{{ cat }}<span *ngIf="!last">,</span>
+                            </span>
+                        </span>
+                    </div>  -->
+                    <div class="items-header p-2">
+                        <div>
+                            <h3 class="fw-bold">Items</h3>
+                            <div *ngIf="itemsCount == 0" class="item-count">Showing 0 - {{itemsCount}} of {{itemsCount}}
+                                products</div>
+                            <div *ngIf="itemsCount > 0" class="item-count">Showing {{(startIndex)+1}} - {{startIndex +
+                                items.length}} of {{itemsCount}} products</div>
+                        </div>
+                        <div class="for-small-screen" *ngIf="showFilter">
+                            <button pButton pRipple type="button" class="btn-filter p-button-primary btn-primary"
+                                (click)="viewFilter()">Filter</button>
+                        </div>
+                        <div *ngIf="queryString">
+                            <button pButton pRipple type="button" class="btn-filter p-button-primary btn-primary"
+                                (click)="viewAllItems()">All Items</button>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="col-lg-12 d-flex justify-content-center display-small" >
+                            <div class="col-md-12 col-sm-12 col-12 search">
+                                <app-item-search [accountId]="accountId" [encId]="storeEncId"
+                                    (selectedItemsEmit)="selectedItemsEmit($event)" [catalogEncids]="catalogEncids"></app-item-search>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="items-container" *ngIf="items && items.length > 0">
+                        <div (click)="viewItems(item , item.encId)" *ngFor="let item of items">
+                            <div class="items-card pointer-cursor" [id]="item.encId">
+                                <div class="text-center">
+                                    <img *ngIf="item && item.spItemDto && item.spItemDto.attachments[0] && item.spItemDto.attachments[0].s3path"
+                                        [src]="item.spItemDto.attachments[0].s3path" [alt]="item.alt">
+                                    <img *ngIf="item && item.spItemDto && (!item.spItemDto.attachments || !item.spItemDto.attachments.length)"
+                                        src="assets/images/order/Items1.svg" [alt]="item.alt">
+                                </div>
+                                <div>
+                                    <div class="item-name">
+                                        {{item.spItemDto.name}}
+                                    </div>
+                                    <div *ngIf="item && item.itemNature =='VIRTUAL_ITEM'">
+                                        <div class="price-label">
+                                            Starting at
+                                        </div>
+                                       </div>
+                                    <div class="">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="item-rate rupee-font" *ngIf="item?.price">₹{{item.price | number: '1.2-2'}}</span>
+                                            <span *ngIf="item.showMrp && item.mrp"
+                                                class="item-mrp rupee-font">₹{{item.mrp | number: '1.2-2'}}</span>
+                                        </div>
+                                        <div>
+                                            <button pRipple type="button" class="btn-buy btn-primary"
+                                                (click)="addToCart($event,item)">Add</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card paginator no-padding flex justify-content-center paginatior-section"
+                    *ngIf="itemsCount>50">
+                    <p-paginator [rows]="rows" [totalRecords]="itemsCount" [first]="currentPage * rows"
+                        (onPageChange)="onPageChange($event)" [rowsPerPageOptions]="[50, 100, 150]">
+                    </p-paginator>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="filter-sidebar">
+        <p-sidebar [(visible)]="sidebarVisible" position="right">
+            <div>
+                <h3 class="fw-bold mgn-bt-20">Filters</h3>
+            </div>
+            <hr />
+            <div>
+                <p-accordion [multiple]="true" [activeIndex]="[0]">
+                    <p-accordionTab header="Store" *ngIf="showStores">
+                        <div class="stocks">
+                            <p-dropdown class="text-capitalize" [options]="stores" (onChange)="valuechange($event)"
+                                [(ngModel)]="storeEncId" placeholder="Select" ropdownIcon="fa fa-caret-down"
+                                optionLabel="name" optionValue="encId">
+                                <ng-template let-store pTemplate="storeName">
+                                    {{store.name}}
+                                </ng-template>
+                            </p-dropdown>
+                        </div>
+                    </p-accordionTab>
+                    <p-accordionTab header="Category">
+                        <div class="mgn-bt-5" *ngFor="let category of itemCategories" class="field-checkbox">
+                            <mat-checkbox [checked]="selectedCategories && selectedCategories.indexOf(category.id)!==-1"
+                                (change)="categorySelected(category, $event)" class="text-capitalize">
+                                {{category.categoryName}}</mat-checkbox>
+                        </div>
+                    </p-accordionTab>
+                </p-accordion>
+            </div>
+        </p-sidebar>
+    </div>
+
+    <div class="shopping-cart-footer" *ngIf="cartCount && cartCount > 0">
+        <app-shopping-cart-footer [cartCount]="cartCount"></app-shopping-cart-footer>
+    </div>

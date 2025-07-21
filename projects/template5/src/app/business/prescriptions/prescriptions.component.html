@@ -1,0 +1,53 @@
+<section class="container consumer-appthistory no-padding-small" [ngClass]="theme">
+    <div class="col-12 col-sm-12 co-md-12 col-lg-12 no-padding">
+        <div class="loading-hgt my-1 login-form_custom" *ngIf="!loggedIn">
+            <div class="card card-custom no-margin hgt-adjust">
+                <div class="card-body p-0">
+                    <app-authentication (actionPerformed)="actionPerformed($event)"
+                        [accountId]="accountId" ></app-authentication>
+                </div>
+            </div>
+        </div>
+        <div class="c-outer" *ngIf="loggedIn">
+            <div class="c-body">
+                <div class="card title-gb clearfix">
+                    <h5 class="col-12 col-md-12 col-sm-12 col-lg-12 mgn-up-10 no-padding clearfix">
+                         <a class="pull-left mgn-rt-20 back-btn" (click)="goback()"><i
+                                class="fa fa-arrow-left">&nbsp;</i>  {{'Prescriptions' | translate}}</a>
+                    </h5> 
+                </div>
+                <app-common-innerloading-spinner *ngIf="loading"></app-common-innerloading-spinner>
+                <div class="card history one" *ngIf="!loading">
+                    <div class="history-tbl no-padding" *ngIf="prescriptions && prescriptions.length > 0">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class="th3">Prescription</th>
+                                    <th class="th1">Name</th>
+                                    <th class="th4">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let prescription of prescriptions">
+                                    <td (click)="previewFile(prescription)" class="pointer-cursor">
+                                        <span class="text-dark-75 text-hover-primary mb-1 cust-name">
+                                            <img style="height: 20px; width:20px;" [src]="getImageType(prescription&&prescription.prescriptionAttachments&&prescription.prescriptionAttachments[0])"
+                                                alt="">
+                                            {{prescription.fileName?.length>10 ? prescription.fileName.slice(0,
+                                            10)+'...' : prescription.fileName}}
+                                        </span>
+                                    </td>
+                                    <td *ngIf="prescription.doctorName">{{prescription.doctorName}}</td>
+                                    <td *ngIf="prescription.lastSharedTime">{{prescription.lastSharedTime}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div *ngIf="!loading && prescriptions && prescriptions.length===0">
+                        <p>No Prescriptions</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

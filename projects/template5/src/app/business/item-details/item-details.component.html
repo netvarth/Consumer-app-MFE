@@ -1,0 +1,73 @@
+<section class="container no-padding cons-donate no-padding-small item-details-consumer">
+  <div class="content p0 loc-list p-checkin ynw-common-form-nm">
+    <div class="c-outer m0">
+      <div class="c-body">
+        <div class="title-gb m0 border-btm">
+          <h5 class="mgn-up-10">
+            <a class="back-btn mgn-lt-5" (click)="goBack()">
+              <i class="fa fa-arrow-left"></i>
+            </a>
+            <span class=" mgn-lt-10 amount">Continue shopping</span>
+            <span class="pull-right mgn-rt-10" *ngIf="getItemQty()>0"><i class="fa fa-shopping-cart"
+                (click)="checkout()"><sup class="blue"> {{getItemQty()}}</sup></i></span>
+          </h5>
+        </div>
+        <div class="container">
+          <div class="row m-0">
+            <div class="col-12 col-md-6 col-sm-7 pad-25 no-padding-small mgn-bt-10" *ngIf="imagesRect.length> 0">
+              <ks-carousel [id]="1" [images]="imagesRect"
+                [carouselConfig]="{maxHeight: '400px',minHeight: '400px', showArrows: false, objectFit: 'scale-down', keyboardEnable: false, modalGalleryEnable: false, legacyIE11Mode: false}"
+                [previewConfig]="{visible: true, breakpoints: {xSmall: 50, small: 60, medium: 70, large: 80, xLarge: 100}}"
+                [dotsConfig]="{visible: false}" [playConfig]="{autoPlay:false}">
+              </ks-carousel>
+            </div>
+            <div class="col-12 col-md-6 col-sm-5 no-padding">
+              <div class="col-md-12 no-padding">
+                <div class="col-md-6 no-padding mgn-up-10">
+                  <p class="mgn-rt-10 m0"><img class="ordericon home"
+                      src="./assets/images/Delivery.svg" alt=""/>&nbsp;Home delivery accepted</p>
+                  <p class="m0">Within in the store working Hours</p>
+                </div>
+                <div class="col-md-6 no-padding">
+                  <p class="m0"><img class="ordericon pickup"
+                      src="./assets/images/Store pick up.svg" alt="" />&nbsp;Store Pickup available</p>
+                  <p class="m0">Within in the store working Hours</p>
+                </div>
+              </div>
+              <div class="col-md-12 mgn-up-20">
+                <h2 class="m0">{{currentItem.displayName}}</h2>
+                <p class="title-style">
+                  <span class="rupee-font" style="font-size: xx-large">&#8377;{{currentItem.price}}</span> &nbsp;
+                  <span class="rupee-font"
+                    style=" font-size: x-large; text-decoration: line-through;">&#8377;1500</span>
+                </p>
+              </div>
+              <div class="col-md-12  mr-area">
+                <p class="m0 question-header">Description</p>
+                <p>{{currentItem.itemDesc}}</p>
+              </div>
+              <div class="col-md-12">
+                <p class="question-header m0">Quantity:</p>
+              </div>
+              <div class="col-md-12 pad-lt-25 mgn-bt-50">
+                <div class="btn-lt pull-left">
+                  <button (click)="decrement()">-</button>
+                </div>
+                <div class="count-o pull-left">
+                  {{getItemQty()}}
+                </div>
+                <div class="btn-rt pull-left">
+                  <button (click)="increment()">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <button class="btn btn-primary" (click)="checkout()">Checkout</button>
+    </div>
+    <div class="clearfix"></div>
+  </div>
+</section>

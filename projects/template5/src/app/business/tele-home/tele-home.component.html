@@ -1,0 +1,185 @@
+<section class="container consumer-dashhome no-padding no-padding-small mt-5" [ngClass]="theme">
+    <!-- <div *ngIf="api_loading">
+        <app-common-innerloading-spinner></app-common-innerloading-spinner>
+    </div> -->
+    <app-authentication *ngIf="!isLoggedIn" (actionPerformed)="actionPerformed($event)"
+        [accountId]="accountId"></app-authentication>
+    <div class="content settings container checkin-details" *ngIf="isLoggedIn">
+        <div class="card no-padding-small">
+            <div class="col-md-12 no-padding">
+                <div class="col-md-12 ">
+                    <h1 class="tel-serv-a mgn-up-20">{{loggedUser.userName}}'s Tele Meetings</h1>
+                    <p>List all of your virtual scheduled meetings</p>
+                </div>
+                <div class="col-md-12 no-padding">
+                    <hr />
+                </div>
+                <div class="col-md-12 no-padding">
+                    <div class="col-md-6 col-12 col-sm-12 no-padding-small consumer-dash tele-home">
+                        <div class="grid-card">
+                            <div *ngFor="let gBooking of gBookings | keyvalue; let i = index">
+                                <div class="lc4-1 stats-bar card">
+                                    <div class="lt mgn-bt-10 mgn-up-10">
+                                        <div>
+                                            <span class="amount" *ngIf="!isToday || gBooking.key != myDate">
+                                                <strong>{{gBooking.key | date: newDateFormat}}</strong>
+                                            </span>
+                                            <span class="amount" *ngIf="isToday && gBooking.key == myDate">
+                                                <strong>Today</strong>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card no-padding">
+                                    <mat-grid-list cols="1" rowHeight="240px" [gutterSize]="'10px'">
+                                        <mat-grid-tile *ngFor="let booking of gBookings[gBooking.key]">
+                                            <ng-container>
+                                                <div
+                                                    class="col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 fit_in pt-0 pb-0 p-3">
+                                                    <div *ngIf="booking.bookingType==='wl' && booking.token!==''"
+                                                        class="ribbon">&nbsp;&nbsp;Token
+                                                        {{booking.token}}
+                                                    </div>
+                                                    <!-- Icon -->
+                                                    <div
+                                                        class="row align-items-center no-padding">
+                                                        <div class="d-flex">
+                                                            <div>
+                                                                <i style="width: 4rem;" class="fa appt-icon"
+                                                                    [matTooltip]="'Appointment'"
+                                                                    *ngIf="booking.bookingType==='appt'"></i>
+                                                                <i *ngIf="booking.token=='' && booking.bookingType==='wl'"
+                                                                    style="width: 3.8rem;" class="fa chckn-icon"
+                                                                    [matTooltip]="'Check-in'"></i>
+                                                                <i *ngIf="booking.token!='' && booking.bookingType==='wl'"
+                                                                    style="width: 3.8rem;" class="fa token-icon"
+                                                                    [matTooltip]="'Token'"></i>
+                                                            </div><!-- Basic info -->
+                                                            <div
+                                                                class="col-sm-10 col-md-10 col-lg-10 col-xl-10 col-10 mt-3 pad-lt-40">
+                                                                <div class="ordr_no font-size-9"
+                                                                    *ngIf="booking.bookingType==='appt'">
+                                                                    {{booking.bookingTime}}
+                                                                </div>
+                                                                <div class="ordr_no font-size-9"
+                                                                    *ngIf="booking.bookingType!=='appt'">
+                                                                    {{booking.bookingWindow}}</div>
+                                                                <div class="sp_name wrap_txt">
+                                                                    {{booking.businessName || '' |
+                                                                    capitalizeFirst}}</div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- more options -->
+                                                        <div class="more_opt">
+                                                            <!-- (click)="stopprop($event)" -->
+                                                            <button mat-icon-button [matMenuTriggerFor]="appMenu"
+                                                                class="menu-icon">
+                                                                <mat-icon>more_horiz</mat-icon>
+                                                            </button>
+                                                            <mat-menu #appMenu="matMenu">
+                                                                <button mat-menu-item (click)="sendMessage(booking)">
+                                                                    <i class="fa chat-icon"></i>
+                                                                    Send Message
+                                                                </button>
+                                                                <button mat-menu-item (click)="viewBooking(booking)">
+                                                                    <i class="fa details-icon"></i>
+                                                                    View Details
+                                                                </button>
+                                                            </mat-menu>
+                                                        </div>
+                                                    </div>
+                                                    
+
+                                                    <!-- Extra Info -->
+                                                    <div class="">
+                                                        <div class="row mt-2 m-hgt-50">
+                                                            <div class="col-6">
+                                                                <div class="prov_lbl">Service</div>
+                                                                <div class="mgn-tp-8 prov_nme disply-flex ">
+                                                                    <span class="module d-flex align-items-center ">
+                                                                        <span>
+                                                                            <i class="fa phon-icon"
+                                                                                *ngIf="booking.teleMedia === 'Phone'"></i>
+                                                                            <i class="fa meet-icon"
+                                                                                *ngIf="booking.teleMedia === 'GoogleMeet'"></i>
+                                                                            <i class="fa zoom-icon"
+                                                                                *ngIf="booking.teleMedia === 'Zoom'"></i>
+                                                                            <i class="fa jvideo-icon jvideo-icon-s jvideo-icon-mgm5"
+                                                                                *ngIf="booking.teleMedia === 'VideoCall'"></i>
+                                                                            <i class="fa wtsapaud-icon"
+                                                                                *ngIf="booking.teleMedia === 'WhatsApp' && booking.teleMode ==='audio'"></i>
+                                                                            <i class="fa wtsapvid-icon"
+                                                                                *ngIf="booking.teleMedia === 'WhatsApp' && booking.teleMode ==='video'"></i>
+                                                                        </span>
+                                                                        {{booking.service |
+                                                                        capitalizeFirst}}</span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <div class="prov_lbl">{{'Booking For' | translate}}</div>
+                                                                <div class="prov_nme">
+                                                                    {{booking.bookingFor}}</div>
+                                                            </div>
+                                                        </div>
+                                                        <div
+                                                            class="col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 no-padding mgn-up-5">
+                                                            <div class="pull-left col-6 no-padding"
+                                                                *ngIf="booking.provider">
+                                                                <div class="prov_lbl">Provider</div>
+                                                                <!-- <div class="prov_nme">{{booking.userName}}</div> -->
+                                                                <div class="prov_nme">
+                                                                    {{booking.provider.businessName}}
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-6 "
+                                                                [class.no-padding]="!booking.provider">
+                                                                <div class="prov_lbl">Video Status</div>
+                                                                <div class="prov_nme"
+                                                                    [class.red]="booking.btnStatus==='DISABLED'"
+                                                                    [class.green]="booking.btnStatus==='ENABLED'">
+                                                                    {{booking.videoStatus}}</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Actions and status -->
+                                                    <div>
+                                                        <!-- [class]="getBookingStatusClass(booking.bookingStatus)" -->
+                                                        <div class="book_stats mgn-up-20 w-100">
+                                                            <!-- <span *ngIf="booking.bookingStatus !== 'Arrived'">{{booking.bookingStatus}}</span> -->
+                                                            <span class="pull-right"
+                                                                *ngIf="booking.teleMedia=== 'VideoCall' || booking.teleMedia=== 'GoogleMeet' || booking.teleMedia=== 'Zoom'">
+                                                                <a *ngIf="booking.teleMedia=== 'VideoCall'">
+                                                                    <button mat-button class="join-btn "                                                                        
+                                                                        (click)="joinJaldeeVideo(booking)">{{booking.btnLabel}}</button>
+                                                                </a>
+                                                                <a *ngIf="booking.teleMedia=== 'Zoom' || booking.teleMedia=== 'GoogleMeet'"
+                                                                    [href]="booking.teleUrl" target="_blank">
+                                                                    <button
+                                                                         mat-button class="join-btn ">Join
+                                                                        Video
+                                                                        Consultation</button>
+                                                                </a>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </ng-container>
+                                            <!-- Checkins -->
+                                        </mat-grid-tile>
+                                    </mat-grid-list>
+                                </div>
+                            </div>
+                            <div *ngIf="noBookings && !api_loading" class="col-md-12 no-bookings">
+                                <h4>Currently you have no scheduled meetings</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-12 col-sm-12 mgn-up-20 no-padding-small text-center">
+                        <img src="./assets/images/video-conference.png" class="tele-img">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

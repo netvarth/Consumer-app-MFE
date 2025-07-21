@@ -1,0 +1,777 @@
+<section class="container no-padding-small cust-book-details customWidth">
+    <div class="content p0 comn-cls checkin-details">
+        <div  [ngClass]="{row: !smallDevice}">
+            <div class="panel panel-default no-padding">
+                <div class="panel-body no-padding">
+                    <div class="c-outer m0">
+                        <div class="c-body booking-content col-md-12 col-12 col-sm-12 no-padding">
+                            <div class="panel-heading col-12 col-sm-12 co-md-12 col-lg-12 no-padding cstmHeader">
+                                <div (click)="gotoPrev()" class="backFlex">
+                                    <div><i class="fa fa-arrow-left" aria-hidden="true"></i></div>
+                                    <div>{{titlename | capitalizeFirst}}</div>
+                                </div>
+                            </div>
+                            <div class="lbl col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 no-padding">
+                                <div class="card" *ngIf="!api_loading">
+                                    <app-common-innerloading-spinner> </app-common-innerloading-spinner>
+                                </div>
+                                <div *ngIf="api_loading && waitlist && !smallDevice">
+                                    <!--new ui start-->
+                                    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 mgn-bt-20 cust-det-outline card flexClass direction" >
+                                        <div class="w-50 p-3 borderClr">
+                                            <div class="col-sm-12 col-md-12 col-lg-12  col-xl-12 col-xs-10 mgn-up-10 mgn-bt-10 l-ht-2 flexClass ">
+                                                <div class="customCard" *ngIf="blogo">
+                                                    <img class="imageInfo" src="{{blogo}}" />
+                                                </div>
+                                                <div class="customWidth">
+                                                    <div class="CustomerDetails">
+                                                        <div class="cstmLineHeight">
+                                                            <div class="orderStatus" *ngIf="waitlist && (waitlist.service.serviceType === 'virtualService' && waitlist.waitlistStatus !== 'arrived') || waitlist.service.serviceType !== 'virtualService'">
+                                                                <div class="stausCustom">{{'Status : ' | translate}}</div>
+                                                                <div class="stausCustom">{{check_in_statuses[waitlist.waitlistStatus | capitalizeFirst]}}</div>
+                                                            </div>
+                                                            <!--business anme start-->
+                                                            <div class="orderStatus mt-2"
+                                                                *ngIf="waitlist && waitlist.providerAccount && waitlist.providerAccount.businessName"
+                                                                (click)="providerDetail(waitlist.providerAccount)">
+                                                                <div class="businessName pointer-cursor"> {{waitlist.providerAccount.businessName | capitalizeFirst}}</div>
+                                                            </div>
+                                                            <div class="orderStatus mt-2" *ngIf="waitlist && waitlist.queue && waitlist.queue.location && waitlist.queue.location.place">
+                                                                <div class="customOrder">  {{waitlist.queue.location.place | capitalizeFirst}}</div>
+                                                            </div>
+                                                        </div>
+                                                        <diV>
+                                                            <button  (click)="addWaitlistMessage(waitlist)" type="submit" class="contactProviderBtn">
+                                                                <span *ngIf="!api_loadingCtctProvider">{{'Message to provider' | translate}}</span>
+                                                                <app-common-innerloading-spinner color="#fff" [spinnerParams]="{diameter:30}"
+                                                                    *ngIf="api_loadingCtctProvider">
+                                                                </app-common-innerloading-spinner>
+                                                            </button>
+                                                        </diV>
+                                                    </div>
+                                                    <div class="orderIdType mt-2">
+                                                        <div *ngIf="waitlist && waitlist.checkinEncId">
+                                                            <div class="customOrder">{{'Booking Id' | translate}}</div>
+                                                            <div class="orderNumber">{{waitlist.checkinEncId}}</div>
+                                                        </div>
+                                                        <div *ngIf="waitlist.provider" class="mgn-up-10 usr-name">
+                                                            <div class="customOrder">{{provider_label | translate | capitalizeFirst}}</div>
+                                                            <div class="orderNumber">{{(waitlist.provider.businessName) ? waitlist.provider.businessName
+                                                                : waitlist.provider.firstName +
+                                                                ' ' + waitlist.provider.lastName}}</div>                                                            
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-12 col-lg-12  col-xl-12 col-12 mgn-up-10 mgn-bt-10 l-ht-2 dateTime justifyContent">
+                                                <div>
+                                                    <div class="dateTime" *ngIf="waitlist && waitlist.queue &&  waitlist.queue.queueStartTime">
+                                                        <div class="field-head">{{'Date & Time' | translate}}</div>
+                                                        <div class="timeslotOrder" *ngIf="waitlist && waitlist.date"> {{waitlist.date | date:newDateFormat}}
+                                                            <div
+                                                                *ngIf="waitlist && waitlist.queue && waitlist.queue.queueStartTime">
+                                                                ,
+                                                                {{waitlist.queue.queueStartTime}} -
+                                                                {{waitlist.queue.queueEndTime}}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="dateTime" *ngIf="waitlist && waitlist.timezone">
+                                                        <div class="field-head">{{ 'Timezone' | translate }} </div>
+                                                        <div class="timeslotOrder">{{waitlist.timezone}}</div>
+                                                    </div>
+                                                    <div class="dateTime" *ngIf="waitlist && waitlist.waitlistingFor[0] && (waitlist.waitlistingFor[0].firstName || waitlist.waitlistingFor[0].lastName)">
+                                                        <div class="field-head">{{'Booking For' | translate}}</div>
+                                                        <div class="timeslotOrder"
+                                                            *ngIf="waitlist && waitlist.waitlistingFor[0] && (waitlist.waitlistingFor[0].firstName || waitlist.waitlistingFor[0].lastName)">
+                                                            <div>
+                                                                <span *ngIf="waitlist && waitlist.waitlistingFor[0] && waitlist.waitlistingFor[0].title">{{waitlist.waitlistingFor[0].title}}&nbsp;</span>
+                                                                {{waitlist.waitlistingFor[0].firstName |capitalizeFirst}}
+                                                                {{waitlist.waitlistingFor[0].lastName | capitalizeFirst}}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="dateTime" *ngIf="waitlist && waitlist.waitlistPhoneNumber">
+                                                        <div class="field-head">{{'Mobile' | translate}}</div>
+                                                        <div class="timeslotOrder" *ngIf="waitlist && waitlist.waitlistPhoneNumber">
+                                                            <div>
+                                                                {{waitlist.countryCode}}{{waitlist.waitlistPhoneNumber}}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="dateTime" *ngIf="waitlist && waitlist.waitlistingFor && waitlist.waitlistingFor[0] && waitlist.waitlistingFor[0].email">
+                                                        <div class="field-head">{{'Email' | translate}}</div>
+                                                        <div class="timeslotOrder"
+                                                            *ngIf="waitlist && waitlist.waitlistingFor && waitlist.waitlistingFor[0] && waitlist.waitlistingFor[0].email">
+                                                            <div>
+                                                                {{waitlist.waitlistingFor[0].email}}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="dateTime" *ngIf="waitlist && waitlist.appxWaitingTime">
+                                                        <div class="field-head">{{'Time' | translate}}</div>
+                                                        <div class="timeslotOrder" *ngIf="waitlist && waitlist.appxWaitingTime">
+                                                            <div>
+                                                                {{getTimeToDisplay(waitlist.appxWaitingTime)}}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="dateTime" *ngIf="waitlist.batchName">
+                                                        <div class="field-head">{{'BATCH' | translate}}</div>
+                                                        <div class="timeslotOrder">
+                                                            <div>
+                                                                {{waitlist.batchName}}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <div>                                                
+                                                        <qrcode id="print-section" [qrdata]="qr_value" [width]="256" [errorCorrectionLevel]="'M'"></qrcode>
+                                                    </div>
+                                                    <div class="statusCheck">{{'Check your status' | translate}}</div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-12 col-lg-12  col-xl-12 col-xs-10 mgn-up-10 mgn-bt-10 l-ht-2">
+                                                <div>
+                                                    <div class="businessName" *ngIf="cust_notes_cap">{{cust_notes_cap | capitalizeFirst | translate}}</div>
+                                                    <div class="timeslotOrder" *ngIf="waitlist && waitlist.consumerNote &&  waitlist.consumerNote !== ''">{{waitlist.consumerNote}}
+                                                    </div>
+                                                    <div class="timeslotOrder notFound" *ngIf="waitlist && (waitlist.consumerNote == '' || !waitlist.consumerNote)">
+                                                        {{no_cus_notes_cap}}
+                                                    </div>
+                                                </div>
+                                                <div class="mt-2">
+                                                    <div class="businessName">{{'Instructions' | translate}}</div>
+                                                    <div class="timeslotOrder notFound"
+                                                        *ngIf="waitlist && waitlist.service && (!waitlist.service.postInfoText || waitlist.service.postInfoText==='')">
+                                                        {{'No Instructions Found' | translate}}
+                                                    </div>
+                                                    <div class="timeslotOrder" *ngIf="waitlist && waitlist.service && waitlist.service.postInfoText !==''"
+                                                    [innerHTML]="waitlist.service.postInfoText">
+                                                        <!-- {{waitlist.service.postInfoText}} -->
+                                                    </div>
+                                                </div>
+
+                                                <div class="mt-2" *ngIf="waitlist && waitlist.waitlistStatus =='cancelled'">
+                                                    <div class="businessName">{{'Cancellation Reason' | translate}}</div>
+                                                    <div class="timeslotOrder">
+                                                    {{getCancelledReasonDisplayName(waitlist.waitlistCancelReason)}}
+                                                    </div>
+                                                </div>
+                                                <div class="mt-2" *ngIf="waitlist  && waitlist.waitlistStatus =='cancelled' && waitlist.cancelReasonMessage">
+                                                    <div class="businessName"   >{{'Cancellation Message' | translate}}</div>
+                                                    <div class="timeslotOrder">
+                                                    {{waitlist.cancelReasonMessage}}
+                                                    </div>
+                                                </div>
+
+
+                                            </div>
+                                                <div class="col-sm-12 col-md-12 col-lg-12  col-xl-12 col-xs-10 mgn-up-10 mgn-bt-10 l-ht-2 btnAction">
+                                                    <div>
+                                                        <button type="submit" class="reschedulebtn" (click)="rescheduleAction(waitlist)" 
+                                                        *ngIf="!history && (waitlist && waitlist.waitlistStatus!=='done' && waitlist.waitlistStatus !== 'cancelled')">
+                                                            <div class="rescheduleCstm">
+                                                                <div>
+                                                                    <img class="actionImg" src="./assets/images/myjaldee/reschedule.png" />
+                                                                </div>
+                                                                <div>{{'Reschedule' | translate}}</div>
+                                                            </div>
+                                                        </button>
+                                                    </div>
+                                                    <div>
+                                                        <button type="submit" class="cancelbtn" (click)="cancelAction(waitlist)"
+                                                        *ngIf="!history && (waitlist && waitlist.waitlistStatus!=='done' && waitlist.waitlistStatus !== 'cancelled')">
+                                                            <div class="cancelCstm">
+                                                                <div>
+                                                                    <img class="actionImg" src="./assets/images/myjaldee/cancel.png" />
+                                                                </div>
+                                                                <div>{{'Cancel Booking' | translate}}</div>
+                                                            </div>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                        </div>
+                                        <div class="w-50">
+                                            <div class="col-sm-12 col-md-12 col-lg-12  col-xl-12 col-xs-12 mgn-up-10 mgn-bt-10 l-ht-2 ">
+                                                <div>
+                                                    <div class="serviceDCetails">{{'Service Details' | translate}}</div>
+                                                    <div class="mt-2">
+                                                        <div class="serviceCstm">
+                                                            <div>
+
+
+                                                                <i class="cstmServiceIcon" *ngIf="waitlist && waitlist.service && waitlist.service.serviceType &&waitlist.service.serviceType === 'virtualService'" [class]=iconClass></i>
+                                                            </div>
+                                                            <!-- <div *ngIf="waitlist && waitlist.service && waitlist.service.serviceType && waitlist.service.serviceType === 'physicalService'">
+                                                                <img class="cstmServiceIcon" src="./assets/images/webP/meeting_Artboard.webp" />
+                                                            </div> -->
+                                                            <div class="service-icon" *ngIf="waitlist && waitlist.servicegallery && waitlist.servicegallery.length > 0 && waitlist.serviceType === 'physicalService'">
+                                                                <img class="cstmServiceIcon" [src]="waitlist.servicegallery[0].thumbUrl" alt=" Service Image">
+                                                            </div>
+                                                            <div class="service-icon"
+                                                                *ngIf="!waitlist.servicegallery && waitlist.service.serviceType && waitlist.service.serviceType !== 'virtualService' && waitlist.service.serviceType === 'physicalService' && domain !== 'religiousPriests'">
+                                                                <img class="cstmServiceIcon" src="./assets/images/meeting_Artboard.png" alt="Physical Service Image">
+                                                            </div>
+                                                            <div class="service-icon"
+                                                                *ngIf="!waitlist.servicegallery && waitlist.service.serviceType && waitlist.service.serviceType !== 'virtualService' && waitlist.service.serviceType === 'physicalService' && domain === 'religiousPriests'">
+                                                                <img class="cstmServiceIcon" src="./assets/images/hindu-temple-clipart.jpg" alt="Physical Service Image">
+                                                            </div>
+                                                            <div *ngIf="waitlist && waitlist.service && waitlist.service.name" class="serviceName">
+                                                                {{waitlist.service.name | capitalizeFirst}}
+                                                            </div>
+                                                            <div *ngIf="waitlist && waitlist.service && waitlist.service.deptName" class="serviceName">
+                                                               ( {{waitlist.service.deptName | capitalizeFirst}} )
+                                                            </div>
+                                                        </div>
+                                                        <div class="mt-2">
+                                                            <div *ngIf="waitlist && waitlist.service && waitlist.service.virtualCallingModes && waitlist.service.virtualCallingModes[0] 
+                                                                                                                    && waitlist.service.virtualCallingModes[0].callingMode && waitlist.service.virtualCallingModes[0].callingMode === 'Zoom'"
+                                                                class="serviceCstmText lineHeight">
+                                                                Follow these instructions to join the video call:
+                                                                <div>1: You will receive an alert that the Zoom call has started.
+                                                                </div>
+                                                                <div>2: When it is your turn, click on the following link -
+                                                                    <a class="meetingLinkJOin" *ngIf="meetingDetails && meetingDetails.joiningUrl"
+                                                                    href="{{meetingDetails.joiningUrl}}"
+                                                                    target="blank">{{meetingDetails.joiningUrl}}</a>
+                                                                     
+                                                                </div>
+                                                                <div style="font-size: smaller">(If you do not have Zoom installed you will be prompted to install Zoom)
+                                                                </div>
+                                                                <div>
+                                                                    3. Wait for the video call to start
+                                                                </div>
+                                                            </div>
+                                                            <div *ngIf="waitlist && waitlist.service && waitlist.service.virtualCallingModes && waitlist.service.virtualCallingModes[0] 
+                                                                                                                    && waitlist.service.virtualCallingModes[0].callingMode && waitlist.service.virtualCallingModes[0].callingMode === 'GoogleMeet'"
+                                                                class="serviceCstmText lineHeight">
+                                                                Follow these instructions to join the video call:
+                                                                <div>1: You will recieve an alert that the Google Meet call has started.
+                                                                </div>
+                                                                <div>2: When it is your turn, click on the following link -
+                                                                    <a class="meetingLinkJOin" *ngIf="meetingDetails && meetingDetails.joiningUrl"
+                                                                    href="{{meetingDetails.joiningUrl}}"
+                                                                    target="blank">{{meetingDetails.joiningUrl}}</a>
+                                                                    
+                                                                </div>
+                                                                <div style="font-size: smaller">(If you are not already signed into google you must sign in)
+                                                                </div>
+                                                                <div>
+                                                                    3. Wait for the video call to start
+                                                                </div>
+                                                            </div>
+                                                            <div class="serviceCstmText lineHeight"
+                                                                *ngIf="waitlist && (waitlist.service && waitlist.service.virtualCallingModes && waitlist.service.virtualCallingModes[0] 
+                                                                                                                        && waitlist.service.virtualCallingModes[0].callingMode && waitlist.service.virtualCallingModes[0].callingMode === 'WhatsApp') && waitlist.service && waitlist.service.virtualServiceType === 'videoService'">
+                                                                * When it is time for your call, you will receive a WhatsApp video call on
+                                                                {{waitlist.service.virtualCallingModes[0].value}}.<br> Please remember to keep your phone's internet connection on.
+                                                            </div>
+                                                            <div class="serviceCstmText lineHeight"
+                                                                *ngIf="waitlist && (waitlist.service && waitlist.service.virtualCallingModes && waitlist.service.virtualCallingModes[0] 
+                                                                                                                        && waitlist.service.virtualCallingModes[0].callingMode && waitlist.service.virtualCallingModes[0].callingMode === 'WhatsApp')  && waitlist.service && waitlist.service.virtualServiceType === 'audioService'">
+                                                                * When it is time for your call, you will receive a WhatsApp audio call on
+                                                                {{waitlist.service.virtualCallingModes[0].value}}.<br> Please remember to keep your phone's internet connection on.
+                                                            </div>
+                                                            <div class="serviceCstmText lineHeight"
+                                                                *ngIf="waitlist && (waitlist.service && waitlist.service.virtualCallingModes && waitlist.service.virtualCallingModes[0] 
+                                                                                                                    && waitlist.service.virtualCallingModes[0].callingMode && waitlist.service.virtualCallingModes[0].callingMode === 'Phone')">
+                                                                <!-- * When it is time for your call, you will receive a call on {{waitlist.service.virtualCallingModes[0].value}} -->
+                                                            </div>
+                                                            <div class="serviceCstmText lineHeight"
+                                                                *ngIf="waitlist && (waitlist.service && waitlist.service.virtualCallingModes && waitlist.service.virtualCallingModes[0] 
+                                                                                                                    && waitlist.service.virtualCallingModes[0].callingMode && waitlist.service.virtualCallingModes[0].callingMode === 'VideoCall')">
+                                                                Follow these instructions to join the video call:
+                                                                <div>1: You will receive an alert that the Jaldee Video Started.
+                                                                </div>
+                                                                <div>2: When it is your turn, click on the following link -
+                                                                  
+                                                                    <a class="meetingLinkJOin" *ngIf="meetingDetails && meetingDetails.joiningUrl"
+                                                            href="{{meetingDetails.joiningUrl}}"
+                                                            target="blank">{{meetingDetails.joiningUrl}}</a>
+                                                                      
+                                                                </div>
+                                                                <div>
+                                                                    3. Wait for the video call to start
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- <div class="mt-2 calendaropen">
+                                                            <div (click)="addToCalendar()" class="calendarTxt">{{'Add On calendar' | translate}}</div>
+                                                            <div (click)="addToCalendar()">
+                                                                <i class="fa fa-calendar"></i>
+                                                            </div>
+                                                        </div> -->
+                                                        <div class="mt-2  justifyContent-1" *ngIf="waitlist && waitlist.amountPaid">
+                                                            <div class="flex1">
+                                                                <div class="serviceChargetxt">{{'Amount Paid' | translate}}</div>
+                                                                <div class="serviceChanrge mt rupee-font rupee-font" *ngIf="waitlist && waitlist.amountPaid">{{waitlist.amountPaid |currency:'&#8377;'}}</div>
+                                                            </div>
+                                                            <!-- <div>
+                                                                <button type="submit" class="payBalanceBtn" (click)="payBalanceServiceCharge(waitlist)">Pay Balance</button>
+                                                            </div> -->
+                                                        </div>
+                                                        <div class="mt-4 waitListFlex gap">
+                                                            
+                                                            <div class="serviceCstm"  *ngIf="waitlist.waitlistStatus!=='done' && waitlist.waitlistStatus !== 'Cancelled' && type === 'today' && waitlist.service && waitlist.service.serviceType && waitlist.service.serviceType === 'virtualService'
+                                                            && (waitlist.service && waitlist.service.virtualCallingModes && waitlist.service.virtualCallingModes[0] && waitlist.service.virtualCallingModes[0].callingMode && (waitlist.service.virtualCallingModes[0].callingMode === 'GoogleMeet' || waitlist.service.virtualCallingModes[0].callingMode === 'Zoom'))">
+                                                                <button class="meetingBtn">
+                                                                    <div>
+                                                                        <i class="cstmServiceIcon" *ngIf="waitlist && waitlist.service && waitlist.service.serviceType &&waitlist.service.serviceType === 'virtualService'" [class]=iconClass></i>
+                                                                    </div>
+                                                                    <!-- <div *ngIf="waitlist && waitlist.service && waitlist.service.serviceType && waitlist.service.serviceType === 'physicalService'">
+                                                                        <img class="cstmServiceIcon" src="./assets/images/webP/meeting_Artboard.webp" />
+                                                                    </div> -->
+                                                                    <div class="service-icon" *ngIf="waitlist && waitlist.servicegallery && waitlist.servicegallery.length > 0 && waitlist.serviceType === 'physicalService'">
+                                                                        <img class="cstmServiceIcon" [src]="waitlist.servicegallery[0].thumbUrl" alt=" Service Image">
+                                                                    </div>
+                                                                    <div class="service-icon"
+                                                                        *ngIf="!waitlist.servicegallery && waitlist.service.serviceType && waitlist.service.serviceType !== 'virtualService' && waitlist.service.serviceType === 'physicalService' && domain !== 'religiousPriests'">
+                                                                        <img class="cstmServiceIcon" src="./assets/images/meeting_Artboard.png" alt="Physical Service Image">
+                                                                    </div>
+                                                                    <div class="service-icon"
+                                                                        *ngIf="!waitlist.servicegallery && waitlist.service.serviceType && waitlist.service.serviceType !== 'virtualService' && waitlist.service.serviceType === 'physicalService' && domain === 'religiousPriests'">
+                                                                        <img class="cstmServiceIcon" src="./assets/images/hindu-temple-clipart.jpg" alt="Physical Service Image">
+                                                                    </div>
+                                                                                                                        <div class="serviceName">
+                                                                        <a class="joinMeeting joinMeetingCstm" href="{{waitlist.service.virtualCallingModes[0].value}}"
+                                                                            target="blank">{{'Join Video Consultation' | translate}}</a>
+                                                                    </div>
+                                                                </button>
+                                                            </div>
+                                                            <div class="serviceCstm" *ngIf="waitlist.waitlistStatus!=='done' && waitlist.waitlistStatus !== 'Cancelled' && type === 'today' && waitlist.service.serviceType === 'virtualService' 
+                                                            && (waitlist.service.virtualCallingModes[0].callingMode == 'VideoCall')">
+                                                                <button class="meetingBtn">
+                                                                    <div class="serviceName">
+                                                                        <a class="joinMeeting joinMeetingCstm" (click)="joinMeetitng('wl')" target="blank">{{'Join Video Consultation' |
+                                                                            translate}}</a>
+                                                                    </div>
+                                                                </button>
+                                                            </div>
+                                                            <div class="serviceCstm" *ngIf="waitlist.waitlistStatus!=='cancelled' || waitlist.waitlistStatus =='checkedIn'" (click)="sendAttachmentBooking(waitlist,'checkin')">
+                                                                <button class="attchmentBtn"  >
+                                                                    <i class="material-icons">attach_file</i>
+                                                                    <!-- <img width="35px"  src="./assets/images/myjaldee/attachment.png" /> -->
+                                                                    <div>{{'Send Attachment' | translate}}</div>
+                                                                </button>
+                                                            </div>
+                                                            <div class= "serviceCstm" *ngIf="showviewAttachment || (waitlist && waitlist.hasAttachment)">
+                                                                <button class="attchmentBtn" 
+                                                                    (click)="viewAttachment(waitlist,'checkin')">
+                                                                     <i class="material-icons">attach_file</i><span class="menuInfo">View Attachments</span>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- servide details end-->
+                                    </div>
+                                </div>
+                                <div *ngIf="waitlist && api_loading && smallDevice">
+                                    <div class="mgn-bt-20 cust-det-outline card">
+                                        <div class="col-sm-12 col-md-12 col-lg-12  col-xl-12 col-12 logoFlex">
+                                            <div>
+                                                <div class="customCard" *ngIf="blogo">
+                                                    <img class="imageInfo" src="{{blogo}}" />
+                                                </div>
+                                            </div>
+                                            <div class="statusInfo">
+                                                <div class="orderStatus" *ngIf="waitlist && (waitlist.service.serviceType === 'virtualService' && waitlist.waitlistStatus !== 'arrived') || waitlist.service.serviceType !== 'virtualService'">
+                                                    <div class="stausCustom">{{'Status : ' | translate}}</div>
+                                                    <div class="stausCustom">{{check_in_statuses[waitlist.waitlistStatus | capitalizeFirst]}}</div>
+                                                </div>
+                                                <!--business anme start-->
+                                                <div class="orderStatus mt-2"
+                                                    *ngIf="waitlist && waitlist.providerAccount && waitlist.providerAccount.businessName"
+                                                    (click)="providerDetail(waitlist.providerAccount)">
+                                                    <div class="businessName pointer-cursor"> {{waitlist.providerAccount.businessName | capitalizeFirst}}</div>
+                                                </div>
+                                                <div class="orderStatus mt-2" *ngIf="waitlist && waitlist.queue && waitlist.queue.location && waitlist.queue.location.place">
+                                                    <div class="customOrder">  {{waitlist.queue.location.place | capitalizeFirst}}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-12 col-lg-12  col-xl-12 col-12 mgn-up-10">
+                                            <div>
+                                                <div *ngIf="waitlist && waitlist.checkinEncId" class="smallFlex">
+                                                    <div class="customOrder field-head">{{'Booking Id' | translate}}</div>
+                                                    <div class="orderNumber">{{waitlist.checkinEncId}}</div>
+                                                </div>
+                                                <div class="smallFlex" *ngIf="waitlist && waitlist.provider">
+                                                    <div class="customOrder field-head">{{provider_label | capitalizeFirst}}</div>
+                                                    <div class="orderNumber">{{(waitlist.provider.businessName) ? waitlist.provider.businessName
+                                                        : waitlist.provider.firstName +
+                                                        ' ' + waitlist.provider.lastName}}</div>
+                                                </div>
+                                            </div>
+                                            <div class="mgn-up-10">
+                                                <div class="dateTime"
+                                                    *ngIf="waitlist">
+                                                    <div class="field-head">{{'Date & Time' | translate}}</div>
+                                                    <div class="timeslotOrder" *ngIf="waitlist && waitlist.date"> {{waitlist.date | date:newDateFormat}}
+                                                        <div
+                                                            *ngIf="waitlist && waitlist.queue && waitlist.queue.queueStartTime">
+                                                            ,
+                                                            {{waitlist.queue.queueStartTime}} -
+                                                            {{waitlist.queue.queueEndTime}}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="dateTime" *ngIf="waitlist && waitlist.timezone">
+                                                    <div class="field-head">{{ 'Timezone' | translate }} </div>
+                                                    <div class="timeslotOrder">{{waitlist.timezone}}</div>
+                                                </div>
+                                                <div class="dateTime"
+                                                    *ngIf="waitlist && waitlist.waitlistingFor[0] && (waitlist.waitlistingFor[0].firstName || waitlist.waitlistingFor[0].lastName)">
+                                                    <div class="field-head">{{'Booking For' | translate}}</div>
+                                                    <div class="timeslotOrder"
+                                                        *ngIf="waitlist && waitlist.waitlistingFor[0] && (waitlist.waitlistingFor[0].firstName || waitlist.waitlistingFor[0].lastName)">
+
+                                                        <div>
+                                                            <span *ngIf="waitlist && waitlist.waitlistingFor[0] && waitlist.waitlistingFor[0].title">{{waitlist.waitlistingFor[0].title}}&nbsp;</span>
+                                                            {{waitlist.waitlistingFor[0].firstName |capitalizeFirst}}
+                                                            {{waitlist.waitlistingFor[0].lastName | capitalizeFirst}}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="dateTime" *ngIf="waitlist && waitlist.waitlistPhoneNumber">
+                                                    <div class="field-head">{{'Mobile' | translate}}</div>
+                                                    <div class="timeslotOrder" *ngIf="waitlist && waitlist.waitlistPhoneNumber">
+                                                        <div>
+                                                            {{waitlist.countryCode}}{{waitlist.waitlistPhoneNumber}}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="dateTime"
+                                                    *ngIf="waitlist && waitlist.waitlistingFor && waitlist.waitlistingFor[0] && waitlist.waitlistingFor[0].email">
+                                                    <div class="field-head">{{'Email' | translate}}</div>
+                                                    <div class="timeslotOrder"
+                                                        *ngIf="waitlist && waitlist.waitlistingFor && waitlist.waitlistingFor[0] && waitlist.waitlistingFor[0].email">
+                                                        <div>
+                                                            {{waitlist.waitlistingFor[0].email}}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="dateTime" *ngIf="waitlist && waitlist.appxWaitingTime">
+                                                    <div class="field-head">{{'Time' | translate}}</div>
+                                                    <div class="timeslotOrder" *ngIf="waitlist && waitlist.appxWaitingTime">
+                                                        <div>
+                                                            {{getSingleTime(waitlist.appxWaitingTime)}}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="dateTime" *ngIf="waitlist.batchName">
+                                                    <div class="field-head">{{'BATCH' | translate}}</div>
+                                                    <div class="timeslotOrder">
+                                                        <div>
+                                                            {{waitlist.batchName}}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-12 col-lg-12  col-xl-12 col-12 mgn-up-10">
+                                            <button (click)="addWaitlistMessage(waitlist)" type="submit" class="contactProviderBtn">
+                                                <span *ngIf="!api_loadingCtctProvider">{{'Message to provider' | translate}}</span>
+                                                <app-common-innerloading-spinner color="#fff" [spinnerParams]="{diameter:30}" *ngIf="api_loadingCtctProvider">
+                                                </app-common-innerloading-spinner>
+                                            </button>
+                                        </div>
+                                        <div class="col-sm-12 col-md-12 col-lg-12  col-xl-12 col-12 mgn-up-10 text-center">
+                                            <div>
+                                                <qrcode id="print-section" [qrdata]="qr_value" [width]="256" [errorCorrectionLevel]="'M'"></qrcode>
+                                            </div>
+                                            <div class="statusCheck">{{'Check your status' | translate}}</div>
+                                        </div>
+                                        <div  class="col-sm-12 col-md-12 col-lg-12  col-xl-12 col-12 mgn-up-10">
+                                            <div class="serviceCstm">
+                                                <div>
+                                                    <i class="cstmServiceIcon" *ngIf="waitlist && waitlist.service && waitlist.service.serviceType &&waitlist.service.serviceType === 'virtualService'" [class]=iconClass></i>
+                                                </div>
+                                                <!-- <div *ngIf="waitlist && waitlist.service && waitlist.service.serviceType && waitlist.service.serviceType === 'physicalService'">
+                                                    <img class="cstmServiceIcon" src="./assets/images/webP/meeting_Artboard.webp" />
+                                                </div> -->
+                                                <div class="service-icon" *ngIf="waitlist && waitlist.servicegallery && waitlist.servicegallery.length > 0 && waitlist.serviceType === 'physicalService'">
+                                                    <img class="cstmServiceIcon" [src]="waitlist.servicegallery[0].thumbUrl" alt=" Service Image">
+                                                </div>
+                                                <div class="service-icon"
+                                                    *ngIf="!waitlist.servicegallery && waitlist.service.serviceType && waitlist.service.serviceType !== 'virtualService' && waitlist.service.serviceType === 'physicalService' && domain !== 'religiousPriests'">
+                                                    <img class="cstmServiceIcon" src="./assets/images/meeting_Artboard.png" alt="Physical Service Image">
+                                                </div>
+                                                <div class="service-icon"
+                                                    *ngIf="!waitlist.servicegallery && waitlist.service.serviceType && waitlist.service.serviceType !== 'virtualService' && waitlist.service.serviceType === 'physicalService' && domain === 'religiousPriests'">
+                                                    <img class="cstmServiceIcon" src="./assets/images/hindu-temple-clipart.jpg" alt="Physical Service Image">
+                                                </div>
+                                                <div *ngIf="waitlist && waitlist.service && waitlist.service.name"
+                                                    class="serviceName">
+                                                    {{waitlist.service.name | capitalizeFirst}}
+                                                </div>
+                                                <!-- <div *ngIf="waitlist && waitlist.service && waitlist.service.deptName"
+                                                    class="serviceName">
+                                                    {{waitlist.service.deptName | capitalizeFirst}}
+                                                </div> -->
+                                            </div>
+                                            <div class="mt-2">
+                                                <div *ngIf="waitlist && waitlist.service && waitlist.service.virtualCallingModes && waitlist.service.virtualCallingModes[0] 
+                                                                                                        && waitlist.service.virtualCallingModes[0].callingMode && waitlist.service.virtualCallingModes[0].callingMode === 'Zoom'"
+                                                    class="serviceCstmText lineHeight">
+                                                    {{' Follow these instructions to join the video call:' | translate}}
+                                                    <div>{{'1: You will receive an alert that the Zoom call  has started.' | translate}}
+                                                    </div>
+                                                    <div>{{'2: When it is your turn, click on the following link -' | translate}}
+                                                
+                                                       <a class="meetingLinkJOin" *ngIf="meetingDetails && meetingDetails.joiningUrl"
+                                                            href="{{meetingDetails.joiningUrl}}"
+                                                            target="blank">{{meetingDetails.joiningUrl}}</a>
+                                                    </div>
+                                                    <div style="font-size: smaller">{{'(If you do not have Zoom installed you will be prompted to install Zoom)' | translate}}
+                                                    </div>
+                                                    <div>
+                                                        {{'3. Wait for the video call to start' | translate}}
+                                                    </div>
+                                                </div>
+                                                <div *ngIf="waitlist && waitlist.service && waitlist.service.virtualCallingModes && waitlist.service.virtualCallingModes[0] 
+                                                                                                        && waitlist.service.virtualCallingModes[0].callingMode && waitlist.service.virtualCallingModes[0].callingMode === 'GoogleMeet'"
+                                                    class="serviceCstmText lineHeight">
+                                                    {{'Follow these instructions to join the video call:' | translate}}
+                                                    <div>{{'1: You will recieve an alert that the Google Meet call has started.' | translate}}</div>
+                                                    <div>{{'2: When it is your turn, click on the following link -' | translate}}
+                                                        <a class="meetingLinkJOin" *ngIf="meetingDetails && meetingDetails.joiningUrl"
+                                                            href="{{meetingDetails.joiningUrl}}"
+                                                            target="blank">{{meetingDetails.joiningUrl}}</a>
+                                                    </div>
+                                                    <div style="font-size: smaller">{{'(If you are not already signed into google you must sign in)' | translate}}
+                                                    </div>
+                                                    <div>
+                                                        {{'3. Wait for the video call to start' | translate}}
+                                                    </div>
+                                                </div>
+                                                <div class="serviceCstmText lineHeight"
+                                                    *ngIf="waitlist && (waitlist.service && waitlist.service.virtualCallingModes && waitlist.service.virtualCallingModes[0] 
+                                                                                                            && waitlist.service.virtualCallingModes[0].callingMode && waitlist.service.virtualCallingModes[0].callingMode === 'WhatsApp') && waitlist.service && waitlist.service.virtualServiceType === 'videoService'">
+                                                    {{'* When it is time for your call, you will receive a WhatsApp video call from' | translate}}
+                                                    +91{{waitlist.service.virtualCallingModes[0].value}}.<br>
+                                                    {{'Please remember to keep your phone'+'s internet connection on.' | translate}}
+                                                </div>
+                                                <div class="serviceCstmText lineHeight"
+                                                    *ngIf="waitlist && (waitlist.service && waitlist.service.virtualCallingModes && waitlist.service.virtualCallingModes[0] 
+                                                                                                            && waitlist.service.virtualCallingModes[0].callingMode && waitlist.service.virtualCallingModes[0].callingMode === 'WhatsApp')  && waitlist.service && waitlist.service.virtualServiceType === 'audioService'">
+                                                    {{'* When it is time for your call, you will receive a WhatsApp audio call from' | translate}}
+                                                    +91{{waitlist.service.virtualCallingModes[0].value}}.<br>
+                                                    {{'Please remember to keep your phone'+ 's internet connection on.' | translate}}
+                                                </div>
+                                                <div class="serviceCstmText lineHeight"
+                                                    *ngIf="waitlist && (waitlist.service && waitlist.service.virtualCallingModes && waitlist.service.virtualCallingModes[0] 
+                                                                                                        && waitlist.service.virtualCallingModes[0].callingMode && waitlist.service.virtualCallingModes[0].callingMode === 'Phone')">
+                                                    {{' * When it is time for your call, you will receive a call from ' | translate}}+91{{waitlist.service.virtualCallingModes[0].value}}
+                                                </div>
+                                                <div class="serviceCstmText lineHeight"
+                                                    *ngIf="waitlist && (waitlist.service && waitlist.service.virtualCallingModes && waitlist.service.virtualCallingModes[0] 
+                                                                                                        && waitlist.service.virtualCallingModes[0].callingMode && waitlist.service.virtualCallingModes[0].callingMode === 'VideoCall')">
+                                                    {{'Follow these instructions to join the video call:' | translate}}
+                                                    <div>{{'1: You will receive an alert that the Jaldee Video Started.' | translate}}
+                                                    </div>
+                                                    <div>{{'2: When it is your turn, click on the following link -' | translate}}
+                                                       <a class="meetingLinkJOin"*ngIf="meetingDetails && meetingDetails.joiningUrl"
+                                                            href="{{meetingDetails.joiningUrl}}"
+                                                            target="blank">{{meetingDetails.joiningUrl}}</a>
+                                                    </div>
+                                                    <div>
+                                                        {{'3. Wait for the video call to start' | translate}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-12 col-lg-12  col-xl-12 col-12 mgn-up-10">
+                                            <!-- <div class="mt-2 calendaropen">
+                                                <div (click)="addToCalendar()" class="calendarTxt">{{'Add On calendar' | translate}}</div>
+                                                <div (click)="addToCalendar()">
+                                                    <i class="fa fa-calendar"></i>
+                                                </div>
+                                            </div> -->
+                                            <div class="mt-2 serviceCstm justifyContent-1"
+                                                *ngIf="waitlist && waitlist.amountPaid">
+                                                <div>
+                                                    <div class="serviceChargetxt">{{'Service Charge' |
+                                                        translate}}</div>
+                                                    <div class="serviceChanrge mt rupee-font"
+                                                        *ngIf="waitlist && waitlist.amountPaid">{{waitlist.amountPaid
+                                                        |currency:'&#8377;'}}</div>
+                                                </div>
+                                                <!-- <div>
+                                                    <button type="submit" class="payBalanceBtn">{{'Pay Balance' | translate}}</button>
+                                                </div> -->
+                                            </div>
+                                            <div class="mgn-up-20">
+                                                <div class="serviceCstm customWidth"
+                                                    *ngIf="waitlist && waitlist.waitlistStatus!=='Completed' && waitlist.waitlistStatus !== 'Cancelled' && type === 'today' && waitlist.service && waitlist.service.serviceType && waitlist.service.serviceType === 'virtualService'
+                                                && (waitlist.service && waitlist.service.virtualCallingModes && waitlist.service.virtualCallingModes[0] && waitlist.service.virtualCallingModes[0].callingMode && (waitlist.service.virtualCallingModes[0].callingMode === 'GoogleMeet' || waitlist.service.virtualCallingModes[0].callingMode === 'Zoom'))">
+                                                    <button class="meetingBtn">
+                                                        <div>
+                                                            <i class="cstmServiceIcon" *ngIf="waitlist && waitlist.service && waitlist.service.serviceType &&waitlist.service.serviceType === 'virtualService'" [class]=iconClass></i>
+                                                        </div>
+                                                        <!-- <div *ngIf="waitlist && waitlist.service && waitlist.service.serviceType && waitlist.service.serviceType === 'physicalService'">
+                                                            <img class="cstmServiceIcon" src="./assets/images/webP/meeting_Artboard.webp" />
+                                                        </div> -->
+                                                        <div class="service-icon" *ngIf="waitlist && waitlist.servicegallery && waitlist.servicegallery.length > 0 && waitlist.serviceType === 'physicalService'">
+                                                            <img class="cstmServiceIcon" [src]="waitlist.servicegallery[0].thumbUrl" alt=" Service Image">
+                                                        </div>
+                                                        <div class="service-icon"
+                                                            *ngIf="!waitlist.servicegallery && waitlist.service.serviceType && waitlist.service.serviceType !== 'virtualService' && waitlist.service.serviceType === 'physicalService' && domain !== 'religiousPriests'">
+                                                            <img class="cstmServiceIcon" src="./assets/images/meeting_Artboard.png" alt="Physical Service Image">
+                                                        </div>
+                                                        <div class="service-icon"
+                                                            *ngIf="!waitlist.servicegallery && waitlist.service.serviceType && waitlist.service.serviceType !== 'virtualService' && waitlist.service.serviceType === 'physicalService' && domain === 'religiousPriests'">
+                                                            <img class="cstmServiceIcon" src="./assets/images/hindu-temple-clipart.jpg" alt="Physical Service Image">
+                                                        </div>
+                                                        <div class="serviceName">
+                                                            <a class="joinMeeting joinMeetingCstm" *ngIf="meetingDetails && meetingDetails.joiningUrl"
+                                                                href="{{meetingDetails.joiningUrl}}"
+                                                                target="blank">{{'Join Video Consultation' | translate}}</a>
+                                                        </div>
+                                                    </button>
+                                                </div>
+                                                <div class="serviceCstm customWidth"
+                                                    *ngIf="waitlist && waitlist.waitlistStatus!=='Completed' && waitlist.waitlistStatus !== 'Cancelled' && type === 'today' && waitlist.service.serviceType === 'virtualService' 
+                                                && (waitlist.service.virtualCallingModes[0].callingMode == 'VideoCall')">
+                                                    <button class="meetingBtn">
+                                                        <div class="serviceName">
+                                                            <a class="joinMeeting joinMeetingCstm"
+                                                                (click)="joinMeetitng('wl')"
+                                                                target="blank">{{'Join Video Consultation' |
+                                                                translate}}</a>
+                                                        </div>
+                                                    </button>
+                                                </div>
+                                                <div class="serviceCstm customWidth">
+                                                    <button class="attchmentBtn"
+                                                        (click)="sendAttachmentBooking(waitlist,'checkin')">
+                                                        <!-- <img width="35px"
+                                                            src="./assets/images/myjaldee/attachment.png" /> -->
+                                                            <i class="material-icons">attach_file</i>
+                                                        <div>{{'Send Attachment' | translate}}</div>
+                                                    </button>
+                                                </div>
+                                                <div class= "serviceCstm customWidth">
+                                                    <button class="attchmentBtn" *ngIf="showviewAttachment || (waitlist && waitlist.hasAttachment)"
+                                                        (click)="viewAttachment(waitlist,'checkin')">
+                                                         <i class="material-icons">attach_file</i><span class="menuInfo">View Attachments</span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-12 col-lg-12  col-xl-12 col-12 mgn-up-20">
+                                            <div class="noteCard">
+                                                <div class="businessName" *ngIf="cust_notes_cap">{{cust_notes_cap |
+                                                    capitalizeFirst | translate}}</div>
+                                                <div class="timeslotOrder timeSlotOrderSmall" *ngIf="waitlist && waitlist.consumerNote &&  waitlist.consumerNote !== ''">
+                                                    {{waitlist.consumerNote}}
+                                                </div>
+                                                <div class="timeslotOrder notFound" *ngIf="waitlist && (waitlist.consumerNote == '' || !waitlist.consumerNote)">
+                                                    {{no_cus_notes_cap}}
+                                                </div>
+                                            </div>
+                                            <div class="mgn-up-10 noteCard">
+                                                <div class="businessName">{{'Instructions' | translate}}</div>
+                                                <div class="timeslotOrder notFound"
+                                                    *ngIf="waitlist && waitlist.service && (!waitlist.service.postInfoText || waitlist.service.postInfoText==='')">
+                                                    {{'No Instructions Found' | translate}}
+                                                </div>
+                                                <div class="timeslotOrder timeSlotOrderSmall" *ngIf="waitlist && waitlist.service && waitlist.service.postInfoText !==''">
+                                                    {{waitlist.service.postInfoText}}
+                                                </div>
+                                            </div>
+                                            <div class="mgn-up-10 noteCard" *ngIf="waitlist && waitlist.waitlistCancelReason">
+                                                <div class="businessName"  *ngIf="waitlist && waitlist.waitlistStatus =='cancelled'" >{{'Cancellation Reason' | translate}}</div>
+                                                <div class="timeslotOrder timeSlotOrderSmall">
+                                                {{getCancelledReasonDisplayName(waitlist.waitlistCancelReason)}}
+                                                </div>
+                                            </div>
+                                            <div class="mgn-up-10 noteCard" *ngIf="waitlist && waitlist.cancelReasonMessage">
+                                                <div class="businessName"  >{{'Cancellation Message' | translate}}</div>
+                                                <div class="timeslotOrder timeSlotOrderSmall">
+                                                {{waitlist.cancelReasonMessage}}
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                        <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 mgn-up-20 btnFlex">
+                                            <div>
+                                                <button class="cursor-pointer" type="submit" class="reschedulebtn" (click)="rescheduleAction(waitlist)"
+                                                *ngIf="!history && (waitlist && waitlist.waitlistStatus!=='done' && waitlist.waitlistStatus !== 'cancelled')">
+                                                    <div class="rescheduleCstm">
+                                                        <div>
+                                                            <img class="actionImg" src="./assets/images/myjaldee/reschedule.png" />
+                                                        </div>
+                                                        <div>{{'Reschedule' | translate}}</div>
+                                                    </div>
+                                                </button>
+                                            </div>
+                                            <div>
+                                                <button class="cursor-pointer" type="submit" class="cancelbtn" (click)="cancelAction(waitlist)"
+                                                *ngIf="!history && (waitlist && waitlist.waitlistStatus!=='done' && waitlist.waitlistStatus !== 'cancelled')">
+                                                    <div class="cancelCstm">
+                                                        <div>
+                                                            <img class="actionImg" src="./assets/images/myjaldee/cancel.png" />
+                                                        </div>
+                                                        <div>{{'Cancel Booking' | translate}}</div>
+                                                    </div>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card" *ngIf="questionnaires.length > 0">
+                                    <div class="pad-10">
+                                        <h3 class="no-margin">
+                                            {{questionnaire_heading}}
+                                        </h3>
+                                    </div>
+                                    <ng-container *ngIf="questionnaires.length > 1">
+                                        <mat-accordion class="qnr-accord no-padding" *ngFor="let qnr of questionnaires">
+                                            <mat-expansion-panel>
+                                                <mat-expansion-panel-header>
+                                                    <mat-panel-title>
+                                                        {{(qnr.questionnaireName) ? qnr.questionnaireName :
+                                                        qnr.questionnaireId}}
+                                                        <div class="qnrstatus">
+                                                            <span class="greenc"
+                                                                *ngIf="getQnrStatus(qnr) === 'submitted'">{{'Submitted' | translate}}</span>
+                                                            <span class="red"
+                                                                *ngIf="getQnrStatus(qnr) !== 'submitted'">{{'Released' | translate}}</span>
+                                                        </div>
+                                                    </mat-panel-title>
+                                                </mat-expansion-panel-header>
+                                                <div class="c-details">
+                                                    <app-questionnaire [questionnaireList]="qnr"
+                                                        [source]="'consCheckin'" [uuid]="waitlist.ynwUuid"
+                                                        [accountId]="waitlist.providerAccount.id" [type]="'details'"
+                                                        [waitlistStatus]="waitlist.waitlistStatus"
+                                                        (returnAnswers)="getQuestionAnswers($event)">
+                                                    </app-questionnaire>
+                                                </div>
+                                            </mat-expansion-panel>
+                                        </mat-accordion>
+                                    </ng-container>
+                                    <ng-container *ngIf="questionnaires.length === 1">
+                                        <div class="c-details" *ngFor="let qnr of questionnaires">
+                                            <app-questionnaire [questionnaireList]="qnr" [source]="'consCheckin'"
+                                                [uuid]="waitlist.ynwUuid" [accountId]="waitlist.providerAccount.id"
+                                                [type]="'details'" [waitlistStatus]="waitlist.waitlistStatus"
+                                                (returnAnswers)="getQuestionAnswers($event)">
+                                            </app-questionnaire>
+                                        </div>
+                                    </ng-container>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

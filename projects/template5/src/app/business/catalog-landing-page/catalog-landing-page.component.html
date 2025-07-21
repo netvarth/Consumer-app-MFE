@@ -1,0 +1,171 @@
+<section class="content bus-page item-details-consumer" [ngClass]="accountProperties?accountProperties['theme']:''">
+    <div class="panel panel-default" *ngIf="loading || !homeView || homeView==='paper_submission'" class="full-height">
+        <div class="child">
+            <app-common-innerloading-spinner>
+            </app-common-innerloading-spinner>
+        </div>
+    </div>
+    <div class="container" *ngIf="!loading && homeView && homeView!=='paper_submission'">
+        <div class="row p-0 pad-bt-10 bus-page-header">
+            <div class="col-12 mgn-up-10">
+                <app-basic-profile (actionPerformed)="profileActionPerformed($event)" [profile]="basicProfile"
+                    [selectedLocation]="selectedLocation" [extras]="extras"></app-basic-profile>
+            </div>
+            <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+                <div class="c-outer m0">
+                    <div class="c-body">
+                        <div class="col-md-12 col-sm-12 col-12" *ngIf="cartItem && itemId">
+                            <div class="col-md-6 col-sm-12 col-10 pad-25 no-padding-small mgn-bt-10"
+                                *ngIf="cartItem.itemImages &&cartItem.itemImages.length> 0">
+                                <owl-carousel-o [options]="{items: 1, dots: true, navigation: false}">
+                                    <ng-template carouselSlide *ngFor="let image of cartItem.itemImages;let i = index">
+                                        <div class="item" >
+                                            <img [src]="image.url" class="img-responsive" />
+                                        </div>
+                                    </ng-template>                                    
+                                </owl-carousel-o>
+                            </div>
+                            <div class="col-md-6 col-sm-12 col-12-padding">
+                                <div class="col-md-12 mgn-up-20">
+                                    <h2 class="m0">{{cartItem.displayName}}</h2>
+                                    <h5 class="m0">{{cartItem.itemNameInLocal}}</h5>
+                                    <p class="title-style" *ngIf="isPromotionalpriceFixed && cartItem.showPrice">
+                                        <span class="rupee-font"
+                                            style=" font-size: x-large; text-decoration: line-through;">&#8377;{{cartItem.price}}</span>&nbsp;
+                                        <span class="rupee-font"
+                                            style="font-size: xx-large">&#8377;{{cartItem.promotionalPrice}}</span>
+                                    </p>
+                                    <p class="title-style" *ngIf="isPromotionalpricePertage && cartItem.showPrice">
+                                        &nbsp;
+                                        <span class="rupee-font"
+                                            style=" font-size: x-large; text-decoration: line-through;">&#8377;{{cartItem.price}}</span>&nbsp;
+                                        <span class="rupee-font" style="font-size: x-large">
+                                            <sup>{{cartItem.promotionalPrcnt}}% OFF </sup></span>&nbsp;
+                                        <span class="rupee-font"
+                                            style="font-size: xx-large">&#8377;{{cartItem.promotionalPrice}}</span>
+                                    </p>
+                                    <p class="title-style" *ngIf="isPrice && cartItem.showPrice">
+                                        <span class="rupee-font"
+                                            style="font-size: xx-large">&#8377;{{cartItem.price}}</span>
+                                        &nbsp;
+                                    </p>
+                                    <p class="title-style" *ngIf="!cartItem.isStockAvailable">
+                                        <span style="font-size: x-large;color: red"><sup>*</sup>Out of
+                                            stock</span> &nbsp;
+                                    </p>
+                                </div>
+                                <div class="col-md-12  mr-area">
+                                    <p class="m0 question-header">Description</p>
+                                    <p>{{cartItem.shortDesc}}</p>
+                                    <p *ngIf="cartItem.itemDesc" class="m0 question-header">Detail
+                                        Description</p>
+                                    <p>{{cartItem.itemDesc}}</p>
+                                </div>
+                                <div class="col-md-12">
+                                    <p class="question-header m0">Quantity:</p>
+                                </div>
+                                <div class="col-md-12 pad-lt-25 mgn-bt-50">
+                                    <div class="btn-lt pull-left">
+                                        <button [ngClass]="{'disabled1': !cartItem.isStockAvailable}"
+                                            (click)="decrement()">-</button>
+                                    </div>
+                                    <div class="count-o pull-left">
+                                        {{itemQuantity}}
+                                    </div>
+                                    <div class="btn-rt pull-left">
+                                        <button
+                                            [ngClass]="{'disabled1': orderItem.maxqty === itemQuantity || !cartItem.isStockAvailable}"
+                                            (click)="increment()">+</button>
+                                    </div>
+                                </div>
+                                <div class="col-md-12  mr-area">
+                                    <p class="m0 question-header">Minimum Qty</p>
+                                    <p>{{minQuantity}}</p>
+                                </div>
+                                <div class="col-md-12  mr-area">
+                                    <p class="m0 question-header">Maximum Qty</p>
+                                    <p>{{maxQuantity}}</p>
+                                </div>
+                                <div class="col-lg-6 col-md-12 col-sm-12 col-12 no-padding">
+                                    <button class="btncheckout" (click)="checkout();" *ngIf="itemQuantity > 0">
+                                        Checkout</button>
+                                </div>
+                            </div>
+                            <div>
+                            </div>
+                        </div>
+                        <section *ngIf="!itemId">
+                            <div class="serv-head order-serv-head col-md-12 col-12 col-sm-12 mgn-bt-20"
+                                *ngIf="activeCatalog">
+                                <div>
+                                    <div class="no-padding">
+                                        <h5 class="catalog-title mgn-bt-5 primary-color">
+                                            <img (click)="openImageModalRow(catalogimage_list_popup[0])"
+                                                [src]="catalogImage" width="60" height="60" id="catalog-image1"
+                                                class="rounded pointer-cursor img-circle">
+                                            <div class="mgn-lt-10">{{activeCatalog.catalogName}}</div>
+                                        </h5>
+                                    </div>
+                                    <div class="catalog-icons no-padding-small disp-flex">
+                                        <div class="home-delivery mgn-rt-10 disp-flex align-items-center"
+                                            *ngIf="activeCatalog.homeDelivery && activeCatalog.homeDelivery.homeDelivery && activeCatalog.nextAvailableDeliveryDetails">
+                                            <img class="ordericon home"
+                                                src="./assets/images/Homedelivery.png" />
+                                            <div class="mgn-lt-5">{{'Home Delivery' | translate}}<div
+                                                    class="font-small "
+                                                    *ngIf="activeCatalog.homeDelivery.deliveryRadius">
+                                                    (in {{ activeCatalog.homeDelivery.deliveryRadius}} km
+                                                    radius)</div>
+                                            </div>
+                                        </div>
+                                        <div class="store-pickup disp-flex align-items-center"
+                                            *ngIf="activeCatalog.pickUp && activeCatalog.pickUp.orderPickUp && activeCatalog.nextAvailablePickUpDetails">
+                                            <img class="ordericon pickup"
+                                                src="./assets/images/Store-pick-up.png" />
+
+                                            <div class="mgn-lt-5">{{'Store Pickup' | translate}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p class="catalog-desc module-nomargin line-clamp" *ngIf="!showmoreSpec"
+                                        (click)="showSpec()">
+                                        {{activeCatalog.catalogDesc}}</p>
+                                    <p class="catalog-desc" *ngIf="showmoreSpec" (click)="showSpec()">
+                                        {{activeCatalog.catalogDesc}}
+                                    </p>
+                                </div>
+                            </div>
+                            <ng-container
+                                *ngIf="orderItems.length >0 && orderType === 'SHOPPINGCART' && checkVirtualOrPhysical()">
+                                <div class="bus-item-I" *ngFor="let item of orderItems">
+                                    <app-card *ngIf="item" [theme]="accountProperties?accountProperties['theme']:''"
+                                        [item]="item" [terminology]='terminologiesjson' [extras]="orderList"
+                                        [loc]="selectedLocation" (actionPerformed)="cardClicked($event)">
+                                    </app-card>
+                                </div>
+                                <div class="shopping-cart-footer" *ngIf="showOrderFooter()">
+                                    <div>{{'Your Order' | translate}} ({{ order_count }})
+                                        <span class="rupee-font">{{'SubTotal' | translate}} :&#8377;{{ price
+                                            }}&nbsp;</span>
+                                        <button mat-flat-button class="btn-chkout" (click)="checkout();">{{'Checkout' |
+                                            translate}}</button>
+                                    </div>
+                                </div>
+                            </ng-container>
+                            <ng-container
+                                *ngIf="orderType === 'SHOPPINGLIST' && (activeCatalog.nextAvailableDeliveryDetails || activeCatalog.nextAvailablePickUpDetails)">
+                                <div class="serv-head service-serv-head col-md-12 col-12 col-sm-12">
+                                    <div class="bus-item-O">
+                                        <a (click)="shoppinglistupload()" class="like-btn">{{'Upload Shopping
+                                            List' | translate}}</a>
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

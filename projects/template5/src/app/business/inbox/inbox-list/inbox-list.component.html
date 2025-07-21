@@ -1,0 +1,75 @@
+<div class="copy">
+    <ul class="inbox-table" *ngIf="messages.length>0 && !loading">
+        <li class="tth">
+        </li>
+        <li class="ttd pointer-cursor" [class.active]="selectedMsg==i" [class.outer-received]="user_id != message.owner.id"
+            [class.outer-sent]="user_id == message.owner.id" *ngFor="let message of messages; let i = index">
+            <div class="outer" (click)="showMsg(i, message)">
+                <div class="td td0">
+                    <span class="icon-inbox-in" *ngIf="user_id != message.owner.id"></span>
+                    <span class="icon-inbox-out" *ngIf="user_id == message.owner.id"></span>
+                </div>
+                <div class="td td0" *ngIf="message.attachements && message.attachements.length > 0">
+                    <span class="result" *ngIf="message.attachements && message.attachements.length > 0"
+                        [matTooltipClass]="tooltipcls" [matTooltip]="fileTooltip"><i class="fa fa-file-text-o"
+                            aria-hidden="true"></i>
+                    </span>
+                </div>
+                <div class="td td3" [class.inbox-unreadmsg]="!message.read && user_id != message.owner.id">
+                    <div class="result">{{message.accountName | capitalizeFirst}}
+                    </div>
+                </div>
+                <div class="td td2" [class.inbox-unreadmsg]="!message.read && user_id != message.owner.id">
+                    <div class="result" *ngIf="message.service && message.service !== null">
+                        {{ (message.service.length>50)? (wordProcessor.firstToUpper(message.service) |
+                        slice:0:40)+'.....':wordProcessor.firstToUpper(message.service) }}
+                    </div>
+                    <div class="result" *ngIf="!message.service || message.service === null">-</div>
+                </div>
+                <div class="td td4" [class.inbox-unreadmsg]="!message.read && user_id != message.owner.id">
+                    <div class="result" *ngIf="message && message.msg">
+                        {{ (message.msg.length>30)? (wordProcessor.firstToUpper(message.msg) |
+                        slice:0:30)+'.....':wordProcessor.firstToUpper(message.msg) }}
+                    </div>
+                </div>
+                <div class="td td1" [class.inbox-unreadmsg]="!message.read && user_id != message.owner.id">
+                    <div class="result">
+                        {{formatDateDisplay(message.timeStamp)}}
+                        {{formatDateDisplayTZ(message)}}
+                    </div>
+                </div>
+            </div>
+            <div class="details" [class.show]="selectedMsg==i">
+                <div class="result">
+                    <div class="result" [innerHTML]="message.msg | nl2br | capitalizeFirst">
+                    </div>
+                    <div class="result attach" *ngIf="message.attachements && message.attachements.length > 0"
+                        (click)="showImagesection(i)">
+                        <i class="fa fa-file-text-o" aria-hidden="true"></i> <a class="attach-link">
+                            {{message.attachements.length}} Attachment(s) </a>
+                    </div>
+                    <div class="thumbnails mt10 mb10" *ngIf="showImages[i]">
+                        <a class="mg-10" target="_blank" [href]="attachment.s3path"
+                            *ngFor="let attachment of message.attachements"><img [src]="getThumbUrl(attachment)"
+                                style="width:100px; height:100px" alt=""/></a>
+                    </div>
+                    <div class="action">
+                        <span class="icon-reply" (click)="replyMessage(message)"
+                            *ngIf="user_id != message.owner.id && !hide_reply_button">
+                            {{reply_cap}}
+                        </span>
+                        <span class="icon-close" (click)="closeMsg()">
+                            {{close_cap}}
+                        </span>
+                    </div>
+                </div>
+                <div class="actions">
+                    <span class="icon-delete"> {{delete_msg_cap}}</span>
+                </div>
+            </div>
+        </li>
+    </ul>
+    <div style="padding-left: 20px" *ngIf="this.messages.length == 0">
+        <p>{{no_msg_exists_cap}}</p>
+    </div>
+</div>

@@ -1,0 +1,15 @@
+<div class="" *ngIf="oneTimeQNRLoaded && !oneTimeQNRValidated && !loading">
+    <div class="qnr-form pt-3">
+        <app-questionnaire [questionnaireList]="onetimeQuestionnaireList"
+            [questionAnswers]="oneTimeInfo" [source]="'onetime'"
+            (returnAnswers)="getOneTimeQuestionAnswers($event)">
+        </app-questionnaire>
+        <div class="text-center">
+            <button pButton pRipple type="button" (click)="validateOneTimeInfo()"
+                class="btn-confirm p-button-primary btn-primary me-2 mt-2 mb-4 Proceed">Proceed</button>
+        </div>
+    </div>
+</div>
+<div *ngIf="loading" class="spinner">
+    <app-skeleton-loading></app-skeleton-loading>
+</div>

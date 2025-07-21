@@ -1,0 +1,330 @@
+.headerBorder{
+    border-bottom: 1.21389px solid #DADCE0 !important;
+    display: flex;
+    gap: 5px;
+    flex-direction: row !important;
+    padding: 15px !important;
+}
+.clrChangeHeader{
+    color: #464849 !important;
+    cursor: pointer;
+}
+.accountEditText{
+    color: #5F6368;
+    font-size: 13px;
+    margin-top: 5px;
+}
+.myAcText{
+    color: rgba(0, 0, 0, 0.87) !important;
+    font-size: 18px;
+    font-weight: bold;
+}
+.customCard{
+    padding: 5px;
+    box-shadow: 0 0 10px rgba(0,0,0,.05)!important;
+    border-radius: 5px;
+    background: #fff;
+    background-clip: padding-box;
+    border: none!important;
+    width: 100%;
+}
+.mainFlex{
+    display: flex;
+    margin-top: 15px;
+    gap: 30px;
+    width: 100%;
+}
+.tabText{
+    font-size: 14px;
+    font-weight: 600;
+    color: #878994;
+    margin-top: 15px;
+    cursor: pointer;
+    font-family: 'Open Sans';
+    font-style: normal;
+    padding: 10px;
+    margin-left: 10px;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+.tabText:hover{
+    color:#0D2348 !important;
+    font-weight: bold;
+}
+.tabImgCustom{
+  height: 30px !important;
+    width: 30px !important;
+    border: 1px solid #413F3F !important;
+    background: #413F3F !important;
+    padding: 6px !important;
+    border-radius: 50% !important;
+}
+.fullWidth{
+    width: 100%;
+    padding: 20px;
+    box-shadow: 0 0 10px rgb(0 0 0 / 5%) !important;
+    border-radius: 5px;
+    background: #fff;
+    background-clip: padding-box;
+    border: none !important;
+    width: 100%;
+}
+.fullWidthLinks{
+    width: 25%;
+    background: #EDF1F7;
+
+}
+.userImg{
+    border: 1px solid #AAACAF;
+    border-radius: 50%;
+    padding: 10px;
+    height: 85px;
+    width: 85px;
+}
+.newImgUpload {
+    box-shadow: 0.417685px 2.50611px 8.77138px 1.25305px rgb(30 64 121 / 15%) !important;
+    border-radius: 3.75916px !important;
+    border: 0px solid !important;
+    padding: 6px 12px;
+    background: #0D2348 !important;
+  }
+  .flexClassImg{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+  }
+  .deleteBtn{
+    box-shadow: 0.417685px 2.50611px 8.77138px 1.25305px rgb(30 64 121 / 15%) !important;
+    border-radius: 3.75916px !important;
+    padding: 6px 12px;
+    background: #FFFFFF;
+    border: 1.03704px solid #AAACAF !important;
+    color: #AAACAF;
+  }
+  .btntxt{
+    color: #fff;
+    font-weight: 500 !important;
+    font-size: 15px;
+    font-family: 'Open Sans';
+  }
+  .btntxtClr{
+    color: #AAACAF;
+    font-weight: 500 !important;
+    font-size: 15px;
+    font-family: 'Open Sans';
+  }
+  .forMFieldInput{
+    border: none !important;
+    color: #403B48 !important;
+  }
+  .matFormField{
+    width: 100% !important;
+  }
+  .labeltag{
+    font-size: 15px;
+    color: rgba(58, 53, 65, 0.68);
+  }
+  .widthCls{
+    width: 100%;
+  }
+  .tabTextCstmClr{
+    /* color: #33CCCC;
+    font-weight: bold; */
+    color: #413F3F;
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 700;
+    background: #FFFFFF;
+    padding: 10px;
+    margin-left: 10px;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+  }
+  .customCardMr{
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,.05)!important;
+    border-radius: 5px;
+    background: #fff;
+    background-clip: padding-box;
+    border: none!important;
+    width: 100%;
+  }
+  .nameFlex{
+    display: flex;
+    gap: 5px;
+    padding: 15px;
+  }
+  .tHEAD{
+    background: #FAFAFA;
+    height: 50px;
+  }
+  .tHEAD .tHeadTr{
+    padding: 15px !important;
+    color: #C2C3C8;
+    font-weight: 500!important;
+    font-size: 15px !important;
+  }
+  .padCls{
+    padding: 5px;
+  }
+  .cstmnameText{
+    color: #3D3D3D;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .cstmGenderText{
+    font-size: 13px;
+    font-weight: 500;
+    color: #353638;
+  }
+  .btnClrText{
+    /* color: #45C3D3;
+    font-size: 14px; */
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .profileCls{
+    display: flex;
+    gap: 5px;
+    background:#0D2348 !important;
+    border: 0.818713px solid#0D2348 !important;
+    border-radius: 46.6667px;
+    align-items: baseline;
+    padding: 5px;
+    cursor: pointer;
+    width: 7rem;
+    justify-content: center;
+  }
+  .deleteCls{
+    background: #ff6a6a !important;
+    display: flex;
+    grid-gap: 5px;
+    gap: 5px;
+    border: 0.818713px solid #ff6a6a !important;
+    border-radius: 46.6667px;
+    align-items: baseline;
+    padding: 5px;
+    cursor: pointer;
+    width: 7rem;
+    justify-content: center;
+  }
+  .btnClrTextRemove{
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .custpadCls{
+    padding: 15px;
+  }
+  .table-outer table tbody tr td{
+    border-bottom: 1px solid #E9E9E9 !important;
+    border-top: none !important;
+  }
+  .table-outer table{
+    border: none;
+  }
+  .addFamilyMemberBtn{
+    background: #0D2348;
+    border-radius: 5.0633px;
+    text-transform: none !important;
+    border: none;
+    padding: 12px;
+    color: #fff;
+    cursor: pointer;
+    outline: none;
+  }
+  .btnTextCust{
+    text-align: center;
+    color: #FFFFFF;
+    font-style: normal;
+    font-weight: 500;
+    margin-left: 10px;
+  }
+  
+  .table-outer table tbody tr:nth-of-type(odd){
+    background: #fff !important;
+  }
+
+  /* for small device */
+  .membersCard{
+    background: #FAFAFA !important;
+    border-radius: 5px !important;
+    box-shadow: none !important;
+    margin-bottom: 15px;
+  }
+  .memberInfoHeader{
+    padding: 5px;
+    color: #C2C3C8;
+    font-size: 14px;
+  }
+  .memberName{
+    display: flex;
+    color: #000000;
+    font-size: 15px;
+    font-weight: 600;
+    gap: 10px;
+    padding: 5px;
+  }
+  .memberInfobody{
+    padding: 5px;
+    color: #353638;
+    font-size: 14px;
+    font-weight: 400;
+  }
+  .memberInfo{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-top: 10px;
+  }
+  .customwidth{
+    width: 100%;
+  }
+  .matMenuBtn{
+    background: #FFFFFF !important;
+    overflow: hidden !important;
+    color: #33CCCC !important;
+  }
+  .editIcon{
+    color: #33CCCC !important;
+  }
+  .deleteIcon{
+    color: #EF6359 !important;
+  }
+  .matMenuDeleteBtn{
+    background: #FFFFFF !important;
+    overflow: hidden !important;
+    color: #EF6359 !important;
+  }
+  .relatedLink{
+    background: #FFFFFF;
+    border: 0.892595px solid #45C3D3;
+    border-radius: 2.24715px;
+    padding: 10px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #45C3D3;
+    font-weight: 600;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .tabImgCustomSmall{
+    background: #45C3D3 !important;
+    border: none !important;
+    color: #ffffff !important;
+    text-align: center;
+    padding: 7px !important;
+    font-size: 15px;
+  }
+  .empty{
+    border: 0.7px dashed #E8E8E8;
+    margin-top: 30px;
+    margin-bottom: 30px
+  }

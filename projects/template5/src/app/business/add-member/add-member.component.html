@@ -1,0 +1,135 @@
+<div *ngIf="calledFrom=='checkin'" class="addmem-head">{{fill_foll_details_cap}}</div>
+<div class="ynw-common-form add-member mgn-bt-30 add-member-new"
+    *ngIf="data && data.type && (data.type==='add' || data.type==='edit')">
+    <div class="form-group row m-0">
+        <div class="col-lg-6 col-xxl-4 col-12 col-sm-12  mgn-up-10">
+            <label class="p-0 pt-1 m-0 form-text-light">{{'First Name' |
+                translate}}</label>
+            <div class="d-flex">
+                <div>
+                    <p-dropdown class="form-control" [options]="salutation" [style]="{'width':'100%'}"
+                        (onChange)="valuechange($event)" [(ngModel)]="title" placeholder="Select"
+                        ropdownIcon="fa fa-caret-down" class="text-capitalize" optionLabel="name"
+                        optionValue="displayName">
+                        <ng-template let-item pTemplate="salutation">
+                            {{item.displayName}}
+                        </ng-template>
+                    </p-dropdown>
+                </div>
+                <div class="flex-grow-1">
+                    <input pInputText type="text" class="form-control" id="first_name" placeholder=""
+                        [(ngModel)]="firstname" autocomplete="off" (keyup)="valuechange($event)" />
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 col-xxl-4 col-12 col-sm-12  mgn-up-10">
+            <label class="p-0 pt-1 m-0 form-text-light">{{'Last Name' | translate}} </label>
+            <input pInputText type="text" class="form-control" id="last_name" placeholder="" [(ngModel)]="lastname"
+                autocomplete="off" (keyup)="valuechange($event)" />
+        </div>
+    </div>
+    <div class="form-group row m-0" *ngIf="calledFrom !=='checkin'">
+        <div class="col-lg-6 col-xxl-4 col-12 col-sm-12  mgn-up-10">
+            <label class="p-0 pt-1 m-0 form-text-light">{{'Date of Birth' | translate}}</label>
+            <p-calendar [readonlyInput]="true" #inputdob [(ngModel)]="dob" [style]="{'width':'70%'}"
+                dateFormat="dd/mm/yy" [maxDate]="tday" [minDate]="minday" (onSelect)="dateChanged($event)"
+                [showIcon]="true" placeholder="DD/MM/YYYY"></p-calendar>
+        </div>
+        <div class="col-lg-6 col-xxl-4 col-12 col-sm-12  mgn-up-10">
+            <label class="p-0 pt-1 m-0 form-text-light">{{gender_cap}}</label>
+            <p-dropdown [options]="genderList" class="text-capitalize" [style]="{'width':'100%'}"
+                (onChange)="valuechange($event)" [(ngModel)]="gender" placeholder="Gender"
+                ropdownIcon="fa fa-caret-down">
+                <ng-template let-item pTemplate="item">
+                    {{item | capitalizeFirst}}
+                </ng-template>
+            </p-dropdown>
+        </div>
+    </div>
+    <div class="form-group row m-0">
+        <div class="col-lg-6 col-xxl-4 col-12 col-sm-12  mgn-up-10">
+            <label class="p-0 pt-1 m-0 form-text-light">{{'Mobile #' | translate}}</label>
+            <ngx-intl-tel-input [cssClass]="'custom'" [preferredCountries]="preferredCountries"
+                [enableAutoCountrySelect]="true" [enablePlaceholder]="true" [searchCountryFlag]="true"
+                [searchCountryField]="[SearchCountryField.Iso2, SearchCountryField.Name]" [selectFirstCountry]="false"
+                [phoneValidation]="true" [maxLength]="15" [selectedCountryISO]="selectedCountry"
+                [separateDialCode]="separateDialCode" [numberFormat]="PhoneNumberFormat.National" name="mobileNumber"
+                [(ngModel)]="mobileNumber" [ngModelOptions]="{updateOn: 'blur'}" (ngModelChange)="valuechange($event)">
+            </ngx-intl-tel-input>
+        </div>
+        <div class="col-lg-6 col-xxl-4 col-12 col-sm-12  mgn-up-10">
+            <label class="p-0 pt-1 m-0 form-text-light">{{'Whatsapp #' | translate}}</label>
+            <ngx-intl-tel-input [cssClass]="'custom'" [preferredCountries]="preferredCountries"
+                [enableAutoCountrySelect]="true" [enablePlaceholder]="true" [searchCountryFlag]="true"
+                [searchCountryField]="[SearchCountryField.Iso2, SearchCountryField.Name]" [selectFirstCountry]="false"
+                [phoneValidation]="true" [maxLength]="15" [selectedCountryISO]="selectedCountry"
+                [separateDialCode]="separateDialCode" [numberFormat]="PhoneNumberFormat.National" name="whatsappnumber"
+                [(ngModel)]="whatsappnumber" [ngModelOptions]="{updateOn: 'blur'}"
+                (ngModelChange)="valuechange($event)">
+            </ngx-intl-tel-input>
+        </div>
+        <div class="col-lg-6 col-xxl-4 col-12 col-sm-12  mgn-up-10">
+            <label class="p-0 pt-1 m-0 form-text-light">{{'Telegram # '| translate}}</label>
+            <ngx-intl-tel-input [cssClass]="'custom'" [preferredCountries]="preferredCountries"
+                [enableAutoCountrySelect]="true" [enablePlaceholder]="true" [searchCountryFlag]="true"
+                [searchCountryField]="[SearchCountryField.Iso2, SearchCountryField.Name]" [selectFirstCountry]="false"
+                [phoneValidation]="true" [maxLength]="15" [selectedCountryISO]="selectedCountry"
+                [separateDialCode]="separateDialCode" [numberFormat]="PhoneNumberFormat.National" name="whatsappnumber"
+                [(ngModel)]="telegramnumber" [ngModelOptions]="{updateOn: 'blur'}"
+                (ngModelChange)="valuechange($event)">
+            </ngx-intl-tel-input>
+        </div>
+    </div>
+    <div class="form-group row m-0">
+        <div class="col-lg-6 col-xxl-4 col-12 col-sm-12  mgn-up-10">
+            <label class="p-0 pt-1 m-0 form-text-light">{{'Address' | translate}}</label>
+            <textarea pInputTextarea class="form-control" [(ngModel)]="address" placeholder="Address" rows="2"
+                (keyup)="valuechange($event)">
+            </textarea>
+        </div>
+        <div class="col-lg-6 col-xxl-4 col-12 col-sm-12  mgn-up-10">
+            <label class="p-0 pt-1 m-0 form-text-light">{{'Email' | translate}}</label>
+            <input pInputText type="email" class="form-control" id="email" [(ngModel)]="email"
+                placeholder="Email(user@xyz.com)" autocomplete="off" (keyup)="valuechange($event)" />
+        </div>
+    </div>
+</div>
+<div *ngIf="data && data[0] && data[0].requestType && data[0].requestType==='deactiveAccount'" class="ynw-common-form">
+    <div *ngIf="beforeDelete">
+        <div class="deletePosition">
+            <img class="deleteIcon" src="./assets/images/myjaldee/deleteAccount.png" />
+        </div>
+        <div class="confirmation">
+            <div class="confirmationTxt">{{'Delete Account confirmation' | translate}}</div>
+        </div>
+        <div class="confirmationdlt">
+            <div class="confirmationTxtDlt">
+                {{'Are You Sure You Want to delete your Jaldee account?' | translate}}
+            </div>
+        </div>
+        <div class="btnActive">
+            <div>
+                <button class="noBtn" (click)="closeDialog('close')" mat-dialog-close>{{'No' | translate}}</button>
+            </div>
+            <div>
+                <button type="submit" class="yesBtn" (click)="deActiveAccount()">{{'Yes' | translate}}</button>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="!beforeDelete" class="padIng">
+        <div style="text-align:end">
+            <button mat-dialog-close class="modal_close" (click)="closeDialog('close')">
+                <i class="fa fa-window-close" aria-hidden="true"></i>
+            </button>
+        </div>
+        <div class="textCenter mgn-up-5">
+            <div class="goodByText">{{'Goodbye!' | translate}}</div>
+        </div>
+        <div class="textCenter mgn-up-5">
+            <div class="deletedTxt">{{'Your account has been deleted' | translate}}</div>
+        </div>
+        <div class="textCenter mgn-up-5">
+            <img class="goodByeImg" src="./assets/images/myjaldee/goodbye.png" />
+        </div>
+    </div>
+</div>

@@ -1,0 +1,20 @@
+.loading-hgt {
+    height: 85vh;
+  }
+.my-auto {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+.back-btn{
+  font-size: 1.25rem !important;
+  color: black !important;
+  background-color: white !important;
+  padding: 2.5px;
+  border-radius: 3px;
+}
+.hgt-adjust {
+  min-height: calc(100vh - 55px);
+}
+.card {
+  margin-bottom: 0 !important;
+}

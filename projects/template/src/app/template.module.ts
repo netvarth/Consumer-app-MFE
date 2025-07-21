@@ -10,8 +10,9 @@ const routes: Routes = [
     runGuardsAndResolvers: 'always',
     canLoad: [TemplateGuard],
     path: '', loadChildren: async (environmentService = inject(EnvironmentService)) => {
-      remoteEntry = environmentService.getEnvironment('HOME') + '/remoteEntry.json';
       const templateId = localStorage.getItem('_tid');
+      remoteEntry = environmentService.getEnvironment('HOME') + '/remoteEntry.json';
+      
       console.log("Template ID:", templateId);
       // 
       return loadRemoteModule({

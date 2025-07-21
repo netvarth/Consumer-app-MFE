@@ -1,0 +1,18 @@
+<h1 class="mat-dialog-title text-capitalize"> {{ data.type }} - {{family_member_cap}}
+    <button #queue mat-dialog-close class="modal_close">
+        <i class="fa fa-window-close" aria-hidden="true"></i>
+    </button>
+</h1>
+<mat-dialog-content>
+    <app-consumer-add-member [calledFrom]="'addmemberholder'" (returnDetails)="handleReturnDetails($event)">
+    </app-consumer-add-member>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button type="button" mat-dialog-close class="cs-btn bt2" [disabled]="disableButton">{{cancel_btn_cap}}</button>
+    <button mat-button class="cs-btn bt1 Update-Btn" (click)="handleSaveMember()" [disabled]="disableButton"> <span
+            *ngIf="data.type == 'add'">{{save_btn_cap}}</span> <span *ngIf="data.type == 'edit'">{{update_btn_cap}}
+            {{member_cap}}</span></button>
+</mat-dialog-actions>
+<app-field-error-display [displayError]="true" *ngIf="api_error" errorMsg="{{api_error}}"></app-field-error-display>
+<app-form-success-display [displayMsg]="true" *ngIf="api_success" successMsg="{{api_success}}">
+</app-form-success-display>

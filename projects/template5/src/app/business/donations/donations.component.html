@@ -1,0 +1,52 @@
+<section class="container no-padding cons-donate no-padding-small">
+    <div class="row bill-section">
+        <div class="c-outer bill-section-content">
+            <div class="c-body bill-wrapper">
+                <div class="c-outer">
+                    <div class="c-body">
+                        <div class="card title-gb">
+                            <h5 class="mgn-up-10"> &nbsp;Donations <a class="pull-left back-btn"
+                                    (click)="gotoDashboard()"><i class="fa fa-arrow-left"></i></a></h5>
+                        </div>
+                        <div class="card history one section-four no-padding">
+                            <div class="list-outer">
+                                <div class="table-th">
+                                    <div class="th one">Date</div>
+                                    <div class="th two">Cause</div>
+                                    <div class="th one">Receiver</div>
+                                    <div class="th three">{{amount_cap}}</div>
+                                </div>
+                                <div class="listing" *ngFor="let donation of donations; let i = index">
+                                    <div class="wrap">
+                                        <div class="td one">
+                                            <span class="date"> {{donation.date | date: newDateFormat}} </span>
+                                        </div>
+                                        <div class="td two">
+                                            <span>{{donation.service.name |
+                                                capitalizeFirst}}</span>
+                                        </div>
+                                        <div class="td one">
+                                            <span
+                                                *ngIf="donation.providerAccount">{{donation.providerAccount.businessName}}</span>
+                                        </div>
+                                        <div class="td three rupee-font"> <span class="amt"></span>
+                                            {{donation.donationAmount |
+                                            currency:'&#8377; ' }}
+                                            <span class="pull-right mgn-rt-5">
+                                                <i *ngIf="!donation.note" class="icon-note"
+                                                    style="visibility: hidden;"></i>
+                                                <i *ngIf="donation.note" [matTooltip]="'Notes'"
+                                                    class="icon-note pointer-cursor"
+                                                    (click)="showConsumerNote(donation)"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

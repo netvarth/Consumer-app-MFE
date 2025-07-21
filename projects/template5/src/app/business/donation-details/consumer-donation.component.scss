@@ -1,0 +1,514 @@
+.mgn-lt-20 {
+    margin-left: 20px!important;
+}
+.panel-body {
+    padding: 15px;
+}
+.shadow {
+    box-shadow: 0 .5rem 1.5rem .5rem rgba(0,0,0,.075)!important;
+}
+.container {
+    width: 100%;
+}
+.content .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid rgba(0,0,0,.125);
+    border-radius: 0.25rem;
+}
+.mobile-input input {
+    border-radius: 5px;
+    padding: 20px;
+}
+.mgn-bt-20 {
+    margin-bottom: 20px!important;
+}
+.rupee-font {
+    font-family: Arial,Helvetica,sans-serif!important;
+}
+.resPaymrntDetails {
+    display: flex!important;
+    justify-content: left!important;
+    text-align: left;
+    font-size: 15px;
+    font-weight: bold;
+    color: #133072;
+    border-radius: 5px;
+    width: 26rem;
+    margin: 5px;
+}
+
+@media (min-width: 1200px){
+.resCard {
+    margin-left: -25px!important;
+}
+}
+@media (min-width: 992px){
+.col-lg-7 {
+    flex: 0 0 58.33333%;
+    max-width: 58.33333%;
+}
+}
+.mobile-donation-for-styling {
+    font-size: 1rem!important;
+    line-height: 15px!important;
+    font-weight: bold;
+    padding-top: 10px!important;
+    padding-bottom: 10px!important;
+    border-radius: 10px;
+    box-shadow: 0 1px 1px rgba(0,0,0,.2),0 2px 5px rgba(0,0,0,.19)!important;
+}
+.mgn-up-5 {
+    margin-top: 5px!important;
+}
+.mgn-bt-5 {
+    margin-bottom: 5px!important;
+}
+@media (min-width: 765px){
+.mobile_disply {
+    display: none!important;
+}
+}
+.mobile-donor-details {
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #cdc8c9;
+}
+.c-checkin-new .lnk {
+    font-size: .7rem!important;
+    font-weight: 700!important;
+}
+.boldmobiletext {
+    font-weight: bold;
+}
+.mgn-lt-5 {
+    margin-left: 5px!important;
+}
+.amount-section-mobile {
+    text-align: center;
+    background-color: #fafafa;
+    border-radius: 10px;
+    padding: 5px;
+    box-shadow: 0 4px 8px rgba(0,0,0,.1),0 6px 20px rgba(0,0,0,0)!important;
+}
+.content.loc-list .card .copy.locd {
+    font-size: .875rem;
+}
+.fa-arrow-left, .fa-user-circle:before, .fa-mobile:before, .fa-pencil-square-o:before,.fa-envelope-o:before {
+    color: #b2b2b2!important;
+}
+.paymentBtn {
+    transform: translate(10px)!important;
+}
+@media (min-width: 1200px){
+.paymentBtn {
+    margin-left: -25px;
+}
+}
+@media (min-width: 1400px){
+.container {
+    max-width: 1340px;
+}
+}
+.my-auto {
+    margin-bottom: auto!important;
+    margin-top: auto!important;
+}
+.resDesName{
+    line-height: 25px !important;
+  }
+  @media (min-width: 1200px){
+  .cardTop{
+    height: 360px !important;
+  }
+}
+.col-sm-12, .col-md-12, .col-lg-12 {
+    position: relative;
+    padding-right: 12.5px;
+    padding-left: 12.5px;
+}
+.txt-align-center {
+    text-align: center !important;
+}
+a:hover {
+    color: #1572a8!important;
+    text-decoration: none;
+}
+.service {
+    line-height: 15px;
+}
+@media (max-width: 765px) {
+.mobile-donation-for-styling {
+    transform: scaleX(1.25)!important;
+}
+}
+@media  (max-width: 765px){
+.mobile-donation-for-styling {
+    border-radius: 0!important;
+    padding: 10px!important;
+}
+}
+@media (max-width: 768px){
+.mobile-donation-for-styling {
+    background-color: #133072!important;
+    box-shadow: none!important;
+}
+}
+@media (max-width: 768px){
+.lbl {
+    flex-wrap: wrap-reverse!important;
+}
+}
+@media  (max-width: 765px){
+.cardTop {
+    transform: rotateX(45deg)!important;
+    margin-top: 0!important;
+}
+}
+@media (max-width: 768px){
+.reverseDetails {
+    display: flex!important;
+    flex-wrap: nowrap!important;
+    flex-direction: row-reverse!important;
+    box-shadow: none!important;
+    align-items: center!important;
+    justify-content: center!important;
+    grid-gap: 5px!important;
+    gap: 5px!important;
+}
+}
+@media  (max-width: 765px){
+.resImg {
+    height: 150px!important;
+    width: 150px!important;
+    border-radius: 0 25px 25px 0!important;
+    margin-top: -15px!important;
+    -o-object-fit: fill;
+    object-fit: fill;
+}
+}
+@media  (max-width: 765px){
+.resDesName {
+    line-height: 20px!important;
+    margin-left: 10px;
+}
+}
+@media  (max-width: 765px){
+.textChange {
+    font-size: 10px!important;
+    padding: 10px!important;
+    font-weight: 700;
+    z-index: 99999;
+    opacity: 100%;
+    color: #c2cee6!important;
+    filter: brightness(1.75);
+    line-height: normal;
+}
+}
+@media  (max-width: 765px){
+.reverseDetails {
+    margin-left: -24px!important;
+}
+}
+@media (max-width: 768px){
+.reverseDetails {
+    box-shadow: none!important;
+    color: #fff!important;
+    background-color: #133072!important;
+}
+}
+@media (max-width: 765px){
+.reverseDetails {
+    padding: 0!important;
+    font-size: 18px!important;
+    width: auto!important;
+}
+}
+@media  (max-width: 765px){
+.desktop_disply {
+    display: none!important;
+}
+}
+@media  (max-width: 765px){
+.serviceGalleryImg {
+    padding: 0!important;
+}
+}
+@media (max-width: 765px){
+.resBgChange {
+    text-align: left!important;
+}
+}
+@media only screen and (max-width: 575px){
+.container {
+    margin-left: 0!important;
+    margin-right: 0!important;
+    padding-left: 5px!important;
+    padding-right: 5px!important;
+}
+}
+@media (max-width: 400px){
+.mobile-donation-for-styling {
+    border-radius: 0!important;
+    padding: 0!important;
+    transform: scaleX(1.13)!important;
+}
+}
+@media (max-width: 500px){
+.panel-body {
+    padding: 5px!important;
+}
+}
+@media (max-width: 400px){
+.desktop_disply {
+    display: none!important;
+}
+}
+@media (max-width: 400px){
+.resImg {
+    height: 150px!important;
+    width: 150px!important;
+    border-radius: 0 25px 25px 0!important;
+    margin-top: -15px!important;
+    -o-object-fit: fill;
+    object-fit: fill;
+}
+}
+@media (max-width: 400px){
+.resDesName {
+    line-height: 20px!important;
+    margin-left: 10px;
+}
+}
+@media (max-width: 400px){
+.reverseDetails {
+    padding: 0!important;
+    font-size: 18px!important;
+    width: auto!important;
+}
+}
+@media (max-width: 400px){
+.reverseDetails {
+    margin-left: -15px!important;
+}
+}
+@media (max-width: 400px){
+.resBgChange {
+    text-align: left!important;
+}
+}
+@media (max-width: 400px){
+.reverseDetails {
+    padding: 0!important;
+    font-size: 18px!important;
+    width: auto!important;
+}
+}
+@media (max-width: 400px){
+.serviceGalleryImg {
+    padding: 0!important;
+}
+}
+@media (max-width: 400px){
+.reverseDetails {
+    padding: 0!important;
+    font-size: 18px!important;
+    width: auto!important;
+}
+}
+@media only screen and (max-width: 575px){
+.row {
+    margin-left: 0;
+    margin-right: 0;
+}
+}
+@media only screen and (max-width: 575px){
+.no-padding-small {
+    padding: 0!important;
+}
+}
+@media (max-width: 575px){
+    .emailvallabel, .phonevallabel, .boldmobiletext {
+        font-size: 12.25px !important;
+    }
+}
+@media (max-width: 575px){
+.mobile-donor-details .donation_label {
+    font-size: 9px !important;
+}
+}
+.resImg{
+    border-radius: 50px;
+    height: 450px;
+    filter: brightness(1);
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.quest-head {
+    font-size: 1.2rem;
+    margin-top: 10px;
+}
+.pad-20 {
+    padding: 20px!important;
+}
+
+.fade {
+    opacity: 2 !important;
+}
+.modal {
+    background: rgba(0,0,0,.3);
+}
+.modal {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1050;
+    display: none;
+    -webkit-overflow-scrolling: touch;
+    outline: 0;
+}
+body.modal-open {
+    overflow: hidden !important;
+}
+
+.modal-dialog {
+    margin-top: 100px !important;
+}
+
+.modal-body {
+    max-height: 70vh;
+    overflow: auto;
+}
+
+::ng-deep .cdk-overlay-container {
+    z-index: 1050 !important;
+}
+
+.close-btn button {
+    font-size: 2rem !important;
+    padding-right: 15px;
+    padding-top: 15px;
+}
+
+@media (min-width: 576px) {
+    .modal-dialog {
+        max-width: 500px;
+        margin: 1.75rem auto;
+    }
+}
+
+.modal.fade .modal-dialog {
+    transition: transform .3s ease-out;
+    transform: translateY(-50px);
+}
+
+.modal-body {
+    position: relative;
+    flex: 1 1 auto;
+    padding: 1.75rem;
+}
+
+.modal-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    pointer-events: auto;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 0 solid rgba(0, 0, 0, .2);
+    border-radius: 0.42rem;
+    box-shadow: 0 0.25rem 0.5rem rgb(0 0 0 / 10%);
+    outline: 0;
+}
+
+.modal-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 1.5rem;
+    border-top: 1px solid #EBEDF3;
+    border-bottom-right-radius: 0.42rem;
+    border-bottom-left-radius: 0.42rem;
+}
+
+.modal-footer>* {
+    margin: 0.25rem;
+}
+.modal-body {
+    padding-top: 0!important;
+}
+.disp-none {
+    display: none!important;
+}
+.input-group {
+    display: block !important;
+}
+.plMob {
+    margin-left: -10px;
+}
+.code-field {
+    width: 40px!important;
+}
+.height40 {
+    height: 32px;
+    font-size: 12px!important;
+}
+.width100 {
+    width: 100%;
+}
+.codenumber {
+    display: flex;
+    margin-left: auto;
+    width: 100%;
+}
+.btn {
+    font-size: 1rem;
+}
+.btn:hover {
+    background-color: transparent!important;
+    color: #f1b51c!important;
+    border-color: #00aef2;
+}
+.btn-primary:hover {
+    color: #fff !important;
+}
+
+.loadingpaytm {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 9999 !important;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, .5) !important;
+    pointer-events: none !important;
+  }
+  ::ng-deep .codenumber ngx-intl-tel-input input {
+    height: 40px !important;
+    width: 100% !important;
+    background: #f6f6f6 !important;
+    border: 1px solid #f6f6f6!important;
+    border-radius: 5px !important;
+    padding: 15px;
+    font-size: 15px;
+  }
+  ::ng-deep .codenumber ngx-intl-tel-input .iti {
+    width: 100% !important;
+  }
+  ::ng-deep .codenumber ngx-intl-tel-input {
+    width: 100% !important;
+  }

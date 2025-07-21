@@ -1,0 +1,79 @@
+.btn-primary {
+    background-color: #1e4079 !important;
+    border-color: #1e4070 !important;
+    color: #fff !important;
+    font-weight: 100 !important;
+    border-radius: 3px !important;
+}
+
+.question-label {
+    font-size: 20px;
+}
+
+::ng-deep .primengCard .p-card-body {
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+    margin-top: 10px !important;
+    margin-bottom: 10px !important;
+}
+
+label {
+    margin-bottom: 0px !important;
+}
+
+.price-value {
+    font-size: 18px !important;
+}
+
+.fa-inr {
+    font-size: 16px !important;
+}
+
+.fa-plus {
+    font-size: 14px !important;
+}
+
+input {
+    width: 100% !important;
+}
+
+
+::ng-deep .p-fileupload-choose {
+    background: #1E4079 !important;
+    color: #ffffff;
+    border-color: #1E4079 !important;
+}
+
+::ng-deep .primengCard .p-button {
+    background: #1E4079 !important;
+    color: #ffffff;
+    border-color: #1E4079 !important;
+}
+
+.small-inr {
+    font-size: 14px !important;
+}
+
+.font-medium {
+    font-size: 18px !important;
+}
+
+/* ::ng-deep .primengCard .p-calendar {
+    width: 100% !important;
+} */
+
+
+::ng-deep .primengCard .p-datepicker-touch-ui,
+.p-calendar .p-datepicker-touch-ui {
+    min-width: 100% !important;
+}
+
+h6 {
+    font-size: 1rem !important;
+}
+/* 
+@media screen and (max-width: 768px) {
+    h6 {
+        font-size: 1rem !important;
+    }
+} */

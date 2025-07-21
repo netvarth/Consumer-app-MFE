@@ -1,0 +1,61 @@
+<div class="p-2 card bg-basic-profile"
+  [ngClass]="[profile['theme'] ? profile['theme'] : '', profile.cover ? 'bg-basic-profile-img' : '']"
+  [ngStyle]="{ 'background': (profile.cover) ? 'url(' + profile.cover + ')': ''}">
+  <div>
+    <div class="no-padding">
+      <div class="d-flex no-padding card-outer-cont align-items-center">
+        <div class="no-padding card-inner-img-cont" *ngIf="profile['logo']">
+          <div class="img-circle">
+            <img class="img-responsive" [src]="profile['logo']" alt="">
+          </div>
+        </div>
+        <div class="ms-2 pointer-cursor">
+          <h5 class="line-clamp-ln2 mb-1">{{profile.businessName}}</h5>
+          <div class="pointer-cursor actionbtns">
+            <ul class="bus-actions bus-actions-large no-padding mt-2">
+              <li class="message" [matTooltip]="'Send Message'" *ngIf="extras['communicate']">
+                <a class="like-btn" (click)="communicateHandler()">
+                  <span>
+                    <i class="fa fa-commenting-o" aria-hidden="true"></i>
+                  </span>
+                </a>
+              </li>
+              <li class="share" [matTooltip]="'Share'" *ngIf="extras['share']">
+                <a class="like-btn" (click)="qrCodegeneraterOnlineID()">
+                  <span>
+                    <i class="fa fa-share-alt" aria-hidden="true"></i>
+                  </span>
+                </a>
+              </li>
+              <li class="share" [matTooltip]="'Coupon'"
+                *ngIf="extras && extras['coupons']?.JC.length > 0  || extras['coupons']?.OWN.length>0 ">
+                <a class="like-btn" (click)="openCoupons()">
+                  <span>
+                    <i class="fa fa-tags" aria-hidden="true"></i>
+                  </span>
+                </a>
+              </li>
+              <ng-container *ngIf="profile.socialMedia && profile.socialMedia.length>0">
+                <li *ngFor="let soc of profile.socialMedia"><a class="like-btn" rel="noopener" [href]="soc.value"
+                    target="_blank"><span><i [class]="getSocialdet(soc.resource, 'iconClass')"
+                        [matTooltip]="getSocialdet(soc.resource, 'displayName')"></i></span></a>
+                </li>
+              </ng-container>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="p-2 bline mt-2"></div>
+      <div
+        class="mt-2 d-flex justify-content-between align-items-center no-padding">
+        <a *ngIf="phoneNo" href="tel:{{phoneNo.instance}}" target="_blank">
+          <i class="fa fa-phone"></i> {{profile.countryCode}} {{phoneNo.instance}}
+        </a>
+        <a class="cut-text" href="mailto:{{emailId.instance}}" target="_blank" *ngIf="emailId">
+          <i class="fa fa-envelope-o"></i> {{emailId.instance}}
+        </a>
+        <span class="nexticon" (click)="goHome()">></span>
+      </div>
+    </div>
+  </div>
+</div>

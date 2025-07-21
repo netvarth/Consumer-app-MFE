@@ -1,0 +1,121 @@
+.back-btn i {
+    color: #000;
+}
+.title-gb i {
+    cursor: pointer;
+}
+.back-btn {
+    font-size: 1.25rem!important;
+}
+.mgn-rt-20 {
+    margin-right: 20px!important;
+}
+.title-gb {
+    padding-top: 5px !important;
+    padding-bottom: 15px !important;
+}
+h5 {
+    font-size: 1.25rem;
+    margin-bottom: 10px;
+}
+.table-outer table {
+    border: 1px solid #f2f2f2;
+}
+.consumer-appthistory .table>tbody>tr>td, .consumer-appthistory .table>thead>tr>th {
+    padding: 5px 0 5px 5px!important;
+}
+.table-outer table thead th {
+    font-size: .875rem;
+    font-weight: 600;
+    vertical-align: top;
+    border: none;
+}
+.consumer-appthistory .disp-flex {
+    display: flex!important;
+}
+.table-outer table tbody tr:nth-of-type(odd) {
+    background: rgba(0,0,0,.03);
+}
+.table-outer table tbody tr td {
+    font-size: .875rem;
+    border-color: #f2f2f2;
+    vertical-align: top;
+    min-height: 45px;
+}
+.bill-icon-history {
+    content: url(../../../assets/images/Bill-01-01.svg);
+    position: relative;
+    padding-right: 1px;
+    width: 20px;
+}
+.consumer-appthistory .circle-htokens {
+    background: none;
+    width: 40px;
+    height: 35px;
+    text-align: center;
+    font-size: 15px;
+}
+@media only screen and (max-width: 767px) {
+.table-outer td {
+    border: none;
+    border-bottom: 1px solid #eee;
+    position: relative;
+    white-space: normal;
+    text-align: left;
+    display: flex;
+}
+}
+@media only screen and (max-width: 767px) {
+.table-outer td:before {
+    top: 12px;
+    left: 10px;
+    width: 45%;
+    padding-right: 10px;
+    white-space: pre-wrap;
+    text-align: left;
+    font-weight: 600;
+    content: attr(data-title);
+}
+}
+@media only screen and (max-width: 767px) {
+.table-outer thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+}
+}
+// @media only screen and (max-width: 767px) {
+// .consumer-appthistory .circle-htokens {
+//     width: 0px;
+// }
+// }
+.appt-icon {
+    content: url(../../../assets/images/Appoinment-01.svg);
+    position: relative;
+    padding-right: 1px;
+    width: 25px;
+    margin-top: 7px;
+}
+.token-icon {
+    content: url(../../../assets/images/token-01.svg);
+    position: relative;
+    padding-right: 1px;
+    width: 25px;
+    margin-top: 7px;
+}
+.consumer-appthistory .chckn-icon {
+    content: url(../../../assets/images/Checkin-01.svg);
+    position: relative;
+    padding-right: 1px;
+    width: 29px;
+    margin-top: 5px;
+}
+.noprevhist {
+    min-height: calc(100vh - 100px);
+}
+.hgt-adjust {
+    min-height: calc(100vh - 55px);
+}
+.card {
+    margin-bottom: 0 !important;
+}

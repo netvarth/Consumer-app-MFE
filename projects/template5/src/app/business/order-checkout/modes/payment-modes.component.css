@@ -1,0 +1,76 @@
+.pay-rad {
+  width: 26.5%;
+  height: 100px;
+  float: left;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  margin: 5px;
+  font-size: 10px;
+}
+
+.pay-icons {
+  height: 40px;
+  /* object-fit: cover !important;
+  margin-top: 5px; */
+}
+
+::ng-deep mat-radio-button.pay-rad .mat-mdc-radio-checked {
+  box-shadow: 0 4px 8px 0 rgb(0 0 0 / 10%), 0 6px 20px 0 rgb(0 0 0 / 0%) !important;
+  background: #F1FFFF !important;
+  border: 1.25px solid #45C3D3 !important;
+  border-radius: 5px !important;
+}
+
+
+@media (max-width: 768px) {
+  .pay-rad {
+    width: 30%;
+    height: 100%;
+  }
+
+}
+
+@media(min-width: 768px) and (max-width: 856px) {
+  .pay-rad {
+    width: 30%;
+    height: 120px;
+  }
+}
+
+.font-weight-normal {
+  font-weight: normal !important;
+}
+
+@media (max-width: 768px) {
+  .font-weight-normal {
+    font-weight: normal !important;
+    font-size: 13px !important;
+  }
+
+}
+::ng-deep .pay-rad .mat-radio-container {
+  display: block !important;
+  top: 5px !important;
+  right: 5px;
+  float: right;
+}
+::ng-deep .pay-rad .mat-radio-outer-circle,
+::ng-deep .pay-rad .mat-radio-inner-circle {
+  height: 15px !important;
+  width: 15px !important;
+}
+
+::ng-deep .pay-rad .mat-radio-label {
+  display: block !important;
+}
+
+::ng-deep .pay-rad .mat-radio-container {
+  display: block !important;
+  top: 5px !important;
+  right: 5px;
+  float: right;
+}
+.mode-color {
+  color: grey !important;
+}
+

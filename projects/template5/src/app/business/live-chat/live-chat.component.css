@@ -1,0 +1,278 @@
+.video-container,
+.local,
+.remote,
+.local-zeroPs {
+  background: #000 !important;
+}
+
+@media screen and (min-width: 992px) {
+
+  .videocontainer,
+  .previewDiv {
+    /* width: 100% !important; */
+    /* height: 90vh; */
+    display: flex;
+    align-items: center;
+  }
+}
+
+.videocontainer .hide {
+  display: none;
+}
+
+.previewContainer {
+  padding: 10px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  /* background: #000; */
+  width: 100%;
+  max-width: 724px;
+}
+
+.previewSubDiv {
+  background-color: black;
+  border-radius: 10px;
+}
+
+@media(min-width:1200px) {
+  .previewSubDiv {
+    min-height: 500px;
+  }
+}
+
+@media(max-width:1200px) {
+  .previewSubDiv {
+    min-height: 400px;
+  }
+}
+
+@media(max-width:992px) {
+  .previewSubDiv {
+    min-height: 325px;
+  }
+}
+
+@media(max-width:768px) {
+  .previewSubDiv {
+    min-height: 400px;
+  }
+}
+
+@media(max-width:524px) {
+  .previewSubDiv {
+    min-height: 350px;
+  }
+}
+
+@media(max-width:450px) {
+  .previewSubDiv {
+    min-height: 250px;
+  }
+}
+
+.local video,
+.local-zeroPs video,
+.previewContainer video {
+  transform: scaleX(-1);
+}
+
+.videocontainer .join-vid-btn button {
+  background: linear-gradient(to right, #3c8dbc 0%, #1873f2 100%);
+  padding: 5px 20px;
+  border-radius: 10px;
+  color: #fff;
+}
+
+.videocontainer .join-vid-btn button:disabled {
+  background: linear-gradient(to right, grey 0%, grey 100%);
+}
+
+.full-height {
+  height: 100vh;
+}
+
+.remote {
+  height: 100vh;
+  height: 100%;
+  width: 100%;
+  text-align: center;
+  background: #000 !important;
+}
+
+.remote-hide {
+  display: none;
+}
+
+.local {
+  width: 100px;
+  height: 100px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin-right: 10px;
+}
+
+.local-zeroPs {
+  height: 100vh;
+  width: 100%;
+  text-align: center;
+}
+
+.round {
+  border: 1px solid rgb(105, 56, 56);
+  border-radius: 50% !important;
+  background: #fff;
+  margin: 8px;
+}
+
+.round.mute {
+  padding: 15px 20px 15px 18px;
+}
+
+.round.video {
+  padding: 15px 15px 15px 15px;
+}
+
+.round.novideo {
+  padding: 11px 6px 12px 6px;
+}
+
+.round.stop {
+  padding: 14px 15px 14px 18px;
+}
+
+.icons {
+  width: 100%;
+  /* position: absolute; */
+  position: sticky;
+  bottom: 0px;
+  text-align: center;
+  font-size: 1.30rem;
+  background-color: #fff !important;
+}
+
+.icons-preview {
+  width: 100%;
+  position: absolute;
+  bottom: 15px;
+  text-align: center;
+  font-size: 1.30rem;
+  z-index: 1;
+}
+
+.join-vid-btn button.disabled {
+  background: #ddd !important;
+}
+
+.main-header .logo img {
+  padding: 0 !important;
+  height: 54px !important;
+}
+
+.main-header .logo {
+  text-align: left !important;
+  padding: 0 !important;
+}
+
+header {
+  padding: 5px !important;
+  background-color: #Fff !important;
+}
+
+.rem-video {
+  width: 100% !important;
+  height: calc(100% - 35px) !important;
+  /* height: 100% !important; */
+}
+
+.record {
+  padding: 22px 15px 14px 18px;
+}
+
+.bold {
+  font-weight: bold !important;
+}
+.mgn-up-50 {
+  margin-top: 50px !important;
+}
+::ng-deep .previewContainer .rem-video, video {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.video-container,
+.local,
+.remote,
+.local-zeroPs {
+  background: #000 !important;
+}
+
+.videocontainer {
+  width: 100% !important;
+}
+.video_blinking {
+  -webkit-animation: videocallBlinking 1s infinite;
+  animation: videocallBlinking 1s infinite;
+  font-size: 1rem;
+  font-weight: 700;
+}
+@keyframes videocallBlinking {
+  0% {
+    color: green;
+  }
+
+  49% {
+    color: green;
+  }
+
+  50% {
+    color: transparent;
+  }
+
+  99% {
+    color: green;
+  }
+
+  100% {
+    color: green;
+  }
+}
+.signal-1 {
+  content: url(../../../assets/images/teleservice/signal-1.PNG);
+  top: 10px;
+  position: relative;
+  padding-right: 1px;
+  width: 30px; 
+}
+.signal-2 {
+  content: url(../../../assets/images/teleservice/signal-2.PNG);
+  top: 10px;
+  position: relative;
+  padding-right: 1px;
+  width: 30px; 
+}
+.signal-3 {
+  content: url(../../../assets/images/teleservice/signal-3.PNG);
+  top: 10px;
+  position: relative;
+  padding-right: 1px;
+  width: 30px; 
+}
+.signal-4 {
+  content: url(../../../assets/images/teleservice/signal-4.PNG);
+  top: 10px;
+  position: relative;
+  padding-right: 1px;
+  width: 30px; 
+}
+.signal-5 {
+  content: url(../../../assets/images/teleservice/signal-5.PNG);
+  top: 10px;
+  position: relative;
+  padding-right: 1px;
+  width: 30px; 
+}
+.record-text {
+  font-size: 10px;
+  margin: 25px;
+}

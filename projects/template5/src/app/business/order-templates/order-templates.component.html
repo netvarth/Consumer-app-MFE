@@ -1,0 +1,143 @@
+<div *ngIf="!templateLoading && itemTemplateData && itemTemplateData.templateSchema" class="p-3">
+  <app-dynamic-forms [jsonSchema]="itemTemplateData.templateSchema"
+    (formDataEmit)="getTemplateFormData($event)" [templateSchemaValue]="templateSchemaValue"></app-dynamic-forms>
+  <div [class.globalError]="globalError" class=" py-2 rounded my-2">
+    <div *ngIf="globalError!=''"><span>{{globalError}}</span></div>
+  </div>
+  <div class="d-flex justify-content-end mt-3">
+    <button pButton class="p-button-secondary me-2" (click)="close()"><i class="pi pi-times"></i>&nbsp;Cancel</button>
+    <button pButton class="p-button-primary" (click)="selectionDone()"><i class="pi pi-check"></i>&nbsp;Done</button>
+  </div>
+  <br>
+</div>
+
+
+
+<div *ngIf="savedTemplateData">
+  <div class="card card-stl">
+    <div *ngFor="let key of objectKeys(savedTemplateData)">
+      <div class="mt-2" *ngIf="savedTemplateData[key]">
+
+        <!-- Object Field -->
+        <div *ngIf="savedTemplateData[key].type === 'object'; else notObject">
+          <div *ngIf="savedTemplateData[key]?.fields">
+            <div *ngFor="let field of savedTemplateData[key].fields">
+              <div class="fw-bold" *ngIf="field.title">{{ field.title }}</div>
+
+              <!-- Reuse teethArea view -->
+              <div *ngIf="field?.itemType === 'teethAreaOrRegion' && field?.value">
+                <ng-container *ngTemplateOutlet="teethView; context: { value: field.value }"></ng-container>
+              </div>
+
+              <div *ngIf="field?.itemType === 'teethShade' && field?.value">
+                <ng-container *ngTemplateOutlet="teethShadeView; context: { value: field.value }"></ng-container>
+              </div>
+
+              <div *ngIf="field?.itemType !== 'teethAreaOrRegion' && field?.itemType !== 'teethShade'">
+                {{ field?.value ? formatValue(field.value, field.inputType) : ' - ' }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Array or Direct Field -->
+        <ng-template #notObject>
+
+          <!-- Array Field -->
+          <div *ngIf="savedTemplateData[key].type === 'array'; else directFields">
+            <div class="fw-bold" *ngIf="savedTemplateData[key].title">
+              {{ savedTemplateData[key].title }}
+            </div>
+
+            <!-- Array of Objects -->
+            <div *ngIf="savedTemplateData[key].itemType === 'object'">
+              <div *ngFor="let item of savedTemplateData[key].value; let i = index" class="mb-2 p-2 border rounded bg-light">
+                <div class="fw-bold mb-1">Data {{ i + 1 }}</div>
+                <hr class="my-1 py-1">
+                <div *ngFor="let subKey of objectKeys(item)">
+                  <div class="fw-bold" *ngIf="item[subKey]?.title">{{ item[subKey].title }}</div>
+
+                  <!-- Reuse teethArea view inside array -->
+                  <div *ngIf="item[subKey]?.itemType === 'teethAreaOrRegion' && item[subKey]?.value">
+                    <ng-container *ngTemplateOutlet="teethView; context: { value: item[subKey].value }"></ng-container>
+                  </div>
+
+                  <div *ngIf="item[subKey]?.itemType === 'teethShade' && item[subKey]?.value">
+                    <ng-container *ngTemplateOutlet="teethShadeView; context: { value: item[subKey].value }"></ng-container>
+                  </div>
+
+                  <div *ngIf="item[subKey]?.itemType !== 'teethAreaOrRegion' && item[subKey]?.itemType !== 'teethShade'">
+                    {{ item[subKey]?.value ? formatValue(item[subKey].value, item[subKey].inputType) : ' - ' }}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Array of primitive values -->
+            <div *ngIf="savedTemplateData[key].itemType !== 'object'">
+              <div *ngFor="let val of savedTemplateData[key].value">
+                <div>{{ formatValue(val, savedTemplateData[key].inputType) }}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Direct Field -->
+          <ng-template #directFields>
+            <div>
+              <div class="fw-bold" *ngIf="savedTemplateData[key].title">
+                {{ savedTemplateData[key].title }}
+              </div>
+
+              <div *ngIf="savedTemplateData[key]?.itemType === 'teethAreaOrRegion' && savedTemplateData[key]?.value">
+                <ng-container *ngTemplateOutlet="teethView; context: { value: savedTemplateData[key].value }"></ng-container>
+              </div>
+
+              <div *ngIf="savedTemplateData[key]?.itemType === 'teethShade' && savedTemplateData[key]?.value">
+                <ng-container *ngTemplateOutlet="teethShadeView; context: { value: savedTemplateData[key].value }"></ng-container>
+              </div>
+
+              <div *ngIf="savedTemplateData[key]?.itemType !== 'teethAreaOrRegion' && savedTemplateData[key]?.itemType !== 'teethShade'">
+                {{ savedTemplateData[key]?.value ? formatValue(savedTemplateData[key].value, savedTemplateData[key].inputType) : ' - ' }}
+              </div>
+            </div>
+          </ng-template>
+        </ng-template>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #teethView let-value="value">
+  <div class="quadrant-container" *ngIf="value">
+    <div class="quadrant" *ngFor="let quadrant of quadrants">
+      <div
+        class="circle"
+        *ngFor="let item of quadrant.items"
+        [class.selected]="value?.split(',').includes(item.value)">
+        {{ item.label }}
+      </div>
+    </div>
+  </div>
+  <div *ngIf="!value">-</div>
+</ng-template>
+
+
+<ng-template #teethShadeView let-value="value">
+  <div *ngIf="value">
+    <div class="shade-container" *ngFor="let shadeArray of teethShades">
+      <div *ngFor="let shade of shadeArray" class="shade m-2 p-2 pointer-cursor"
+        [class.selected]="value?.split(',').includes(shade.value)">
+        <div class="text-center">
+          <div>
+            <img [src]="'assets/images/teeth-shades/' + shade.label + '.png'" width="35px">
+          </div>
+          <div class="mt-1 fw-bold">
+            {{ shade.label }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="!value">-</div>
+</ng-template>  

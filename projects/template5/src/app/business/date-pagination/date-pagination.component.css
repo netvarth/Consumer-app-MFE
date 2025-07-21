@@ -1,0 +1,94 @@
+/* Date Pagination Styles of Consumer Checkin and Consumer Appointment Component */
+
+
+.date-carousel {
+  box-sizing: border-box;
+  display: flex;
+  height: auto;
+  width: 100% !important;
+  align-items: center !important;
+  margin: auto;
+}
+
+.date-carousel-next,
+.date-carousel-prev,
+.date-carousel-input {
+  box-sizing: border-box;
+  position: relative;
+  border: none;
+}
+
+.date-carousel-next,
+.date-carousel-prev {
+  background-color: transparent;
+  cursor: pointer;
+  font-size: larger;
+  font-weight: bold;
+}
+
+.date-carousel-input {
+  background-color: transparent;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  border-width: 0px !important;
+  border: none !important;
+}
+
+.shadow {
+  box-shadow: 3px 5px 4px #e2dede;
+  cursor: pointer;
+  /* width:10%!important; */
+  border-radius: 10px !important;
+}
+
+.shadow-not-allowed {
+  box-shadow: 3px 5px 4px #e2dede;
+  cursor: not-allowed;
+  border-radius: 10px;
+  background-color: #e4e4e4;
+}
+
+.not-allowed {
+  cursor: not-allowed;
+}
+
+.default-value {
+  background-color: #1e4079;
+  color: white;
+}
+
+@media only screen and (max-width: 600px) {
+  .desktop-only {
+    display: none !important;
+  }
+
+  .shadow {
+    box-shadow: 3px 5px 4px #e2dede;
+    cursor: pointer;
+    width: 20% !important;
+    border-radius: 10px !important;
+    font-size: 11px !important;
+  }
+}
+
+::ng-deep mat-datepicker-toggle button.mat-icon-button {
+  background: #eee !important;
+  border-radius: 50%;
+}
+
+.mb-5 {
+  margin-bottom: 3rem !important;
+}
+
+.mt-3 {
+  margin-top: 1rem !important;
+}
+
+.p-0 {
+  padding: 0 !important;
+}
+
+::ng-deep .mat-calendar-content {
+  background: #fff !important;
+}

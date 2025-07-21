@@ -1,0 +1,200 @@
+<div class="col-12 bus-page mgn-bt-50 no-padding clearfix" [ngClass]="theme">
+    <div class="card shadow d-flex flex-row header p-2">
+        <div class="my-auto" *ngIf="back">
+            <a class="pointer-cursor" (click)="goBack()"><i class="fa fa-arrow-left"></i>&emsp; </a>
+        </div>
+    </div>
+    <div class="col-12  no-padding">
+        <app-basic-profile-new (actionPerformed)="profileActionPerformed($event)" [profile]="basicProfile"
+                    [selectedLocation]="selectedLocation" [extras]="extras"></app-basic-profile-new>
+    </div>    
+    <div class="col-12 mgn-up-10 mgn-bt-10 no-padding">
+        <div class="px-3 question-header" *ngIf="userProfile && userProfile.businessDesc">{{'About' | translate}}
+            <div>
+                <p class="about">{{userProfile.businessDesc}}</p>
+            </div>
+        </div>
+    </div>
+    <div class="px-3 contact mgn-lt-30">
+        <p class="smalltext" *ngIf="userProfile && userProfile.phoneNumbers && userProfile.phoneNumbers.length>0">
+            <i class="fa fa-phone"></i>
+            <span *ngFor="let phoneNo of userProfile.phoneNumbers" class="mgn-lt-5">{{userProfile.countryCode}}
+                {{phoneNo.instance}}</span>
+        </p>
+        <p class="smalltext" *ngIf="userProfile && userProfile.emails && userProfile.emails.length>0">
+            <i class="fa fa-envelope-o"></i> <span class="mgn-lt-5"
+                *ngFor="let email of userProfile.emails">{{email.instance}}</span>
+        </p>
+    </div>
+    <div class="px-3 mgn-lt-30 mgn-up-30" *ngIf="userProfile && userProfile.specialization">{{'Specialities'
+        | translate}}
+        <div class="details">
+            <div class="pop-box-cont " *ngFor="let speci of this.userProfile.specialization">
+                {{speci.name}}
+            </div>
+        </div>
+    </div>
+    <div class="px-3 mgn-up-10 question-main-outer" *ngFor="let vfield of virtualfieldsCombinedjson">
+        <div class="question-outer" *ngIf="vfield.value">
+            <ng-container>
+                <div class="question-header">{{vfield.displayName}}</div>
+                <div class="question-value1 pop-box-cont" *ngIf="vfield.type!= 'object'"
+                    [innerHTML]="wordProcessor.firstToUpper(vfield.value) | nl2br">
+                </div>
+                <div class="question-valuearr" *ngIf="vfield.type== 'object'">
+                    <ul class="virtual-field-ul" *ngFor="let vals of vfield.value">
+                        <li class="vfield-row pop-box-cont" *ngIf="vals.length">
+                            <span *ngFor="let field of vals; let i=index" class="morevalspan  ">
+                                {{field}}<span *ngIf="i <= (vals.length-2)">,
+                                </span>
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+    <div class="px-3 mgn-up-10" *ngIf="showDepartments">
+        <div class="col-12 no-padding">
+            <app-cons-departments [terminologiesjson]="terminologiesjson" [theme]="theme"
+                [accountProfile]="accountProfile" [selectedLocation]="selectedLocation" [departments]="departments"
+                (actionPerformed)="actionPerformed($event)">
+            </app-cons-departments>
+        </div>
+    </div>
+    <div class="px-3 mgn-up-10" *ngIf="!showDepartments">
+        <h3 class="mgn-bt-10" *ngIf="loaded_appointments && apptServices && apptServices.length > 0 || loaded_checkins && checkinServices && checkinServices.length > 0">Our services</h3>
+        <div class="col-12 no-padding" *ngIf="loaded_appointments && apptServices && apptServices.length > 0">
+            <app-appointment-services [terminologiesjson]="terminologiesjson" [theme]="theme"
+                [accountProfile]="accountProfile" [config]="accountConfig" [filteredServices]="apptServices"
+                [selectedLocation]="selectedLocation" (actionPerformed)="actionPerformed($event)">
+            </app-appointment-services>
+        </div>
+        <div class="col-12 no-padding" *ngIf="loaded_checkins && checkinServices && checkinServices.length > 0">
+            <app-checkin-services [terminologiesjson]="terminologiesjson" [theme]="theme"
+                [accountProfile]="accountProfile" [config]="accountConfig" [filteredServices]="checkinServices"
+                [selectedLocation]="selectedLocation" (actionPerformed)="actionPerformed($event)">
+            </app-checkin-services>
+        </div>
+        <div class="col-12 mgn-bt-20 no-padding" *ngIf="(loaded_appointments && apptServices && apptServices.length == 0 && userLocations.length > 0) && (loaded_checkins && checkinServices && checkinServices.length == 0 && userLocations.length > 0)">
+            <div class="card text-center">
+                <p class="No-service">No services available for {{basicProfile.businessName}} in {{selectedLocation.place}}</p>
+                <button  class="change-loc" (click)="selectLocations(userLocations,true)">
+                    Change location&nbsp;<i class="fa fa-map-marker"></i>
+                </button>
+                <!-- <mat-menu #menu="matMenu" class="{{theme}}">
+                    <button class="header-loc" mat-menu-item *ngFor="let loc of userLocations"
+                        [ngClass]="{'active': selectedLocation.id === loc.id}"
+                        (click)="changeLocation(loc)">
+                        <span>{{loc.place}}</span>
+                    </button>
+                </mat-menu> -->
+            </div>
+        </div>
+        <div class="col-12 no-padding" *ngIf="onlineUsers && onlineUsers.length>0">
+            <app-online-users [terminologiesjson]="terminologiesjson" [theme]="theme" [accountProfile]="accountProfile"
+                [selectedLocation]="selectedLocation" [users]="onlineUsers" (actionPerformed)="actionPerformed($event)">
+            </app-online-users>
+        </div>
+    </div>
+    <div class="px-3" *ngIf="loaded_donations && donationServices && donationServices.length > 0">
+        <div class="col-12 no-padding">
+            <app-donation-services [terminologiesjson]="terminologiesjson" [theme]="theme"
+                [accountProfile]="accountProfile" [donationServices]="donationServices"
+                [selectedLocation]="selectedLocation" (actionPerformed)="actionPerformed($event)">
+            </app-donation-services>
+        </div>
+    </div>
+    <!-- Order Catalog-->
+    <div class="serv-head order-serv-head px-3 mgn-bt-20" *ngIf="activeCatalog">
+        <div>
+            <div class="no-padding">
+                <h5 class="catalog-title mgn-bt-5 primary-color">
+                    <img (click)="openCatalogImageModalRow(catalogimage_list_popup[0])" [src]="catalogImage" width="60"
+                        height="60" id="catalog-image1" class="rounded pointer-cursor img-circle" alt="">
+                    <div class="mgn-lt-10">{{activeCatalog.catalogName}}</div>
+                </h5>
+            </div>
+            <div class="catalog-icons no-padding-small disp-flex">
+                <div class="home-delivery mgn-rt-10 disp-flex align-items-center"
+                    *ngIf="activeCatalog.homeDelivery && activeCatalog.homeDelivery.homeDelivery && activeCatalog.nextAvailableDeliveryDetails">
+                    <img class="ordericon home" src="./assets/images/webP/Homedelivery.webp" alt=""/>
+                    <div class="mgn-lt-5">{{'Home Delivery' | translate}}<div class="font-small "
+                            *ngIf="activeCatalog.homeDelivery.deliveryRadius">
+                            (in {{ activeCatalog.homeDelivery.deliveryRadius}} km radius)</div>
+                    </div>
+                </div>
+                <div class="store-pickup disp-flex align-items-center"
+                    *ngIf="activeCatalog.pickUp && activeCatalog.pickUp.orderPickUp && activeCatalog.nextAvailablePickUpDetails">
+                    <img class="ordericon pickup" src="./assets/images/webP/Store-pick-up.webp" alt=""/>
+
+                    <div class="mgn-lt-5">{{'Store Pickup' | translate}}</div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <p class="catalog-desc module-nomargin line-clamp" *ngIf="!showmoreSpec" (click)="showSpec()">
+                {{activeCatalog.catalogDesc}}</p>
+            <p class="catalog-desc" *ngIf="showmoreSpec" (click)="showSpec()">{{activeCatalog.catalogDesc}}
+            </p>
+        </div>
+    </div>
+    <ks-modal-gallery [id]="1" *ngIf="catalogimage_list_popup && catalogimage_list_popup.length>0"
+        [modalImages]="catalogimage_list_popup" [plainGalleryConfig]="customPlainGallerycatalogRowConfig"
+        [buttonsConfig]="customButtonsFontAwesomeConfig" (buttonBeforeHook)="onButtonBeforeHook()"
+        (buttonAfterHook)="onButtonAfterHook()"></ks-modal-gallery>
+        <div class="clearfix"></div>
+    <ng-container *ngIf="orderItems && orderItems.length >0 && checkVirtualOrPhysical()">
+        <div class="card catalog-card p-2" *ngIf="desktopView">
+            <div>
+                <img (click)="openCatalogImageModalRow(catalogimage_list_popup[0])" [src]="catalogImage"
+                    id="catalog-image1" class="img-fluid p-0" alt=""><br>
+                <span class="font-weight-bold mt-2">{{activeCatalog.catalogName}}</span><br>
+                <span class="font-weight-bold mt-2" *ngIf="orderItems">{{orderItems.length}} Items</span>
+            </div>
+            <div class="ml-auto mt-5">
+                <a class="btn btn-primary" (click)="checkout()"><i class="fa fa-shopping-bag"
+                        aria-hidden="true"></i>&nbsp;View</a>
+            </div>
+        </div>
+
+        <div class="card catalog-card-mobile p-2 mgn-bt-20" *ngIf="mobileView">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <img (click)="openCatalogImageModalRow(catalogimage_list_popup[0])" [src]="catalogImage"
+                        id="catalog-image1" alt="" class="img-fluid p-0">&nbsp;&nbsp;&nbsp;
+                    <span class="font-weight-bold mt-2">{{activeCatalog.catalogName}}</span>&nbsp;&nbsp;&nbsp;
+                    <span class="font-weight-bold mt-2" *ngIf="orderItems">{{orderItems.length}} Items</span>
+                </div>
+                <div class="m-auto">
+                    <a class="btn btn-primary" (click)="checkout()"><i class="fa fa-shopping-bag"
+                            aria-hidden="true"></i>&nbsp;View</a>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+    <ng-container *ngIf=" orderType==='SHOPPINGLIST' && (activeCatalog.nextAvailableDeliveryDetails ||
+              activeCatalog.nextAvailablePickUpDetails)">
+        <div class="serv-head service-serv-head px-3">
+            <div class="bus-item-O">
+                <a (click)="shoppinglistupload()" class="like-btn">{{'Upload Shopping List' | translate}}</a>
+            </div>
+        </div>
+    </ng-container>
+    <div class="clearfix"></div>
+    <footer class="site-footer bus-page-footer mgn-up-10 no-padding" [ngClass]="accountConfig?accountConfig['theme']:''">
+        <div class="footer-bottom brd-tp">
+                <div class="align-items-center justify-content-between text-center">
+                    <div class="footer-bottom--links col-md-auto ">
+                        <a class="footer-links bd-pd-right" (click)="footerClicked('privacy')">{{'Privacy' |
+                            translate}}</a>
+                        <a class="footer-links bd-pd-left bd-pd-right" (click)="footerClicked('terms')">{{'Terms &
+                            Conditions' | translate}}</a>
+                        <a class="footer-links bd-pd-left" (click)="footerClicked('contact')">{{'Contact' |
+                            translate}}</a>
+                    </div>
+                </div>
+            </div>
+    </footer>
+    
+</div>

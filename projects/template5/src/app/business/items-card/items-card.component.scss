@@ -1,0 +1,82 @@
+@import '../../../assets/scss/owl.carousel.min.css';
+@import '../../../assets/scss/owl.theme.default.min.css';
+
+.items-card {
+    padding: 15px;
+    border-radius: 9.431px;
+    background: #FFF !important;
+    box-shadow: 0px 37.725px 84.882px 0px rgba(0, 0, 0, 0.06) !important;
+    margin: 15px 0px 15px 5px ;
+}
+.btn-buy {
+    border-radius: 52.861px;
+    border: 2.643px solid rgba(255, 187, 17, 0.13);
+    background: #436B50;
+    color: #fff;
+    font-size: 14px;
+    padding: 5px 15px !important;
+    width: 100%;
+}
+
+.align-items-center {
+    align-items: center !important;
+}
+
+.justify-content-between {
+    justify-content: space-between !important;
+}
+
+.qty {
+    border-radius: 6.809px;
+    background: rgba(255, 187, 17, 0.16);
+    padding: 7px !important;
+    margin-top: 5px !important;
+}
+.item-name {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    margin: 8px 0px !important;
+    text-overflow: ellipsis;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 1 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden;
+}
+.item-qty {
+    font-size: 12px !important;
+    font-weight: 600 !important;
+}
+.item-rate {
+    font-size: 16px !important;
+    font-weight: 600 !important;
+}
+img { 
+    border-radius: 10px;
+    width: 100%;
+    height: 150px;    
+    object-fit: fill !important;
+    object-position: center;
+}
+
+@media (max-width:500px) {
+    .items-card {
+        padding: 5px;
+    }
+    .item-text-container {
+        padding:5px;
+    }
+}
+
+.item-mrp {
+    color: #686868;
+    text-decoration: line-through;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+
+::ng-deep .custom-dialogs .p-dialog-header {
+    height: 20px;
+    box-sizing: border-box;
+    padding: 2rem;  
+}

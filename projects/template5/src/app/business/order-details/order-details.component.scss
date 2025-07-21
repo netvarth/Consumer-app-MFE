@@ -1,0 +1,228 @@
+.btn-reorder {
+    border-radius: 4.26px;
+    border: 2px solid #436B50;
+    background: #FFF;
+    color: #436B50;
+    font-size: 14.911px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 10px !important;
+}
+
+.success-msg {
+    color: #111729;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.order-id {
+    color: #111729;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.order-card {
+    border: 1px solid #DBE4F2 !important;
+    box-shadow: 0px 4px 19.5px 0px rgba(0, 0, 0, 0.07) !important;
+    padding: 15px;
+}
+
+.success-img {
+    width: 20%;
+}
+
+.common-head {
+    color: #436B50;
+    font-size: 21.483px;
+    font-weight: 500;
+}
+
+.common-head-grey {
+    color: #7C7C7C;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.dot {
+    border-radius: 6.609px;
+    border: 2.644px solid #26A541;
+    background: #26A541;
+}
+
+.order-trackingid {
+    background: #E1EFFF !important;
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+}
+
+.tracking-head {
+    color: #2489FF;
+    font-size: 22.503px;
+    font-weight: 400;
+}
+
+.tracking-id {
+    color: #2489FF;
+    font-size: 22.503px;
+    font-weight: 500;
+}
+
+.btn-confirm {
+    border: 2.643px solid rgba(255, 187, 17, 0.13);
+    background: #436B50;
+    font-size: 14px;
+    width: 100%;
+    justify-content: center;
+}
+
+.price {
+    color: #008A00;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.customCard {
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .05) !important;
+    border-radius: 5px;
+    background: #fff;
+    background-clip: padding-box;
+    border: none !important;
+    width: 100%;
+}
+
+.headerBorder {
+    border-bottom: 1.21389px solid #DADCE0 !important;
+    display: flex;
+    gap: 5px;
+    flex-direction: row !important;
+    padding: 15px !important;
+}
+
+.status-canceled {
+    background-color: #ffcdd2 !important;
+    color: #c63737 !important;
+    font-weight: 600 !important;
+    padding: 5px !important;
+    border-radius: 8px !important;
+    font-size: 13px;
+}
+
+.status-confirmed {
+    background-color: #e5daff !important;
+    color: #3b11a5 !important;
+    font-weight: 600 !important;
+    padding: 5px !important;
+    border-radius: 8px !important;
+    font-size: 13px;
+}
+
+.status-completed {
+    background-color: #c8e6c9 !important;
+    color: #256029 !important;
+    font-weight: 600 !important;
+    padding: 5px !important;
+    border-radius: 8px !important;
+    font-size: 13px;
+}
+
+.quantity {
+    background-color: #dedede !important;
+    color: #646060 !important;
+    font-weight: 600 !important;
+    padding: 5px !important;
+    border-radius: 8px !important;
+    font-size: 13px;
+}
+
+.coupon-text {
+    color: #667085 !important;
+}
+
+.item-name {
+    // font-size: 14px;
+    // font-weight: 600;
+    text-overflow: ellipsis;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 1 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden;
+}
+
+.btn-margin {
+    margin-bottom: 50px !important;
+}
+
+.event-status {
+    color: #436B50 !important;
+    font-weight: 500;
+}
+
+.status-stl {
+    color: #df2121;
+    font-weight: 400;
+    margin-bottom: 20px;
+    font-style: italic;
+}
+
+.tracking-btn {
+    background: #2386f7 !important;
+    text-transform: none !important;
+}
+.event-adjust{
+    color: #7c7b7b;
+}
+.timeline-content {
+    margin-left: 10px !important;
+}
+::ng-deep .track-card .p-timeline .p-timeline-event-connector {
+    background-color: #31814f;
+}
+
+.customerNotes {
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    justify-content: space-between;
+}
+
+.btn-viewDetails {
+    padding: 3px !important;
+}
+
+
+::ng-deep .customized-timeline {
+    .p-timeline-event-opposite {
+        display: none !important;
+    }
+
+    &.p-timeline {
+        align-items: start !important;
+    }
+}
+
+.status-Overdue {
+    background-color: #C8E6C9 !important;
+    color: #256029 !important;
+    font-weight: bold !important;
+    padding: 5px !important;
+    border-radius: 8px !important;
+}
+
+.status-Paid { 
+    background-color: #FFCDD2 !important;
+    color: #C63737 !important;
+    font-weight: bold !important;
+    padding: 5px !important;
+    border-radius: 8px !important;
+}
+
+.delivery-profile {
+    border-radius: 8.318px;
+    border: 1.04px solid rgba(33, 39, 45, 0.06);
+    background: #F8F9FB;
+    padding: 15px 10px;
+}

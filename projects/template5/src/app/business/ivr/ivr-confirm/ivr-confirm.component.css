@@ -1,0 +1,27 @@
+::ng-deep .callback-confirm .p-button { 
+    height: 48px !important;
+    color: #fff !important;
+    background: #9A401E !important;
+    width: 100% !important;
+    border-radius: 0px !important;
+    margin: 0px 20px 0px 20px !important;
+}
+.confirm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.back-btn {
+    justify-content: center !important;
+    margin-top: 40px;
+}
+.callback-msg {
+    margin: 30px 20px 0px 20px;
+    color: #35364F;
+    text-align: center;
+    font-size: 16.542px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 20.067px; /* 121.308% */
+    letter-spacing: 0.331px;
+}

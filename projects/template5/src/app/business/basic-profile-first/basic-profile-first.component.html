@@ -1,0 +1,29 @@
+<div class="col-12 basic-card mgn-up-10">
+    <div class="col-md-12 col-12 col-sm-12 col-lg-12 no-padding pointer-cursor card-outer-cont">
+        <div class="col-md-7 col-7 col-sm-7 col-lg-7 no-padding">
+            <div class="col-12 head">
+                <h5 class=" line-clamp-ln2 mgn-up-5 mgn-bt-10 ">{{businessProfile.businessName}}</h5>
+                <!-- <ul class="details m0 no-padding"> -->
+                <a class="location" *ngIf="location" [href]="selectedLocation.googleMapUrl" target="_blank"
+                    [matTooltip]="location.label | capitalizeFirst">{{location}}</a>
+                <a class="smalltext" *ngIf="phoneNo" href="tel:{{phoneNo.instance}}"
+                    [matTooltip]="phoneNo.label | capitalizeFirst">
+                    <i class="fa fa-phone"></i> {{businessProfile.countryCode}} {{phoneNo.instance}}
+                </a>
+                <a class="em smalltext" *ngIf="emailId" href="mailto:{{emailId.instance}}"
+                    [matTooltip]="emailId.label | capitalizeFirst">
+                    <i class="fa fa-envelope-o"></i> <span class="emailId">{{emailId.instance}}</span>
+                </a>
+                <span *ngIf="!phoneNo">&nbsp;</span>
+                <span *ngIf="!emailId">&nbsp;</span>
+                <button class="about-btn" (click)="goHome()">{{'About Us' | translate}}</button>
+            </div>
+            <!-- </ul> -->
+        </div>
+        <div class="col-md-5 col-5 col-sm-5 col-lg-5s no-padding card-inner-img-cont">
+            <div class="img-circle">
+                <img class="profile-image img-responsive" [src]="businessProfile.logo">
+            </div>
+        </div>
+    </div>
+</div>

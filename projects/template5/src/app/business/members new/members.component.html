@@ -1,0 +1,220 @@
+<section [ngClass]="{'container no-padding no-padding-small': true}">
+    <div class="content p0 see-pages app-family-members cons-members">
+        <div class="panel panel-default">
+            <div class="panel-body no-padding" *ngIf="!smallDevice">
+                <div class="customCard title-gb headerBorder">
+                    <div (click)="goBack()"><i class="fa fa-arrow-left clrChangeHeader"></i> </div>
+                    <div (click)="goBack()" class="clrChangeHeader"> {{'Family Members' | translate}}</div>
+                </div>
+                <div class="customCard">
+                    <div>
+                        <div>
+                            <div class="myAcText">{{'My Account' | translate}}</div>
+                            <div class="accountEditText">Update your Personal Info.</div>
+                        </div>
+                        <div class="mainFlex">
+                            <div class="fullWidthLinks">
+                                <div class="tabText" *ngIf="user_profile_cap" (click)="redirectto('profile', curtype)">
+                                    <span>
+                                        <img class="tabImgCustom" src="./assets/images/myjaldee/accountSettings.png" />
+                                    </span>
+                                    <span> {{user_profile_cap}}</span>
+                                </div>
+                                <div class="tabText tabTextCstmClr" *ngIf="family_members_cap">
+                                    <span>
+                                        <img class="tabImgCustom" src="./assets/images/myjaldee/familyMembers.png" />
+                                    </span>
+                                    <span> {{family_members_cap}}</span>
+                                </div>
+                                <div class="tabText" *ngIf="dashboard_cap" (click)="redirectto('dashboard', curtype)">
+                                    <span>
+                                        <img class="tabImgCustom" src="./assets/images/myjaldee/accountSettings.png" />
+                                    </span>
+                                    <span> {{dashboard_cap}}</span>
+                                </div>
+                            </div>
+                            <div class="fullWidth customCardMr">
+                                <div>
+                                    <div class="no-dta"
+                                        *ngIf="(member_list && member_list.length ===0) && (query_executed && query_executed === true)">
+                                        <div *ngIf="emptyMsg">{{emptyMsg}}</div>
+                                    </div>
+                                    <div class="table-outer d-tbl"
+                                        *ngIf="member_list && member_list.length && member_list.length !==0">
+                                        <table class="table">
+                                            <thead class="tHEAD">
+                                                <tr>
+                                                    <th class="tHeadTr" *ngIf="first_name_cap || last_name_cap">Name
+                                                    </th>
+                                                    <th *ngIf="gender_cap" class="tHeadTr">{{gender_cap}}</th>
+                                                    <th *ngIf="date_of_birth" class="tHeadTr">{{date_of_birth}}</th>
+                                                    <th class="tHeadTr"></th>
+                                                    <th class="tHeadTr"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let member of member_list; let index=i">
+                                                    <td data-title="First Name">
+                                                        <div *ngIf="(member && member.firstName) || 
+                                                            (member && member.lastName)" class="nameFlex">
+                                                            <div *ngIf="member && member.title" class="cstmnameText">
+                                                                {{member.title}}</div>
+                                                            <div *ngIf="member && member.firstName"
+                                                                class="cstmnameText">
+                                                                {{member.firstName
+                                                                |capitalizeFirst}}</div>
+                                                            <div *ngIf="member && member.lastName" class="cstmnameText">
+                                                                {{member.lastName
+                                                                |capitalizeFirst}}</div>
+                                                        </div>
+                                                    </td>
+                                                    <td data-title="Gender">
+                                                        <div *ngIf="(member && member.gender)" class="custpadCls">
+                                                            <div *ngIf="member && member.gender" class="cstmGenderText">
+                                                                {{member.gender |
+                                                                capitalizeFirst}}</div>
+                                                        </div>
+                                                    </td>
+                                                    <td data-title="Date of Birth">
+                                                        <div *ngIf="(member && (member.dob || member.dob===undefined))"
+                                                            class="custpadCls">
+                                                            <div *ngIf="member && member.dob" class="cstmGenderText">
+                                                                {{member.dob
+                                                                | date:newDateFormat}}</div>
+                                                        </div>
+                                                    </td>
+                                                    <td data-title="Action">
+                                                        <div *ngIf="member" class="padCls nameFlex">
+                                                            <div *ngIf="member" (click)="editMember(member)"
+                                                                class="profileCls">
+                                                                <div> <i class="fa fa-edit btnClrText"></i></div>
+                                                                <div class="btnClrText" *ngIf="edit_btn_cap">
+                                                                    {{edit_btn_cap}} Profile</div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td data-title="Action">
+                                                        <div *ngIf="member" class="padCls nameFlex">
+                                                            <div *ngIf="member" (click)="doRemoveMember(member)"
+                                                                class="deleteCls">
+                                                                <div> <i class="fa fa-trash btnClrTextRemove"></i></div>
+                                                                <div class="btnClrTextRemove" *ngIf="delete_btn_cap">
+                                                                    {{delete_btn_cap}}</div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div (click)="addMember()">
+                                    <button type="submit" mat-button class="addFamilyMemberBtn">
+                                        <span><i class="fa fa-plus-circle" aria-hidden="true"></i></span>
+                                        <span class="btnTextCust" (click)="addMember()">ADD - FAMILY MEMBER</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="smallDevice" class="panel-body no-padding">
+                <div class="customCard title-gb headerBorder">
+                    <div (click)="goBack()"><i class="small-arrow fa fa-arrow-left mgn-rt-10 clrChangeHeader"></i>
+                    </div>
+                    <h5 (click)="goBack()" class="Family-Members clrChangeHeader"> {{'Family Members' | translate}}</h5>
+                </div>
+                <div class="customCard">
+                    <div>
+                    </div>
+                    <div class="no-dta mgn-up-10" [class.fam-members]="member_list.length > 0"
+                        [class.no-member]="member_list.length == 0">
+                        <div class="mgn-up-20 mgn-bt-20" *ngIf="member_list.length == 0 && query_executed && emptyMsg ">
+                            {{emptyMsg}}</div>
+                        <button type="submit" mat-button class="addFamilyMemberBtn Add" (click)="addMember()">
+                            <span><i class="fa fa-plus-circle" aria-hidden="true"></i></span>
+                            <span class="btnTextCust" (click)="addMember()">Add - Family Member</span>
+                        </button>
+                    </div><br>
+                    <div class="mgn-up-15" *ngIf="member_list && member_list.length && member_list.length !==0">
+                        <div class="customCard membersCard" *ngFor="let member of member_list;let index=i">
+                            <div class="memberInfo">
+                                <div class="memberName"
+                                    *ngIf="member  && member.firstName || member && member.lastName">
+                                    <div *ngIf="member && member.title">
+                                        {{member.title}}</div>
+                                    <div *ngIf="member && member.firstName">
+                                        {{member.firstName |
+                                        capitalizeFirst}}</div>
+                                    <div *ngIf="member && member.lastName">
+                                        {{member.lastName |
+                                        capitalizeFirst}}</div>
+                                </div>
+                                <div *ngIf="member">
+                                    <button mat-icon-button [matMenuTriggerFor]="menu"
+                                        aria-label="Example icon-button with a menu">
+                                        <mat-icon>more_vert</mat-icon>
+                                    </button>
+                                    <mat-menu #menu="matMenu">
+                                        <button mat-menu-item class="matMenuBtn" (click)="editMember(member)">
+                                            <mat-icon class="editIcon">edit</mat-icon>
+                                            <span>Edit Member</span>
+                                        </button>
+                                        <button mat-menu-item (click)="doRemoveMember(member)" class="matMenuDeleteBtn">
+                                            <mat-icon class="deleteIcon">delete_forever</mat-icon>
+                                            <span>Delete Member</span>
+                                        </button>
+                                    </mat-menu>
+                                </div>
+                            </div>
+                            <div class="memberInfo">
+                                <div class="customwidth" *ngIf="member && member.dob && date_of_birth">
+                                    <div class="memberInfoHeader" *ngIf="date_of_birth">{{date_of_birth}}</div>
+                                    <div class="memberInfobody">{{member.dob | date:newDateFormat}}</div>
+                                </div>
+                                <div class="customwidth" *ngIf="member && member.gender&& gender_cap">
+                                    <div class="memberInfoHeader" *ngIf="gender_cap">{{gender_cap}}</div>
+                                    <div class="memberInfobody">{{member.gender | capitalizeFirst}}</div>
+                                </div>
+                            </div>
+                            <div class="memberInfo">
+                                <div class="customwidth"
+                                    *ngIf="member && member.whatsAppNum && member.whatsAppNum.number">
+                                    <div class="memberInfoHeader">Whatsapp No #</div>
+                                    <div class="memberInfobody">{{member.whatsAppNum.countryCode
+                                        }}{{member.whatsAppNum.number}}</div>
+                                </div>
+                                <div class="customwidth"
+                                    *ngIf="member && member.telegramNum && member.telegramNum.number">
+                                    <div class="memberInfoHeader">Telegram No #</div>
+                                    <div class="memberInfobody">
+                                        {{member.telegramNum.countryCode}}{{member.telegramNum.number}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="empty"></div>
+                        <div class="relatedLinksSmall">
+                            <div class="memberInfo">
+                                <div class="relatedLink customwidth" *ngIf="user_profile_cap && curtype"
+                                    (click)="redirectto('profile', curtype)">
+                                    <div> <i class="fa fa-cog tabImgCustom tabImgCustomSmall" aria-hidden="true"></i>
+                                    </div>
+                                    <div>{{user_profile_cap}}</div>
+                                </div>
+                            </div>
+                            <div class="memberInfo">
+                                <div class="relatedLink customwidth" *ngIf="dashboard_cap && curtype"
+                                    (click)="redirectto('dashboard', curtype)">
+                                    <div> <i class="fa fa-dashboard tabImgCustom tabImgCustomSmall"></i></div>
+                                    <div>{{dashboard_cap}}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

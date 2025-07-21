@@ -1,0 +1,52 @@
+.emailError{
+    color:red;
+}
+ .mat-dialog-actions .mdc-button {
+    margin: auto 15px;
+}
+ .mat-dialog-content {
+    margin: 0;
+    padding: 20px;
+    overflow: auto;
+}
+ .mat-dialog-actions:last-child {
+    margin: 0;
+    padding: 20px;
+}
+.col-12, .col-lg-12, .col-md-12 {
+    position: relative;
+    min-height: 1px;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+.mat-dialog-actions .mdc-button {
+    margin: auto 15px;
+}
+ .mat-dialog-actions .mdc-button {
+    margin-right: 10px!important;
+}
+.cancel-btn-color.mdc-button {
+    background-color: #ddd!important;
+}
+.mat-dialog-actions{
+    border: none!important;
+    box-shadow: none!important;
+    display: block;
+    padding-top: 0!important;
+}
+.input-group {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    width: 100%;
+}
+.updateemail, label {
+    font-size: .875rem;
+}
+.form-control:last-child {
+    border-radius: 0px !important;
+}
+::ng-deep .mat-checkbox-checked  .mat-checkbox-background {
+    background-color: #00aef2 !important;
+  }

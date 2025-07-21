@@ -1,0 +1,246 @@
+<section class="container no-padding-small cust-book-details">
+    <div class="content p0 comn-cls checkin-details">
+        <div class="col-12 no-padding">
+            <div class="c-outer m0">
+                <div class="c-body booking-content col-md-12 col-12 col-sm-12 no-padding">
+                    <div class="card title-gb">
+                        <h5 class="mgn-up-10 index-head" *ngIf="api_loading">{{titlename | translate}} <a
+                                class="pull-left mgn-rt-20 back-btn" (click)="gotoPrev()"><i
+                                    class="fa fa-arrow-left"></i></a></h5>
+                    </div>
+                    <div class="lbl col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
+                        <div class="card" *ngIf="!api_loading">
+                            <app-common-innerloading-spinner> </app-common-innerloading-spinner>
+                        </div>
+                        <div class="card" *ngIf="api_loading && waitlist">
+                            <div class="mgn-bt-20 temp-style index-head">
+                                <div class="pad-10">
+                                    <h3 class="custId-cursor head-color disp-flex" (click)="providerDetail()">
+                                        {{waitlist?.providerAccount?.businessName | capitalizeFirst}}
+                                        &nbsp;<div *ngIf="checkIfFav(waitlist.providerAccount.id)"
+                                            class="icon-favourite-filled"
+                                            (click)="doDeleteFavProvider(waitlist.providerAccount, $event)">
+                                        </div>
+                                        <div *ngIf="!checkIfFav(waitlist.providerAccount.id)" class="icon-favourite"
+                                            (click)="addFavProvider(waitlist.providerAccount.id, $event)"></div>
+                                    </h3>
+                                    <a class="loc-cls" [href]="waitlist.queue.location.googleMapUrl" target="_blank">
+                                        <i class="fa fa-map-marker"></i>
+                                        {{waitlist.queue.location.place | capitalizeFirst}}
+                                    </a>
+                                    <div *ngIf="waitlist.provider" class="mgn-up-10 usr-name">
+                                        <span>{{provider_label | translate | capitalizeFirst}} :</span>
+                                        <span>
+                                            {{(waitlist.provider.businessName) ? waitlist.provider.businessName
+                                            : waitlist.provider.firstName +
+                                            ' ' + waitlist.provider.lastName}}
+                                        </span>
+                                    </div>
+                                    <div class="mgn-up-10 row align-items-center">                                        
+                                        <div class="serv-name col-8">
+                                            <i *ngIf="waitlist.service.serviceType === 'virtualService'"
+                                            [class]=iconClass></i>
+                                            {{waitlist.service.name | capitalizeFirst}}
+                                            <span *ngIf="waitlist.service.deptName">({{waitlist.service.deptName}})
+                                            </span>                                            
+                                        </div>
+                                        <div class="text-end col-4">
+                                            <a *ngIf="  waitlist.waitlistStatus !== 'done' && waitlist.waitlistStatus !== 'cancelled' && type === 'today' && waitlist.service.serviceType === 'virtualService' && (waitlist.service.virtualCallingModes[0].callingMode == 'GoogleMeet' || waitlist.service.virtualCallingModes[0].callingMode == 'Zoom')"
+                                                class="joinMeeting"
+                                                href="{{waitlist.service.virtualCallingModes[0].value}}"
+                                                target="blank">{{'Join Meeting' | translate}}</a>
+                                            <a *ngIf="waitlist.waitlistStatus !== 'cancelled' && type === 'today' && type === 'today' && waitlist.service.serviceType === 'virtualService' && (waitlist.service.virtualCallingModes[0].callingMode == 'VideoCall')"
+                                                class="joinMeeting" (click)="joinMeetitng('wl')" target="blank">
+                                                {{'Join Now' | translate}}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row m-0 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12">
+                                <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-6">
+                                    <div class="each-item" *ngIf="waitlist.waitlistingFor[0].firstName">
+                                        <span class="item-head">{{'Booking For' | translate}}</span>
+                                        <span class="item-label-val">{{waitlist.waitlistingFor[0].firstName |
+                                            capitalizeFirst}}
+                                            {{waitlist.waitlistingFor[0].lastName | capitalizeFirst}}</span>
+                                    </div>
+                                    <div class="each-item">
+                                        <span class="item-head">{{'Booking id' | translate}}</span>
+                                        <span class="item-label-val">{{waitlist.checkinEncId}}</span>
+                                    </div>
+                                    <div class="each-item" *ngIf="waitlist.waitlistPhoneNumber">
+                                        <span class="item-head">Phone #</span>
+                                        <span class="item-label-val">{{waitlist.countryCode}}
+                                            {{waitlist.waitlistPhoneNumber}}</span>
+                                    </div>
+                                    <div class="each-item"
+                                        *ngIf="waitlist.service.serviceType === 'virtualService'&&waitlist.service.virtualCallingModes[0].callingMode === 'WhatsApp'">
+                                        <span class="item-head">{{'WhatsApp' | translate}} #</span>
+                                        <span class="item-label-val" *ngIf="whatsAppNumber">
+                                            {{whatsAppNumber}}
+                                        </span>                                        
+                                    </div>
+                                    <div class="each-item" *ngIf="waitlist.waitlistingFor[0].email">
+                                        <span class="item-head">{{'Email' | translate}}</span>
+                                        <span class="item-label-val">{{
+                                            waitlist.waitlistingFor[0].email}}</span>
+                                    </div>
+                                    <div class="each-item" *ngIf="waitlist.amountPaid">
+                                        <span class="item-head">{{'Amount Paid' | translate}}</span>
+                                        <span class="item-label-val price rupee-font">
+                                            {{waitlist.amountPaid | currency:'&#8377;'}}</span>
+                                    </div>
+                                    <div class="each-item" *ngIf="waitlist.timezone">
+                                        <span class="item-head">{{'Timezone' | translate}}</span>
+                                        <span class="item-label-val">
+                                            {{waitlist.timezone}}</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-6 txt-align-center">
+                                    <span class="item-head chk-stats">{{'Check your status' | translate}} <i
+                                            class="fa fa-hand-o-down"></i></span>
+                                    <div class="mgn-up-10">
+                                        <qrcode id="print-section" [qrdata]="qr_value" [width]="256" [errorCorrectionLevel]="'M'"></qrcode>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row m-0 mgn-bt-20 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 stats-bar"
+                                style="padding: 10px !important; display: flex !important; align-items: flex-start !important; justify-content: space-between !important;">
+                                <div *ngIf="(waitlist.service.serviceType === 'virtualService' && waitlist.waitlistStatus !== 'arrived') || waitlist.service.serviceType !== 'virtualService'"
+                                    class="col-md-4 col-lg-4 col-xl-4 col-3 stats-item"
+                                    style="padding-right: 4px !important; padding-left: 4px !important;">
+                                    <span class="status-label">{{'STATUS' | translate}}</span>
+                                    <span>
+                                        <div class="item-label-val">
+                                            {{check_in_statuses[waitlist.waitlistStatus | capitalizeFirst] | translate}}
+                                        </div>
+                                    </span>
+                                </div>
+                                <div class="col-md-4 col-lg-4 col-xl-4 col-4 stats-item"
+                                    style="padding-right: 4px !important; padding-left: 4px !important; flex: 1 !important;">
+                                    <span class="status-label">{{'DATE & TIME-WINDOW' | translate}}</span>
+                                    <span class="item-label-val">{{waitlist.date | date:newDateFormat}}</span>
+                                    <span class="item-label-val"><span
+                                            style="display: inline-block !important;">{{waitlist.queue.queueStartTime}}</span>
+                                        -
+                                        <span
+                                            style="display: inline-block !important;">{{waitlist.queue.queueEndTime}}</span></span>
+                                </div>
+                                <div class="col-md-2 col-lg-2 col-xl-2 col-3 stats-item txt-align-center"
+                                    style="padding-right: 4px !important; padding-left: 4px !important;">
+                                    <span class="status-label"
+                                        *ngIf="waitlist.token && waitlist.appxWaitingTime>=0">{{'TOKEN NO' | translate}}</span>
+                                    <span class="status-label"
+                                        *ngIf="!waitlist.token && waitlist.appxWaitingTime>=0 && !waitlist.serviceTime">
+                                        {{'EST WAIT TIME' | translate}}</span>
+                                    <span class="item-label-val"
+                                        *ngIf="!waitlist.token && waitlist.appxWaitingTime>=0 && !waitlist.serviceTime">
+                                        {{getTimeToDisplay(waitlist.appxWaitingTime)}}
+                                    </span>
+                                    <span class="status-label"
+                                        *ngIf="!waitlist.token && waitlist.appxWaitingTime>=0 && waitlist.serviceTime">
+                                        {{'STARTS AT' | translate}}</span>
+                                    <span class="item-label-val"
+                                        *ngIf="!waitlist.token && waitlist.appxWaitingTime>=0 && waitlist.serviceTime">
+                                        {{waitlist.serviceTime}}
+                                    </span>
+
+                                    <span class="status-label"
+                                        *ngIf="waitlist.token && !(waitlist.appxWaitingTime>=0)">{{'TOKEN NO' | translate}}</span>
+                                    <span class="item-label-val" *ngIf="waitlist.token">{{waitlist.token}}</span>
+                                    <span class="est-tok-time"
+                                        *ngIf="waitlist.token && waitlist.appxWaitingTime>=0 && waitlist.waitlistStatus !== 'cancelled' && waitlist.waitlistStatus !== 'done' && !waitlist.serviceTime">
+                                        {{'Est Wait Time' | translate}}:
+                                        {{getTimeToDisplay(waitlist.appxWaitingTime)}}
+                                    </span>
+                                    <span class="est-tok-time"
+                                        *ngIf="waitlist.serviceTime && ( waitlist.appxWaitingTime >=0 && waitlist.token && (waitlist.waitlistStatus !== 'cancelled' && waitlist.waitlistStatus !=='done'))">
+                                        {{'Starts at' | translate}} : {{waitlist.serviceTime}}</span>
+                                </div>
+                                <div *ngIf="waitlist.batchName" class="col-md-2 col-lg-2 col-xl-2 col-2 stats-item"
+                                    style="padding-right: 4px !important; padding-left: 4px !important;">
+                                    <span class="status-label">{{'BATCH' | translate}}</span>
+                                    <span class="item-label-val">{{waitlist.batchName}}</span>
+                                </div>
+                            </div>
+                            <div class="more_view">
+                                <span class="opt-viewmore" *ngIf="!view_more" (click)="viewMore()"><a
+                                        class="fl-left pointer-cursor">{{'View more' | translate}}</a></span>
+                                <span class="opt-viewmore" *ngIf="view_more" (click)="viewMore()"><a
+                                        class="fl-left pointer-cursor">{{'View less' | translate}}</a></span>
+                                <span class="opt-actions" *ngIf="!history"
+                                    (click)="gotoActions(waitlist)"><a class="pointer-cursor">{{'Actions' | translate}}</a></span>
+                            </div>
+                            <div class="more_view" *ngIf="view_more" class="mgn-up-30">
+                                <mat-tab-group animationDuration="10ms">
+                                    <mat-tab label="{{'Instructions' | translate}}">
+                                        <span *ngIf="waitlist.service && waitlist.service.postInfoEnabled">
+                                            <h6> {{waitlist.service.postInfoTitle}} </h6>
+                                            <span [innerHTML]="waitlist.service.postInfoText">
+                                            </span>
+                                        </span>
+                                        <span class="mgn-lt-20"
+                                            *ngIf="waitlist.service && !waitlist.service.postInfoEnabled">
+                                            {{'No Instructions' | translate}}</span>
+                                    </mat-tab>
+                                    <mat-tab label="{{'Messages' | translate}}">
+                                        <app-inbox-list [messages]="communication_history"
+                                            [fromsource]="'consumer-waitlist'" (reloadApi)="getCommunicationHistory()">
+                                        </app-inbox-list>
+                                    </mat-tab>
+                                    <mat-tab label="{{cust_notes_cap | capitalizeFirst | translate}}">
+                                        <span class="mgn-lt-20"
+                                            *ngIf="waitlist && waitlist.consumerNote && waitlist.consumerNote !== ''">{{waitlist.consumerNote}}</span>
+                                        <span class="mgn-lt-20"
+                                            *ngIf="waitlist && (waitlist.consumerNote === '' || !waitlist.consumerNote)">{{no_cus_notes_cap | translate}}</span>
+                                    </mat-tab>
+                                </mat-tab-group>
+                            </div>
+                        </div>
+                        <div class="card" *ngIf="questionnaires.length > 0">
+                            <div class="pad-10">
+                                <h3 class="no-margin">
+                                    {{questionnaire_heading | translate}}
+                                </h3>
+                            </div>
+                            <ng-container *ngIf="questionnaires.length > 1">
+                                <mat-accordion class="qnr-accord no-padding" *ngFor="let qnr of questionnaires">
+                                    <mat-expansion-panel>
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                {{(qnr.questionnaireName) ? qnr.questionnaireName :
+                                                qnr.questionnaireId}}
+                                                <div class="qnrstatus">
+                                                    <span class="greenc"
+                                                        *ngIf="getQnrStatus(qnr) === 'submitted'">{{'Submitted' | translate}}</span>
+                                                    <span class="red"
+                                                        *ngIf="getQnrStatus(qnr) !== 'submitted'">{{'Released' | translate}}</span>
+                                                </div>
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <div class="c-details">
+                                            <app-questionnaire [questionnaireList]="qnr" [source]="'consCheckin'"
+                                                [uuid]="waitlist.ynwUuid" [accountId]="waitlist.providerAccount.id"
+                                                [type]="'details'" [waitlistStatus]="waitlist.waitlistStatus"
+                                                (returnAnswers)="getQuestionAnswers($event)">
+                                            </app-questionnaire>
+                                        </div>
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+                            </ng-container>
+                            <ng-container *ngIf="questionnaires.length === 1">
+                                <div class="c-details" *ngFor="let qnr of questionnaires">
+                                    <app-questionnaire [questionnaireList]="qnr" [source]="'consCheckin'"
+                                        [uuid]="waitlist.ynwUuid" [accountId]="waitlist.providerAccount.id"
+                                        [type]="'details'" [waitlistStatus]="waitlist.waitlistStatus"
+                                        (returnAnswers)="getQuestionAnswers($event)">
+                                    </app-questionnaire>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

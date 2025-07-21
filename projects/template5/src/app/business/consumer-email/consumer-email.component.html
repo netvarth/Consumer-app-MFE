@@ -1,0 +1,20 @@
+<form [ngClass]="this.theme">
+    <h1 class="mat-dialog-title">Email Address</h1>
+    <div mat-dialog-content>
+        <div class="col-lg-12 col-md-12 col-12">
+            <label>Email</label>
+            <div class="input-group">
+                <div class="input-group-prepend"></div>
+                <input type="text" class="form-control" id="email_id" placeholder="Email(user@xyz.com)"
+                    [(ngModel)]="email_id" autocomplete="off" [ngModelOptions]="{standalone: true}" />
+            </div>
+            <div class="error-section" *ngIf="apiError" class="emailError">{{apiErrorTxt}}</div>
+            <mat-checkbox class="updateemail mgn-up-10" [(ngModel)]="update_email"
+                [ngModelOptions]="{standalone: true}">Update Email to 'My Account'</mat-checkbox>
+        </div>
+    </div>
+    <div mat-dialog-actions class="paddingtop">
+        <button type="button" mat-button class="pass_butt cancel-btn-color" (click)="cancel()">Cancel</button>
+        <button type="button" mat-button class="pass_butt" (click)="onSubmit()">Ok</button>
+    </div>
+</form>

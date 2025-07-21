@@ -1,0 +1,793 @@
+<section class="container no-padding cust-book-details customWidth">
+    <div class="content p0 comn-cls checkin-details">
+        <div>
+            <div class="panel panel-default">
+                <div class="panel-body no-padding">
+                    <div class="c-outer m0">
+                        <div class="c-body booking-content col-md-12 col-12 col-sm-12 no-padding">
+                            <div class="panel-heading col-12 col-sm-12 co-md-12 col-lg-12 no-padding cstmHeader">
+                                <div (click)="gotoPrev()" class="backFlex">
+                                    <div><i class="fa fa-arrow-left" aria-hidden="true"></i></div>
+                                    <div>{{'Appointment Details' | translate}}</div>
+                                </div>
+                            </div>
+                            <div class="lbl col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 no-padding mgn-up-8">
+                                <div class="card" *ngIf="!api_loading">
+                                    <app-common-innerloading-spinner> </app-common-innerloading-spinner>
+                                </div>
+                                <div *ngIf="appt && api_loading && !smallDevice">
+                                    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 mgn-bt-20 cust-det-outline card 
+                                    flexClass direction">
+                                        <div class="w-50 p-3 borderClr">
+                                            <div
+                                                class="col-sm-12 col-md-12 col-lg-12  col-xl-12 col-10 mgn-up-10 mgn-bt-10 l-ht-2 flexClass ">
+                                                <div class="customCard" *ngIf="blogo">
+                                                    <img class="imageInfo" src="{{blogo}}" />
+                                                </div>
+                                                <div class="customWidth">
+                                                    <div class="CustomerDetails">
+                                                        <div>
+                                                            <div class="orderStatus"
+                                                                *ngIf="check_in_statuses &&check_in_statuses[appt.apptStatus]">
+                                                                <div class="stausCustom">{{'Status :' | translate}}
+                                                                </div>
+                                                                <div class="stausCustom">
+                                                                    {{check_in_statuses[appt.apptStatus |
+                                                                    capitalizeFirst]}} </div>
+                                                            </div>
+                                                            <div class="orderStatus mt-2"
+                                                                *ngIf="appt && appt.providerAccount && appt.providerAccount.businessName"
+                                                                (click)="providerDetail(appt.providerAccount)">
+                                                                <div class="businessName pointer-cursor">
+                                                                    {{appt.providerAccount.businessName |
+                                                                    capitalizeFirst}}</div>
+                                                            </div>
+                                                            <div class="orderStatus mt-2"
+                                                                *ngIf="appt && appt.location && appt.location.place">
+                                                                <div class="customOrder"> {{appt.location.place |
+                                                                    capitalizeFirst}}</div>
+                                                            </div>
+                                                        </div>
+                                                        <diV>
+                                                            <button (click)="addWaitlistMessage(appt)" type="submit"
+                                                                class="contactProviderBtn">
+                                                                <span *ngIf="!api_loadingCtctProvider">{{'Message to provider' | translate}}</span>
+                                                                <app-common-innerloading-spinner color="#fff"
+                                                                    [spinnerParams]="{diameter:30}"
+                                                                    *ngIf="api_loadingCtctProvider">
+                                                                </app-common-innerloading-spinner>
+                                                            </button>
+                                                        </diV>
+                                                    </div>
+                                                    <div class="orderIdType mt-2">
+                                                        <div *ngIf="appt && appt.appointmentEncId">
+                                                            <div class="customOrder">{{'Booking Id' | translate}}</div>
+                                                            <div class="orderNumber">{{appt.appointmentEncId}}</div>
+                                                        </div>
+                                                        <div [ngClass]="{customWidthBookingFor: !smallDevice}"
+                                                            *ngIf="appt && appt['provider'] && appt['provider']['firstName']">
+                                                            <div class="customOrder">{{provider_label | capitalizeFirst}}</div>
+                                                            <div class="orderNumber">{{appt['provider']['firstName'] |capitalizeFirst}}
+                                                                {{appt['provider']['lastName'] | capitalizeFirst}}</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div
+                                                class="col-sm-12 col-md-12 col-lg-12  col-xl-12 col-12 mgn-up-10 mgn-bt-10 l-ht-2 dateTime justifyContent">
+                                                <div>
+                                                    <div class="dateTime"
+                                                        *ngIf="appt && appt.orderTimeWindow && appt.schedule.apptSchedule.timeSlots && appt.schedule.apptSchedule.timeSlots[0]">
+                                                        <div>{{'Date & Time' | translate}}</div>
+                                                        <div class="timeslotOrder" *ngIf="appt && appt.appmtDate">
+                                                            {{appt.appmtDate | date:newDateFormat}}
+                                                            <div
+                                                                *ngIf="appt && appt.orderTimeWindow && appt.schedule.apptSchedule.timeSlots && appt.schedule.apptSchedule.timeSlots[0]">
+                                                                ,
+                                                                {{appt.schedule.apptSchedule.timeSlots[0].sTime}} -
+                                                                {{appt.schedule.apptSchedule.timeSlots[0].eTime}}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="dateTime cstmGap"
+                                                        *ngIf="appt && appt.appmtFor[0] && (appt.appmtFor[0].firstName || appt.appmtFor[0].lastName)">
+                                                        <div>{{'Booking For' | translate}}</div>
+                                                        <div class="timeslotOrder"
+                                                            *ngIf="appt && appt.appmtFor[0] && (appt.appmtFor[0].firstName || appt.appmtFor[0].lastName)">
+                                                            <div>
+                                                                <span *ngIf="appt.appmtFor[0].title">{{appt.appmtFor[0].title}}&nbsp;</span>
+                                                                {{appt.appmtFor[0].firstName |capitalizeFirst}}
+                                                                {{appt.appmtFor[0].lastName | capitalizeFirst}}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="dateTime cstmGapMob" *ngIf="appt && appt.phoneNumber">
+                                                        <div>{{'Mobile' | translate}}</div>
+                                                        <div class="timeslotOrder" *ngIf="appt && appt.phoneNumber">
+                                                            <div>
+                                                                {{appt.countryCode}}{{appt.phoneNumber}}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="dateTime cstmGapEmail"
+                                                        *ngIf="appt && appt.appmtFor && appt.appmtFor[0] && appt.appmtFor[0].email">
+                                                        <div>{{'Email' | translate}}</div>
+                                                        <div class="timeslotOrder"
+                                                            *ngIf="appt && appt.appmtFor && appt.appmtFor[0] && appt.appmtFor[0].email">
+                                                            <div>
+                                                                {{appt.appmtFor[0].email}}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="dateTime cstmGapEmails" *ngIf="appt && appt.appmtDate">
+                                                        <div>{{'Date & Time' | translate}}</div>
+                                                        <div class="timeslotOrders" *ngIf="appt && appt.appmtDate">
+                                                            <div> {{appt.appmtDate|
+                                                                    date:'EEEE'}}, {{appt.appmtDate |
+                                                                    date:'d'}}&nbsp;{{appt.appmtDate |
+                                                                    date:'MMM'}}&nbsp;{{appt.appmtDate | date:'y'}}, {{getSingleTime(appt.appmtTime)}}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="dateTime cstmGapTimezone" *ngIf="appt && appt.timezone">
+                                                        <div>{{ 'Timezone' | translate }} </div>
+                                                        <div class="timeslotOrders">{{appt.timezone}}</div>
+                                                    </div>
+                                                  
+                                                    <div class="dateTime cstmGapTimezone" *ngIf="appt.batchId">
+                                                        <div>{{'BATCH' | translate}}</div>
+                                                        <div class="timeslotOrder">
+                                                            <div>
+                                                                {{appt.batchId}}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <div>
+                                                        <qrcode id="print-section" [qrdata]="qr_value" [width]="256" [errorCorrectionLevel]="'M'"></qrcode>
+
+                                                    </div>
+                                                    <div class="statusCheck">{{'Check your status1' | translate}}</div>
+                                                </div>
+                                            </div>
+                                            <div
+                                                class="col-sm-12 col-md-12 col-lg-12  col-xl-12 col-10 mgn-up-10 mgn-bt-10 l-ht-2">
+                                                <div>
+                                                    <div class="businessName" *ngIf="cust_notes_cap">{{cust_notes_cap |
+                                                        capitalizeFirst | translate}}</div>
+                                                    <div class="timeslotOrder"
+                                                        *ngIf="appt && appt.consumerNote &&  appt.consumerNote !== ''">
+                                                        {{appt.consumerNote}}
+                                                    </div>
+                                                    <div class="timeslotOrder notFound"
+                                                        *ngIf="appt && (appt.consumerNote == '' || !appt.consumerNote)">
+                                                        {{no_cus_notes_cap}}
+                                                    </div>
+                                                </div>
+                                                <div class="mgn-up-10">
+                                                    <div class="businessName">{{'Instructions' | translate}}</div>
+                                                    <div class="timeslotOrder notFound"
+                                                        *ngIf="appt && appt.service && (!appt.service.postInfoText || appt.service.postInfoText==='')">
+                                                        {{'No Instructions Found' | translate}}
+                                                    </div>
+                                                    <div class="timeslotOrder"
+                                                        *ngIf="appt && appt.service && appt.service.postInfoText !==''"
+                                                        [innerHTML]="appt.service.postInfoText"
+                                                        >
+                                                    </div>
+                                                </div>
+
+                                                <div class="mgn-up-10"   *ngIf="appt && appt.apptStatus =='Cancelled'">
+                                                    <div class="businessName" >{{'Cancellation Reason' | translate}}</div>
+                                                    <div class="timeslotOrder">
+                                                    {{getCancelledReasonDisplayName(appt.cancelReason)}}
+                                                    </div>
+                                                </div>
+                                                <div class="mgn-up-10"  *ngIf="appt &&  appt.apptStatus =='Cancelled' &&  appt.cancelReasonMessage">
+                                                    <div class="businessName" >{{'Cancellation Message' | translate}}</div>
+                                                    <div class="timeslotOrder">
+                                                    {{appt.cancelReasonMessage}}
+                                                    </div>
+                                                </div>
+
+                                                
+                                            </div>
+                                            <div
+                                                class="col-sm-12 col-md-12 col-lg-12  col-xl-12 col-10 mgn-up-10 mgn-bt-10 l-ht-2 btnAction">
+                                                <div>
+                                                    <button type="submit" class="reschedulebtn" *ngIf="!history && (appt && appt.apptStatus!=='Completed' && appt.apptStatus !== 'Cancelled')"
+                                                        (click)="rescheduleAction(appt)">
+                                                        <div class="rescheduleCstm">
+                                                            <div>
+                                                                <img class="actionImg"
+                                                                    src="./assets/images/myjaldee/reschedule.png" />
+                                                            </div>
+                                                            <div>{{'Reschedule' | translate}}</div>
+                                                        </div>
+                                                    </button>
+                                                </div>
+                                                <div>
+                                                    <button type="submit" class="cancelbtn" *ngIf="!history && (appt && appt.apptStatus!=='Completed' && appt.apptStatus !== 'Cancelled')"
+                                                        (click)="cancelAction(appt)">
+                                                        <div class="cancelCstm">
+                                                            <div>
+                                                                <img class="actionImg"
+                                                                    src="./assets/images/myjaldee/cancel.png" />
+                                                            </div>
+                                                            <div>{{'Cancel Booking' | translate}}</div>
+                                                        </div>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="w-50">
+                                            <div
+                                                class="col-sm-12 col-md-12 col-lg-12  col-xl-12 col-10 mgn-up-10 mgn-bt-10 l-ht-2 ">
+                                                <div>
+                                                    <div class="serviceDCetails">{{'Service Details' | translate}}</div>
+                                                    <div class="mt-2">
+                                                        <div class="serviceCstm">
+                                                            <div>
+                                                                <i class="cstmServiceIcon" *ngIf="selectedService.length===0 &&appt && appt.service && appt.service.serviceType && appt.service.serviceType === 'virtualService'"
+                                                                    [class]=iconClass></i>
+                                                            </div>
+                                                            <div class="service-icon"
+                                                                *ngIf="appt.service.serviceType === 'physicalService' && selectedService && selectedService[0] && selectedService[0][0] && selectedService[0][0].servicegallery && selectedService[0][0].servicegallery.length>0">
+                                                                <img class="cstmServiceIcon"
+                                                                    *ngIf="selectedService && selectedService[0] && selectedService[0][0] &&selectedService[0][0].servicegallery && selectedService[0][0].servicegallery[0] && selectedService[0][0].servicegallery[0].thumbUrl"
+                                                                    [src]="selectedService[0][0].servicegallery[0].thumbUrl" />
+                                                            </div>
+                                                            <div class="service-icon"
+                                                                *ngIf="selectedService.length===0 &&!appt.servicegallery && appt.service.serviceType && appt.service.serviceType !== 'virtualService' && appt.service.serviceType === 'physicalService' && domain !== 'religiousPriests'">
+                                                                <img  class="cstmServiceIcon" src="./assets/images/meeting_Artboard.png" alt="Physical Service Image">
+                                                            </div>
+                                                            <div class="service-icon"
+                                                                *ngIf="selectedService.length===0 &&!appt.servicegallery && appt.service.serviceType && appt.service.serviceType !== 'virtualService' && appt.service.serviceType === 'physicalService' && domain === 'religiousPriests'">
+                                                                <img  class="cstmServiceIcon" src="./assets/images/hindu-temple-clipart.jpg" alt="Physical Service Image">
+                                                            </div>
+                                                            <div *ngIf="appt && appt.service && appt.service.name"
+                                                                class="serviceName">
+                                                                {{appt.service.name | capitalizeFirst}}
+                                                            </div>
+                                                            <div *ngIf="appt && appt.service && appt.service.deptName"
+                                                                class="serviceName">
+                                                               ( {{appt.service.deptName | capitalizeFirst}} )
+                                                            </div>
+                                                        </div>
+                                                        <div class="mt-2">
+                                                            <div *ngIf="appt && appt.service && appt.service.virtualCallingModes && appt.service.virtualCallingModes[0] 
+                                                                                                                    && appt.service.virtualCallingModes[0].callingMode && appt.service.virtualCallingModes[0].callingMode === 'Zoom'"
+                                                                class="serviceCstmText lineHeight">
+                                                                {{' Follow these instructions to join the video call:' | translate}}
+                                                                <div>{{'1: You will receive an alert that the Zoom call  has started.' | translate}}
+                                                                </div>
+                                                                <div>{{'2: When it is your turn, click on the following link -' | translate}}
+                                                                    <a class="meetingLinkJOin" *ngIf="meetingDetails && meetingDetails.joiningUrl"
+                                                                        href="{{meetingDetails.joiningUrl}}"
+                                                                        target="blank">{{meetingDetails.joiningUrl}}</a>
+                                                                </div>
+                                                                <div style="font-size: smaller">{{'(If you do not have Zoom installed you will be prompted to install Zoom)' | translate}}
+                                                                </div>
+                                                                <div>
+                                                                    {{'3. Wait for the video call to start' | translate}}
+                                                                </div>
+                                                            </div>
+                                                            <div *ngIf="appt && appt.service && appt.service.virtualCallingModes && appt.service.virtualCallingModes[0] 
+                                                                                                                    && appt.service.virtualCallingModes[0].callingMode && appt.service.virtualCallingModes[0].callingMode === 'GoogleMeet'"
+                                                                class="serviceCstmText lineHeight">
+                                                                {{'Follow these instructions to join the video call:' |
+                                                                translate}}
+                                                                <div>{{'1: You will recieve an alert that the Google Meet call has started.' | translate}}</div>
+                                                                <div>{{'2: When it is your turn, click on the following link -' | translate}}
+                                                                    <a class="meetingLinkJOin" *ngIf="meetingDetails && meetingDetails.joiningUrl"
+                                                                        href="{{meetingDetails.joiningUrl}}"
+                                                                        target="blank">{{meetingDetails.joiningUrl}}</a>
+                                                                </div>
+                                                                <div style="font-size: smaller">{{'(If you are not already signed into google you must sign in)' | translate}}
+                                                                </div>
+                                                                <div>
+                                                                    {{'3. Wait for the video call to start' | translate}}
+                                                                </div>
+                                                            </div>
+                                                            <div class="serviceCstmText lineHeight"
+                                                                *ngIf="appt && (appt.service && appt.service.virtualCallingModes && appt.service.virtualCallingModes[0] 
+                                                                                                                        && appt.service.virtualCallingModes[0].callingMode && appt.service.virtualCallingModes[0].callingMode === 'WhatsApp') && appt.service && appt.service.virtualServiceType === 'videoService'">
+                                                                {{'* When it is time for your call, you will receive a WhatsApp video call on' | translate}}
+                                                                +91{{appt.service.virtualCallingModes[0].value}}.<br>
+                                                                {{'Please remember to keep your phone'+'s internet connection on.' | translate}}
+                                                            </div>
+                                                            <div class="serviceCstmText lineHeight"
+                                                                *ngIf="appt && (appt.service && appt.service.virtualCallingModes && appt.service.virtualCallingModes[0] 
+                                                                                                                        && appt.service.virtualCallingModes[0].callingMode && appt.service.virtualCallingModes[0].callingMode === 'WhatsApp')  && appt.service && appt.service.virtualServiceType === 'audioService'">
+                                                                {{'* When it is time for your call, you will receive a WhatsApp audio call on' | translate}}
+                                                                +91{{appt.service.virtualCallingModes[0].value}}.<br>
+                                                                {{'Please remember to keep your phone'+ 's internet connection on.' | translate}}
+                                                            </div>
+                                                            <div class="serviceCstmText lineHeight"
+                                                                *ngIf="appt && (appt.service && appt.service.virtualCallingModes && appt.service.virtualCallingModes[0] 
+                                                                                                                    && appt.service.virtualCallingModes[0].callingMode && appt.service.virtualCallingModes[0].callingMode === 'Phone') || meetingDetails && meetingDetails.joiningUrl">
+                                                                {{' * When it is time for your call, you will receive a call on ' | translate}}{{appt.service.virtualCallingModes[0].value}}
+                                                            </div>
+                                                            <div class="serviceCstmText lineHeight"
+                                                                *ngIf="appt && (appt.service && appt.service.virtualCallingModes && appt.service.virtualCallingModes[0] 
+                                                                                                                    && appt.service.virtualCallingModes[0].callingMode && appt.service.virtualCallingModes[0].callingMode === 'VideoCall')">
+                                                                {{'Follow these instructions to join the video call:' | translate}}
+                                                                <div>{{'1: You will receive an alert that the Jaldee Video Started.' | translate}}
+                                                                </div>
+                                                                <div>{{'2: When it is your turn, click on the following link -' | translate}}
+                                                                    <a class="meetingLinkJOin" *ngIf="meetingDetails && meetingDetails.joiningUrl"
+                                                                        href="{{meetingDetails.joiningUrl}}"
+                                                                        target="blank">{{meetingDetails.joiningUrl}}</a>
+                                                                </div>
+                                                                <div>
+                                                                    {{'3. Wait for the video call to start' | translate}}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="mt-2  justifyContent-1"
+                                                            *ngIf="appt && appt.amountPaid">
+                                                            <div class="flex1">
+                                                                <div class="serviceChargetxt">{{'Amount Paid' |
+                                                                    translate}}</div>
+                                                                <div class="serviceChargetxt rupee-font"
+                                                                    *ngIf="appt && appt.amountPaid">{{appt.amountPaid
+                                                                    |currency:'&#8377;'}}</div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="mt-4 waitListFlex gap">
+                                                            <div class="serviceCstm"
+                                                                *ngIf="appt && appt.apptStatus!=='Completed' && appt.apptStatus !== 'Cancelled' && type === 'today' && appt.service && appt.service.serviceType && appt.service.serviceType === 'virtualService'
+                                                            && (appt.service && appt.service.virtualCallingModes && appt.service.virtualCallingModes[0] && appt.service.virtualCallingModes[0].callingMode && (appt.service.virtualCallingModes[0].callingMode === 'GoogleMeet' || appt.service.virtualCallingModes[0].callingMode === 'Zoom'))">
+                                                                <button class="meetingBtn">
+                                                                    <div>
+                                                                        <i class="cstmServiceIcon" *ngIf="appt && appt.service && appt.service.serviceType &&appt.service.serviceType === 'virtualService'" [class]=iconClass></i>
+                                                                    </div>
+                                                                    <div class="service-icon" *ngIf="appt && appt.servicegallery && appt.servicegallery.length > 0 && appt.serviceType === 'physicalService'">
+                                                                        <img class="cstmServiceIcon" [src]="appt.servicegallery[0].thumbUrl" alt=" Service Image">
+                                                                    </div>
+                                                                    <div class="service-icon"
+                                                                        *ngIf="!appt.servicegallery && appt.service.serviceType && appt.service.serviceType !== 'virtualService' && appt.service.serviceType === 'physicalService' && domain !== 'religiousPriests'">
+                                                                        <img class="cstmServiceIcon" src="./assets/images/meeting_Artboard.png" alt="Physical Service Image">
+                                                                    </div>
+                                                                    <div class="service-icon"
+                                                                        *ngIf="!appt.servicegallery && appt.service.serviceType && appt.service.serviceType !== 'virtualService' && appt.service.serviceType === 'physicalService' && domain === 'religiousPriests'">
+                                                                        <img class="cstmServiceIcon" src="./assets/images/hindu-temple-clipart.jpg" alt="Physical Service Image">
+                                                                    </div>
+                                                                    <div class="serviceName">
+                                                                        <a class="joinMeeting joinMeetingCstm" *ngIf="meetingDetails && meetingDetails.joiningUrl"
+                                                                            href="{{meetingDetails.joiningUrl}}"
+                                                                            target="blank">{{'Join Video Consultation' | translate}}</a>
+                                                                    </div>
+                                                                </button>
+                                                            </div>
+                                                            <div class="serviceCstm"
+                                                                *ngIf="appt && appt.apptStatus!=='Completed' && appt.apptStatus !== 'Cancelled' && type === 'today' && appt.service.serviceType === 'virtualService' 
+                                                            && (appt.service.virtualCallingModes[0].callingMode == 'VideoCall')">
+                                                                <button class="meetingBtn">
+                                                                    <div class="serviceName">
+                                                                        <a class="joinMeeting joinMeetingCstm"
+                                                                            (click)="joinMeetitng('appt')"
+                                                                            target="blank">{{'Join Video Consultation' | translate}}</a>
+                                                                    </div>
+                                                                </button>
+                                                            </div>
+                                                            <div class="serviceCstm">
+                                                                <button class="attchmentBtn" *ngIf="appt.apptStatus =='Completed' || appt.apptStatus !== 'Cancelled'"
+                                                                    (click)="sendAttachmentBooking(appt,'appt')">
+                                                                    <i class="material-icons">attach_file</i>
+                                                                    <div>{{'Send Attachment' | translate}}</div>
+                                                                </button>
+                                                            </div>
+                                                            <div class= "serviceCstm">
+                                                                <button mat-menu-item class="attchmentBtn" *ngIf="showviewAttachment || (appt && appt.hasAttachment)"
+                                                                    (click)="viewAttachment(appt,'appt')">
+                                                                     <i class="material-icons">attach_file</i><span class="menuInfo">View Attachments</span>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div *ngIf="appt && api_loading && smallDevice">
+                                    <div class="mgn-bt-20 cust-det-outline card">
+                                        <div class="col-sm-12 col-md-12 col-lg-12  col-xl-12 col-12 logoFlex">
+                                            <div>
+                                                <div class="customCard" *ngIf="blogo">
+                                                    <img class="imageInfo" src="{{blogo}}" />
+                                                </div>
+                                            </div>
+                                            <div class="statusInfo">
+                                                <div class="orderStatus" *ngIf="check_in_statuses &&check_in_statuses[appt.apptStatus]">
+                                                    <div class="stausCustom">{{'Status :' | translate}}
+                                                    </div>
+                                                    <div class="stausCustom">
+                                                        {{check_in_statuses[appt.apptStatus |
+                                                        capitalizeFirst]}} </div>
+                                                </div>
+                                                <div class="orderStatus mt-2" *ngIf="appt && appt.providerAccount && appt.providerAccount.businessName"
+                                                    (click)="providerDetail(appt.providerAccount)">
+                                                    <div class="businessName pointer-cursor">
+                                                        {{appt.providerAccount.businessName |
+                                                        capitalizeFirst}}</div>
+                                                        
+                                                </div>
+                                                <div class="orderStatus mt-2" *ngIf="appt && appt.location && appt.location.place">
+                                                    <div class="customOrder"> {{appt.location.place |
+                                                        capitalizeFirst}}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-12 col-lg-12  col-xl-12 col-12 mgn-up-10">
+                                            <div>
+                                                <div *ngIf="appt && appt.appointmentEncId" class="smallFlex customGapBookingId">
+                                                    <div class="customOrder">{{'Booking Id' | translate}}</div>
+                                                    <div class="orderNumber">{{appt.appointmentEncId}}</div>
+                                                </div>
+                                                <div class="smallFlex cstmGapOrderFor" *ngIf="appt && appt['provider'] && appt['provider']['firstName']">
+                                                    <div class="customOrder">{{provider_label | capitalizeFirst}}</div>
+                                                    <div class="orderNumber">{{appt['provider']['firstName'] |capitalizeFirst}}
+                                                        {{appt['provider']['lastName'] | capitalizeFirst}}</div>
+                                                        
+                                                </div>
+                                            </div>
+                                            <div class="mgn-up-10">
+                                                <div class="dateTime"
+                                                    *ngIf="appt && appt.orderTimeWindow && appt.schedule.apptSchedule.timeSlots && appt.schedule.apptSchedule.timeSlots[0]">
+                                                    <div>{{'Date & Time' | translate}}</div>
+                                                    <div class="timeslotOrder" *ngIf="appt && appt.appmtDate">
+                                                        {{appt.appmtDate | date:newDateFormat}}
+                                                        <div
+                                                            *ngIf="appt && appt.orderTimeWindow && appt.schedule.apptSchedule.timeSlots && appt.schedule.apptSchedule.timeSlots[0]">
+                                                            ,
+                                                            {{appt.schedule.apptSchedule.timeSlots[0].sTime}} -
+                                                            {{appt.schedule.apptSchedule.timeSlots[0].eTime}}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- <div class="dateTime cstmGap" *ngIf="appt && appt.timezone">
+                                                    <div>{{ 'Timezone' | translate }} </div>
+                                                    <div class="timeslotOrder">{{appt.timezone}}</div>
+                                                </div> -->
+                                                <div class="dateTime cstmGap"
+                                                    *ngIf="appt && appt.appmtFor[0] && (appt.appmtFor[0].firstName || appt.appmtFor[0].lastName)">
+                                                    <div>{{'Booking For' | translate}}</div>
+                                                    <div class="timeslotOrder"
+                                                        *ngIf="appt && appt.appmtFor[0] && (appt.appmtFor[0].firstName || appt.appmtFor[0].lastName)">
+                                                        <div><span *ngIf="appt.appmtFor[0].title">{{appt.appmtFor[0].title}}&nbsp;</span>
+                                                            {{appt.appmtFor[0].firstName |capitalizeFirst}}
+                                                            {{appt.appmtFor[0].lastName | capitalizeFirst}}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="dateTime cstmGapMob" *ngIf="appt && appt.phoneNumber">
+                                                    <div>{{'Mobile' | translate}}</div>
+                                                    <div class="timeslotOrder" *ngIf="appt && appt.phoneNumber">
+                                                        <div>
+                                                            {{appt.countryCode}}{{appt.phoneNumber}}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="dateTime cstmGapEmail"
+                                                    *ngIf="appt && appt.appmtFor && appt.appmtFor[0] && appt.appmtFor[0].email">
+                                                    <div>{{'Email' | translate}}</div>
+                                                    <div class="timeslotOrder"
+                                                        *ngIf="appt && appt.appmtFor && appt.appmtFor[0] && appt.appmtFor[0].email">
+                                                        <div>
+                                                            {{appt.appmtFor[0].email}}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                               
+                                                <div class="dateTime cstmGapEmails" *ngIf="appt && appt.appmtDate">
+                                                    <div>{{'Date & Time' | translate}}</div>
+                                                    <div class="timeslotOrders" *ngIf="appt && appt.appmtDate">
+                                                        <div> {{appt.appmtDate|
+                                                                date:'EEEE'}}, {{appt.appmtDate |
+                                                                date:'d'}}&nbsp;{{appt.appmtDate |
+                                                                date:'MMM'}}&nbsp;{{appt.appmtDate | date:'y'}}, {{getSingleTime(appt.appmtTime)}}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="dateTime cstmGap-2" *ngIf="appt && appt.timezone">
+                                                    <div>{{ 'Timezone' | translate }} </div>
+                                                    <div class="timeslotOrder">{{appt.timezone}}</div>
+                                                </div>
+                                                <div class="dateTime cstmGapEmail" *ngIf="appt.batchId">
+                                                    <div>{{'BATCH' | translate}}</div>
+                                                    <div class="timeslotOrder">
+                                                        <div>
+                                                            {{appt.batchId}}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-12 col-lg-12  col-xl-12 col-12 mgn-up-10">
+                                            <button (click)="addWaitlistMessage(appt)" type="submit" class="contactProviderBtn">
+                                                <span *ngIf="!api_loadingCtctProvider">{{'Message to provider' | translate}}</span>
+                                                <app-common-innerloading-spinner color="#fff" [spinnerParams]="{diameter:30}" *ngIf="api_loadingCtctProvider">
+                                                </app-common-innerloading-spinner>
+                                            </button>
+                                        </div>
+                                        <div class="col-sm-12 col-md-12 col-lg-12  col-xl-12 col-12 mgn-up-10 text-center">
+                                            <div>
+                                                <qrcode id="print-section" [qrdata]="qr_value" [width]="256" [errorCorrectionLevel]="'M'"></qrcode>
+                                            </div>
+                                            <div class="statusCheck">{{'Check your status' | translate}}</div>
+                                        </div>
+                                        <div  class="col-sm-12 col-md-12 col-lg-12  col-xl-12 col-12 mgn-up-10">
+                                            <div class="serviceCstm">
+                                                <div>
+                                                    <i *ngIf="appt && appt.service && appt.service.serviceType && appt.service.serviceType === 'virtualService'"
+                                                        [class]=iconClass></i>
+                                                </div>
+                                                <div *ngIf="appt && appt.service && appt.service.serviceType && appt.service.serviceType === 'physicalService'">
+                                                    <img width="50px" src="./assets/images/webP/meeting_Artboard.webp" />
+                                                </div>
+                                                <div>
+                                                    <div *ngIf="appt && appt.service && appt.service.name"
+                                                    class="serviceName">
+                                                    {{appt.service.name | capitalizeFirst}}
+                                                </div>
+                                                <div *ngIf="appt && appt.service && appt.service.deptName"
+                                                    class="serviceName">
+                                                    ( {{appt.service.deptName | capitalizeFirst}} )
+                                                </div>
+                                                </div>
+                                            </div>
+                                            <div class="mt-2">
+                                                <div *ngIf="appt && appt.service && appt.service.virtualCallingModes && appt.service.virtualCallingModes[0] 
+                                                                                                        && appt.service.virtualCallingModes[0].callingMode && appt.service.virtualCallingModes[0].callingMode === 'Zoom'"
+                                                    class="serviceCstmText lineHeight">
+                                                    {{' Follow these instructions to join the video call:' | translate}}
+                                                    <div>{{'1: You will receive an alert that the Zoom call  has started.' | translate}}
+                                                    </div>
+                                                    <div>{{'2: When it is your turn, click on the following link -' | translate}}
+                                                        <a class="meetingLinkJOin" *ngIf="meetingDetails && meetingDetails.joiningUrl"
+                                                            href="{{meetingDetails.joiningUrl}}"
+                                                            target="blank">{{meetingDetails.joiningUrl}}</a>
+                                                    </div>
+                                                    <div style="font-size: smaller">{{'(If you do not have Zoom installed you will be prompted to install Zoom)' | translate}}
+                                                    </div>
+                                                    <div>
+                                                        {{'3. Wait for the video call to start' | translate}}
+                                                    </div>
+                                                </div>
+                                                <div *ngIf="appt && appt.service && appt.service.virtualCallingModes && appt.service.virtualCallingModes[0] 
+                                                                                                        && appt.service.virtualCallingModes[0].callingMode && appt.service.virtualCallingModes[0].callingMode === 'GoogleMeet'"
+                                                    class="serviceCstmText lineHeight">
+                                                    {{'Follow these instructions to join the video call:' | translate}}
+                                                    <div>{{'1: You will recieve an alert that the Google Meet call has started.' | translate}}</div>
+                                                    <div>{{'2: When it is your turn, click on the following link -' | translate}}
+                                                        <a class="meetingLinkJOin" *ngIf="meetingDetails && meetingDetails.joiningUrl"
+                                                            href="{{meetingDetails.joiningUrl}}"
+                                                            target="blank">{{meetingDetails.joiningUrl}}</a>
+                                                    </div>
+                                                    <div style="font-size: smaller">{{'(If you are not already signed into google you must sign in)' | translate}}
+                                                    </div>
+                                                    <div>
+                                                        {{'3. Wait for the video call to start' | translate}}
+                                                    </div>
+                                                </div>
+                                                <div class="serviceCstmText lineHeight"
+                                                    *ngIf="appt && (appt.service && appt.service.virtualCallingModes && appt.service.virtualCallingModes[0] 
+                                                                                                            && appt.service.virtualCallingModes[0].callingMode && appt.service.virtualCallingModes[0].callingMode === 'WhatsApp') && appt.service && appt.service.virtualServiceType === 'videoService'">
+                                                    {{'* When it is time for your call, you will receive a WhatsApp video call on' | translate}}
+                                                    +91{{appt.service.virtualCallingModes[0].value}}.<br>
+                                                    {{'Please remember to keep your phone'+'s internet connection on.' | translate}}
+                                                </div>
+                                                <div class="serviceCstmText lineHeight"
+                                                    *ngIf="appt && (appt.service && appt.service.virtualCallingModes && appt.service.virtualCallingModes[0] 
+                                                                                                            && appt.service.virtualCallingModes[0].callingMode && appt.service.virtualCallingModes[0].callingMode === 'WhatsApp')  && appt.service && appt.service.virtualServiceType === 'audioService'">
+                                                    {{'* When it is time for your call, you will receive a WhatsApp audio call on' | translate}}
+                                                    +91{{appt.service.virtualCallingModes[0].value}}.<br>
+                                                    {{'Please remember to keep your phone'+ 's internet connection on.' | translate}}
+                                                </div>
+                                                <div class="serviceCstmText lineHeight"
+                                                    *ngIf="appt && (appt.service && appt.service.virtualCallingModes && appt.service.virtualCallingModes[0] 
+                                                                                                        && appt.service.virtualCallingModes[0].callingMode && appt.service.virtualCallingModes[0].callingMode === 'Phone')">
+                                                    {{' * When it is time for your call, you will receive a call on ' | translate}}+91{{appt.service.virtualCallingModes[0].value}}
+                                                </div>
+                                                <div class="serviceCstmText lineHeight"
+                                                    *ngIf="appt && (appt.service && appt.service.virtualCallingModes && appt.service.virtualCallingModes[0] 
+                                                                                                        && appt.service.virtualCallingModes[0].callingMode && appt.service.virtualCallingModes[0].callingMode === 'VideoCall')">
+                                                    {{'Follow these instructions to join the video call:' | translate}}
+                                                    <div>{{'1: You will receive an alert that the Jaldee Video Started.' | translate}}
+                                                    </div>
+                                                    <div>{{'2: When it is your turn, click on the following link -' | translate}}
+                                                        <a class="meetingLinkJOin"*ngIf="meetingDetails && meetingDetails.joiningUrl"
+                                                            href="{{meetingDetails.joiningUrl}}"
+                                                            target="blank">{{meetingDetails.joiningUrl}}</a>
+                                                    </div>
+                                                    <div>
+                                                        {{'3. Wait for the video call to start' | translate}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-12 col-lg-12  col-xl-12 col-12 mgn-up-10">
+                                            <div class="mt-2 serviceCstm justifyContent-1"
+                                                *ngIf="appt && appt.amountPaid">
+                                                <div>
+                                                    <div class="serviceChargetxt">{{'Amount Paid' |
+                                                        translate}}</div>
+                                                    <div class="serviceChargetxt rupee-font"
+                                                        *ngIf="appt && appt.amountPaid">{{appt.amountPaid
+                                                        |currency:'&#8377;'}}</div>
+                                                </div>
+                                            </div>
+                                            <div class="mgn-up-20">
+                                                <div class="serviceCstm customWidth"
+                                                    *ngIf="appt && appt.apptStatus!=='Completed' && appt.apptStatus !== 'Cancelled' && type === 'today' && appt.service && appt.service.serviceType && appt.service.serviceType === 'virtualService'
+                                                && (appt.service && appt.service.virtualCallingModes && appt.service.virtualCallingModes[0] && appt.service.virtualCallingModes[0].callingMode && (appt.service.virtualCallingModes[0].callingMode === 'GoogleMeet' || appt.service.virtualCallingModes[0].callingMode === 'Zoom'))">
+                                                    <button class="meetingBtn">
+                                                        <div>
+                                                            <i class="cstmServiceIcon" *ngIf="appt && appt.service && appt.service.serviceType &&appt.service.serviceType === 'virtualService'" [class]=iconClass></i>
+                                                        </div>
+                                                        <div class="service-icon" *ngIf="appt && appt.servicegallery && appt.servicegallery.length > 0 && appt.serviceType === 'physicalService'">
+                                                            <img class="cstmServiceIcon" [src]="appt.servicegallery[0].thumbUrl" alt=" Service Image">
+                                                        </div>
+                                                        <div class="service-icon"
+                                                            *ngIf="!appt.servicegallery && appt.service.serviceType && appt.service.serviceType !== 'virtualService' && appt.service.serviceType === 'physicalService' && domain !== 'religiousPriests'">
+                                                            <img class="cstmServiceIcon" src="./assets/images/meeting_Artboard.png" alt="Physical Service Image">
+                                                        </div>
+                                                        <div class="service-icon"
+                                                            *ngIf="!appt.servicegallery && appt.service.serviceType && appt.service.serviceType !== 'virtualService' && appt.service.serviceType === 'physicalService' && domain === 'religiousPriests'">
+                                                            <img class="cstmServiceIcon" src="./assets/images/hindu-temple-clipart.jpg" alt="Physical Service Image">
+                                                        </div>
+                                                        <div class="serviceName">
+                                                            <a class="joinMeeting joinMeetingCstm" *ngIf="meetingDetails && meetingDetails.joiningUrl"
+                                                                href="{{meetingDetails.joiningUrl}}"
+                                                                target="blank">{{'Join Video Consultation' | translate}}</a>
+                                                        </div>
+                                                    </button>
+                                                </div>
+                                                <div class="serviceCstm customWidth"
+                                                    *ngIf="appt && appt.apptStatus!=='Completed' && appt.apptStatus !== 'Cancelled' && type === 'today' && appt.service.serviceType === 'virtualService' 
+                                                && (appt.service.virtualCallingModes[0].callingMode == 'VideoCall')">
+                                                    <button class="meetingBtn">
+                                                        <div class="serviceName">
+                                                            <a class="joinMeeting joinMeetingCstm"
+                                                                (click)="joinMeetitng('appt')"
+                                                                target="blank">{{'Join Video Consultation' |
+                                                                translate}}</a>
+                                                        </div>
+                                                    </button>
+                                                </div>
+                                                <div class="serviceCstm customWidth">
+                                                    <button class="attchmentBtn"
+                                                        (click)="sendAttachmentBooking(appt,'appt')">
+                                                            <i class="material-icons">attach_file</i>
+                                                        <div>{{'Send Attachment' | translate}}</div>
+                                                    </button>
+                                                </div>
+                                                <div class= "serviceCstm customWidth">
+                                                    <button mat-menu-item class="attchmentBtn" *ngIf="showviewAttachment || (appt && appt.hasAttachment)"
+                                                        (click)="viewAttachment(appt,'appt')">
+                                                         <i class="material-icons">attach_file</i><span class="menuInfo">View Attachments</span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-12 col-lg-12  col-xl-12 col-12 mgn-up-20">
+                                            <div class="noteCard">
+                                                <div class="businessName" *ngIf="cust_notes_cap">{{cust_notes_cap |
+                                                    capitalizeFirst | translate}}</div>
+                                                <div class="timeslotOrder timeSlotOrderSmall" *ngIf="appt && appt.consumerNote &&  appt.consumerNote !== ''">
+                                                    {{appt.consumerNote}}
+                                                </div>
+                                                <div class="timeslotOrder notFound" *ngIf="appt && (appt.consumerNote == '' || !appt.consumerNote)">
+                                                    {{no_cus_notes_cap}}
+                                                </div>
+                                            </div>
+                                            <div class="mgn-up-10 noteCard">
+                                                <div class="businessName">{{'Instructions' | translate}}</div>
+                                                <div class="timeslotOrder notFound"
+                                                    *ngIf="appt && appt.service && (!appt.service.postInfoText || appt.service.postInfoText==='')">
+                                                    {{'No Instructions Found' | translate}}
+                                                </div>
+                                                <div class="timeslotOrder timeSlotOrderSmall" *ngIf="appt && appt.service && appt.service.postInfoText !==''">
+                                                    {{appt.service.postInfoText}}
+                                                </div>
+                                            </div>
+
+                                            <div class="mgn-up-10 noteCard" *ngIf="appt && appt.apptStatus =='Cancelled'">
+                                                <div class="businessName"   >{{'Cancellation Reason' | translate}}</div>
+                                                <div class="timeslotOrder timeSlotOrderSmall">
+                                                {{getCancelledReasonDisplayName(appt.cancelReason)}}
+                                                </div>
+                                            </div>
+                                            <div class="mgn-up-10 noteCard" *ngIf="appt && appt.cancelReasonMessage">
+                                                <div class="businessName"  >{{'Cancellation Message' | translate}}</div>
+                                                <div class="timeslotOrder timeSlotOrderSmall">
+                                                {{appt.cancelReasonMessage}}
+                                                </div>
+                                            </div>
+
+
+
+
+
+                                        </div>
+                                        <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 mgn-up-20 btnFlex">
+                                            <div>
+                                                <button class="cursor-pointer" type="submit" class="reschedulebtn" *ngIf="!history && (appt && appt.apptStatus!=='Completed' && appt.apptStatus !== 'Cancelled')" 
+                                                (click)="rescheduleAction(appt)">
+                                                    <div class="rescheduleCstm">
+                                                        <div>
+                                                            <img class="actionImg" src="./assets/images/myjaldee/reschedule.png" />
+                                                        </div>
+                                                        <div>{{'Reschedule' | translate}}</div>
+                                                    </div>
+                                                </button>
+                                            </div>
+                                            <div>                                               
+                                                <button class="cursor-pointer" type="submit" class="cancelbtn" (click)="cancelAction(appt)" *ngIf="!history && (appt && appt.apptStatus!=='Completed' && appt.apptStatus !== 'Cancelled')">
+                                                    <div class="cancelCstm">
+                                                        <div>
+                                                            <img class="actionImg" src="./assets/images/myjaldee/cancel.png" />
+                                                        </div>
+                                                        <div>{{'Cancel Booking' | translate}}</div>
+                                                    </div>
+                                                </button>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                                <div class="card" *ngIf="api_loading && questionnaires.length > 0">
+                                    <div class="pad-10 pad-bt-0">
+                                        <h3 class="no-margin">
+                                            {{questionnaire_heading}}
+                                        </h3>
+                                    </div>
+                                    <ng-container *ngIf="questionnaires.length > 1">
+                                        <mat-accordion class="qnr-accord no-padding" *ngFor="let qnr of questionnaires">
+                                            <mat-expansion-panel>
+                                                <mat-expansion-panel-header>
+                                                    <mat-panel-title>
+                                                        {{(qnr.questionnaireName) ? qnr.questionnaireName :
+                                                        qnr.questionnaireId}}
+                                                        <div class="qnrstatus">
+                                                            <span class="greenc"
+                                                                *ngIf="getQnrStatus(qnr) === 'submitted'">{{'Submitted'
+                                                                | translate}}</span>
+                                                            <span class="red"
+                                                                *ngIf="getQnrStatus(qnr) !== 'submitted'">{{'Released' |
+                                                                translate}}</span>
+                                                        </div>
+                                                    </mat-panel-title>
+                                                </mat-expansion-panel-header>
+                                                <div class="c-details">
+                                                    <app-questionnaire [questionnaireList]="qnr" [source]="'consAppt'"
+                                                        [uuid]="appt.uid" [accountId]="appt.providerAccount.id"
+                                                        [type]="'details'" [waitlistStatus]="appt.apptStatus"
+                                                        (returnAnswers)="getQuestionAnswers($event)">
+                                                    </app-questionnaire>
+                                                </div>
+                                            </mat-expansion-panel>
+                                        </mat-accordion>
+                                    </ng-container>
+                                    <ng-container *ngIf="questionnaires.length === 1">
+                                        <div class="c-details" *ngFor="let qnr of questionnaires">
+                                            <app-questionnaire [questionnaireList]="qnr" [source]="'consAppt'"
+                                                [uuid]="appt.uid" [accountId]="appt.providerAccount.id"
+                                                [type]="'details'" [waitlistStatus]="appt.apptStatus"
+                                                (returnAnswers)="getQuestionAnswers($event)" >
+                                            </app-questionnaire>
+                                        </div>
+                                    </ng-container>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

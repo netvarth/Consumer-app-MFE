@@ -1,0 +1,271 @@
+.account-info {
+    gap: 30px !important;
+    flex-wrap: wrap;
+}
+
+.account-font {
+    color: #777E97;
+    font-size: 20.321px;
+    font-weight: 500;
+}
+
+.account-details,
+.account-details-show {
+    border: 0.872px solid #D0D9E7;
+    padding: 10px;
+}
+
+.delivery-head {
+    background: #436B50 !important;
+    color: #FFFFFF;
+    padding: 16px 20px !important;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.coupon-section {
+    background: #F8FAFC !important;
+    border-radius: 6px !important;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #B9D2C1;
+    box-shadow: 0px 0px 0px 3.945px #DEE9FC;
+}
+
+.date {
+    color: #4B77E8;
+    font-size: 18.809px;
+    font-weight: 700;
+}
+
+.address-details {
+    border: 0.872px solid #D0D9E7;
+    padding: 15px;
+    background: #F5F8F6;
+}
+
+::ng-deep .checkout .p-inputtext {
+    padding: 10px !important;
+}
+
+.btn-viewall {
+    border: 2.643px solid rgba(255, 187, 17, 0.13);
+    background: #436B50;
+    font-size: 14px;
+}
+
+.total {
+    color: #283B53;
+    font-size: 17.978px;
+    font-weight: 600;
+}
+
+.tax-msg {
+    color: #283B53;
+    font-size: 12.805px;
+    font-weight: 400;
+}
+
+.discount {
+    color: #008A00;
+    font-size: 15.863px;
+    font-weight: 600;
+}
+
+.btn-confirm {
+    border: 2.643px solid rgba(255, 187, 17, 0.13);
+    background: #436B50;
+    font-size: 14px;
+    width: 100%;
+    justify-content: center;
+}
+
+.free {
+    color: #008A00;
+    font-size: 15.863px;
+    margin-left: 5px;
+}
+
+.delivery-charge {
+    text-decoration: line-through;
+}
+
+.netPrice {
+    color: #008A00;
+    font-size: 15.863px;
+    font-weight: 600;
+}
+
+.price {
+    text-decoration: line-through;
+}
+
+.price-section {
+    gap: 30px;
+}
+
+::ng-deep .items .p-datatable .p-datatable-tbody>tr>td {
+    vertical-align: middle !important;
+}
+
+::ng-deep .p-inputnumber-buttons-horizontal .p-inputnumber-input {
+    width: 50px;
+}
+
+::ng-deep .p-button.p-button-secondary {
+    background-color: #fff !important;
+    color: #283B53;
+    border: 1px solid rgba(0, 0, 0, 0.38);
+}
+
+::ng-deep .p-inputnumber-buttons-horizontal .p-button.p-inputnumber-button-down {
+    border-right: none !important;
+}
+
+::ng-deep .p-inputnumber-buttons-horizontal .p-button.p-inputnumber-button-up {
+    border-left: none !important;
+}
+
+::ng-deep .p-button.p-button-secondary:enabled:hover {
+    color: #283B53;
+    border: 1px solid rgba(0, 0, 0, 0.38) !important;
+}
+
+.inputnumber {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+ng-deep .items .p-datatable .p-datatable-thead>tr>th {
+    text-align: center;
+}
+
+::ng-deep .items .p-datatable .p-datatable-tbody>tr>td {
+    vertical-align: middle !important;
+}
+
+
+
+::ng-deep .p-timeline.p-timeline-horizontal .p-timeline-event-content {
+    color: #767676 !important;
+}
+
+.sts-msg.error {
+    color: #f24949;
+    font-weight: 500;
+    font-size: .625rem;
+    padding: 5px;
+    background: transparent;
+    text-align: left;
+}
+
+.red {
+    color: red !important;
+}
+
+.customCard {
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .05) !important;
+    border-radius: 5px;
+    background: #fff;
+    background-clip: padding-box;
+    border: none !important;
+    width: 100%;
+}
+
+.headerBorder {
+    border-bottom: 1.21389px solid #DADCE0 !important;
+    display: flex;
+    gap: 5px;
+    flex-direction: row !important;
+    padding: 15px !important;
+}
+
+@media (max-width:768px) {
+    .time-line-card {
+        display: none !important;
+    }
+}
+
+
+@media (max-width:400px) {
+    .account-details {
+        padding: 5px !important;
+    }
+}
+
+.event-status {
+    color: #436B50 !important;
+    font-weight: 500;
+}
+
+.p-inputtext.ng-dirty.ng-invalid {
+    border: 1px solid rgba(0, 0, 0, 0.38) !important;
+}
+
+
+.item-name {
+    // font-size: 14px;
+    // font-weight: 600;
+    text-overflow: ellipsis;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 1 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden;
+}
+
+.coupon-text {
+    color: #667085 !important;
+}
+
+.btn-switch {
+    border-radius: 4.26px;
+    border: 1px solid #436B50;
+    background: #FFF;
+    color: #436B50;
+    font-size: 13px;
+    cursor: pointer;
+    justify-content: center;
+    padding: 5px;
+}
+
+::ng-deep .items .p-datatable .p-datatable-thead>tr>th {
+    padding: 15px !important;
+    background: #F0F1F2 !important;
+}
+
+::ng-deep .items .p-datatable .p-datatable-tbody>tr>td {
+    vertical-align: middle !important;
+    padding: 10px !important;
+}
+
+::ng-deep .checkout .p-radiobutton .p-radiobutton-box.p-highlight {
+    border: 2px solid #3f51b5 !important;
+    background: #fff;
+}
+
+.attribute-box {
+    border: 1px solid #dddddb;
+    padding: 5px 10px;
+    border-radius: 30px;
+    font-weight: 600 !important;
+    width: fit-content !important;
+    font-size: 12px !important;
+}
+
+.attribute-row {
+    display: flex;
+    flex-wrap: wrap;
+    /* Allows the items to wrap to the next line if they overflow */
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    gap: 3px !important;
+}
+
+.btn-viewDetails {
+    background-color: #dddddb;
+    color: black;
+    padding: 3px 5px;
+}

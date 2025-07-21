@@ -1,0 +1,149 @@
+<div *ngIf="field.type === 'string'">
+  <div>
+    <label>{{ field.title }} <span *ngIf="field.required" class="text-danger">*</span></label>
+  </div>
+  <div *ngIf="field?.itemType == 'textBox'">
+    <div *ngIf="field?.inputType == 'text' || field?.inputType == 'email'">
+      <input [type]="field.inputType" [style]="{'width':'100%'}" pInputText [ngModel]="getFieldValue(field, section)"
+        (ngModelChange)="setFieldValue(field, section, $event)" [placeholder]="field.placeholder || ''"
+        [required]="field.required" [maxlength]="field.maxLength">
+    </div>
+    <div *ngIf="field?.inputType == 'date' || field?.inputType == 'time' || field?.inputType == 'dateTime'">
+      <p-calendar [showIcon]="true" [readonlyInput]="true" [style]="{'width':'100%'}"
+        [ngModel]="getFieldValue(field, section)" (ngModelChange)="setFieldValue(field, section, $event)"
+        [placeholder]="field.placeholder || ''" [required]="field.required" [timeOnly]="field?.inputType == 'time'"
+        [showTime]="field?.inputType == 'time' || field?.inputType == 'dateTime'" dateFormat="dd/mm/yy" />
+    </div>
+    <div *ngIf="field?.inputType == 'phone'">
+      <div>
+        <ngx-intl-tel-input [cssClass]="'custom'" [preferredCountries]="preferredCountries"
+          [enableAutoCountrySelect]="true" [enablePlaceholder]="true" [searchCountryFlag]="true"
+          [searchCountryField]="[SearchCountryField.Iso2, SearchCountryField.Name]" [selectFirstCountry]="false"
+          [phoneValidation]="false" [maxLength]="15" [selectedCountryISO]="selectedCountry"
+          [separateDialCode]="separateDialCode" [numberFormat]="PhoneNumberFormat.National" name="phoneNumber"
+          [(ngModel)]="staticVariables['phoneNumber']" (ngModelChange)="onPhoneNumberChange($event,section,field)">
+        </ngx-intl-tel-input>
+      </div>
+    </div>
+  </div>
+
+  <!-- Teeth Area or Region -->
+  <div *ngIf="field?.itemType == 'teethAreaOrRegion' && field?.inputType == 'text'">
+    <div class="quadrant-container">
+      <div class="quadrant" *ngFor="let quadrant of teethQuadrants">
+        <div class="circle" *ngFor="let item of quadrant.items"
+          [class.selected]="getSelectedValues(field, section).includes(item.value)"
+          (click)="toggleSelection(item.value, field, section, 'multiple')">
+          {{ item.label }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shade Selection -->
+  <div *ngIf="field?.itemType == 'teethShade' && field?.inputType == 'text'">
+    <div>
+      <div class="shade-container" *ngFor="let shadeArray of teethShades">
+        <div *ngFor="let shade of shadeArray" class="shade m-2 p-2 pointer-cursor"
+          [class.selected]="getSelectedValues(field, section).includes(shade.value)"
+          (click)="toggleSelection(shade.value, field, section, 'single')">
+          <div class="text-center">
+            <div>
+              <img [src]="'assets/images/teeth-shades/' + shade.label + '.png'" width="35px">
+            </div>
+            <div class="mt-1 fw-bold">
+              {{ shade.label }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="field?.itemType == 'textArea'">
+    <div *ngIf="field?.inputType == 'text'">
+      <textarea [style]="{'width':'100%'}" pInputTextarea [ngModel]="getFieldValue(field, section)"
+        (ngModelChange)="setFieldValue(field, section, $event)" [placeholder]="field.placeholder || ''"
+        [required]="field.required" [autoResize]="true" [rows]="3"></textarea>
+    </div>
+  </div>
+  <div *ngIf="field?.itemType == 'dropDown'">
+    <div *ngIf="field?.inputType == 'text' || field?.inputType == 'state' || field?.inputType == 'country'">
+      <p-dropdown [options]="getFieldOptions(field)" [optionLabel]="'displayName'" [optionValue]="'value'"
+        [style]="{'width':'100%'}" [ngModel]="getFieldValue(field, section)" [autoDisplayFirst]="false"
+        (ngModelChange)="setFieldValue(field, section, $event)" [placeholder]="field.placeholder || ''"
+        [required]="field.required" [dropdownIcon]="'fa fa-caret-down'" />
+    </div>
+  </div>
+  <div *ngIf="field?.itemType == 'multiSelect'">
+    <div *ngIf="field?.inputType == 'text'">
+      <p-multiSelect [options]="getFieldOptions(field)" [optionLabel]="'displayName'" [optionValue]="'value'"
+        [style]="{'width':'100%'}" [ngModel]="getFieldValue(field, section)"
+        (ngModelChange)="setFieldValue(field, section, $event)" [placeholder]="field.placeholder || ''"
+        [required]="field.required" [dropdownIcon]="'fa fa-caret-down'" />
+    </div>
+  </div>
+  <div *ngIf="field?.itemType == 'radioButton'">
+    <div *ngIf="field?.inputType == 'text' && field?.options?.length>0" class="mt-2">
+      <span *ngFor="let option of field.options" class="me-2">
+        <p-radioButton [name]="formData[section.sectionKey][field.sectionKey]" [value]="option.value"
+          [ngModel]="getFieldValue(field, section)" (ngModelChange)="setFieldValue(field, section, $event)">
+        </p-radioButton>
+        <span class="radio-btn-text">
+          {{option.displayName}}
+        </span>
+      </span>
+    </div>
+  </div>
+  <div *ngIf="field?.description" class="form-hint">
+    <small>{{field.description}}</small>
+  </div>
+</div>
+
+
+
+<div *ngIf="field.type === 'number' || field.type === 'integer'">
+  <div>
+    <label>{{ field.title }} <span *ngIf="field.required" class="text-danger">*</span></label>
+  </div>
+  <div *ngIf="field?.itemType == 'textBox'">
+    <div *ngIf="field?.inputType == 'number' || field?.inputType == 'float'">
+      <input [type]="'number'" [style]="{'width':'100%'}" pInputText [ngModel]="getFieldValue(field, section)"
+        (ngModelChange)="setFieldValue(field, section, $event)" [placeholder]="field.placeholder || ''"
+        [required]="field.required" [min]="field.minimum" [max]="field.maximum">
+    </div>
+  </div>
+  <div *ngIf="field?.itemType == 'dropDown'">
+    <div *ngIf="field?.inputType == 'number'">
+      <p-dropdown [options]="getFieldOptions(field)" [optionLabel]="'displayName'" [optionValue]="'value'"
+        [style]="{'width':'100%'}" [ngModel]="getFieldValue(field, section)"
+        (ngModelChange)="setFieldValue(field, section, $event)" [placeholder]="field.placeholder || ''"
+        [required]="field.required" [dropdownIcon]="'fa fa-caret-down'" />
+    </div>
+  </div>
+  <div *ngIf="field?.itemType == 'radioButton'">
+    <div *ngIf="field?.inputType == 'number' && field?.options?.length>0" class="mt-2">
+      <span *ngFor="let option of field.options" class="me-2">
+        <p-radioButton [name]="formData[section.sectionKey][field.sectionKey]" [value]="option.value"
+          [ngModel]="getFieldValue(field, section)" (ngModelChange)="setFieldValue(field, section, $event)">
+        </p-radioButton>
+        <span class="radio-btn-text">
+          {{option.displayName}}
+        </span>
+      </span>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="field.type == 'boolean'" class="my-2">
+  <!-- <div>
+        <label>{{ field.title }} <span class="text-danger" *ngIf="field.required">*</span></label>
+    </div> -->
+  <div *ngIf="field?.itemType == 'toggle'" class="mt-2">
+    <p-checkbox [ngModel]="getFieldValue(field, section)" (ngModelChange)="setFieldValue(field, section, $event)"
+      binary="true"></p-checkbox>
+    <span class="radio-btn-text">
+      {{field?.description}}
+    </span>
+  </div>
+</div>

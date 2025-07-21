@@ -1,0 +1,71 @@
+.p-button-primary
+{
+    background-color: #33009C !important;
+    border-color: #33009C !important;
+}
+
+.card-stl{
+    background: rgb(248, 247, 247);
+}
+
+.globalError
+{
+  color: #fff !important;
+  font-weight: bold !important;
+  background-color: rgb(155, 0, 0) !important;
+  text-align: center !important;
+}
+
+
+.shade-container {
+  display: flex;
+  // flex-wrap: wrap;
+  width: 100%;
+  overflow: auto;
+}
+
+.quadrant-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  width: 100%;
+  overflow: auto;
+  white-space: nowrap;
+  margin-top: 10px;
+}
+
+.quadrant {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  // flex-wrap: wrap;
+  border: 1px solid black;
+}
+
+.circle {
+  width: 30px;
+  height: 30px;
+  border: 2px solid black;
+  border-radius: 50%;
+  margin: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+
+  
+  &.shade {
+    width: 45px;
+    height: 45px;
+  }
+}
+
+.circle.selected {
+  background-color: #33009C;
+  color: #fff;
+}
+
+.shade.selected {
+  border: 2px solid #33009C;
+  border-radius: 5px !important;
+}

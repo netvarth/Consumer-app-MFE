@@ -1,0 +1,516 @@
+.headerBorder{
+    border-bottom: 1.21389px solid #DADCE0 !important;
+    display: flex;
+    gap: 5px;
+    flex-direction: row !important;
+    padding: 15px !important;
+}
+.clrChangeHeader{
+    color: #464849 !important;
+    cursor: pointer;
+}
+.accountEditText{
+   align-items: center;
+}
+.myAcText{
+    color: rgba(0, 0, 0, 0.87) !important;
+    font-size: 18px;
+    font-weight: bold;
+}
+.customCard{
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,.05)!important;
+    border-radius: 5px;
+    background: #fff;
+    background-clip: padding-box;
+    border: none!important;
+    width: 100%;
+}
+.mainFlex{
+    display: flex;
+    margin-top: 15px;
+    gap: 30px;
+    width: 100%;
+}
+.tabText{
+    font-weight: 500;
+    font-size: 14px;
+    color: #5F6368;
+    margin-top: 15px;
+    cursor: pointer;
+    font-family: 'Open Sans';
+    font-style: normal;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+.tabText:hover{
+    color:#0D2348 !important;
+    font-weight: bold;
+}
+.fullWidth{
+    width: 100%;
+}
+.fullWidthLinks{
+    width: 25%;
+}
+.userImg{
+    border: 1px solid #AAACAF;
+    border-radius: 50%;
+    padding: 10px;
+    height: 85px;
+    width: 85px;
+}
+.newImgUpload {
+    box-shadow: 0.417685px 2.50611px 8.77138px 1.25305px rgb(30 64 121 / 15%) !important;
+    border-radius: 3.75916px !important;
+    border: 0px solid !important;
+    padding: 6px 12px;
+    background:#0D2348 !important;
+  }
+  .flexClassImg{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+  }
+  .deleteBtn{
+    box-shadow: 0.417685px 2.50611px 8.77138px 1.25305px rgb(30 64 121 / 15%) !important;
+    border-radius: 3.75916px !important;
+    padding: 6px 12px;
+    background: #FFFFFF;
+    border: 1.03704px solid #AAACAF !important;
+    color: #AAACAF;
+  }
+  .btntxt{
+    color: #fff;
+    font-weight: 500 !important;
+    font-size: 15px;
+    font-family: 'Open Sans';
+  }
+  .btntxtClr{
+    color: #AAACAF;
+    font-weight: 500 !important;
+    font-size: 15px;
+    font-family: 'Open Sans';
+  }
+  .forMFieldInput{
+    border: none !important;
+    color: #403B48 !important;
+  }
+  .matFormField{
+    width: 100% !important;
+  }
+  .labeltag{
+    font-size: 15px;
+    color: rgba(58, 53, 65, 0.68);
+  }
+  // ::ng-deep .mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label {
+  //   transform: translateY(-0.3em) scale(0.75) !important;
+  //   top: 25px !important;
+  // }
+  ::ng-deep .mat-form-field-appearance-outline .mat-form-field-infix {
+    padding: 0.4em 0 1em 0 !important;
+  }
+  .formFieldFlex{
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+  }
+  .widthCls{
+    width: 100%;
+  }
+  ::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline-thick .mat-form-field-outline-start{
+    border-width: 1px !important;
+  }
+  ::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline-thick .mat-form-field-outline-gap{
+    border-width: 1px  !important;
+  }
+  ::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline-thick .mat-form-field-outline-end{
+    border-width: 1px !important;
+  }
+  /* ::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline{
+    color: blue !important;
+  } */
+  ::ng-deep .mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick{
+    color: rgba(58, 53, 65, 0.68) !important;
+  }
+  .is-invalid {
+    border: 2px solid #ff6a6a !important;
+  }
+  .dateIcon{
+    height: 30px;
+    background: #AAACAF;
+    object-fit: cover;
+  }
+  ::ng-deep .mat-select{
+    border: none !important;
+  }
+  ::ng-deep .mat-form-field-infix {
+    display: block;
+    position: relative;
+    flex: auto;
+    min-width: 0;
+    width: 180px;
+    height: 61px !important;
+}
+::ng-deep .mat-form-field .mat-form-field-wrapper .mat-form-field-flex .mat-form-field-infix .mat-select{
+    padding: 5px 0px 0px 5px !important;
+}
+.whatsappFlex{
+    display: flex;
+    align-items: center;
+}
+.tempmatFormField{
+    width: 15%;
+}
+.whatsappFlex{
+    display: flex;
+    gap: 2px;
+}
+.telegramFlex{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.telegtamNoText{
+    color: #403B48;
+    font-size: 15px;
+}
+.telegramCls{
+    color: #29b6f6;
+    font-size: 25px;
+}
+    .mailSend{
+        color: #1B1B1B !important;
+    }
+    .mailTo{
+        color: #ff6a6a !important;
+    }
+    .supprtmail{
+        color: #ff6a6a !important;
+    }
+    .fontSize{
+        font-size: 14px;
+    }
+    .activityBtn{
+    box-shadow: 0.417685px 2.50611px 8.77138px 1.25305px rgb(30 64 121 / 15%) !important;
+    border-radius: 3.75916px !important;
+    border: none !important;
+    background:#0D2348 !important;
+    padding: 11px;
+    color: #fff;
+    letter-spacing: 2px;
+    width: 8rem;
+    }
+    .matFormFieldPhNo{
+        width:41% !important;
+    }
+    .tempmatFormFieldPhNoDial{
+        width: 7.5% !important;
+    }
+    ::ng-deep .mat-form-field .mat-form-field-wrapper .mat-form-field-flex .mat-form-field-infix .mat-input-element:disabled{
+        background: #fff !important;
+    }
+    ::ng-deep .mat-form-field-appearance-outline .mat-form-field-wrapper{
+      margin: 0px !important;
+    }
+    .tabTextCstmClr{
+      color:#0D2348 !important;
+      font-weight: bold;
+    }
+    .formfielderror{
+      margin-top: -10px;
+    margin-bottom: 10px;
+    color: #ff6a6a ;
+    }
+    ::ng-deep .mat-form-field-appearance-outline:not(.mat-form-field-disabled) .mat-form-field-flex:hover .mat-form-field-outline {
+      /* opacity: 0;
+      transition: opacity .6s cubic-bezier(.25,.8,.25,1); */
+      color: rgba(0, 0, 0, 0.12) !important;
+  }
+  .labeltagCstm{
+    font-size: 15px;
+    color: rgba(58, 53, 65, 0.68);
+    color: #ff6a6a ;
+  }
+  .webErrorClass{
+    display: flex;
+    justify-content: space-between;
+  }
+  .formfielderrorTelegram{
+    display: none;
+  }
+  .formfielderrorWhatsapp{
+    display: none;
+  }
+  .cancelBtn{
+    box-shadow: 0.417685px 2.50611px 8.77138px 1.25305px rgb(30 64 121 / 15%) !important;
+    border: none !important;
+    background: #E5E8E8;
+    border-radius: 3.64167px;
+    padding: 11px;
+    color: #ffffff !important;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .matDialog{
+    box-shadow: none !important;
+  }
+  .headerText{
+    font-size: 15px;
+    font-weight: bold;
+    color: #2C2A2A;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+  }
+@media (max-width: 768px){
+    .formFieldFlex{
+        flex-wrap: wrap;
+    }
+    .fullWidth{
+        width: 100%;
+    }
+    .mainFlex{
+        flex-wrap: wrap;
+    }
+    .fullWidthLinks{
+        width: 100%;
+    }
+    .matFormFieldPhNo{
+        width:100% !important;
+    }
+    .tempmatFormFieldPhNoDial{
+        width: 14.5% !important;
+    }
+    ::ng-deep .mat-form-field-appearance-outline .mat-form-field-wrapper{
+      margin: 0.25em 0 !important;
+    }
+    .webErrorClass{
+      display: none;
+    }
+    .formfielderrorTelegram{
+      display: block;
+    }
+    .formfielderrorWhatsapp{
+      display: block;
+    }
+    .flexClassImg{
+      justify-content: center !important;
+    }
+    .matDialog{
+      justify-content: center !important;
+    }
+    .activityBtn{
+      // width: 10rem !important;
+      padding: 10px !important;
+      letter-spacing: 5px;
+      font-size: 18px;
+    }
+}
+.hoverCross:hover{
+  color: #ffffff;
+}
+.modalCloseTemp{
+  border: none;
+    background: #FFF;
+    outline: none;
+}
+.modalCloseTemp:hover{
+  filter: drop-shadow(0px 1.58214px 5.31765px rgba(0, 0, 0, 0.44));
+  border-radius: 5px;
+  background:#0D2348 !important;
+  color: #ffffff !important;
+}
+::ng-deep .mat-select-value{
+  max-width: auto !important;
+}
+::ng-deep .mat-datepicker-content{
+  transform-origin: left top;
+    box-shadow: 0 0 10px rgb(0 0 0 / 5%) !important;
+    background: #fff !important;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+.amountDueBtn{
+  background: #F06D63;
+  border: 1.43669px solid #F06D63;
+  border-radius: 4.75758px;
+  padding: 5px;
+  outline: none;
+  color: #ffffff;
+  font-family: 'Roboto';
+  font-style: normal;
+  width: 50px !important;
+}
+.serviceChargeTxt{
+  color: #F06D63;
+  font-size: 12px;
+  font-weight: 400;
+}
+.amountPaid{
+  color: #F06D63;
+  font-size: 12px;
+  font-weight: 400;
+}
+.title {
+  font-size: 17px !important;
+  font-weight: bold !important;
+}
+
+.fa-times {
+  font-size: 15px !important;
+}
+
+
+.medical-history-title {
+  max-width: 80% !important;
+  word-wrap: break-word!important;
+}
+
+@media (max-width:400px) {
+  .medical-history-title {
+    max-width: 70% !important;
+  }
+}
+
+// Customer Notes Styles
+
+.notes-title {
+  border-radius: 10px 10px 0px 0px !important;
+  color: #2f323b !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  padding: 5px !important;
+}
+
+.notes-description {
+  border-radius: 0px 0px 10px 10px !important;
+  color: #2f323b !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  padding: 5px !important;
+}
+
+
+// Upcoming Booking Styles
+
+.fs-15px {
+  font-size: 15px !important;
+}
+
+.actions-btn {
+  font-size: 15px !important;
+  font-weight: bold !important;
+  color: #33009C !important;
+}
+
+.service-name {
+  color: #5F6D7E !important;
+}
+
+.upcoming-bookings-card {
+  border-radius: 5px!important;
+  border: 1px solid #EAEBF0!important;
+  background: #F7F7F8!important;
+}
+
+// Booking Medical History
+
+.booking-date {
+  border: 0.619px solid rgba(99, 97, 102, 0.37) !important;
+  background: #F1F5F9 !important;
+  text-align: center !important;
+  font-weight: bold !important;
+  font-size: 14px !important;
+  padding: 10px !important;
+  border-radius: 5px !important;
+}
+
+.heading {
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+}
+
+.actions-btn {
+  font-size: 16px !important;
+  font-weight: bold !important;
+  color: #33009C !important;
+}
+
+.medical-history {
+  border: 1.23px solid #E0E4EC !important;
+  background: #EDF2F6 !important;
+  padding: 15px !important;
+}
+
+.text-grey {
+  color: #707F80 !important;
+  font-size: 18px !important;
+  font-weight: 600 !important;
+}
+
+.service-name {
+  color: #707F80 !important;
+  font-size: 16px !important;
+  font-weight: 400 !important;
+}
+
+.view-bookings-btn {
+  border-radius: 3px !important;
+  border: 1.5px solid #FFA000 !important;
+  background: #FFF !important;
+  color: #FFA000 !important;
+  font-weight: 600 !important;
+  padding: 5px 15px;
+}
+
+@media (max-width:500px) {
+  .view-bookings-btn {
+ padding: 3px 3px !important;
+  }
+}
+
+// Family Members
+
+.member-name {
+  border-radius: 10px 10px 0px 0px !important;
+  color: #272D37 !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  padding: 5px !important;
+  padding-bottom: 0 !important;
+}
+
+.member-id {
+  color: #333850 !important;
+  font-size: 14px !important;
+  // font-weight: 600 !important;
+  padding: 5px !important;
+  padding-top: 0 !important;
+}
+
+
+.family-members-actions-btn {
+  border: 1px solid #949596;
+  border-radius: 3px;
+  padding: 5px 10px;
+  color: rgba(38, 38, 38, 0.80);
+  background-color: #fff;
+  font-weight: 600;
+}
+th{
+text-align: center;
+}
+
+

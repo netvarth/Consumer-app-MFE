@@ -1,0 +1,396 @@
+<section class="p-0 cons-payments">
+    <div class="content container mt-1 p-0 see-pages cons-members">
+        <div class="panel panel-default">
+            <div class="panel-body p-0">
+                <div class="customCard title-gb headerBorder">
+                    <div (click)="backToDashboard()"><i class="fa fa-arrow-left clrChangeHeader"></i> </div>
+                    <div *ngIf="type && type==='payments'">
+                        <div class="myAcText">{{'Payments Log' | translate}}</div>
+                        <div class="accountEditText">{{'Your payment transaction history' |
+                            translate}}</div>
+                    </div>
+                    <div *ngIf="type && type==='documents'">
+                        <div>
+                            <div class="myAcText">{{'My Documents' | translate}}</div>
+                            <div class="accountEditText">{{'Your document history' | translate}}</div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="type && type==='payments'" class="customCard">
+                    <div>
+                        <app-common-innerloading-spinner *ngIf="loading"></app-common-innerloading-spinner>
+                        <div class="mainFlex" *ngIf="!loading && !smallDevice">
+                            <div class="fullWidth customCardMr">
+                                <div>
+                                    <div class="no-dta" *ngIf="(payments && payments.length ===0)">
+                                        <div> {{'No payments' | translate}}</div>
+                                    </div>
+                                    <div class="table-outer d-tbl"
+                                        *ngIf="payments && payments.length && payments.length !==0">
+                                        <table class="table">
+                                            <thead class="tHEAD">
+                                                <tr>
+                                                    <th class="tHeadTr">{{'Account Holder' | translate}}</th>
+                                                    <th class="tHeadTr">{{'Invoice' | translate}}</th>
+                                                    <th class="tHeadTr">{{'Date and Time' | translate}}</th>
+                                                    <th class="tHeadTr">{{'Amount' | translate}}</th>
+                                                    <th class="tHeadTr">{{'Payment Mode' | translate}}</th>
+                                                    <th class="tHeadTr">{{'Status' | translate}}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="cursor-pointer" *ngFor="let payment of payments;let i=index"
+                                                    (click)="providerDetail(payment.accountEncodedId,$event)">
+                                                    <td data-title="accountName">
+                                                        <div class="cstmServiceName cursor-pointer"
+                                                            (click)="providerDetail()"
+                                                            *ngIf="payment && payment['accountName']">
+                                                            {{payment['accountName']}}</div>
+                                                        <span *ngIf="payment && payment.acceptPaymentBy">
+                                                            <span
+                                                                class="paymentGatewayCstm">{{payment.acceptPaymentBy}}</span>
+                                                        </span>
+                                                    </td>
+                                                    <td data-title="ServiceName" class="serviceName">
+                                                        <div class="cstmServiceName pointer"
+                                                            *ngIf="payment && payment.invoiceId && payment.invoiceUid">
+                                                            <span (click)="gotoInvoice($event,payment.invoiceUid)"
+                                                                class="pointer">
+                                                                <a class="pointer"
+                                                                    [matTooltip]="'View Invoice'">#{{payment.invoiceId}}</a>
+                                                            </span>
+                                                        </div>
+                                                    </td>
+                                                    <td data-title="paymentOn">
+                                                        <div class="cstmPaymentInfo"
+                                                            *ngIf="payment && payment.paymentOn">
+                                                            {{stringtoDate(payment.paymentOn,'date')}}
+                                                            {{stringtoDate(payment.paymentOn,'time')}}</div>
+                                                    </td>
+                                                    <td data-title="amount">
+                                                        <div (click)="gotoPayment(payment['id'])"
+                                                            class="cstmServiceName cursor-pointer"
+                                                            *ngIf="payment && payment.amount">
+                                                            {{payment.amount |currency:'&#8377; ' }}</div>
+                                                        <div>
+                                                            <span class="txnTypeCust"
+                                                                *ngIf="payment && payment.txnType && payment.txnType==='Appointment'">{{'Appointment'
+                                                                | translate}}</span>
+                                                            <span class="txnTypeCust"
+                                                                *ngIf="(payment && payment.txnType && payment.txnType==='Waitlist') && !payment.showTokenId">{{'Checkin'
+                                                                | translate}}</span>
+                                                            <span class="txnTypeCust"
+                                                                *ngIf="(payment && payment.txnType && payment.txnType==='Waitlist') && payment.showTokenId">{{'Token'
+                                                                | translate}}</span>
+                                                            <span class="txnTypeCust"
+                                                                *ngIf="payment && payment.txnType && payment.txnType==='Donation'">{{'Donation'
+                                                                | translate}}</span>
+                                                            <span class="txnTypeCust"
+                                                                *ngIf="payment && payment.txnType && payment.txnType==='Order'">{{'Order'
+                                                                | translate}}</span>
+                                                        </div>
+                                                    </td>
+                                                    <td data-title="acceptPaymentBy">
+                                                        <div class="cstmPaymentInfo"
+                                                            *ngIf="payment && payment.paymentModeName">
+                                                            {{payment.paymentModeName}}</div>
+                                                        <span *ngIf="payment && payment.paymentGateway">
+                                                            <span class="paymentGatewayCstm">{{'Payment Gateway: ' |
+                                                                translate}}</span>
+                                                            <span
+                                                                class="paymentGatewayCstm">{{payment.paymentGateway}}</span>
+                                                        </span>
+                                                    </td>
+                                                    <td data-title="Action">
+                                                        <div [ngClass]="{successPayTxt: payment.status==='SUCCESS' , failedPayTxt: payment.status==='FAILED',
+                                                        pendingPayTxt: payment.status==='PENDING'}"
+                                                            class="cstmPaymentInfo" *ngIf="payment && payment.status">
+                                                            {{payment.status.charAt(0).toUpperCase() +
+                                                            payment.status.slice(1)}}</div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="!loading && smallDevice" class="mt-4">
+                            <div class="no-dta fullWidth customCardMr" *ngIf="(payments && payments.length ===0)">
+                                <div> {{'No payments' | translate}}</div>
+                            </div>
+                            <div class="fullWidth customCardMr" *ngFor="let payment of payments;let i=index">
+                                <div class="flexBasisSmall" (click)="gotoInvoice($event,payment.invoiceUid)">
+                                    <div *ngIf="payment && payment.invoiceId && payment.invoiceUid"
+                                        class="flexBasisSmall cursor-pointer">
+                                        <div class="labelHeader">{{'Invoice :' | translate}}</div>
+                                        <div class="labelAns" class="cursor-pointer">
+                                            <a class="pointer" [matTooltip]="'View Invoice'">#{{payment.invoiceId}}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flexBasisSmall ">
+                                    <div *ngIf="payment.amount">
+                                        <div class="labelHeader">{{'Amount' | translate}}</div>
+                                        <div class="ammtFlex" (click)="gotoPayment(payment['id'])">
+                                            <div class="labelAns cursor-pointer">
+                                                {{payment.amount |currency:'&#8377; ' }}
+                                            </div>
+                                            <div class="labelAns"
+                                                *ngIf="payment && payment.txnType && payment.txnType==='Appointment'">
+                                                ({{'Appointment' | translate}})
+                                            </div>
+                                            <div class="labelAns"
+                                                *ngIf="(payment && payment.txnType && payment.txnType==='Waitlist') && !payment.showTokenId">
+                                                ({{'Checkin'| translate}})
+                                            </div>
+                                            <div class="labelAns"
+                                                *ngIf="(payment && payment.txnType && payment.txnType==='Waitlist') && payment.showTokenId">
+                                                ({{'Token'|translate}})
+                                            </div>
+                                            <div class="labelAns"
+                                                *ngIf="payment && payment.txnType && payment.txnType==='Donation'">
+                                                ({{'Donation' | translate}})
+                                            </div>
+                                            <div class="labelAns"
+                                                *ngIf="payment && payment.txnType && payment.txnType==='Order'">
+                                                ({{'Order' | translate}})
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="payment && (payment.paymentModeName)">
+                                        <div class="labelHeader">{{'Payment Mode' | translate}}</div>
+                                        <div class="labelAns">
+                                            <div>{{payment.paymentModeName | capitalizeFirst}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div *ngIf="payment && payment.paymentGateway" class="flexBasisSmall cstmGapGateWay">
+                                    <div class="labelHeader">{{'Payment Gateway :' | translate}}</div>
+                                    <div class="labelAns">{{payment.paymentGateway | capitalizeFirst}}</div>
+                                </div>
+                                <div class="flexBasisSmall">
+                                    <div *ngIf="payment && payment.status" class="flexBasisSmall">
+                                        <div class="labelHeader">{{'Status :' | translate}}</div>
+                                        <div class="labelAns"
+                                            [ngClass]="{successPayTxt: payment.status==='SUCCESS' , failedPayTxt: payment.status==='FAILED',
+                                                                                                pendingPayTxt: payment.status==='PENDING'}">
+                                            {{payment.status.charAt(0).toUpperCase() + payment.status.slice(1)}}
+                                        </div>
+                                    </div>
+                                    <div *ngIf="payment && payment.paymentOn" class="flexBasisSmall">
+                                        <div class="labelHeader">{{'Date and Time :' | translate}}</div>
+                                        <div class="labelAns">
+                                            {{stringtoDate(payment.paymentOn,'date')}}
+                                            {{stringtoDate(payment.paymentOn,'time')}}</div>
+                                    </div>
+                                </div>
+                                <div class="flexBasisSmall" style="justify-content: flex-start;">
+                                    <div class="labelHeader">{{'Account :' | translate}}</div>
+                                    <div *ngIf="payment && payment['accountName']" class="labelAns"
+                                        (click)="providerDetail()">
+                                        {{payment['accountName']}}
+                                        <span class="successPayTxt">
+                                            {{payment['acceptPaymentBy']}}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="type && type==='documents'" class="customCard">
+                    <div>
+                        <app-common-innerloading-spinner *ngIf="loading"></app-common-innerloading-spinner>
+                        <div class="mainFlex" *ngIf="!loading && !smallDevice">
+                            <div class="fullWidth customCardMr">
+                                <div>
+                                    <div class="no-dta" *ngIf="(documentList && documentList.length ===0)">
+                                        <div> {{'No documents' | translate}}</div>
+                                    </div>
+                                </div>
+                                <div class="table-outer d-tbl"
+                                    *ngIf="documentList && documentList.length && documentList.length !==0">
+                                    <table class="table">
+                                        <thead class="tHEAD">
+                                            <tr>
+                                                <th class="tHeadTr">{{'File' | translate}}</th>
+                                                <th class="tHeadTr">{{provider_label | capitalizeFirst}}</th>
+                                                <th class="tHeadTr">{{'Date' | translate}}</th>
+                                                <th class="tHeadTr">{{'Action' | translate}}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <ng-container *ngFor="let document of documentList;let i=index">
+                                                <tr class="pointer"
+                                                    *ngFor="let doc of document['prescriptionAttachments'];let j=index">
+                                                    <ng-container>
+                                                        <td data-title="accountName" class="presName"
+                                                            (click)="actionPerformed('Download',doc,$event)">
+                                                            <ng-container>
+                                                                <img style="height: 30px; width:30px;"
+                                                                    [src]="getFileType(doc['fileType'])"
+                                                                    alt="File Image">
+                                                            </ng-container>
+                                                            <ng-container>{{doc.fileName?.length>10 ?
+                                                                doc.fileName.slice(0, 10)+'...' : doc.fileName}}
+                                                            </ng-container>
+                                                        </td>
+                                                        <td data-title="ServiceName"
+                                                            (click)="actionPerformed('Download',doc,$event)">
+                                                            <ng-container *ngIf="doc.ownerName">{{doc.ownerName |
+                                                                capitalizeFirst}}</ng-container>
+                                                            <ng-container
+                                                                *ngIf="!doc.ownerName && document.doctorName">{{document.doctorName
+                                                                |
+                                                                capitalizeFirst}}</ng-container>
+                                                        </td>
+                                                        <td data-title="Date">
+                                                            <ng-container
+                                                                *ngIf="document.lastSharedTime">{{document.lastSharedTime
+                                                                |
+                                                                date:'MMMM d, y'}}</ng-container>
+                                                        </td>
+                                                        <td data-title="Action">
+                                                            <div class="action">
+                                                                <div *ngIf="doc && doc['url']"
+                                                                    (click)="actionPerformed('View',doc,$event)"
+                                                                    class="pointer" matTooltip="View"
+                                                                    matTooltipPosition="left" data-bs-toggle="modal"
+                                                                    data-bs-target="#exampleModal"><i
+                                                                        style="font-size:18px" class="fa fa-eye"></i>
+                                                                </div>
+                                                                <div (click)="actionPerformed('Download',doc,$event)"
+                                                                    class="pointer" matTooltip="Download"
+                                                                    matTooltipPosition="below"><i style="font-size:18px"
+                                                                        class="fa fa-download"></i></div>
+                                                                <div *ngIf="document && document['notes']"
+                                                                    (click)="actionPerformed('Note',document,$event)"
+                                                                    class="pointer" matTooltip="Note"
+                                                                    matTooltipPosition="right" data-bs-toggle="modal"
+                                                                    data-bs-target="#exampleModal"><i
+                                                                        style="font-size:18px"
+                                                                        class="fa fa-sticky-note-o"></i></div>
+                                                            </div>
+                                                            <div class="modal fade" id="exampleModal" tabindex="-1"
+                                                                role="dialog" aria-labelledby="exampleModalLabel"
+                                                                aria-hidden="true">
+                                                                <div class="modal-dialog" role="document">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h5 class="modal-title"
+                                                                                id="exampleModalLabel" *ngIf="action">
+                                                                                {{'Document '| translate}}{{action}}
+                                                                            </h5>
+                                                                            <button type="button" class="close"
+                                                                                data-bs-dismiss="modal" id="btnClose"
+                                                                                aria-label="Close">
+                                                                                <span aria-hidden="true">&times;</span>
+                                                                            </button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <ng-container *ngIf="action=='Note'">
+                                                                                <div *ngIf="selectedDoc" class="">
+                                                                                    {{selectedDoc}}</div>
+                                                                            </ng-container>
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <button type="button" class="backBtn" id="btnBack"
+                                                                                data-bs-dismiss="modal">{{'Close' |
+                                                                                translate}}</button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        </td>
+                                                    </ng-container>
+                                                </tr>
+                                            </ng-container>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="!loading && smallDevice">
+                            <ng-container *ngIf="(documentList && documentList.length ===0)">
+                                <div class="card">
+                                    <div class="no-dta" *ngIf="(documentList && documentList.length ===0)">
+                                        <div> {{'No documents' | translate}}</div>
+                                    </div>
+                                </div>
+                            </ng-container>
+                            <ng-container *ngIf="documentList && documentList.length && documentList.length !==0">
+                                <div *ngFor="let document of documentList;let i=index">
+                                    <div class="card card_1"
+                                        *ngFor="let doc of document['prescriptionAttachments'];let i=index">
+                                        <div class="width_1" (click)="actionPerformed('Download',doc,$event)">
+                                            <div class="d-flex fullwidth"><img style="height: 30px; width:30px;"
+                                                    [src]="getFileType(doc['fileType'])" alt="File Image">
+                                                {{doc.fileName?.length>10 ? doc.fileName.slice(0, 10)+'...' :
+                                                doc.fileName}}</div>
+                                            <div class="fullwidth ms-2 mt-2" *ngIf="doc.ownerName">
+                                                {{doc.ownerName}}
+                                            </div>
+                                            <div class="fullwidth ms-2 mt-2"
+                                                *ngIf="!doc.ownerName && document.doctorName">
+                                                {{document.doctorName}}
+                                            </div>
+                                            <div class="fullwidth ms-2 mt-2" *ngIf="document.lastSharedTime">
+                                                11{{document.lastSharedTime | date:'MMMM d, y'}}
+                                            </div>
+
+                                        </div>
+                                        <div>
+                                            <button class="matMenuBtn" mat-icon-button [matMenuTriggerFor]="menu" id="btnMenu">
+                                                <mat-icon>more_vert</mat-icon>
+                                            </button>
+                                            <mat-menu #menu="matMenu">
+                                                <button id="btnDownload" mat-menu-item (click)="actionPerformed('Download',doc,$event)">
+                                                    <i style="font-size:18px" class="fa fa-download"></i>
+                                                    <span>{{'Download' | translate}}</span>
+                                                </button>
+                                                <button id="btnNotes" *ngIf="document && document['notes']" mat-menu-item
+                                                    (click)="actionPerformed('Note',document,$event)"
+                                                    data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                                    <i style="font-size:18px" class="fa fa-sticky-note-o"></i>
+                                                    <span>{{'Notes' | translate}}</span>
+                                                </button>
+                                            </mat-menu>
+                                        </div>
+                                        <div style="padding-right:0px !important" class="modal fade" id="exampleModal"
+                                            tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                                            aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header modal-header_cust">
+                                                        <h5 class="modal-title modal-title_cust " id="exampleModalLabel"
+                                                            *ngIf="action">{{'Document '| translate}}{{action}}</h5>
+                                                        <button type="button" class="close" data-bs-dismiss="modal" id="btnDismiss"
+                                                            aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <ng-container *ngIf="action=='Note'">
+                                                            <div *ngIf="selectedDoc" class="">{{selectedDoc}}</div>
+                                                        </ng-container>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="backBtn" id="btnModalClose"
+                                                            data-bs-dismiss="modal">{{'Close' | translate}}</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

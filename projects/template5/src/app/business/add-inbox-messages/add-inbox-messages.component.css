@@ -1,0 +1,145 @@
+textarea {
+    height: 150px !important;
+}
+
+.mgright25 {
+    margin-right: 25px;
+}
+
+.card-head-grey {
+    color: #B6B1B1;
+    font-size: 12px;
+}
+
+.coupon-outer {
+    padding-top: 5px !important;
+}
+
+.grey-b {
+    background: black !important;
+    opacity: .3;
+}
+
+.hint {
+    color: #1212b8;
+}
+
+.bt_attach {
+    height: auto;
+    background: transparent;
+    color: #000;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.btn-attach {
+    padding: 15px 8px 9px 10px !important;
+}
+
+@media (max-width: 575px) {
+    form {
+        height: 100vh;
+        width: 100%;
+    }
+}
+
+.modal_close {
+    position: absolute;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: #fff;
+    right: 0;
+    top: 50%;
+    margin-top: -30px;
+    z-index: 121;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.mat-dialog-title {
+    margin: 0;
+    padding: 15px 20px;
+    font-weight: 500;
+    font-size: 1.25rem;
+    font-weight: 600;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#1873f2", endColorstr="#00aef2", GradientType=0);
+    color: #fff;
+    position: relative !important;
+}
+
+.modal_close i:before {
+    font-family: custom-ynw !important;
+    content: "\69";
+    font-size: 1rem !important;
+    width: 20px;
+    height: 20px;
+    font-weight: 600;
+}
+
+.addinboxstyle .mat-dialog-title {
+    font-weight: 500 !important;
+    font-size: 18px !important;
+}
+
+.mat-dialog-title {
+    font: 500 20px/32px Roboto, Helvetica Neue, sans-serif;
+    letter-spacing: normal;
+}
+
+.modal_close:focus-visible {
+    outline: none !important;
+}
+
+@media (max-width: 575px) {
+    form {
+        height: 100% !important;
+    }
+}
+
+.ln-hgt-40 {
+    line-height: 40px;
+}
+
+.mbt {
+    position: relative;
+    cursor: pointer;
+}
+
+.icon-delete:before {
+    content: "\4b";
+}
+
+@media only screen and (max-width: 575px) {
+    .row {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .mat-mdc-dialog-actions {
+        flex-wrap: nowrap !important;
+    }
+}
+
+@media (min-width: 635px) and (max-width:991px) {
+    .mat-dialog-actions {
+        display: block !important;
+    }
+}
+
+.btn-attach {
+    margin-top: -3px;
+    border: none;
+}
+
+.mdc-button {
+    margin-right: 10px !important;
+}
+
+.mgn-up-50 {
+    margin-top: 50px !important;
+}

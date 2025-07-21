@@ -1,0 +1,91 @@
+.mr-area {
+    width: 100%;
+  }
+  #myCarousel .list-inline {
+    white-space:nowrap;
+    overflow-x:auto;
+}
+
+#myCarousel .carousel-indicators {
+    position: static;
+    left: initial;
+    width: initial;
+    margin-left: initial;
+}
+
+#myCarousel .carousel-indicators > li {
+    width: initial;
+    height: initial;
+    text-indent: initial;
+}
+
+#myCarousel .carousel-indicators > li.active img {
+    opacity: 0.7;
+}
+
+img.ordericon.pickup {
+    width: 35px;
+    height: 35px;
+  }
+  img.ordericon.home {
+    width: 30px;
+    height: 30px;
+  }
+  
+.item-details-consumer .btn-lt button, .item-details-consumer .btn-rt button {
+    font-size: 1.25rem;
+    padding-left: 10px;
+    padding-right: 10px;
+    background-color: #fff !important;
+    border-color: #ddd !important;
+    border: 1px solid;
+}
+
+.item-details-consumer .btn-lt, .item-details-consumer .btn-rt {
+    width: 35px;
+    height: 35px;
+}
+
+.item-details-consumer .btn-lt button {
+    border-top-left-radius: 20px 20px;
+    border-bottom-left-radius: 20px 20px;
+    padding-left: 13px !important;
+}
+
+.item-details-consumer .btn-rt button {
+    border-top-right-radius: 20px 20px;
+    border-bottom-right-radius: 20px 20px;
+    padding-right: 13px !important;
+}
+
+.item-details-consumer .count-o {
+    width: 35px !important;
+    height: 32px !important;
+    border: 1px solid #ddd !important;
+    padding-top: 5px !important;
+    text-align: center !important;
+    font-size: .8rem !important;
+}
+
+.item-details-consumer .previews-container > .preview-inner-container > .preview-image {
+    object-fit: scale-down !important;
+}
+#carousel-container img:hover {
+   transform: none !important;
+}
+.pad-25 {
+    padding:25px !important;
+}
+
+.question-header {
+    color: #999 !important;
+    /* font-size: 0.8rem !important; */
+    font-weight: 500 !important;
+    font-size: 0.9rem !important;
+  }
+  
+@media(max-width:575px) {
+    .item-details-consumer .count-o {
+        height: 29px !important;
+    }
+}

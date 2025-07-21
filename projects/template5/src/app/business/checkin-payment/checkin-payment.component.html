@@ -1,0 +1,41 @@
+<h1 class="mat-dialog-title"> {{bill_payment_cap}}
+  <button #queue mat-dialog-close class="modal_close" tabindex="-1">
+    <i class="fa fa-window-close" aria-hidden="true"></i>
+  </button>
+</h1>
+<mat-dialog-content>
+  <div class="full-outer">
+    <div class="btl"><span class="label">{{name_cap}}</span> <span
+        class="label-valu">{{bill_data.customer.userProfile.firstName | capitalizeFirst}}</span></div>
+    <div class="coupon-outer" *ngIf="coupon_status">
+      <div class="form-group">
+        <span *ngIf="coupon_status=='success'" class="success">Coupon Code(s) applied successfully</span>
+        <span *ngIf="coupon_status=='error'" class="error">Coupon Code(s) not valid</span>
+      </div>
+    </div>
+    <div class="coupon-outer">
+      <div class="form-group">
+        <input type="text" placeholder="Enter your Coupon code" [(ngModel)]="selected_coupons" />
+        <span class="cs-btn bt8" #coupon_code
+          (click)="applyCoupon(selected_coupons,bill_data.uuid)">{{apply_cap}}</span>
+      </div>
+    </div>
+    <div class="topay">
+      <span class="label">{{amount_to_pay}}</span>
+      <span class="label-valu rupee-font">
+        {{bill_data.amount_to_pay | currency:'&#8377; '}}
+      </span>
+    </div>
+    <div class="payment-options">
+      <span class="no-data" *ngIf="payModesQueried && !payModesExists">{{no_pay_opt_avail_cap}}</span>
+    </div>
+  </div>
+  <div [innerHTML]="payment_popup" #div [style.display]="'none'"></div>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button type="button" mat-button class="cs-btn bt1 makepayment"
+    [disabled]="!pay_data.amount || pay_data.amount == 0 || payment_options.length == 0 || !pay_data.paymentMode  || gateway_redirection"
+    (click)="makePayment()">{{make_payment_cap}}</button>
+</mat-dialog-actions>
+<app-form-success-display [displayMsg]="true" *ngIf="api_success" successMsg="{{api_success}}">
+</app-form-success-display>

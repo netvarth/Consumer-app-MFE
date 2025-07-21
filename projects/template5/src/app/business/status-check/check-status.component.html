@@ -1,0 +1,443 @@
+<section class="container  container-width no-padding mt-3" [ngClass]="theme">
+  <div class="content status-page loc-list ">
+    <div class="card no-padding">
+      <div class="copy locd" *ngIf="!api_loading">
+        <div class="col-sm-12 col-md-12 col-lg-12 no-padding">
+          <div class="text-center">
+            <img class="businessLogo" *ngIf="businessLogo" src="{{businessLogo}}" width="80" height="80" >
+            <h3 *ngIf="businessName">{{businessName}}</h3>
+            <h4 class="mb-2" *ngIf="businessPlace">{{businessPlace}}<span class="icon-location"></span></h4>
+          </div>
+          <div class="details card no-padding mgn-up-100">
+            <div class="book-head ynw-common-form-nm" *ngIf="type!='wl' && type!='appt' && type!='order'">
+              <div class="col-md-8 col-8 col-sm-8">
+                <mat-form-field>
+                  <input matInput placeholder='Enter Confirmation id' class="form-conspanol" [(ngModel)]="encId"
+                    autocomplete="off">
+                </mat-form-field>
+              </div>
+              <div class="col-md-2 col-2 col-sm-2 no-padding details-search">
+                <span class="cs-btn bt3 status-btn" (click)="gespanetails(encId)">Check your status</span>
+              </div>
+            </div>
+            <div *ngIf="foundDetails && statusInfo">
+              <div class="book-details" *ngIf="type=='wl' && statusInfo.showToken"> Token Details </div>
+              <div class="book-details" *ngIf="type=='wl' && !statusInfo.showToken"> Check-in Details </div>
+              <div class="book-details" *ngIf="type=='appt'"> Appointment Details </div>
+              <div class="book-details order-title" *ngIf="type=='order'"> Order Details </div>
+              <div class="book-details-sub chkntoknappt-details">
+                <div>
+                  <span>
+                    <div class="d-lg-flex justify-content-between gap slot-view">
+                      <div class="col-lg-8 col-md-12"
+                        [ngClass]="{'col-lg-5 ': type == 'order', 'col-lg-8': type != 'order'}">
+                        <div class="card">
+                          <div class="d-lg-flex justify-content-between card-main">
+                            <div class="d-flex" *ngIf="statusInfo.apptStatus && ((statusInfo.service.serviceType == 'virtualService' && statusInfo.apptStatus !== 'arrived') || 
+                            statusInfo.service.serviceType != 'virtualService')">
+                              <h3
+                                [class.cancelled]="statusInfo.apptStatus === 'Cancelled' || statusInfo.apptStatus === 'Rejected'"
+                                class="status-text"
+                                [class.green]="statusInfo.apptStatus !== 'Cancelled' && statusInfo.apptStatus !== 'Rejected'"
+                                class="status-card"><i class="fa fa-circle alert"></i>
+                                {{check_in_statuses[getStatusLabel(statusInfo.apptStatus)]}}</h3>
+                            </div>
+                            <div class="d-flex" *ngIf="statusInfo.waitlistStatus && ((statusInfo.service.serviceType == 'virtualService' && statusInfo.waitlistStatus !== 'arrived') || 
+                            statusInfo.service.serviceType != 'virtualService')">
+                              <h3 [class.cancelled]="statusInfo.waitlistStatus === 'cancelled'"
+                                [class.green]="statusInfo.waitlistStatus !== 'cancelled'" class="status-card"><i
+                                  class="fa fa-circle alert"></i>
+                                {{check_in_statuses[getStatusLabel(statusInfo.waitlistStatus)]}}</h3>
+                            </div>
+                            <div class="d-flex" *ngIf="type == 'order'">
+                              <h3 class="green status-card"><i class="fa fa-circle alert"></i>
+                                {{statusInfo.orderStatus==='Order Received' ? 'Order Placed - Waiting for
+                                confirmation':setOrderStatus(statusInfo.orderStatus)}}
+                              </h3>
+                            </div>
+                            <div *ngIf="type!='order'" class="detail">
+                              <span align="right" class="status-style"> Booking Id</span>
+                              <span width="2%">&nbsp;:&nbsp;</span>
+                              <span *ngIf="type=='wl'" class="status-text"> {{statusInfo.checkinEncId}}</span>
+                              <span *ngIf="type=='appt'" class="status-text"> {{statusInfo.appointmentEncId}}</span>
+                            </div>
+                            <div *ngIf="type=='order'" class="detail">
+                              <span align="right" class="status-style">Order No</span>
+                              <span width="2%">&nbsp;:&nbsp;</span>
+                              <span *ngIf="type=='order'" class="status-text"> {{statusInfo.orderNum}}</span>
+                            </div>
+                          </div>
+                          <hr>
+                          <div>
+                            <span *ngIf="type=='appt'" class="status-style">Appointment For </span>
+                            <span *ngIf="statusInfo.showToken && type=='wl'" class="status-style">Token For </span>
+                            <span *ngIf="!statusInfo.showToken && type=='wl'" class="status-style"> Check-in For </span>
+                            <span *ngIf="type=='order'" class="status-style">Order For </span>
+                            <div class="row-style">
+                              <div class="">
+                                <img class="img-style" [src]="getUserImg(statusInfo)" />
+                              </div>
+                              <div class="">
+                                <div class="forwhom status-details status-text"
+                                  *ngFor="let user of statusInfo.appmtFor">
+                                  <span *ngIf="user.title">{{user.title}} &nbsp;</span>
+                                  <span *ngIf="user.firstName.length>0 || user.lastName.length>0">{{user.firstName |
+                                    capitalizeFirst}} {{user.lastName | capitalizeFirst}}</span>
+                                  <span
+                                    *ngIf="user.firstName.length==0 && user.lastName.length==0">{{user.memberJaldeeId}}</span>
+                                </div>
+                                <div>
+
+                                  <span class="forwhom status-details status-text"
+                                    *ngFor="let user of statusInfo.waitlistingFor">
+                                    {{user.firstName | capitalizeFirst}} {{user.lastName | capitalizeFirst}}
+                                  </span>
+                                </div>
+                                <div class="forwhom status-details status-text">
+                                  <span
+                                    *ngIf="type=='order' && statusInfo.orderFor.title">{{statusInfo.orderFor.title}}</span>
+                                  <span *ngIf="type=='order'">
+                                    {{statusInfo.orderFor.name | capitalizeFirst}}
+                                    <!-- {{statusInfo.orderFor.lastName |
+                                    capitalizeFirst}} -->
+                                  </span>
+                                </div>
+                                <div *ngIf="statusInfo.token">
+                                  <span class="status-details status-styles">Token No </span>
+                                  <span>&nbsp;:&nbsp;</span>
+                                  <span class="status-text">{{statusInfo.token}}</span>
+                                </div>
+                                <div *ngIf="type=='appt' && statusInfo.batchId">
+                                  <span class="status-details">Batch </span>
+                                  <span>&nbsp;:&nbsp;</span>
+                                  <span>{{statusInfo.batchId}}</span>
+                                </div>
+                                <div *ngIf="type=='appt' && statusInfo.phoneNumber && statusInfo.countryCode">
+                                  <span class="status-details status-styles">Phone </span>
+                                  <span>&nbsp;:&nbsp;</span>
+                                  <span class="status-text">{{statusInfo.countryCode}}{{statusInfo.phoneNumber}}</span>
+                                </div>
+                                <span
+                                  *ngIf=" type=='order' && statusInfo.orderFor && statusInfo.orderFor.phone && statusInfo.orderFor.phone.countryCode && statusInfo.orderFor.phone.number">
+                                  <span class="status-details status-styles">Phone </span>
+                                  <span>&nbsp;:&nbsp;</span>
+                                  <span class="status-text">{{statusInfo.orderFor.phone.countryCode}}
+                                    &nbsp;{{statusInfo.orderFor.phone.number}}</span>
+                                </span>
+                                <div
+                                  *ngIf="type=='appt' && statusInfo.virtualService && statusInfo.virtualService.WhatsApp">
+                                  <span class="status-details">WhatsApp </span>
+                                  <span>&nbsp;:&nbsp;</span>
+                                  <span>{{statusInfo.virtualService.WhatsApp}}</span>
+                                </div>
+                                <div *ngIf="type=='wl' && statusInfo.countryCode && statusInfo.waitlistPhoneNumber">
+                                  <span class="status-details status-styles">Phone</span>
+                                  <span>&nbsp;:&nbsp;</span>
+                                  <span
+                                    class="status-text">{{statusInfo.countryCode}}{{statusInfo.waitlistPhoneNumber}}</span>
+                                </div>
+                                <div
+                                  *ngIf="type=='wl' && statusInfo.virtualService && statusInfo.virtualService.WhatsApp">
+                                  <span class="status-details">WhatsApp </span>
+                                  <span>&nbsp;:&nbsp;</span>
+                                  <span>{{statusInfo.virtualService.WhatsApp}}</span>
+                                </div>
+                              </div>
+                            </div>
+                            <hr>
+                            <div *ngIf="type=='appt'">
+                              <span class="status-styles">Appointment Time </span>
+                              <div class="status-text"> {{statusInfo.appmtDate | date: newDateFormat }},
+                                {{getSingleTime(statusInfo.appmtTime)}}</div>
+                            </div>
+                            <div *ngIf="type !== 'order'">
+                              <span class="status-styles">Service</span>
+
+                              <div class="status-text">
+                                <span class="service-icon"
+                                  *ngIf="statusInfo.service && statusInfo.service.serviceType == 'virtualService'">
+                                  <i *ngIf="statusInfo.service.serviceType == 'virtualService' && statusInfo.service.virtualCallingModes[0].callingMode =='GoogleMeet'"
+                                    class="fa meet-icon know-status-i"></i>
+                                  <i *ngIf="statusInfo.service.serviceType == 'virtualService' && statusInfo.service.virtualCallingModes[0].callingMode =='Zoom'"
+                                    class="fa zoom-icon know-status-i"></i>
+                                  <i *ngIf="statusInfo.service.serviceType == 'virtualService' && statusInfo.service.virtualCallingModes[0].callingMode =='VideoCall'"
+                                    class="fa jvideo-icon jvideo-icon-s jvideo-icon-mgm5 know-status-i"></i>
+                                  <i *ngIf="statusInfo.service.serviceType == 'virtualService' && statusInfo.service.virtualCallingModes[0].callingMode =='WhatsApp' && statusInfo.service.virtualServiceType =='audioService'"
+                                    class="fa wtsapaud-icon know-status-i"></i>
+                                  <i *ngIf="statusInfo.service.serviceType == 'virtualService' && statusInfo.service.virtualCallingModes[0].callingMode =='WhatsApp' && statusInfo.service.virtualServiceType =='videoService'"
+                                    class="fa wtsapvid-icon know-status-i"></i>
+                                  <i *ngIf="statusInfo.service.serviceType == 'virtualService' && statusInfo.service.virtualCallingModes[0].callingMode =='Phone'"
+                                    class="fa phon-icon know-status-i"></i>
+                                </span>
+                                {{statusInfo.service?.name}}
+                              </div>
+                              <div *ngIf="type=='wl'">
+                                <span class="status-styles">Time window </span>
+
+                                <div class="status-text"> {{statusInfo.date | date: newDateFormat }},
+                                  {{statusInfo.queue.queueStartTime}} -
+                                  {{statusInfo.queue.queueEndTime}}</div>
+                              </div>
+                              <span *ngIf="type!='order' && statusInfo.amountPaid > 0">
+                                <span class="status-styles">Amount paid</span>
+                                <span>&nbsp;:&nbsp;</span>
+                                <span><span class="rupee-font">{{statusInfo.amountPaid | currency:'&#8377;'}}
+                                  </span> </span>
+                              </span>
+                            </div>
+                            <div *ngIf="statusInfo.homeDeliveryAddress">
+                              <span class="status-styles">Home Delivery Address </span>
+                              <span>&nbsp;:&nbsp;</span>
+                              <span class="status-text">
+                                <span><br>
+                                  {{statusInfo.homeDeliveryAddress.firstName }}
+                                  &nbsp;{{statusInfo.homeDeliveryAddress.lastName}}
+                                </span><br>
+                                <span>
+                                  {{statusInfo.homeDeliveryAddress.address }}
+                                </span><br>
+                                <span>
+                                  {{statusInfo.homeDeliveryAddress.city }} ,
+                                  {{statusInfo.homeDeliveryAddress.postalCode}}
+                                </span><br>
+                                <span>
+                                  {{statusInfo.homeDeliveryAddress.landMark }}
+                                </span><br>
+                                <span>
+                                  {{statusInfo.homeDeliveryAddress.countryCode }}
+                                  {{statusInfo.homeDeliveryAddress.phoneNumber}}
+                                </span>
+                              </span>
+                            </div>
+                            <div *ngIf="type=='order'">
+                              <span class="status-styles" *ngIf="statusInfo.storePickup">Store pickup Time</span>
+                              <span class="status-styles" *ngIf="statusInfo.homeDelivery">Delivery Date & Time</span>
+                              <!-- <span class="status-styles"
+                                *ngIf="!statusInfo.homeDelivery &&!statusInfo.storePickup">E-Delivery
+                                Date</span>
+                              <span>&nbsp;:&nbsp;</span> -->
+                              <div class="status-text"> {{statusInfo.orderDate | date: newDateFormat }}
+                                <ng-container
+                                  *ngIf="statusInfo.timeSlot && statusInfo.timeSlot.sTime && statusInfo.timeSlot.eTime">,
+                                  {{statusInfo.timeSlot.sTime}} -
+                                  {{statusInfo.timeSlot.eTime}} </ng-container>
+                              </div>
+                            </div>
+                            <div
+                              *ngIf="type=='order' && storeContactInfo && (storeContactInfo.address || storeContactInfo.phone)">
+                              <span class="status-styles">Store Contact Info</span>
+                              <span>&nbsp;:&nbsp;</span>
+                              <span class="status-text" *ngIf="type=='order'">
+                                <div *ngIf="storeContactInfo.address" [innerHTML]="storeContactInfo.address | nl2br">
+                                </div>
+                                <div *ngIf="storeContactInfo.phone">{{storeContactInfo.primcountryCode}}
+                                  {{storeContactInfo.phone}}</div>
+                              </span>
+                            </div>
+                            <div
+                              *ngIf="type=='order' && ((statusInfo.bill && statusInfo.bill.amountPaid > 0) || statusInfo.advanceAmountPaid > 0)">
+                              <span class="status-styles">Amount paid</span>
+                              <span>&nbsp;:&nbsp;</span>
+                              <span class="rupee-font status-text"><span class="rupee-font">
+                                </span> {{((statusInfo.bill) ? (statusInfo.bill.amountPaid | currency:'&#8377;') :
+                                (statusInfo.advanceAmountPaid | currency:'&#8377;'))}}</span>
+                            </div>
+                            <div *ngIf="!history">
+                              <div
+                                *ngIf="type=='wl' && (statusInfo.waitlistStatus === 'arrived' || statusInfo.waitlistStatus === 'checkedIn')">
+                                <span class="status-styles">Persons ahead </span>
+
+                                <div class="status-text">{{statusInfo.personsAhead}}</div>
+                              </div>
+                              <div *ngIf="getWaitTime(statusInfo) && !statusInfo.serviceTime">
+                                <span class="status-styles">Est wait Time </span>
+
+                                <div class="status-text">{{getWaitTime(statusInfo)}}</div>
+                              </div>
+                              <div *ngIf="getWaitTime(statusInfo) && statusInfo.serviceTime">
+                                <span class="status-styles">Service starts at </span>
+
+                                <div class="status-text">{{statusInfo.serviceTime}}</div>
+                              </div>
+
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-lg-4 col-md-12 pt-2 pt-md-0"
+                        [ngClass]="{'col-lg-7 ': type == 'order', 'col-lg-4': type != 'order'}">
+                        <div *ngIf="type!='order'" class="card card_width_share_sec">
+                          <div class="status-style detail"> Provider Details</div>
+                          <hr>
+                          <div class="d-flex mgn-up-20" *ngIf="!statusInfo.provider">
+                            <div>
+                              <img class="img-style" src="./assets/images/hospital.png">
+                            </div>
+                            <div>
+                              <div class="status-text name-style">{{statusInfo.providerAccount?.businessName}}
+                              </div>
+                              <div *ngIf="type=='wl'" class="status-texts loc-style">
+                                <a [href]="statusLocationUrl" target="_blank" class="icon-location"
+                                  matTooltip="Click to navigate">
+                                </a>
+                                {{statusInfo.queue?.location.place}}&nbsp;
+                              </div>
+
+                              <div *ngIf="type=='appt'" class="status-texts loc-style">
+                                <a [href]="statusLocationUrl" target="_blank" class="icon-location"
+                                  matTooltip="Click to navigate">
+                                </a>
+                                {{statusInfo.location.place}}&nbsp;
+                              </div>
+                            </div>
+                          </div>
+                          <div class="d-flex align-items-center mb-3" *ngIf="statusInfo.provider">
+                            <img class="img-style" src="./assets/images/hospital.png">
+                            <div class="status-text name-style" *ngIf="statusInfo.provider.businessName">
+                              {{statusInfo.provider.businessName}},
+                              {{statusInfo.providerAccount?.businessName}}
+                              <div *ngIf="type=='appt'" class="status-texts">
+                                <a [href]="statusLocationUrl" target="_blank" class="icon-location"
+                                  matTooltip="Click to navigate">
+                                </a>
+                                <span *ngIf="type=='appt'" > {{statusInfo.location.place}}</span>
+                                <span  *ngIf="type=='wl'" >{{statusInfo.queue?.location.place}}</span>&nbsp;
+                              </div></div>
+                            <div class="status-text name-style" *ngIf="!statusInfo.provider.businessName">
+                              {{statusInfo.provider.firstName}}&nbsp;{{statusInfo.provider.lastName}},
+                              {{statusInfo.providerAccount?.businessName}}
+                              <div *ngIf="type=='appt'" class="status-texts">
+                                <a [href]="statusLocationUrl" target="_blank" class="icon-location"
+                                  matTooltip="Click to navigate">
+                                </a>
+                                <span *ngIf="type=='appt'" > {{statusInfo.location.place}}</span>
+                                <span  *ngIf="type=='wl'" >{{statusInfo.queue?.location.place}}</span>&nbsp;
+                              </div>
+                            </div>                             
+                          </div>
+                       
+                          <div class="d-flex justify-content-center" *ngIf="type=='wl' && statusLocationUrl">
+                            <iframe [src]="getUrl(statusLocationUrl)" class="map-style" style="border:0;"
+                              allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                          </div>
+                          <div class="d-flex justify-content-center" *ngIf="type=='appt' && statusLocationUrl">
+                            <iframe [src]="getUrl(statusLocationUrl)" class="map-style" style="border:0;"
+                              allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                          </div>
+                          <div *ngIf="type !='order' && !statusLocationUrl">
+                            <img class="map-style" src="./assets/images/Group.svg">
+                          </div>
+
+                          <!-- <button *ngIf="statusLocationUrl" mat-button class="btn-style">
+                            <a class="btnstyles" *ngIf="type=='appt'" [href]="statusLocationUrl"
+                              target="_blank" matTooltip="Click to navigate">Get Direction</a>
+                            <div class="btnstyles" *ngIf="type=='wl'" [routerLink]="statusLocationUrl"
+                              target="_blank" matTooltip="Click to navigate">Get Direction</div>
+                          </button> -->
+                          <div *ngIf="statusLocationUrl && type !='order'" class="d-flex justify-content-center">
+                            <a mat-button class="btn-style" [href]="statusLocationUrl" target="_blank"
+                              matTooltip="Click to navigate">Get Direction</a>
+                          </div>
+                        </div>
+                        <div class="card no-padding-small">
+                          <div *ngIf="statusInfo.store && statusInfo.store.name">
+                            <h3 class="p-2 fw-bold">{{statusInfo.store.name}}</h3>
+                          </div>
+                          <div class="my-4 order-status-grid"
+                            *ngIf="statusInfo.itemDtoList && statusInfo.itemDtoList.length > 0">
+                            <p-table [value]="statusInfo.itemDtoList">
+                              <ng-template pTemplate="header">
+                                <tr>
+                                  <th class="fw-bold">Item</th>
+                                  <th class="fw-bold">Qty</th>
+                                  <th class="fw-bold">Price(₹)</th>
+                                  <th class="fw-bold">Net Total(₹)</th>
+                                  <th class="fw-bold">GST(₹)</th>
+                                  <th class="fw-bold">Total Amt(₹)</th>
+                                </tr>
+                              </ng-template>
+                              <ng-template pTemplate="body" let-item>
+                                <tr>
+                                  <td><span class="item-name" *ngIf="item.spItem && item.spItem.name">{{item.spItem.name}}</span></td>                                  
+                                  <td class="text-end">{{item.orderQuantity}}</td>
+                                  <td class="text-end">{{item.itemAmount | number:'1.2-2'}}</td>
+                                  <td class="text-end">{{item.netTotal | number:'1.2-2'}}</td>
+                                  <td *ngIf="item.taxAmount" class="text-end">{{item.taxAmount | number:'1.2-2'}}</td>
+                                  <td *ngIf="!item.taxAmount" class="text-end">-</td>
+                                  <td class="text-end">{{item.netRate | number:'1.2-2'}}</td>
+                                </tr>
+                              </ng-template>
+                            </p-table>
+                            <div class="row amount-section">
+                              <div class="row justify-content-end">
+                                <div class="col-8 col-md-4 no-padding text-end"> Subtotal </div>
+                                <div class="col-4 col-md-3 no-padding text-end fw-bold">₹{{statusInfo.netTotal | number:'1.2-2'}}</div>
+                              </div>
+                              <div *ngIf="statusInfo.taxTotal && statusInfo.taxTotal > 0" class="row justify-content-end">
+                                <div class="col-8 col-md-4 no-padding text-end"> GST</div>
+                                <div class="col-4 col-md-3 no-padding text-end fw-bold">₹{{statusInfo.taxTotal | number:'1.2-2'}}</div>
+                              </div>
+                              <div *ngIf="statusInfo.netTotalWithTax && statusInfo.taxTotal && statusInfo.taxTotal > 0" class="row justify-content-end">
+                                <div class="col-8 col-md-4 no-padding text-end"> Net Total With GST </div>
+                                <div class="col-4 col-md-3 no-padding text-end fw-bold">₹{{statusInfo.netTotalWithTax | number:'1.2-2'}}</div>
+                              </div>
+                              <div *ngIf="statusInfo.discounts && statusInfo.discounts.length >0"  class="row justify-content-end">
+                                <div  *ngFor="let discount of statusInfo.discounts" class="row justify-content-end">
+                                  <div class="col-8 col-md-4 no-padding text-end">{{discount.name}}</div>
+                                  <div class="col-4 col-md-3 no-padding text-end fw-bold">(-)₹{{discount.discountValue | number:'1.2-2'}}</div>
+                                </div>
+                              </div>
+                              <div *ngIf="statusInfo.deliveryCharges >0" class="row justify-content-end">
+                                <div class="col-8 col-md-4 no-padding text-end"> Delivery Charge </div>
+                                <div class="col-4 col-md-3 no-padding text-end fw-bold">₹{{statusInfo.deliveryCharges | number:'1.2-2'}}</div>
+                              </div>
+                              <div *ngIf="statusInfo.providerCoupons && statusInfo.providerCoupons.length >0"  class="row justify-content-end">
+                                <div  *ngFor="let coupon of statusInfo.providerCoupons" class="row justify-content-end">
+                                  <div class="col-8 col-md-4 no-padding text-end"> {{coupon.couponCode}}(coupon) </div>
+                                  <div class="col-4 col-md-3 no-padding text-end fw-bold">(-)₹{{coupon.discount | number:'1.2-2'}}</div>
+                                </div>
+                              </div>
+                              <div *ngIf="statusInfo.roundedValue != 0" class="row justify-content-end">
+                                <div class="col-8 col-md-4 no-padding text-end"> Rounded Value </div>
+                                <div class="col-4 col-md-3 no-padding text-end fw-bold">{{ statusInfo.roundedValue > 0 ? '₹+' : '₹' }}{{ statusInfo.roundedValue | number: '1.2-2' }}</div>
+                              </div>
+                              <div class="row justify-content-end">
+                                <div class="col-8 col-md-4 no-padding text-end"> Net Total </div>
+                                <div class="col-4 col-md-3 no-padding text-end fw-bold">₹{{statusInfo.netRate | number:'1.2-2'}}</div>
+                              </div>
+                              <div *ngIf="statusInfo.processingFee > 0" class="row justify-content-end">
+                                <div class="col-8 col-md-4 no-padding text-end"> Processing Fee </div>
+                                <div class="col-4 col-md-3 no-padding text-end fw-bold">₹{{statusInfo.processingFee | number:'1.2-2'}}</div>
+                              </div>
+                              <div class="row justify-content-end">
+                                <div class="col-8 col-md-4 no-padding text-end"> Amount Paid </div>
+                                <!-- <div *ngIf="statusInfo.amountPaid && statusInfo.amountPaid > 0  && !statusInfo.amountPaidWithProcessingFee" class="col-4 col-md-3 no-padding text-end fw-bold">₹{{statusInfo.amountPaid | number:'1.2-2'}}</div> -->
+                                <div class="col-4 col-md-3 no-padding text-end fw-bold">₹{{statusInfo.amountPaidWithProcessingFee | number:'1.2-2'}}</div>
+                              </div>
+                              <div class="row justify-content-end">
+                                <div class="col-8 col-md-4 no-padding text-end"> Amount Due </div>
+                                <div class="col-4 col-md-3 no-padding text-end fw-bold">₹{{statusInfo.amountDue | number:'1.2-2'}}</div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </span>
+                </div>
+              </div>
+              <div class="notes"
+                *ngIf="statusInfo.service && statusInfo.service.postInfoEnabled && statusInfo.service.postInfoTitle">
+                <div class="preinfo-title">{{statusInfo.service.postInfoTitle}} </div>
+                <div [innerHTML]="statusInfo.service.postInfoText">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <app-common-innerloading-spinner *ngIf="api_loading"></app-common-innerloading-spinner>
+    </div>
+  </div>
+</section>
