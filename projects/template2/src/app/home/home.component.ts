@@ -36,7 +36,7 @@ export class HomeComponent implements AfterViewInit{
     private themeService: ThemeService
   ) {
     this.onResize();
-    // this.accountId = this.sharedService.getAccountID();
+    this.accountId = this.sharedService.getAccountID();
     console.log("Account ID :", this.accountId);
     let account = this.sharedService.getAccountInfo();
     this.locations = this.sharedService.getJson(account['location']);
