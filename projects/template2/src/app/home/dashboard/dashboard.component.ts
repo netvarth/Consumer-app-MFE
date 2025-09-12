@@ -8,12 +8,10 @@ import {
   ErrorMessagingService,
   GroupStorageService,
   LocalStorageService,
-  projectConstantsLocal,
   SharedService,
   SubscriptionService,
   ToastService
 } from 'jconsumer-shared';
-import { interval as observableInterval, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -64,7 +62,6 @@ export class DashboardComponent {
   }
 
   initConsumer(refresh?) {
-    const _this = this;
     this.authService.goThroughLogin().then((status) => {
       if (status) {
         this.api_loading = false;
@@ -134,6 +131,7 @@ export class DashboardComponent {
   ngOnInit() {
     const _this = this;
     this.api_loading = true;
+    this.accountId = this.sharedService.getAccountID();
     this.subscriptionService.sendMessage({ ttype: 'showLocation' });
     this.config = this.sharedService.getTemplateJSON();
     if (this.config.theme) {
