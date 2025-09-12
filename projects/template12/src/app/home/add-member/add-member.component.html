@@ -1,0 +1,119 @@
+<div *ngIf="calledFrom=='checkin'" class="addmem-head">{{fill_foll_details_cap}}</div>
+<div class="ynw-common-form add-member mb-5 add-member-new "
+    *ngIf="data && data.type && (data.type==='add' || data.type==='edit')">
+    <div class="member_grid_container">
+        <div class="mt-2">
+            <label class="p-0 pt-1 m-0 form-text-light">{{'First Name' |
+                translate}}</label>
+            <div class="d-flex">
+                <div class="salutation">
+                    <p-dropdown class="text-capitalize" [options]="salutation" (onChange)="valuechange($event)"
+                        [(ngModel)]="title" placeholder="Select" ropdownIcon="fa fa-caret-down" optionLabel="name"
+                        optionValue="displayName">
+                        <ng-template let-item pTemplate="salutation">
+                            {{item.displayName}}
+                        </ng-template>
+                    </p-dropdown>
+                </div>
+                <div class="flex-grow-1  p-0">
+                    <input pInputText type="text" class="form-control" id="first_name" placeholder=""
+                        [(ngModel)]="firstname" autocomplete="off" (keyup)="valuechange($event)" />
+                </div>
+            </div>
+        </div>
+        <div class="mt-2">
+            <label class="p-0 pt-1 m-0 form-text-light">{{'Last Name' | translate}} </label>
+            <input pInputText type="text" class="form-control" id="last_name" placeholder="" [(ngModel)]="lastname"
+                autocomplete="off" (keyup)="valuechange($event)" />
+        </div>
+        <div class="mt-2" *ngIf="calledFrom !=='checkin'">
+            <label class="p-0 pt-1 m-0 form-text-light">{{'Date of Birth' | translate}}</label>
+            <p-calendar [readonlyInput]="true" #inputdob [(ngModel)]="dob" [style]="{'width':'70%'}"
+                dateFormat="dd/mm/yy" [maxDate]="tday" [minDate]="minday" (onSelect)="dateChanged($event)"
+                [showIcon]="true" placeholder="DD/MM/YYYY"></p-calendar>
+        </div>
+        <div class="mt-2" *ngIf="calledFrom !=='checkin'">
+            <label class="p-0 pt-1 m-0 form-text-light">{{gender_cap}}</label>
+            <p-dropdown [options]="genderList" [style]="{'width':'100%'}" (onChange)="valuechange($event)"
+                [(ngModel)]="gender" placeholder="Gender" ropdownIcon="fa fa-caret-down" class="text-capitalize">
+                <ng-template let-item pTemplate="item">
+                    {{item | capitalizeFirst}}
+                </ng-template>
+            </p-dropdown>
+        </div>
+        <div class="mt-2">
+            <label class="p-0 pt-1 m-0 form-text-light">{{'Mobile #' | translate}}</label>
+            <div class="mb-3">
+                <app-phone-input name="mobileNumber" [initialCountry]="'in'" [preferredCountries]="preferredCountries"
+                    [nationalMode]="false" [separateDialCode]="true" [(ngModel)]="mobileNumber"
+                    [ngModelOptions]="{updateOn: 'blur'}" (ngModelChange)="valuechange($event)"></app-phone-input>
+            </div>
+        </div>
+        <div class="mt-2">
+            <label class="p-0 pt-1 m-0 form-text-light">{{'Whatsapp #' | translate}}</label>
+            <div class="mb-3">
+                <app-phone-input name="whatsappnumber" [initialCountry]="'in'" [preferredCountries]="preferredCountries"
+                    [nationalMode]="false" [separateDialCode]="true" [(ngModel)]="whatsappnumber"
+                    [ngModelOptions]="{updateOn: 'blur'}" (ngModelChange)="valuechange($event)"></app-phone-input>
+            </div>
+        </div>
+        <div class="mt-2">
+            <label class="p-0 pt-1 m-0 form-text-light">{{'Telegram # '| translate}}</label>
+            <div class="mb-3">
+                <app-phone-input name="telegramnumber" [initialCountry]="'in'" [preferredCountries]="preferredCountries"
+                    [nationalMode]="false" [separateDialCode]="true" [(ngModel)]="telegramnumber"
+                    [ngModelOptions]="{updateOn: 'blur'}" (ngModelChange)="valuechange($event)"></app-phone-input>
+            </div>
+        </div>
+        <div class="mt-2">
+            <label class="p-0 pt-1 m-0 form-text-light">{{'Email' | translate}}</label>
+            <input pInputText type="email" class="form-control" id="email" [(ngModel)]="email"
+                placeholder="Email(user@xyz.com)" autocomplete="off" (keyup)="valuechange($event)" />
+        </div>
+        <div class="mt-2">
+            <label class="p-0 pt-1 m-0 form-text-light">{{'Address' | translate}}</label>
+            <textarea pInputTextarea class="form-control" [(ngModel)]="address" placeholder="Address" rows="2"
+                (keyup)="valuechange($event)">
+            </textarea>
+        </div>
+    </div>
+</div>
+<div *ngIf="data && data[0] && data[0].requestType && data[0].requestType==='deactiveAccount'" class="ynw-common-form">
+    <div *ngIf="beforeDelete">
+        <div class="deletePosition">
+            <img class="deleteIcon" src="{{cdnPath}}assets/images/myjaldee/deleteAccount.png" />
+        </div>
+        <div class="confirmation">
+            <div class="confirmationTxt">{{'Delete Account confirmation' | translate}}</div>
+        </div>
+        <div class="confirmationdlt">
+            <div class="confirmationTxtDlt">
+                {{'Are You Sure You Want to delete your Jaldee account?' | translate}}
+            </div>
+        </div>
+        <div class="btnActive">
+            <div>
+                <button class="noBtn" id="btnNo" (click)="closeDialog('close')" mat-dialog-close>{{'No' | translate}}</button>
+            </div>
+            <div>
+                <button type="submit" id="btnDeactivate" class="yesBtn" (click)="deActiveAccount()">{{'Yes' | translate}}</button>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="!beforeDelete" class="padIng">
+        <div style="text-align:end">
+            <button mat-dialog-close class="modal_close" (click)="closeDialog('close')" id="btnClose">
+                <i class="fa fa-window-close" aria-hidden="true"></i>
+            </button>
+        </div>
+        <div class="textCenter mt-1">
+            <div class="goodByText">{{'Goodbye!' | translate}}</div>
+        </div>
+        <div class="textCenter mt-1">
+            <div class="deletedTxt">{{'Your account has been deleted' | translate}}</div>
+        </div>
+        <div class="textCenter mt-1">
+            <img class="goodByeImg" src="{{cdnPath}}assets/images/myjaldee/goodbye.png" />
+        </div>
+    </div>
+</div>

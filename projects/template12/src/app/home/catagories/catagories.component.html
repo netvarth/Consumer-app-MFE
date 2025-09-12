@@ -1,0 +1,36 @@
+
+<div class="container">
+    <div class="mt-5"  *ngIf="loading">
+        <app-skeleton-loading></app-skeleton-loading>
+    </div>
+    <div class="customCard headerBorder">
+        <div (click)="goBack()"><i class="fa fa-arrow-left clrChangeHeader pointer-cursor"></i> </div>
+        <div (click)="goBack()" class="clrChangeHeader  pointer-cursor">Back</div>
+    </div> 
+    <div >
+        <div class="items-header p-2 my-2">
+            <h3 class="fw-bold">Categories</h3>
+        </div>
+        
+        <!-- <div *ngIf="itemCategories?.length == 0" class="item-count">Showing 0 - {{itemCategories.length}} of {{itemCategories.length}} products</div>
+        <div *ngIf="itemCategories?.length > 0" class="item-count">Showing {{(startIndex)+1}} - {{startIndex + itemCategories.length}} of {{itemCategories.length}} products</div> -->
+        <div class="items-container" *ngIf="itemCategories && itemCategories.length > 0">
+            <div *ngFor="let category of itemCategories">
+                <div class="items-card pointer-cursor" [id]="category.id"  (click)="viewCategoryItems(category.id)">
+                    <div class="text-center">
+                        <img *ngIf="category && category.attachments[0] && category.attachments[0].s3path"
+                            [src]="category.attachments[0].s3path" [alt]="category.alt">
+                        <img *ngIf="category && (!category.attachments || !category.attachments.length)"
+                            src="{{cdnPath}}assets/images/rx-order/items/Items.svg" [alt]="category.alt">
+                    </div>
+                    <div>
+                        <div class="item-name">
+                            {{category.categoryName}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  
+</div>

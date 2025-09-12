@@ -1,0 +1,215 @@
+<div class="container mt-1" [ngClass]="theme">
+    <div class="customCard headerBorder" *ngIf="navIndex!=0">
+        <div (click)="goBack()"><i class="fa fa-arrow-left clrChangeHeader"></i> </div>
+        <div (click)="goBack()" class="clrChangeHeader">Back</div>
+    </div>
+    <div *ngIf="!loading" class="card order-card order-details-page">
+        <div class=" d-flex justify-content-between align-items-center">
+            <div class="d-flex gap-1 align-items-center">
+                <img class="success-img" src="{{cdnPath}}assets/images/rx-order/items/sucess.gif" alt="">
+
+                <div>
+                    <div *ngIf="orderData.orderStatus =='ORDER_CONFIRMED' || orderData.orderStatus == 'ORDER_PREPAYMENT_PENDING'"
+                        class="success-msg">Your order has been placed</div>
+                    <div *ngIf="orderData.orderStatus =='ORDER_COMPLETED'" class="success-msg">Your order has been
+                        completed</div>
+                    <div *ngIf="orderData.orderStatus =='ORDER_CANCELED'" class="success-msg">Your order has been
+                        Canceled</div>
+                    <div class="order-id">
+                        Order #{{orderData.encId}}
+                    </div>
+                    <div class="mt-2">
+                        <span class="status-confirmed"
+                            *ngIf="orderData.orderStatus =='ORDER_CONFIRMED'">{{setOrderStatus(orderData.orderStatus)}}</span>
+                        <span class="status-completed"
+                            *ngIf="orderData.orderStatus =='ORDER_COMPLETED'">{{setOrderStatus(orderData.orderStatus)}}</span>
+                        <span class="status-canceled"
+                            *ngIf="orderData.orderStatus =='ORDER_CANCELED'">{{setOrderStatus(orderData.orderStatus)}}</span>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <button pButton pRipple (click)="gotoHome()" type="button" id="btnHome"
+                    class="btn-reorder p-button-primary btn-primary">Home</button>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="!loading" class="row mt-2">
+        <div class="col-lg-5 pe-md-0">
+            <div *ngIf="orderData && orderData.homeDeliveryAddress" class="card order-card p-4">
+                <div class="common-head">Delivery Address</div>
+                <div *ngIf="orderData.homeDeliveryAddress.firstName || orderData.homeDeliveryAddress.firstName"
+                    class="fw-bold mt-2 text-capitalize">
+                    {{orderData.homeDeliveryAddress.firstName}}&nbsp;{{orderData.homeDeliveryAddress.lastName}}
+                </div>
+                <div *ngIf="orderData.homeDeliveryAddress.address" class="text-capitalize">
+                    {{orderData.homeDeliveryAddress.address}}
+                </div>
+                <div *ngIf="orderData.homeDeliveryAddress.landMark">
+                    <span *ngIf="orderData.homeDeliveryAddress.landMark">{{orderData.homeDeliveryAddress.landMark}}</span>
+                </div>
+                <div *ngIf="orderData.homeDeliveryAddress.city || orderData.homeDeliveryAddress.state || orderData.homeDeliveryAddress.country || orderData.homeDeliveryAddress.postalCode"
+                    class="text-capitalize">
+                    <span *ngIf="orderData.homeDeliveryAddress.city">{{orderData.homeDeliveryAddress.city}}</span>
+                    <span *ngIf="orderData.homeDeliveryAddress.state">, {{orderData.homeDeliveryAddress.state}}</span>
+                    <span *ngIf="orderData.homeDeliveryAddress.country">, {{orderData.homeDeliveryAddress.country}}</span>
+                    <span *ngIf="orderData.homeDeliveryAddress.postalCode">, {{orderData.homeDeliveryAddress.postalCode}}</span>
+                </div>
+                <div *ngIf="orderData.homeDeliveryAddress.phoneNumber  && orderData.homeDeliveryAddress.countryCode && orderData.homeDeliveryAddress.phoneNumber"
+                    class="mt-2">
+                    <span class="fw-bold me-2">Phone
+                        Number:</span><span>{{orderData.homeDeliveryAddress.countryCode}}&nbsp;{{orderData.homeDeliveryAddress.phoneNumber}}</span>
+                </div>
+                <div *ngIf="orderData.homeDeliveryAddress.email" class="mt-2">
+                    <span class="fw-bold me-2">Email:</span><span>{{orderData.homeDeliveryAddress.email}}</span>
+                </div>
+            </div>
+            <div *ngIf="orderData && !orderData.homeDeliveryAddress && orderData.orderFor" class="card order-card p-4">
+                <div class="common-head">Contact Details </div>
+                <div *ngIf="orderData.orderFor.name || orderData.orderFor.title" class="fw-bold mt-2 text-capitalize">
+                    <span *ngIf="orderData.orderFor.title">{{orderData.orderFor.title}}&nbsp;</span>{{orderData.orderFor.name}}
+                </div>
+                <div *ngIf="orderData.orderFor && orderData.orderFor.phone && orderData.orderFor.phone.countryCode && orderData.orderFor.phone.number"
+                    class="mt-2">
+                    <span class="fw-bold me-2">Phone
+                        Number:</span><span>{{orderData.orderFor.phone.countryCode}}&nbsp;{{orderData.orderFor.phone.number}}</span>
+                </div>
+                <div *ngIf="orderData.orderFor && orderData.orderFor.email" class="mt-2">
+                    <span class="fw-bold me-2">Email:</span><span>{{orderData.orderFor.email}}</span>
+                </div>
+            </div>
+            <div *ngIf="orderData && orderData.notesForCustomer" class="card order-card p-4 mt-2">
+                <div class="text-capitalize fw-bold">{{customer_label}} Note</div>
+                <div class="customerNotes">{{orderData.notesForCustomer}}</div>
+            </div>
+            <div class="card order-card p-4 mt-2" *ngIf="shipmentUuid">
+                <div *ngIf="!this.orderDelivered" class="status-stl" (click)="shipmentDetails()">
+                    <img src="{{cdnPath}}assets/images/rx-order/delivery-truck.png" alt="" height="25" width="25">
+                    Your package is on the way!
+                </div>
+                <div *ngIf="this.orderDelivered" class="status-stl" (click)="shipmentDetails()">Your package is
+                    Delivered</div>
+                <p-timeline [value]="status" layout="vertical">
+                    <ng-template pTemplate="opposite" class="text-center timelinetext" let-event>
+                        <span class="event-adjust pad-10" [class.event-status]="event.condition">{{ getDate(event.date)
+                            }}</span>
+                    </ng-template>
+                    <ng-template pTemplate="marker" let-event let-i="rowIndex">
+                        <span class="custom-marker p-shadow-2">
+                            <img *ngIf="event.condition" width="10" height="10" [src]="getMarkerImage(event)">
+                            <img *ngIf="!event.condition" width="10" height="10" [src]="getMarkerImage(event)">
+                        </span>
+                    </ng-template>
+                    <ng-template pTemplate="content" class="text-center timelinetext" let-event>
+                        <span class="event-adjust timeline-content" [class.event-status]="event.condition">{{
+                            event.status }}</span>
+                    </ng-template>
+                </p-timeline>
+                <div *ngIf="shipmentDetail && statusLocationUrl" class="mt-4">
+                    <a mat-button class="btn-confirm btn-primary tracking-btn" [href]="statusLocationUrl"
+                        target="_blank" matTooltip="Click to navigate">
+                        Live Tracking</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-7 mt-2 mt-md-0">
+            <div class="card order-card">
+                <div class="common-head">Item Details</div>
+                <div class="" *ngFor="let item of orderData.itemDtoList">
+                    <div class=" order-card mt-2 d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <div class="pe-3">
+                                <img *ngIf="item && item.attachments && item.attachments.length > 0"
+                                    [src]="item.attachments?.[0]?.s3path" alt="" height="75" width="75">
+                                <img *ngIf="item && item.attachments && item.attachments.length == 0"
+                                    src="{{cdnPath}}assets/images/rx-order/items/Items.svg" alt="" height="75" width="75">                             
+                            </div>
+                            <div>
+                                <div *ngIf="item.spItem && item.spItem.name" class="fs-5 item-name fw-bold">
+                                    {{item.spItem.name}}
+                                </div>
+                                <div *ngIf="item.dueQuantity" class="price"><span
+                                        class="quantity">Qty:{{item.dueQuantity}}</span></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div *ngIf="item.netTotal" class="price">₹{{getAmountInDecimalPoints(item.netTotal)}}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end mt-2">
+                    <div class="col-12 col-md-6 no-padding-small">
+                        <div class=" order-card">
+                            <div class="d-flex justify-content-between total mt-2">
+                                <div>Total</div>
+                                <div class="fw-bold">₹{{getAmountInDecimalPoints(orderData.netTotal)}}</div>
+                            </div>
+                            <div *ngIf="orderData.taxTotal && orderData.taxTotal > 0"
+                                class="d-flex justify-content-between total mt-2">
+                                <div>Tax Total</div>
+                                <div class="fw-bold">₹{{getAmountInDecimalPoints(orderData.taxTotal)}}</div>
+                            </div>
+                            <div *ngIf="orderData.netTotalWithTax && orderData.taxTotal && orderData.taxTotal > 0"
+                                class="d-flex justify-content-between total mt-2">
+                                <div>Net Total With Tax</div>
+                                <div class="fw-bold">₹{{getAmountInDecimalPoints(orderData.netTotalWithTax)}}</div>
+                            </div>
+                            <div *ngIf="orderData.deliveryCharges && orderData.deliveryCharges > 0"
+                                class="d-flex justify-content-between total mt-2">
+                                <div>Delivery Charge</div>
+                                <div class="fw-bold">(+)₹{{getAmountInDecimalPoints(orderData.deliveryCharges)}}</div>
+                            </div>
+                            <div *ngIf="orderData && orderData?.discounts.length > 0">
+                                <div class="d-flex coupon-text mt-2 justify-content-between"
+                                    *ngFor="let coupon of orderData.discounts">
+                                    <span scope="row" class="fw-bold border-none">
+                                        {{coupon.name}}</span>
+                                    <span class="fw-bold border-none">
+                                        (-){{coupon.discountValue | currency:'&#8377;'}}
+                                    </span>
+                                </div>
+                            </div>
+                            <div *ngIf="orderData && orderData.providerCoupons.length > 0">
+                                <div class="d-flex coupon-text mt-2 justify-content-between"
+                                    *ngFor="let coupon of orderData.providerCoupons">
+                                    <span scope="row" class="fw-bold border-none">
+                                        {{coupon.couponCode}}(coupon)</span>
+                                    <span class="fw-bold border-none">
+                                        (-){{coupon.discount | currency:'&#8377;'}}
+                                    </span>
+                                </div>
+                            </div>
+                            <div *ngIf="orderData.roundedValue && orderData.roundedValue != 0"
+                                class="d-flex justify-content-between total mt-2">
+                                <div>Rounded Value</div>
+                                <div class="fw-bold rupee-font">
+                                    {{ orderData.roundedValue > 0 ? '₹+' : '₹' }}{{ orderData.roundedValue | number:
+                                    '1.2-2' }}
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between total mt-2">
+                                <div>Net Total</div>
+                                <div class="fw-bold">₹{{getAmountInDecimalPoints(orderData.netRate)}}</div>
+                            </div>
+                            <div *ngIf="orderData.processingFee > 0" class="d-flex justify-content-between total mt-2">
+                                <div>Processing Fee</div>
+                                <div class="fw-bold">₹{{getAmountInDecimalPoints(orderData.processingFee)}}</div>
+                            </div>
+                            <div *ngIf="orderData.amountPaidWithProcessingFee"
+                                class="d-flex justify-content-between total mt-2">
+                                <div>Amount Paid</div>
+                                <div class="fw-bold">
+                                    ₹{{getAmountInDecimalPoints(orderData.amountPaidWithProcessingFee)}}</div>
+                            </div>
+                            <div *ngIf="orderData.orderStatus != 'ORDER_PREPAYMENT_PENDING' && orderData.invoiceGenerated"
+                                class="mt-3" [ngClass]="smallmobileDevice?'btn-margin':''">
+                                <button pButton pRipple type="button" class="btn-confirm p-button-primary btn-primary"
+                                    (click)="viewInvoice()" id="btnInvoice">Invoice</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

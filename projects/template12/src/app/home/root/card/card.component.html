@@ -1,0 +1,615 @@
+<div class="row col-12 m-0 p-0" [ngClass]="theme?theme:''"
+    *ngIf="((service && service.serviceAvailability) || item.type=='donation') && !source">
+    <div class="row pointer-cursor card-outer-cont"
+        (click)="cardActionPerformed(item.type, 'view', service, loc, null, $event)">
+        <div class="col-md-9 col-9 col-sm-9 col-lg-9 p-0-small">
+            <h5 class="line-clamp-ln2 mgn-bt-5"
+                [ngClass]="{'p-0':service.serviceType && service.serviceType == 'virtualService'}">{{service.name
+                |
+                capitalizeFirst}}</h5>
+            <p class="line-clamp-ln3 no-margin card-service-desc mgn-up-5" *ngIf="service.description">
+                {{service.description}}
+            </p>
+        </div>
+        <div class="col-md-3 col-3 col-lg-3 p-0 card-inner-img-cont">
+            <div class="img-circle"
+                *ngIf="service && !service.servicegallery &&  service.serviceType && service.serviceType == 'virtualService'">
+                <i class="fa phon-icon "
+                    *ngIf="service.virtualCallingModes && service.virtualCallingModes.length > 0 && service.virtualCallingModes[0].callingMode === 'Phone'"></i>
+                <i class="fa meet-icon"
+                    *ngIf="service.virtualCallingModes && service.virtualCallingModes.length > 0 && service.virtualCallingModes[0].callingMode === 'GoogleMeet'"></i>
+                <i class="fa zoom-icon"
+                    *ngIf="service.virtualCallingModes && service.virtualCallingModes.length > 0 && service.virtualCallingModes[0].callingMode === 'Zoom'"></i>
+                <i class="fa wtsapaud-icon"
+                    *ngIf="service.virtualCallingModes && service.virtualCallingModes.length > 0 && service.virtualCallingModes[0].callingMode === 'WhatsApp' && service.virtualServiceType ==='audioService'"></i>
+                <i class="fa wtsapvid-icon"
+                    *ngIf="service.virtualCallingModes && service.virtualCallingModes.length > 0 && service.virtualCallingModes[0].callingMode === 'WhatsApp' && service.virtualServiceType ==='videoService'"></i>
+                <i class="fa jaldeevideo-icon"
+                    *ngIf="service.virtualCallingModes && service.virtualCallingModes.length > 0 && service.virtualCallingModes[0].callingMode === 'VideoCall'"></i>
+            </div>
+            <div class="img-circle " *ngIf="service.servicegallery && service.servicegallery.length > 0">
+                <img class=" img-responsive" [src]="service.servicegallery[0].thumbUrl" alt=" Service Image">
+            </div>
+            <div class="img-circle "
+                *ngIf="!service.servicegallery && service.serviceType && service.serviceType != 'virtualService' && service.serviceType == 'donationService'">
+                <img class=" img-responsive" src="{{cdnPath}}customapp/assets/images/webP/donation.webp" alt="Donation Image">
+            </div>
+            <div class="img-circle"
+                *ngIf="!service.servicegallery && service.serviceType && service.serviceType != 'virtualService' && service.serviceType == 'physicalService' && domain != 'religiousPriests'">
+                <img class="img-responsive" src="{{cdnPath}}customapp/assets/images/webP/meeting_Artboard.webp"
+                    alt="Physical Service Image">
+            </div>
+            <div class="img-circle "
+                *ngIf="!service.servicegallery && service.serviceType && service.serviceType != 'virtualService' && service.serviceType == 'physicalService' && domain == 'religiousPriests'">
+                <img class=" img-responsive" src="{{cdnPath}}customapp/assets/images/webP/hindu-temple-clipart.webp"
+                    alt="Physical Service Image">
+            </div>
+        </div>
+    </div>
+    <div class="card-timings-cont" *ngIf="cardType!=='card_1'">
+        <div class="col-12 p-2" *ngIf="item.type=='donation'">
+            <p class="card-text donationAmount p-0 mgn-lt-10">
+                <span class="rupee-font bold">{{'Donate' | translate}} <i class="fa fa-inr"></i>
+                    {{service.minDonationAmount}}</span>
+                <span class="rupee-font bold" *ngIf="service.maxDonationAmount != service.minDonationAmount">
+                    {{'or more' | translate}}</span>
+            </p>
+        </div>
+        <div
+            [ngClass]="(timings&&personsAheadText)?'col-sm-6 col-6 col-md-6 col-lg-6 p-0':'col-sm-12 col-12 col-md-12 col-lg-12 p-0'">
+            <div class="p-0 card-head-grey" *ngIf="timings">{{timingCaption | translate}}</div>
+            <h6 class="p-0 " *ngIf="timings">{{timings}}</h6>
+        </div>
+        <div class="col-sm-6 col-6 col-md-6 col-lg-6" [ngClass]="timings?'bord-left':''">
+            <div class="p-0 card-head-grey" *ngIf="personsAheadText">{{personsAheadCaption | translate}}</div>
+            <h6 class="p-0" *ngIf="personsAheadText">{{personsAheadText}}</h6>
+        </div>
+    </div>
+    <div class="row col-12 m-0 p-0">
+        <button (click)="cardActionPerformed(item.type, null, service, loc, null, $event, item)"
+            class="getappointmentbutton" [class.disabled]="item['loading']" [class.spinner]="item['loading']"
+            [class.spinner-darker-success]="item['loading']" [class.spinner-center]="item['loading']">{{buttonCaption |
+            translate}}</button>
+    </div>
+</div>
+<div class="col-md-12 col-12 col-sm-12 col-lg-12 p-0" [ngClass]="theme?theme:''"
+    *ngIf="((service && service.serviceAvailability) || item.type=='donation') && source">
+    <div class="row m-0 col-md-12 col-12 col-sm-12 col-lg-12 p-2 card-timings-cont-o">
+        <div class="col-md-12 col-12 col-sm-12 col-lg-12" *ngIf="item.type=='donation'">
+            <p class="card-text donationAmount p-0 mgn-lt-10">
+                <span class="rupee-font bold">{{'Donate' | translate}} <i class="fa fa-inr"></i>
+                    {{service.minDonationAmount}}</span>
+                <span class="rupee-font bold" *ngIf="service.maxDonationAmount != service.minDonationAmount">
+                    {{'or more' | translate}}</span>
+            </p>
+        </div>
+        <div class="col-sm-12 col-12 col-md-12 col-lg-12 p-0">
+            <div class="col-sm-9 col-9 col-md-9 col-lg-9 p-0"></div>
+            <div class="col-sm-3 col-3 col-md-3 col-lg-3 p-0 pull-right">
+                <div class="img-circle card-inner-img pull-right p-0"
+                    *ngIf="service && !service.servicegallery && service.serviceType == 'virtualService'">
+                    <i class="fa phon-icon "
+                        *ngIf="service.virtualCallingModes && service.virtualCallingModes.length > 0 && service.virtualCallingModes[0].callingMode === 'Phone'"></i>
+                    <i class="fa meet-icon"
+                        *ngIf="service.virtualCallingModes && service.virtualCallingModes.length > 0 && service.virtualCallingModes[0].callingMode === 'GoogleMeet'"></i>
+                    <i class="fa zoom-icon"
+                        *ngIf="service.virtualCallingModes && service.virtualCallingModes.length > 0 && service.virtualCallingModes[0].callingMode === 'Zoom'"></i>
+                    <i class="fa wtsapaud-icon"
+                        *ngIf="service.virtualCallingModes && service.virtualCallingModes.length > 0 && service.virtualCallingModes[0].callingMode === 'WhatsApp' && service.virtualServiceType ==='audioService'"></i>
+                    <i class="fa wtsapvid-icon"
+                        *ngIf="service.virtualCallingModes && service.virtualCallingModes.length > 0 && service.virtualCallingModes[0].callingMode === 'WhatsApp' && service.virtualServiceType ==='videoService'"></i>
+                    <i class="fa jaldeevideo-icon"
+                        *ngIf="service.virtualCallingModes && service.virtualCallingModes.length > 0 && service.virtualCallingModes[0].callingMode === 'VideoCall'"></i>
+                </div>
+                <div class="img-circle card-inner-img"
+                    *ngIf="service.servicegallery && service.servicegallery.length > 0">
+                    <img class="" [src]="service.servicegallery[0].thumbUrl" alt=" Service Image">
+                </div>
+                <div class="img-circle card-inner-img"
+                    *ngIf="!service.servicegallery && service.serviceType && service.serviceType != 'virtualService' && service.serviceType == 'donationService'">
+                    <img class="" src="{{cdnPath}}customapp/assets/images/webP/donation.webp" alt="Donation Image">
+                </div>
+                <div class="img-circle card-inner-img"
+                    *ngIf="!service.servicegallery && service.serviceType && service.serviceType != 'virtualService' && service.serviceType == 'physicalService' && domain != 'religiousPriests'">
+                    <img class="" src="{{cdnPath}}customapp/assets/images/webP/meeting_Artboard.webp" alt="Physical Service Image">
+                </div>
+                <!--  img-responsive -->
+                <div class="img-circle card-inner-img"
+                    *ngIf="!service.servicegallery && service.serviceType && service.serviceType != 'virtualService' && service.serviceType == 'physicalService' && domain == 'religiousPriests'">
+                    <img class="" src="{{cdnPath}}customapp/assets/images/webP/hindu-temple-clipart.webp" alt="Physical Service Image">
+                </div>
+            </div>
+        </div>
+        <div
+            [ngClass]="(timings&&personsAheadText)?'col-sm-6 col-6 col-md-6 col-lg-6 p-0':'col-sm-12 col-12 col-md-12 col-lg-12 p-0'">
+            <div class="p-0 card-head-grey" *ngIf="timings">{{timingCaption | translate}}</div>
+            <h6 class="p-0 " *ngIf="timings">{{timings}}</h6>
+        </div>
+        <div class="col-sm-6 col-6 col-md-6 col-lg-6" [ngClass]="timings?'bord-left':''">
+            <div class="p-0 card-head-grey" *ngIf="personsAheadText">{{personsAheadCaption | translate}}</div>
+            <h6 class="p-0" *ngIf="personsAheadText">{{personsAheadText}}</h6>
+        </div>
+    </div>
+    <div class="col-md-12 col-12 col-sm-12 col-lg-12 p-0">
+        <button (click)="cardActionPerformed(item.type, null, service, loc, null, $event)"
+            class="getappointmentbutton ">{{buttonCaption | translate}}</button>
+    </div>
+</div>
+<div *ngIf="item.type=='pitem'">
+    <div [id]="'item-' + service.itemId" class="card booking-card pointer-cursor order items pitem height-301"
+        [class.disabled]="service['status'] && service['status']=='INACTIVE' || (!service.isStockAvailable && item.type=='item')"
+        *ngIf="item.type=='catalog' || item.type=='item' || item.type=='pitem'"
+        (click)="cardActionPerformed(item.type, 'view', item, loc, null, $event)">
+        <span class="ribbon-new" *ngIf="service.promotionLabel && item.type=='item'">{{service.promotionLabel}}</span>
+        <div class="card-item-head mgn-up-5">
+            <button class="fx" mat-icon-button [matMenuTriggerFor]="appMenu" *ngIf="item.actions"
+                (click)="stopProp($event)">
+                <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #appMenu="matMenu">
+                <button mat-menu-item *ngFor="let action of item.actions"
+                    (click)="cardActionPerformed(item.type, action.action, item, null, null, $event)">
+                    <i class="{{action.iconClass}}"></i>{{action.displayName}}</button>
+            </mat-menu>
+            <div
+                style="text-align:center !important;display: flex !important;align-items:center !important;justify-content:center !important">
+                <img class="img-responsive imageside img-circle" [src]="getItemImg(service)" alt="Profile Pic" />
+            </div>
+        </div>
+        <br>
+        <div class="" style="text-align: center !important;text-transform: capitalize;">
+            <h4 class="card-title">
+                <a class="name module1 twoline-break">{{(service.itemNameInLocal) ? service.itemNameInLocal :
+                    service.displayName}}</a>
+            </h4>
+            <div style="height: 22px !important;">
+                <p style="color: rgb(145, 143, 143);" *ngIf="service.itemNameInLocal"
+                    class="short-description module1 line-clamp1">
+                    {{service.displayName}}</p>
+            </div>
+            <div class="col-md-12 p-0" style="text-align: center !important;">
+                <div class="col-md-12 d-flex mgn-up-10 p-0">
+                    <div class="amount" *ngIf="item.showpric">
+                        <div *ngIf="service.showPromotionalPrice">
+                            <div class="amount-value strikeMe">
+                                <i class="fa fa-inr"></i> {{service.price | currency:'':''}}
+                            </div>
+                        </div>
+                        <div>
+                            <div class="amount-value">
+                                <i class="fa fa-inr"></i>
+                                {{(service.showPromotionalPrice ? service.promotionalPrice : service.price) |
+                                currency:'':''}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="amount" style="height: 44px !important;" *ngIf="!item.showpric">&nbsp;</div>
+                    <div class="quantity">
+                        <div class="outstock" *ngIf="!service.isStockAvailable && item.type=='item'">
+                            {{'Sold Out' | translate}}
+                        </div>
+                        <button (click)="cardActionPerformed(item.type, 'add', item, loc, null, $event)"
+                            class="add-to-cart"
+                            *ngIf="service.isStockAvailable && item.type=='item' && getItemQty(item)==0">
+                            <i class="fa fa-shopping-bag"></i> {{'Add' | translate}}
+                        </button>
+                        <div *ngIf="service.isStockAvailable && item.type=='item' && getItemQty(item)!=0">
+                            <div [class.disableall]="item.maxqty === getItemQty(item)" class="btn-rt"
+                                *ngIf="item.type=='item'">
+                                <button (click)="cardActionPerformed(item.type, 'add', item, loc, null, $event)">
+                                    <i class="fa fa-chevron-up"></i>
+                                </button>
+                            </div>
+                            <div class="count-o" *ngIf="item.type=='item'">
+                                {{getItemQty(item)}}
+                            </div>
+                            <div class="btn-lt" *ngIf="item.type=='item'">
+                                <button (click)="cardActionPerformed(item.type, 'remove', item, loc, null, $event)">
+                                    <i class="fa fa-chevron-down"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="item.type=='catalog' || item.type=='item'">
+    <div [id]="'item-' + service.itemId" class="card booking-card pointer-cursor order items height-301"
+        [class.disabled]="service['status'] && service['status']=='INACTIVE' || (!service.isStockAvailable && item.type=='item')"
+        *ngIf="item.type=='catalog' || item.type=='item' || item.type=='pitem'"
+        (click)="cardActionPerformed(item.type, 'view', item, loc, null, $event)">
+        <span class="ribbon-new" *ngIf="service.promotionLabel && item.type=='item'">{{service.promotionLabel}}</span>
+        <div class="card-item-head">
+            <button class="fxmenu" mat-icon-button [matMenuTriggerFor]="appMenu" *ngIf="item.actions"
+                (click)="stopProp($event)">
+                <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #appMenu="matMenu">
+                <button mat-menu-item *ngFor="let action of item.actions"
+                    (click)="cardActionPerformed(item.type, action.action, item, null, null, $event)">
+                    <i class="{{action.iconClass}}"></i>{{action.displayName}}</button>
+            </mat-menu>
+            <img class="card-img img-responsive" [src]="getItemImg(service)" alt="Profile Pic" />
+        </div>
+        <div class="card-item-content">
+            <h4 class="card-title font-weight-bold d-block">
+                <a class="name module1 twoline-break">{{(service.itemNameInLocal) ? service.itemNameInLocal :
+                    service.displayName}}</a>
+            </h4>
+            <div style="height: 22px !important;">
+                <div *ngIf="service.itemNameInLocal" class="short-description module1 line-clamp1">
+                    {{service.displayName}}</div>
+            </div>
+            <div class="col-md-12 p-0">
+                <div class="col-md-12 d-flex mgn-up-10 p-0">
+                    <div class="amount" *ngIf="item.showpric">
+                        <div *ngIf="service.showPromotionalPrice">
+                            <div class="amount-value strikeMe">
+                                <i class="fa fa-inr"></i> {{service.price | currency:'':''}}
+                            </div>
+                        </div>
+                        <div>
+                            <div class="amount-value">
+                                <i class="fa fa-inr"></i>
+                                {{(service.showPromotionalPrice ? service.promotionalPrice : service.price) |
+                                currency:'':''}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="amount" style="height: 44px !important;" *ngIf="!item.showpric">&nbsp;</div>
+                    <div class="quantity">
+                        <div class="outstock" *ngIf="!service.isStockAvailable && item.type=='item'">
+                            {{'Sold Out' | translate}}
+                        </div>
+                        <button (click)="cardActionPerformed(item.type, 'add', item, loc, null, $event)"
+                            class="add-to-cart"
+                            *ngIf="service.isStockAvailable && item.type=='item' && getItemQty(item)==0">
+                            <i class="fa fa-shopping-bag"></i> {{'Add' | translate}}
+                        </button>
+                        <div *ngIf="service.isStockAvailable && item.type=='item' && getItemQty(item)!=0">
+                            <div [class.disableall]="item.maxqty === getItemQty(item)" class="btn-rt"
+                                *ngIf="item.type=='item'">
+                                <button (click)="cardActionPerformed(item.type, 'add', item, loc, null, $event)">
+                                    <i class="fa fa-chevron-up"></i>
+                                </button>
+                            </div>
+                            <div class="count-o" *ngIf="item.type=='item'">
+                                {{getItemQty(item)}}
+                            </div>
+                            <div class="btn-lt" *ngIf="item.type=='item'">
+                                <button (click)="cardActionPerformed(item.type, 'remove', item, loc, null, $event)">
+                                    <i class="fa fa-chevron-down"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div *ngIf="item.type=='provider'">
+    <div class="col-md-12 col-12 col-sm-12 col-lg-12 p-0" [ngClass]="theme?theme:''">
+        <div class="row m-0 p-0 card-outer-cont">
+            <div class="pointer-cursor" (click)="cardActionPerformed(item.type, null, null, null, user.id, $event)"
+                [ngClass]="getPic(user)?'col-md-9 col-9 col-sm-9 col-lg-9':'col-md-12 col-12 col-sm-12 col-lg-12'">
+                <h5 class="line-clamp-ln2 mgn-bt-5" *ngIf="user.businessName">{{user.businessName}}</h5>
+                <h6 class="line-clamp-ln2 mgn-bt-5" *ngIf="user.businessUserName">{{user.businessUserName}}</h6>
+                <p class="line-clamp-ln3 no-margin card-service-desc" *ngIf="user.qualifications">
+                    {{user.qualifications}}
+                </p>
+            </div>
+            <div class="col-md-3 col-3 col-sm-3 col-lg-3 p-0 card-inner-img-cont" *ngIf="getPic(user)">
+                <div class="img-circle">
+                    <img class="img-responsive" [src]="getPic(user)" alt="Profile Pic">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 col-12 col-sm-12 col-lg-12 card-timings-cont" *ngIf="cardType!='card_1'">
+            <div class="col-sm-6 col-6 col-md-6 col-lg-6 p-0"
+                *ngIf="user.apptTime && user.apptTime.caption && user.apptTime.availableSchedule.availableDate">
+                <div class="p-0 card-head-grey">{{user.apptTime.caption | translate}}</div>
+                <h6 class="p-0">{{user.apptTime.date}}</h6>
+            </div>
+            <div class="col-sm-6 col-6 col-md-6 col-lg-6 p-0"
+                *ngIf="!user.apptTime && user.waitingTime && user.waitingTime.caption">
+                <div class="p-0 card-head-grey">{{user.waitingTime.caption | translate}}</div>
+                <h6 class="p-0">{{user.waitingTime.date}}</h6>
+            </div>
+        </div>
+        <div class="col-md-12 col-12 col-sm-12 col-lg-12 p-0">
+            <button (click)="cardActionPerformed(item.type, null, null, null, user.id, $event)"
+                class="getappointmentbutton">{{'Book Now' | translate}}</button>
+        </div>
+    </div>
+</div>
+<div *ngIf="item.type=='department'">
+    <div class="col-md-12 col-12 col-sm-12 col-lg-12 p-0" [ngClass]="theme?theme:''">
+        <div class="row p-0 p-0 card-outer-cont">
+            <div class="col-md-9 col-9 col-sm-9 col-lg-9 pointer-cursor"
+                (click)="cardActionPerformed(item.type, null, null, null, department.departmentId, $event)">
+                <h5 class="line-clamp-ln2 mgn-bt-5" *ngIf="department.departmentName">{{department.departmentName}}</h5>
+                <p class="line-clamp-ln3 no-margin card-service-desc" *ngIf="department.departmentDescription">
+                    {{department.departmentDescription}}
+                </p>
+            </div>
+            <div class="col-md-3 col-3 col-sm-3 col-lg-3 p-0 card-inner-img-cont">
+                <div class="img-circle" *ngIf="domain == 'religiousPriests'">
+                    <img class="img-responsive"
+                        *ngIf="department && department.departmentLogo && department.departmentLogo[0]"
+                        src="{{department.departmentLogo[0].s3path}}" />
+                    <img class="img-responsive"
+                        *ngIf="department && department.departmentLogo && !department.departmentLogo[0]"
+                        src="{{cdnPath}}customapp/assets/images/webP/hindu-temple-clipart.webp" />
+                </div>
+                <div class="img-circle" *ngIf="domain == 'healthCare'">
+                    <img class="img-responsive"
+                        *ngIf="department && department.departmentLogo && department.departmentLogo[0]"
+                        src="{{department.departmentLogo[0].s3path}}" />
+                    <img class="img-responsive"
+                        *ngIf="department && department.departmentLogo && !department.departmentLogo[0]"
+                        src="{{cdnPath}}customapp/assets/images/webP/health-dept.webp" />
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 col-12 col-sm-12 col-lg-12 p-0">
+            <button (click)="cardActionPerformed(item.type, null, null, null, department.departmentId, $event)"
+                class="getappointmentbutton">{{'Book Now' | translate}}</button>
+        </div>
+    </div>
+</div>
+
+<div class="card booking-card pointer-cursor order head" *ngIf="item.type==='item-head'"
+    (click)="cardActionPerformed(item.type, 'add', null, null, null, $event)">
+    <div class="card-item-head">
+        <img class="card-img img-responsive" src="{{cdnPath}}customapp/assets/images/add.svg" alt="Profile Pic">
+    </div>
+    <div class="card-item-content">
+        <h4 class="card-title font-weight-bold text-center">
+            <a class="pointer-cursor"><b>{{'Add Item' | translate}}</b> </a>
+        </h4>
+    </div>
+</div>
+
+<div class="card booking-card order" *ngIf="item.type=='order-details-item'">
+    <div class="card-item-head">
+        <img class="card-img img-responsive" [src]="getItemImg(service)" alt="Profile Pic" />
+    </div>
+    <div class="card-item-content">
+        <h4 class="card-title font-weight-bold d-block">
+            <span class="d-block name module1 line-clamp1">{{service.name}}</span>
+            <p class="module1 line-clamp1">Qty - {{service.quantity}}</p>
+        </h4>
+        <div class="col-md-12 p-0">
+            <div class="col-md-12 p-0">
+                <span class="price rupee-font pull-left">{{service.totalPrice | currency:'&#8377;'}}</span>
+                <i *ngIf="service.consumerNote" [matTooltip]="'Notes'" class="icon-note pointer-cursor pull-right"
+                    (click)="showConsumerNote(service)"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-container *ngIf="item.type=='checkin-dashboard'">
+    <div class="col-12 col-sm-12 p-0"
+        (click)="cardActionPerformed(item.type, 'view', null, null, null, $event, item)" [class.history]="time_type==3">
+
+        <div class="main-sec">
+            <div class="token" *ngIf="time_type!==3 && item.token && !item.provider">
+                {{item.token}}
+            </div>
+            <div class="user-token" *ngIf="time_type!==3 && item.token && item.provider">
+                {{item.token}}
+            </div>
+            <div class="box1 mgn-lt-5" [class.mgn-bt-minus]="item.provider">
+                <div class="col-md-12 col-12 col-sm-12 p-0 consumer-name"
+                    (click)="cardActionPerformed(item.type, 'view-patient', null, null, null, $event, item)"
+                    *ngIf="item.type=='checkin-dashboard' && (item.waitlistingFor[0].firstName || item.waitlistingFor[0].lastName)">
+                    {{item.waitlistingFor[0].firstName}}
+                    {{item.waitlistingFor[0].lastName}}
+                </div>
+                <div class="col-md-12 col-12 col-sm-12 p-0 consumer-name"
+                    *ngIf="item.type=='checkin-dashboard' && !item.waitlistingFor[0].firstName && !item.waitlistingFor[0].lastName && item.consumer && item.consumer.jaldeeId">
+                    {{customer_label | capitalizeFirst}} id:&nbsp; {{item.consumer.jaldeeId}}</div>
+                <div class="col-md-12 col-12 col-sm-12 p-0 dash-item"
+                    *ngIf="time_type == 3 && item.waitlistStatus">
+                    <span class="started_status_clr"
+                        *ngIf="item.waitlistStatus == 'started' || item.waitlistStatus == 'arrived'">
+                        {{item.waitlistStatus | capitalizeFirst}}
+                    </span>
+                    <span class="cancelled_status_clr" *ngIf="item.waitlistStatus == 'cancelled'">
+                        {{item.waitlistStatus | capitalizeFirst}}
+                    </span>
+                    <span class=""
+                        *ngIf="item.waitlistStatus !== 'started' && item.waitlistStatus !== 'arrived' && item.waitlistStatus !== 'cancelled'">
+                        {{item.waitlistStatus | capitalizeFirst}}
+                    </span>
+                </div>
+                <div class="col-md-12 col-12 col-sm-12 p-0 dash-item user-txt-clr" *ngIf="item.provider">
+                    Assigned: {{(item.provider.businessName) ? item.provider.businessName :
+                    item.provider.firstName + ' ' + item.provider.lastName}}
+                </div>
+                <div class="col-md-12 col-12 col-sm-12 p-0 dash-item user-txt-clr" *ngIf="item.teamId !== 0">
+                    {{getUsersList(item.teamId)}}
+                </div>
+                <div class="col-md-12 col-12 col-sm-12 p-0 dash-item user-txt-clr" *ngIf=" item.internalStatus">
+                    - {{item.internalStatus | translate}}
+                </div>
+                <div class="col-md-12 col-12 col-sm-12 p-0 consumer-name"
+                    *ngIf="item.waitlistingFor[0].bookingLocation && (item.waitlistingFor[0].bookingLocation.district || item.waitlistingFor[0].bookingLocation.state)">
+                    <span
+                        *ngIf="item.waitlistingFor[0].bookingLocation.district">{{item.waitlistingFor[0].bookingLocation.district}},</span>
+                    <span
+                        *ngIf="item.waitlistingFor[0].bookingLocation.state">{{item.waitlistingFor[0].bookingLocation.state}}</span>
+                </div>
+                <div class="col-12 col-sm-12 p-0 view-details"
+                    *ngIf="item.waitlistingFor[0].age || item.waitlistingFor[0].gender">
+                    <span *ngIf="item.waitlistingFor[0].age">{{getAge(item.waitlistingFor[0].age)}}
+                        yrs</span>
+                    <span *ngIf="item.waitlistingFor[0].age && item.waitlistingFor[0].gender">&nbsp;,</span>
+                    <span *ngIf="item.waitlistingFor[0].gender">{{item.waitlistingFor[0].gender |
+                        capitalizeFirst}}</span>
+
+                </div>
+                <div class="col-12 col-sm-12 p-0 view-details"
+                    *ngIf="item.waitlistingFor[0].preferredLanguage && item.waitlistingFor[0].preferredLanguage.length > 0">
+                    {{item.waitlistingFor[0].preferredLanguage}}
+                </div>
+                <div class="col-md-12 col-12 col-sm-12 p-0 dash-item">
+                    <i class="fa meet-icon"
+                        *ngIf="item.service.serviceType === 'virtualService' && item.service.virtualCallingModes[0].callingMode === 'GoogleMeet'"></i>
+                    <i class="fa zoom-icon"
+                        *ngIf="item.service.serviceType === 'virtualService' && item.service.virtualCallingModes[0].callingMode === 'Zoom'"></i>
+                    <i class="fa fa jvideo-icon jvideo-icon-s jvideo-icon-mgm5"
+                        *ngIf="item.service.serviceType === 'virtualService' && item.service.virtualCallingModes[0].callingMode === 'VideoCall'"></i>
+                    <i class="fa phon-icon"
+                        *ngIf="item.service.serviceType === 'virtualService' && item.service.virtualCallingModes[0].callingMode === 'Phone'"></i>
+                    <i class="fa wtsapaud-icon"
+                        *ngIf="item.service.serviceType === 'virtualService' && item.service.virtualCallingModes[0].callingMode === 'WhatsApp' && item.service.virtualServiceType === 'audioService'"></i>
+                    <i class="fa wtsapvid-icon"
+                        *ngIf="item.service.serviceType === 'virtualService' && item.service.virtualCallingModes[0].callingMode === 'WhatsApp' && item.service.virtualServiceType === 'videoService'"></i>
+                    {{item.service.name}}
+                </div>
+                <div>
+                    <div class="col-12 col-sm-12 p-0 view-details"
+                        *ngIf="time_type!=1 && item.type=='checkin-dashboard'">
+                        <span class="b1">{{'Date' | translate}} : </span> <span class="b2">{{item.date | date:
+                            newTimeDateFormat}}</span>
+                    </div>
+                    <div class="col-12 col-sm-12 p-0 view-details" *ngIf="getLabels(item)">
+                        <span class="b1">{{'Label' | translate}} : </span> <span class="b2"> {{getLabels(item)}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row box4">
+                <div class="col-md-12 col-12 col-sm-12 p-0 mgn-lt-5">
+                    <span class="cnote pointer-cursor mgn-rt-10" *ngIf="item.consumerNote"
+                        (click)="stopProp($event);checkinActions(item, 'note')">
+                        <i class="icon-note"></i>
+                    </span>
+                    <span (click)="stopProp($event);checkinActions(item, 'attachment')"
+                        class="cnote pointer-cursor mgn-rt-10" *ngIf="item.hasAttachment"><i style="font-size: 20px;"
+                            class="material-icons">attach_file</i></span>
+                </div>
+                <div class="col-md-12 col-12 col-sm-12 p-0 mgn-lt-5 mgn-up-10">
+                    <a class="action-btn" (click)="stopProp($event);checkinActions(item, 'actions')">
+                        {{'Actions' | translate}}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-container>
+<ng-container *ngIf="item.type=='appointment-dashboard'">
+    <div class="col-12 col-sm-12 p-0 mgn-lt-5"
+        (click)="cardActionPerformed(item.type, 'view', null, null, null, $event, item)" [class.history]="time_type==3">
+        <div class="main-sec">
+            <div class="date mgn-lt-5" *ngIf="time_type!=1">
+                {{appointment.appmtDate | date: newTimeDateFormat}}</div>
+            <div class="mgn-lt-5 date" *ngIf="time_type!=3">
+                <span class="greenc bold font11">{{appointment.displayTime}}</span><br>
+                <div *ngIf="appointment.isApptDelayed === true">
+
+                    <span
+                        *ngIf="appointment.isApptDelayed === true && appointment.apptDelay.length>0 && time_type === 1 || time_type === 2 && appointment.apptStatus == 'started' || appointment.apptStatus == 'Arrived' || appointment.apptStatus == 'new' || appointment.apptStatus !== 'cancelled' || appointment.apptStatus !== 'completed'"
+                        style="color: rgb(255, 123, 0) !important;">{{getTimeMinute(appointment.apptDelay)}}</span>&nbsp;
+                </div>
+            </div>
+            <div class="box1 mgn-lt-5" [class.mgn-bt-minus]="appointment.provider">
+                <!-- (click)="gotoCustomerDetailsAppt(appointment, $event)" -->
+                <div class="col-md-12 col-12 col-sm-12 p-0 consumer-name"
+                    (click)="cardActionPerformed(item.type, 'view-patient', null, null, null, $event, item)"
+                    *ngIf="item.type=='appointment-dashboard' && (appointment.appmtFor[0].firstName || appointment.appmtFor[0].lastName)">
+                    {{appointment.appmtFor[0].firstName}}
+                    {{appointment.appmtFor[0].lastName}}
+                </div>
+
+                <div class="col-md-12 col-12 col-sm-12 p-0 consumer-name"
+                    *ngIf="item.type=='appointment-dashboard' && !appointment.appmtFor[0].firstName && !appointment.appmtFor[0].lastName && appointment.providerConsumer && appointment.providerConsumer.jaldeeId">
+                    {{customer_label | capitalizeFirst}} id:&nbsp; {{appointment.providerConsumer.jaldeeId}}</div>
+                <div class="col-md-12 col-12 col-sm-12 p-0 dash-item"
+                    *ngIf="time_type == 3 && appointment.apptStatus">
+                    <span class="started_status_clr"
+                        *ngIf="appointment.apptStatus == 'started' || appointment.apptStatus == 'arrived'">
+                        {{appointment.apptStatus | capitalizeFirst}}
+                    </span>
+                    <span class="cancelled_status_clr" *ngIf="appointment.apptStatus == 'cancelled'">
+                        {{appointment.apptStatus | capitalizeFirst}}
+                    </span>
+                    <span class=""
+                        *ngIf="appointment.apptStatus !== 'started' && appointment.apptStatus !== 'arrived' && appointment.apptStatus !== 'cancelled'">
+                        {{appointment.apptStatus | capitalizeFirst}}
+                    </span>
+                </div>
+                <div class="col-md-12 col-12 col-sm-12 p-0 dash-item user-txt-clr" *ngIf="appointment.provider">
+                    Assigned: {{(appointment.provider.businessName) ? appointment.provider.businessName :
+                    appointment.provider.firstName + ' ' + appointment.provider.lastName}}
+                </div>
+                <div class="col-md-12 col-12 col-sm-12 p-0 dash-item user-txt-clr"
+                    *ngIf="appointment.internalStatus">
+                    - {{appointment.internalStatus}}
+                </div>
+                <div class="col-md-12 col-12 col-sm-12 p-0 consumer-name"
+                    *ngIf="appointment.appmtFor[0].bookingLocation && (appointment.appmtFor[0].bookingLocation.district || appointment.appmtFor[0].bookingLocation.state)">
+                    <span
+                        *ngIf="appointment.appmtFor[0].bookingLocation.district">{{appointment.appmtFor[0].bookingLocation.district}},</span>
+                    <span
+                        *ngIf="appointment.appmtFor[0].bookingLocation.state">{{appointment.appmtFor[0].bookingLocation.state}}</span>
+                </div>
+                <div class="col-12 col-sm-12 p-0 view-details"
+                    *ngIf="appointment.appmtFor[0].age || appointment.appmtFor[0].gender">
+                    <span *ngIf="appointment.appmtFor[0].age">{{getAge(appointment.appmtFor[0].age)}} yrs</span>
+                    <span *ngIf="appointment.appmtFor[0].age && appointment.appmtFor[0].gender">&nbsp;,</span>
+                    <span *ngIf="appointment.appmtFor[0].gender">{{appointment.appmtFor[0].gender |
+                        capitalizeFirst}}</span>
+                </div>
+                <div class="col-12 col-sm-12 p-0 view-details"
+                    *ngIf="appointment.appmtFor[0].preferredLanguage && appointment.appmtFor[0].preferredLanguage.length > 0">
+                    {{appointment.appmtFor[0].preferredLanguage}}
+                </div>
+                <div class="col-md-12 col-12 col-sm-12 p-0 dash-item">
+                    <i class="fa meet-icon"
+                        *ngIf="appointment.service.serviceType === 'virtualService' && appointment.service.virtualCallingModes[0].callingMode === 'GoogleMeet'"></i>
+                    <i class="fa zoom-icon"
+                        *ngIf="appointment.service.serviceType === 'virtualService' && appointment.service.virtualCallingModes[0].callingMode === 'Zoom'"></i>
+                    <i class="fa fa jvideo-icon jvideo-icon-s jvideo-icon-mgm5"
+                        *ngIf="appointment.service.serviceType === 'virtualService' && appointment.service.virtualCallingModes[0].callingMode === 'VideoCall'"></i>
+                    <i class="fa phon-icon"
+                        *ngIf="appointment.service.serviceType === 'virtualService' && appointment.service.virtualCallingModes[0].callingMode === 'Phone'"></i>
+                    <i class="fa wtsapaud-icon"
+                        *ngIf="appointment.service.serviceType === 'virtualService' && appointment.service.virtualCallingModes[0].callingMode === 'WhatsApp' && appointment.service.virtualServiceType === 'audioService'"></i>
+                    <i class="fa wtsapvid-icon"
+                        *ngIf="appointment.service.serviceType === 'virtualService' && appointment.service.virtualCallingModes[0].callingMode === 'WhatsApp' && appointment.service.virtualServiceType === 'videoService'"></i>
+                    {{appointment.service.name}}
+                </div>
+                <div>
+                    <div class="col-12 col-sm-12 p-0 view-details" *ngIf="getLabels(appointment)">
+                        <span class="b1">{{'Label' | translate}} : </span> <span class="b2">
+                            {{getLabels(appointment)}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row m-0 box4">
+                <div class="col-md-12 col-12 col-sm-12 p-0 mgn-lt-5">
+                    <span class="cnote pointer-cursor mgn-rt-10" *ngIf="appointment.consumerNote"
+                        (click)="stopProp($event);checkinActions(appointment, 'note')">
+                        <i class="icon-note"></i>
+                    </span>
+                    <span (click)="stopProp($event);checkinActions(appointment, 'attachment')"
+                        class="cnote pointer-cursor mgn-rt-10" *ngIf="appointment.hasAttachment"><i
+                            style="font-size: 20px;" class="material-icons">attach_file</i></span>
+                </div>
+                <div class="col-md-12 col-12 col-sm-12 p-0 mgn-lt-5 mgn-up-10">
+                    <a class="action-btn" (click)="stopProp($event);checkinActions(appointment, 'actions')">
+                        {{'Actions' | translate}}
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="mgn-up-5 mgn-lt-5 mgn-bt-5 mgn-rt-5">
+        </div>
+    </div>
+</ng-container>

@@ -1,0 +1,57 @@
+<div>
+    <div class="service-infocard p-2">
+        <div class="user-detail" *ngIf="!userInfo">
+            <img class="service-img"
+                *ngIf="(selectedService.serviceType !== 'virtualService') && (selectedService.servicegallery && selectedService.servicegallery.length > 0)"
+                [src]="selectedService.servicegallery[0].thumbUrl" alt="">
+            <img class="service-img" *ngIf="(selectedService.serviceType !== 'virtualService')&& !selectedService.servicegallery"
+                src="{{cdnPath}}assets/images/meeting_Artboard.png" alt="">
+            <i class="fa meet-icon"
+                *ngIf="selectedService.serviceType === 'virtualService' && selectedService.virtualCallingModes[0].callingMode === 'GoogleMeet'"></i>
+            <i class="fa zoom-icon"
+                *ngIf="selectedService.serviceType === 'virtualService' && selectedService.virtualCallingModes[0].callingMode === 'Zoom'"></i>
+            <i class="fa fa jvideo-icon jvideo-icon-s jvideo-icon-mgm5"
+                *ngIf="selectedService.serviceType === 'virtualService' && selectedService.virtualCallingModes[0].callingMode === 'VideoCall'"></i>
+            <i class="fa phon-icon"
+                *ngIf="selectedService.serviceType === 'virtualService' && selectedService.virtualCallingModes[0].callingMode === 'Phone'"></i>
+            <i class="fa wtsapaud-icon"
+                *ngIf="selectedService.serviceType === 'virtualService' && selectedService.virtualCallingModes[0].callingMode === 'WhatsApp' && selectedService.virtualServiceType === 'audioService'"></i>
+            <i class="fa wtsapvid-icon"
+                *ngIf="selectedService.serviceType === 'virtualService' && selectedService.virtualCallingModes[0].callingMode === 'WhatsApp' && selectedService.virtualServiceType === 'videoService'"></i>
+            <div class="details">
+                <h5 class="user-head">{{selectedService.name}}</h5>
+                <div *ngIf="datePresent === true">
+                    <p >{{appmtDate | date: newDateFormat}}, {{selectedApptsTime}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="user-detail" *ngIf="userInfo">
+            <img class="service-img" *ngIf="userInfo.profilePicture"
+                [src]="userInfo.profilePicture.url" alt="">
+            <img class="service-img" *ngIf="!userInfo.profilePicture && selectedService.serviceType !== 'virtualService'"
+                src="{{cdnPath}}assets/images/myjaldee/defultUser.png" alt="">
+            <i class="fa meet-icon"
+                *ngIf="!userInfo.profilePicture && selectedService.serviceType === 'virtualService' && selectedService.virtualCallingModes[0].callingMode === 'GoogleMeet'"></i>
+            <i class="fa zoom-icon"
+                *ngIf="!userInfo.profilePicture && selectedService.serviceType === 'virtualService' && selectedService.virtualCallingModes[0].callingMode === 'Zoom'"></i>
+            <i class="fa fa jvideo-icon jvideo-icon-s jvideo-icon-mgm5"
+                *ngIf="!userInfo.profilePicture && selectedService.serviceType === 'virtualService' && selectedService.virtualCallingModes[0].callingMode === 'VideoCall'"></i>
+            <i class="fa phon-icon"
+                *ngIf="!userInfo.profilePicture && selectedService.serviceType === 'virtualService' && selectedService.virtualCallingModes[0].callingMode === 'Phone'"></i>
+            <i class="fa wtsapaud-icon"
+                *ngIf="!userInfo.profilePicture && selectedService.serviceType === 'virtualService' && selectedService.virtualCallingModes[0].callingMode === 'WhatsApp' && selectedService.virtualServiceType === 'audioService'"></i>
+            <i class="fa wtsapvid-icon"
+                *ngIf="!userInfo.profilePicture && selectedService.serviceType === 'virtualService' && selectedService.virtualCallingModes[0].callingMode === 'WhatsApp' && selectedService.virtualServiceType === 'videoService'"></i>
+            <div class="details">
+                <h5 class="user-head">{{userInfo.businessName}}</h5>
+                <h4 class="mt-1">{{selectedService.name}}</h4>
+                <div *ngIf="datePresent === true">
+                    <p >{{appmtDate | date: newDateFormat}}, {{selectedApptsTime}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="service-icon">
+
+        </div>
+    </div>
+</div>

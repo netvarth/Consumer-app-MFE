@@ -1,0 +1,141 @@
+<section class="container no-padding confirm-aptckn no-padding-small cstmWidth">
+    <div class="content p0 loc-list">
+        <div id="scriptContainer"></div>
+        <div class="panel panel-default">
+            <div class="text-center">
+                <div><img src="{{cdnPath}}assets/images/myjaldee/bookingConfirmed.png" /></div>
+                <div class="bookingCnfrmtxt"> {{booking['title'] | translate}}</div>
+                <div class="bookingIdFlex">
+                    <div>{{booking['idCaption'] | translate}}</div>
+                    <div>{{booking['id']}}</div>
+                </div>
+            </div>
+            <div class=" no-padding cstmCardBooking mt-4" *ngIf="booking['info']">
+                <div class="cardCustom" *ngIf="!apiloading">
+                    <div class="bookingForTxt">{{booking['bookingForCaption'] | translate}}</div>
+                    <div class="apptDetails">
+                        <div *ngFor="let member of booking.bookingFor" class="flexCls-g-5">
+                            <div class="memberInfo" *ngIf="member && member.title">
+                                {{member.title | capitalizeFirst}}
+                            </div>
+                            <div class="memberInfo" *ngIf="member && member.firstName">
+                                {{member.firstName | capitalizeFirst}}
+                            </div>
+                            <div class="memberInfo" *ngIf="member && member.lastName">
+                                {{member.lastName | capitalizeFirst}}
+                            </div>
+                        </div>
+                        <div class="memberExtra">{{'Status,alerts,communications will be sent to' | translate}}</div>
+                        <div class="flexCls-g-5"
+                            *ngIf="booking['info'] && (booking['info'].countryCode || booking.phoneNumber)">
+                            <div><i class="fa fa-phone" aria-hidden="true"></i></div>
+                            <div class="flexCls-g-5">
+                                <div class="memberInfoTel" *ngIf="booking['info'].countryCode">
+                                    {{booking['info'].countryCode}}
+                                </div>
+                                <div class="memberInfoTel" *ngIf="booking.phoneNumber">
+                                    {{booking.phoneNumber}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flexCls-g-5" *ngIf="booking?.bookingFor?.[0]?.email">
+                            <div><i class="fa fa-envelope" aria-hidden="true"></i></div>
+                            <div class="flexCls-g-5">
+                                <div class="memberInfoTel">{{booking.bookingFor[0].email}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-2 apptDetails">
+                        <div>
+                            <div class="cstmStatus">{{'Status' | translate}}</div>
+                            <div class="apptStatus">{{'Booking' | translate}} {{booking['status']}}</div>
+                        </div>
+                    </div>
+                    <div class="bookingForTxt mt-2">
+                        <div class="providerDeatisltxt">{{'Provider Details' | translate}}</div>
+                    </div>
+                    <div class="apptDetails">
+                        <div class="flexCls-g-5" *ngIf="!booking['info'].provider">
+                            <div class="memberInfoProvider" *ngIf="!booking['info'].provider">
+                                {{booking['info'].providerAccount?.businessName | capitalizeFirst}}
+                            </div>
+                        </div>
+                        <div class="flexCls-g-5" *ngIf="booking['info'].provider">
+                            <div class="memberInfoProvider" *ngIf="booking['info'].provider">
+                                {{(booking['info'].provider.businessName) ? booking['info'].provider.businessName :
+                                booking['info'].provider.firstName + ' ' + booking['info'].provider.lastName}},
+                                {{booking['info'].providerAccount?.businessName}}
+                            </div>
+                        </div>
+                        <div class="flexCls-g-5" *ngIf="booking['location']">
+                            <div class="memberInfoLocation"><i class="fa fa-map-marker icon"></i>
+                                {{booking['location']}} 
+                                <a *ngIf="booking['mapUrl']" [href]="booking['mapUrl']" target="_blank" class="icon-location"
+                                    matTooltip="Click to navigate">
+                                </a>
+                            </div>
+                        </div>                        
+                    </div>
+                    <div class="mt-4 alignCenter" *ngIf="booking['addToCalendar']">
+                        <button (click)="addToCalendar()" type="submit" class="googleCalendar" id="btnAddToCalendar">
+                            <span class="calendarImage_1">
+                                <img class="calendarImage" src="{{cdnPath}}assets/images/myjaldee/googleCalendar.png" />
+                            </span>
+                            <span>{{'Add to google calender' | capitalizeFirst}}</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="cardCustom cstmLH" *ngIf="!apiloading">
+                    <div>
+                        <div class="bookingForTxt">{{booking['summaryCaption'] | capitalizeFirst}}</div>                       
+                    </div>
+                    <div class="apptFlex" *ngIf="service">
+                        <app-service-info [service]="booking['service']" [booking]="booking['info']"></app-service-info>
+                    </div>
+                    <div class="mt-2">
+                        <div class="bookingDetailsCstmTxt">{{consumer_label | capitalizeFirst}}</div>
+                        <div></div>
+                    </div>
+                    <div class="mt-2 apptFlex">
+                        <div class="bookingDetailsCstmTxt">{{'Date & Time :' | translate}}</div><div class="apptdate">
+                            {{booking['bookingDate'] | date: newDateFormat}}
+                        </div>
+                        <div class="apptdate">{{booking['bookingTime']}}</div>
+                     </div>
+                     <div class="mt-2 apptFlex" *ngIf="booking['personsAhead']">
+                        <div class="bookingDetailsCstmTxt">{{'Persons Ahead :' | translate}}</div>
+                        <div class="apptdate">{{booking['personsAhead']}}</div>
+                    </div>
+                    <div class="mt-2 apptFlex" *ngIf="booking['waitTime']">
+                        <div class="bookingDetailsCstmTxt">{{'Est. wait Time :' | translate}}</div>
+                        <div class="apptdate">{{booking['waitTime']}}</div>
+                    </div>
+                    <div class="mt-2 apptFlex" *ngIf="booking['tokenNumber']">
+                        <div class="bookingDetailsCstmTxt">{{'Token No :' | translate}}</div>
+                        <div class="apptdate">{{booking['tokenNumber']}}</div>
+                    </div>
+                    <div class="mt-2 apptFlex" *ngIf="booking['info'].timezone">
+                        <div class="bookingDetailsCstmTxt">{{'Timezone :' | translate}}</div>
+                        <div class="apptdate">{{booking['info'].timezone}}</div>
+                    </div>
+                    <div class="mt-2 apptFlex"
+                        *ngIf="booking['info']?.service?.deptName">
+                        <div class="bookingDetailsCstmTxt">{{'Department :' | translate}} </div>
+                        <div class="apptdate ">{{booking['info'].service.deptName}} </div>
+                    </div>
+                    <div class="notes"
+                        *ngIf="booking['service'] && booking['service'].postInfoEnabled && booking['service'].postInfoTitle">
+                        <div class="preinfo-title">{{booking['service'].postInfoTitle}} </div>
+                        <div class="value-text" [innerHTML]="booking['service'].postInfoText"></div>
+                    </div>
+                </div>
+                <app-common-innerloading-spinner *ngIf="apiloading"></app-common-innerloading-spinner>
+            </div>
+            <div class="text-center  my-4">
+                <div>
+                    <button id="btnOK" type="submit" class="confirmationBtn" (click)="okClicked()">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,136 @@
+<div class="service-container">
+    <div class="cstmHeader">{{'Select Service' | translate}}</div>
+    <div *ngIf="selectedUser">
+      <p-accordion>
+        <p-accordionTab>
+          <ng-template pTemplate="header">
+            <div class="px-2">
+              <div class="user-detail" *ngIf="selectedUser">
+                <img class="service-img" *ngIf="selectedUser.profilePicture" [src]="selectedUser.profilePicture.url"
+                  alt="">
+                <img class="service-img" *ngIf="!selectedUser.profilePicture" src="{{cdnPath}}assets/images/myjaldee/defultUser.png"
+                  alt="">
+                
+                <div class="details">
+                  <h5 class="user-head">{{selectedUser.businessName}}</h5>
+                  <p class="line-clamp-ln3 no-margin card-service-desc" *ngIf="selectedLocation">
+                {{selectedLocation.place}}
+            </p>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+    
+          <div class="card ">
+            <div class=""
+                *ngIf="userProfile && userProfile.businessDesc">
+                <div class="about_label">About Us</div>
+                <!-- <div class="about_sub_label mt-2">
+                    {{userProfile.businessDesc}}
+                </div> -->
+                <div class="about_sub_label mgn-up-10" [innerHTML]="convertToHtml(userProfile.businessDesc)"></div>
+            </div>
+            <div class="mt-4"
+                *ngIf="userProfile && userProfile.specialization">
+                <div class="about_label">Specializations </div>
+                <div class="basicFlex mt-2 justifystart gap">
+                    <div *ngFor="let type of userProfile.specialization"
+                        class="Specializations_bg">
+                        <div class="type ">{{type.name}}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4"
+            *ngIf="userProfile && userProfile.socialMedia">
+            <div class="about_label">Social Media </div>
+            <div class="basicFlex mt-2 justifystart gap">
+              <div *ngFor="let soc of userProfile.socialMedia"><a class="like-btn" rel="noopener" [href]="soc.value"
+                  target="_blank"><span><i [class]="getSocialdet(soc.resource, 'iconClass')"
+                  [matTooltip]="getSocialdet(soc.resource, 'displayName')"></i></span></a>
+              </div> 
+            </div>
+            </div>
+            
+           
+            <div class="mt-4"
+                *ngIf="userProfile && userProfile.languagesSpoken && userProfile.languagesSpoken.length>0">
+                <div class="about_label">Languages Known</div>
+                <div class="basicFlex mt-2 justifystart gap">
+                    <div *ngFor="let lang of userProfile.languagesSpoken"
+                        class="Specializations_bg">
+                        <div class="type ">{{lang}}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-4"
+            *ngIf="( selectedLocation && selectedLocation.parkingType && selectedLocation.parkingType!=='' && selectedLocation.parkingType != undefined && selectedLocation.parkingType != 'none') ||
+            selectedLocation && selectedLocation.open24hours || selectedLocation?.locationVirtualFields?.traumacentre=='true' ||
+            selectedLocation?.locationVirtualFields?.docambulance=='true'|| selectedLocation?.locationVirtualFields?.densistambulance=='true' || selectedLocation?.locationVirtualFields?.physiciansemergencyservices=='true' ||
+            selectedLocation?.locationVirtualFields?.dentistemergencyservices=='true' ||
+            selectedLocation?.locationVirtualFields?.altemergencyservices=='true' ||
+            selectedLocation?.locationVirtualFields?.hosemergencyservices=='true' ||
+            selectedLocation?.locationVirtualFields?.veterinaryemergencyservices=='true' || selectedLocation?.locationVirtualFields?.firstaid=='true'
+            || selectedLocation?.locationVirtualFields?.deliveryoptions=='true'">
+            <div class="about_label">Amenities</div>
+            <div class="basicFlex mt-2 justifystart gap">
+                <div 
+                    class="Specializations_bg">
+                    <div class="type "><ul class="details badges m0 no-padding">
+                        <ng-container *ngIf="selectedLocation">
+                            <li *ngIf="selectedLocation && selectedLocation.parkingType && selectedLocation.parkingType!=='' && selectedLocation.parkingType != undefined && selectedLocation.parkingType != 'none'"
+                                [matTooltip]="'Parking Type: ' + selectedLocation.parkingType">
+                                <span class="icon-parking"></span>
+                            </li>
+                            <li
+                                *ngIf="selectedLocation.open24hours">
+                                <span class="icon-open-time"
+                                    [matTooltip]="'24 Hours Open'"></span>
+                            </li>
+                            <li *ngIf="selectedLocation?.locationVirtualFields?.traumacentre=='true'"
+                                [matTooltip]="'Trauma Centre'"><span
+                                    class="icon-trauma"></span>
+                            </li>
+                            <li *ngIf="selectedLocation?.locationVirtualFields?.docambulance=='true'|| selectedLocation?.locationVirtualFields?.densistambulance=='true'"
+                                [matTooltip]="'Ambulance Services'"><span
+                                    class="icon-ambulance"></span>
+                            </li>
+                            <li [matTooltip]="'Emergency Services'"
+                                *ngIf="selectedLocation?.locationVirtualFields?.physiciansemergencyservices=='true' ||
+                                selectedLocation?.locationVirtualFields?.dentistemergencyservices=='true' ||
+                                selectedLocation?.locationVirtualFields?.altemergencyservices=='true' ||
+                                selectedLocation?.locationVirtualFields?.hosemergencyservices=='true' ||
+                                selectedLocation?.locationVirtualFields?.veterinaryemergencyservices=='true'">
+                                <span class="icon-emergency"></span>
+                            </li>
+                            <li *ngIf="selectedLocation?.locationVirtualFields?.firstaid=='true'"
+                                [matTooltip]="'First Aid'"><span
+                                    class="icon-first-aid"></span>
+                            </li>
+                            <li *ngIf="selectedLocation?.locationVirtualFields?.deliveryoptions=='true'"
+                                [matTooltip]="'Delivery'"><span
+                                    class="fa delivery-amenity"></span>
+                            </li>
+                        </ng-container>
+                    </ul></div>
+                </div>
+            </div>
+           </div>
+        </div>         
+        </p-accordionTab>
+      </p-accordion>
+    </div>
+    <div class="mt-2" *ngIf="activeServices.length > 0 ">
+      <div class="m-auto mainFlexService mgn-sm-bt-60" >
+        <div class="mainFlexService_service" *ngFor="let item of activeServices" (click)="serviceClicked(item)"
+          [ngClass]="{ 'selected': (item['id'] === selectedServiceId) && item.bType===selectedService.bType}">
+          <i class="pull-right fa fa-user" [matTooltip]=" 'Service of ' + item.provider.firstName + ' ' + item.provider.lastName" *ngIf="item.provider && !selectedUser"></i>
+            <app-appointment-card [item]="item" [config]="config" *ngIf="item.bType==='Appointment'"></app-appointment-card>
+            <app-checkin-card [item]="item" [config]="config" *ngIf="item.bType==='Waitlist' || !item.bType"></app-checkin-card>
+        </div>
+      </div>
+    </div>
+    <div class="px-2 mt-2" *ngIf="activeServices.length === 0">
+      No Services
+    </div>
+  </div>
