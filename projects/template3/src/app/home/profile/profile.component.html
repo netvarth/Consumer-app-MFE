@@ -1,0 +1,265 @@
+<section class=" no-padding myaccount no-padding-small consumer-profile container mt-1" [ngClass]="theme">
+    <div class="content p0 see-pages cons-members">
+        <div class="panel panel-default">
+            <div class="panel-body no-padding">
+                <div class="customCard title-gb headerBorder">
+                    <div (click)="goBack()"><i class="fa fa-arrow-left clrChangeHeader"></i> </div>
+                    <div (click)="goBack()" class="clrChangeHeader">Back</div>
+                </div>
+                <div class="customCard">
+                    <div>
+                        <div class="p-2">
+                            <div class="myAcText">My Account</div>
+                            <div class="accountEditText">Update your Personal Info.</div>
+                        </div>
+                        <div class="mainFlex">
+                            <div class="fullWidthLinks" *ngIf="!smallDevice">
+                                <div class="tabText tabTextCstmClr" *ngIf="user_profile_cap">
+                                    <span>
+                                        <img class="tabImgCustom" src="{{cdnPath}}assets/images/myjaldee/accountSettings.png" />
+                                    </span>
+                                    <span> {{user_profile_cap| capitalizeFirst}}</span>
+                                </div>
+                                <div class="tabText" *ngIf="family_members_cap" (click)="redirectto('members')">
+                                    <span>
+                                        <img class="tabImgCustom" src="{{cdnPath}}assets/images/myjaldee/familyMembers.png" />
+                                    </span>
+                                    <span> {{family_members_cap | capitalizeFirst}}</span>
+                                </div>
+                                <div class="tabText" *ngIf="dashboard_cap" (click)="redirectto('dashboard')">
+                                    <span>
+                                        <img class="tabImgCustom" src="{{cdnPath}}assets/images/myjaldee/accountSettings.png" />
+                                    </span>
+                                    <span> {{dashboard_cap | capitalizeFirst}}</span>
+                                </div>
+                                <div class="tabText" (click)="deactiveaccount('deactive')">
+                                    <span class="text-center">
+                                        <i class="fa fa-trash tabImgCustom tabImgCustomThrash" aria-hidden="true"></i>
+                                    </span>
+                                    <span class="deleteac">{{'Delete Your Account' | translate}}</span>
+                                </div>
+                            </div>
+                            <div class="relatedLinksSmall" *ngIf="smallDevice">
+                                <div class="memberInfo">
+                                    <div class="relatedLink customwidth" *ngIf="family_members_cap"
+                                        (click)="redirectto('members')">
+                                        <div> <i class="fa fa-users tabImgCustom tabImgCustomSmall"
+                                                aria-hidden="true"></i></div>
+                                        <div>{{family_members_cap | capitalizeFirst}}</div>
+                                    </div>
+                                </div>
+                                <div class="memberInfo">
+                                    <div class="relatedLink customwidth" *ngIf="dashboard_cap"
+                                        (click)="redirectto('dashboard')">
+                                        <div> <i class="fa fa-dashboard tabImgCustom tabImgCustomSmall"></i></div>
+                                        <div>{{dashboard_cap | capitalizeFirst}}</div>
+                                    </div>
+                                </div>
+                                <div class="memberInfo">
+                                    <div class="relatedLink customwidth" (click)="deactiveaccount('deactive')">
+                                        <span class="text-center">
+                                            <i class="fa fa-trash tabImgCustom tabImgCustomSmall"
+                                                aria-hidden="true"></i>
+                                        </span>
+                                        <span class="deleteac">{{'Delete Your Account' | translate}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flexClassImg card mb-2" *ngIf="smallDevice">
+                                    <div>
+                                        <img class="userImg" *ngIf="!profilePicture"
+                                            src="{{cdnPath}}assets/images/myjaldee/defultUser.png" />
+                                        <img class="userImg" *ngIf="profilePicture" src="{{profilePicture}}" />
+                                    </div>
+                                    <div *ngIf="!profilePicture">
+                                        <button id="btnSelectFile" mat-button type="submit" class="newImgUpload cursor-pointer"
+                                            (click)="imagefile.click()">
+                                            <input #imagefile type="file" accept="/*;capture=camera"
+                                                style="display:none;" (change)="filesSelected($event)">
+                                            <span class="btntxt">{{'Upload New Image' | translate}}</span>
+                                        </button>
+                                    </div>
+                                    <div *ngIf="profilePicture">
+                                        <button id="btnRemoveUser" mat-button type="submit" class="deleteBtn cursor-pointer"
+                                            (click)="removeUser()"><span class="btntxtClr">{{'Delete' |
+                                                translate}}</span></button>
+                                    </div>
+                                </div>
+                                <div class="flexClassImg card mb-2" *ngIf="!smallDevice">
+                                    <section class="pointer">
+                                        <div class="profile-box">
+                                            <img class="userImg" *ngIf="!profilePicture"
+                                                src="{{cdnPath}}assets/images/myjaldee/defultUser.png" />
+                                            <img class="userImg" *ngIf="profilePicture" src="{{profilePicture}}" />
+                                            <div class="box-content">
+                                                <h3 class="customeranmae" *ngIf="spConsumer">
+                                                    {{' Hello, ' | translate}}{{spConsumer['firstName'][0] |
+                                                    capitalizeFirst}}{{spConsumer['lastName'][0] | capitalizeFirst}}
+                                                </h3>
+                                                <ul class="social-links">
+                                                    <li *ngIf="profilePicture">
+                                                        <button type="submit" class="deleteBtn cursor-pointer" id="btnRemove"
+                                                            (click)="removeUser()">
+                                                            <i class="fa fa-trash" aria-hidden="true"></i>
+                                                        </button>
+                                                    </li>
+                                                    <li *ngIf="!profilePicture">
+                                                        <button type="submit" class="newImgUpload cursor-pointer" id="btnFileSelect"
+                                                            (click)="imagefile.click()">
+                                                            <input #imagefile type="file" accept="/*;capture=camera"
+                                                                style="display:none;" (change)="filesSelected($event)">
+                                                            <i class="fa fa-upload edit_1"></i>
+                                                        </button>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </section>
+                                </div>
+                                <div>
+                                    <div class="mt-3">
+                                        <form *ngIf="!loading" [formGroup]="editProfileForm" novalidate (ngSubmit)="editProfileForm['valid'] &&
+                                            onSubmit(editProfileForm['value'])" (keyup)="resetApiErrors()">
+                                            <div class="profile_grid_container form-group">
+                                                <div class="mt-2">
+                                                    <label class="p-0 pt-1 m-0 form-text-light">{{'First Name' |
+                                                        translate}}</label>
+                                                    <div class="input-group d-flex">
+                                                        <div class="field-width">
+                                                            <mat-select pInputText class="form-control" id="titles"
+                                                                formControlName="titles" placeholder="Select">
+                                                                <mat-option [value]="salutation.displayName"
+                                                                    *ngFor="let salutation of salutation">
+                                                                    <div *ngIf="salutation && salutation.name">
+                                                                        {{salutation.displayName}}</div>
+                                                                </mat-option>
+                                                            </mat-select>
+                                                        </div>
+                                                        <div class="flex-grow-1 no-padding">
+                                                            <input pInputText type="text" class="form-control"
+                                                                id="first_name" formControlName="first_name"
+                                                                autocomplete="off">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="mt-2">
+                                                    <label class="p-0 pt-1 m-0 form-text-light">{{'Last Name' |
+                                                        translate}} </label>
+                                                    <input pInputText type="text" class="form-control" id="last_name"
+                                                        placeholder="{{'Last Name' | translate}}"
+                                                        formControlName="last_name" autocomplete="off">
+                                                    <app-field-error-display
+                                                        [displayError]="fed_service.isFieldValid(editProfileForm,'last_name')"
+                                                        [errorMsgs]="fed_service.getErrorMessage(editProfileForm,'last_name',
+                                                                                        {
+                                                                                        'required' : 'Please give last name' | translate,
+                                                                                        'pattern' : 'alpha_nameerror' | translate
+                                                                                        })">
+                                                    </app-field-error-display>
+                                                    <app-field-error-display [displayError]="true"
+                                                        *ngIf="lnameerror != null && !fed_service.isFieldValid(editProfileForm,'last_name')"
+                                                        errorMsg="{{'lnameerror' | translate}}">
+                                                    </app-field-error-display>
+                                                </div>
+                                                <div class="mt-2">
+                                                    <label class="p-0 pt-1 m-0 form-text-light">{{'Email'
+                                                        | translate}} </label>
+                                                    <input pInputText type="text" class="form-control" id="email"
+                                                        formControlName="email" placeholder="Email(user@xyz.com)"
+                                                        autocomplete="off" (keyup)="showConfrmEmail($event)" />
+                                                    <app-field-error-display [displayError]="true"
+                                                        *ngIf="emailerror != null && !fed_service.isFieldValid(editProfileForm,'email')"
+                                                        errorMsg="{{'Please give emailid' | translate }}">
+                                                    </app-field-error-display>
+                                                </div>
+                                                <div class="mt-2" *ngIf="confrmshow">
+                                                    <label class="p-0 pt-1 m-0 form-text-light">{{'Confirm Mail' |
+                                                        translate}} </label>
+                                                    <input pInputText type="text" class="form-control" id="email1"
+                                                        formControlName="email1"
+                                                        placeholder="Re-enter Email(user@xyz.com)" autocomplete="off"
+                                                        (ngModelChange)="reemailhandle(editProfileForm.value)" />
+                                                    <app-field-error-display [displayError]="true"
+                                                        *ngIf="emailerror != null && !fed_service.isFieldValid(editProfileForm,'email1')"
+                                                        errorMsg="{{'Please give emailid' | translate }}">
+                                                    </app-field-error-display>
+                                                </div>
+                                                <div class="mt-2">
+                                                    <label class="p-0 pt-1 m-0 form-text-light">{{'Phone Number' |
+                                                        translate}}</label>
+                                                    <div class="mb-3">
+                                                        <app-phone-input formControlName="phoneNo" name="phoneNo"
+                                                            [initialCountry]="'in'"
+                                                            [preferredCountries]="preferredCountries"
+                                                            [nationalMode]="false"                                                            
+                                                            [separateDialCode]="true"></app-phone-input>
+                                                    </div>
+                                                    <!-- (phoneNumberChange)="onPhoneNumberChanged($event)" -->
+                                                </div>
+                                                <div class="mt-2">
+                                                    <label class="p-0 pt-1 m-0 form-text-light">{{'WhatsApp Number' |
+                                                        translate}}</label>
+                                                    <div class="mb-3">
+                                                        <app-phone-input [initialCountry]="'in'"
+                                                            [preferredCountries]="preferredCountries"
+                                                            [nationalMode]="false"
+                                                            
+                                                            [separateDialCode]="true" name="whatsappnumber"
+                                                            formControlName="whatsappnumber"></app-phone-input>
+                                                            <!-- (phoneNumberChange)="onWhatsappChanged($event)" -->
+                                                    </div>
+                                                </div>
+                                                <div class="mt-2">
+                                                    <label class="p-0 pt-1 m-0 form-text-light">{{'Telegram Number' |
+                                                        translate}} </label>
+                                                    <div class="mb-3">
+                                                        <app-phone-input [initialCountry]="'in'"
+                                                            [preferredCountries]="preferredCountries"
+                                                            [nationalMode]="false"
+                                                            
+                                                            [separateDialCode]="true" name="telegramnumber"
+                                                            formControlName="telegramnumber"></app-phone-input>
+                                                            <!-- (phoneNumberChange)="onTelegramChanged($event)" -->
+                                                    </div>
+                                                </div>
+                                                <div class="mt-2">
+                                                    <div class="form-group normalpicker">
+                                                        <label class="p-0 pt-1 m-0 form-text-light"> Date of
+                                                            birth</label>
+                                                        <p-calendar [readonlyInput]="true" #inputdob
+                                                            formControlName="dob" [style]="{'width':'100%'}"
+                                                            dateFormat="dd/mm/yy" [maxDate]="tday" [minDate]="minday"
+                                                            [showIcon]="true" placeholder="DD/MM/YYYY"></p-calendar>
+                                                    </div>
+                                                </div>
+                                                <div class="mt-2">
+                                                    <label class="p-0 pt-1 m-0 form-text-light">{{gender_cap}} </label>
+                                                    <p-dropdown [options]="genderList" class="text-capitalize"
+                                                        [style]="{'width':'100%'}" formControlName="gender"
+                                                        placeholder="Gender" ropdownIcon="fa fa-caret-down">
+                                                        <ng-template let-item pTemplate="item">
+                                                            {{item | capitalizeFirst}}
+                                                        </ng-template>
+                                                    </p-dropdown>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="ps-3 mt-4 updateBtnInfo">
+                                        <button id="btnUpdate" mat-button (click)="onSubmit(editProfileForm.value)" type="submit"
+                                            [disabled]="isFormInvalid()" class="activityBtn cursor-pointer">
+                                            <span class="updateBtnText"
+                                                *ngIf="update_btn">{{update_btn.toUpperCase()}}</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="empty" *ngIf="smallDevice"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

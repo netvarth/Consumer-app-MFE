@@ -19,7 +19,6 @@ import { BasicProfileModule } from '../basic-profile/basic-profile.module';
   ],
   imports: [
     CommonModule,
-    // PictureGalleryModule,
     CarouselModule,
     BasicProfileNewModule,
     BasicProfileModule,

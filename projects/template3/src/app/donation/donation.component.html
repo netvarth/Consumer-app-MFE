@@ -1,0 +1,668 @@
+<div class="card shadow d-flex flex-row">
+    <div class="my-auto">
+        <a class="" (click)="goBack('back')"><i class="fa fa-arrow-left"></i>&emsp;</a>
+    </div>
+    <div class="text-center mx-auto" *ngIf="smallDevice">
+        <app-booking-accountinfo [businessInfo]="businessInfo" [smallDevice]="smallDevice">
+        </app-booking-accountinfo>
+    </div>
+
+    <div class="text-left ms-4" *ngIf="!smallDevice">
+        <app-booking-accountinfo [businessInfo]="businessInfo" [smallDevice]="!smallDevice">
+        </app-booking-accountinfo>
+    </div>
+</div>
+<div class="card shadow" *ngIf="loggedIn && services.length > 1 && bookStep==='donation'">
+    <label class="resPaymrntDetails">Donate to</label>
+    <mat-select class="form-control" (selectionChange)="serviceSelected($event.value)" [(ngModel)]="selectedService">
+        <mat-option *ngFor="let service of services" [value]="service">{{ service.name }}
+        </mat-option>
+    </mat-select>
+</div>
+<section #consumer_donation class="cons-donate p-0" [ngClass]="[smallDevice?'container':'container-fluid']">
+    <div [ngClass]="{'loadingpaytm': loadingPaytm}"></div>
+    <div class="content p0 loc-list p-checkin ynw-common-form-nm">
+        <app-common-innerloading-spinner *ngIf="loadingPaytm"></app-common-innerloading-spinner>
+        <div class="flex-column-fluid hf-panel-body card card-custom no-margin hgt-adjust">
+            <div class="card-body p-0">
+                <div class="wizard wizard-1" id="kt_wizard_v1" data-wizard-state="step-first"
+                    data-wizard-clickable="false">
+                    <div [ngClass]="loggedIn ? 'row justify-content-center': ''">
+                        <div class="loading-hgt" *ngIf="!loggedIn ">
+                            <app-authentication (actionPerformed)="actionPerformed($event)"
+                                [accountId]="accountId"></app-authentication>
+                        </div>
+                        <div>
+                            <div class="lbl right-part" data-wizard-type="step-content" data-wizard-state="current"
+                                *ngIf="bookStep === 'profile'">
+                                <div class="p-4 quest-head">
+                                    Fill the following one time information
+                                </div>
+                                <app-questionnaire [questionnaireList]="onetimeQuestionnaireList"
+                                    [questionAnswers]="oneTimeInfo" [source]="'onetime'"
+                                    (returnAnswers)="getOneTimeQuestionAnswers($event)">
+                                </app-questionnaire>
+                                <div class="d-flex justify-content-between border-top pt-2 hf-double-btn-container">
+                                    <button type="button" id="btnNextProfile"
+                                        class="next-button btn btn-primary font-weight-bold text-uppercase px-9 py-4"
+                                        (click)="goToStep('profile')">
+                                        Next
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="lbl right-part" data-wizard-type="step-content" data-wizard-state="current"
+                                *ngIf="bookStep === 'qnr'">
+                                <div class="p-4 quest-head">
+                                    We need some more information
+                                </div>
+                                <app-questionnaire [questionnaireList]="questionnaireList"
+                                    [questionAnswers]="questionAnswers" [source]="'consDonation'"
+                                    (returnAnswers)="getQuestionAnswers($event)">
+                                </app-questionnaire>
+                                <div class="d-flex justify-content-between border-top pt-2 hf-double-btn-container">
+                                    <button type="button" id="btnNextDonation"
+                                        class="next-button btn btn-primary font-weight-bold text-uppercase px-9 py-4"
+                                        (click)="goToStep('donation')">
+                                        Next
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="lbl" data-wizard-type="step-content" data-wizard-state="current">
+                                <div *ngIf="api_loading_video" class="incomplete-msg">
+                                    <div style="padding: 0 30px;">
+                                        Files are Uploading...
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="lbl" data-wizard-type="step-content" data-wizard-state="current"
+                                *ngIf="bookStep === 'donation'" [ngClass]="{'highlight': api_loading_video}">
+                                <div class="c-outer m0" style="display: contents !important;">
+                                    <div class="c-body">
+                                        <div *ngIf="selectedService">
+                                            <div class="copy locd">
+                                                <div class="lbl row">
+                                                    <div
+                                                        class="col-md-12 col-lg-5 col-12 col-sm-12 px-2 mt-2 check-new-group cardTop">
+                                                        <div>
+                                                            <div style="box-shadow: 0 1px 1px 0 rgb(0 0 0 / 20%), 0 2px 5px 0 rgb(0 0 0 / 19%) !important;
+                                                                padding: 10px !important;
+                                                                border-radius: 10px;" class="p-0 c-checkin-new">
+                                                                <div class="clearfix"></div>
+                                                                <div class="mobile-donor-details">
+                                                                    <div class="col-md-12 col-12 col-lg-12 col-sm-12 lnk p-2 donation_label "
+                                                                        style="color: #bebebe;">
+                                                                        Provide donor details for
+                                                                        sending donation acknowledgement
+                                                                        and related communications.<br>
+                                                                    </div>
+                                                                    <div class="clearfix"></div>
+                                                                    <div class="mb-2">
+                                                                        <div class="mobile-edit-icon">
+                                                                            <span
+                                                                                style="display: flex;align-items: center;gap: 5px;"
+                                                                                class="ms-1 phonevallabel boldmobiletext">
+                                                                                <div> <i style="font-size: 15px !important;"
+                                                                                        class="fa fa-user-circle"></i>&nbsp;
+                                                                                </div>
+                                                                                <div style="color: #122f71;">
+                                                                                    <span
+                                                                                        *ngIf="title">{{title}}&nbsp;</span>{{donorName}}
+                                                                                </div>
+                                                                                <div>
+                                                                                    <a style="font-size: 15px !important;"
+                                                                                        class="ms-1  lnk pointer-cursor"><i
+                                                                                            class="fa fa-pencil-square-o"
+                                                                                            (click)="editDonor(userEmail,donorName,userPhone)"
+                                                                                            data-bs-toggle="modal"
+                                                                                            data-bs-target="#exampleModalCenter"></i></a>
+                                                                                </div>
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div
+                                                                        style="display: flex;justify-content: space-between;flex-wrap: wrap;">
+                                                                        <div class="mb-2">
+                                                                            <div class="mobile-edit-icon">
+                                                                                <span
+                                                                                    style="display: flex;color: #133072;font-weight: bold;align-items:center;"
+                                                                                    class="ms-1 no-pointer-events phonevallabel boldmobiletext"
+                                                                                    *ngIf="phoneNumber!=''"><i
+                                                                                        style="font-size: 22px !important;"
+                                                                                        class="fa fa-mobile "></i>&nbsp;
+                                                                                    {{dialCode}}
+                                                                                    {{phoneNumber}}
+                                                                                </span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="" *ngIf="userEmail">
+                                                                            <div class="mobile-edit-icon">
+                                                                                <span
+                                                                                    style="display: flex;color: #133072;font-weight: bold;align-items: center;"
+                                                                                    class="ms-1 no-pointer-events emailvallabel boldmobiletext">
+                                                                                    <i style="font-size: 15px !important;"
+                                                                                        class="fa fa-envelope-o "></i>&nbsp;
+                                                                                    {{userEmail}}
+                                                                                </span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="" *ngIf="!userEmail">
+                                                                            <i style="font-size: 15px !important;"
+                                                                                class="fa fa-envelope-o mr-2"></i>
+                                                                            <a class="ms-1 lnk pointer-"><i
+                                                                                    class="fa fa-plus fa-1x"
+                                                                                    style="color: blue;font-size: 15px !important;"
+                                                                                    data-bs-toggle="modal"
+                                                                                    data-bs-target="#exampleModalCenter">Add
+                                                                                    Email</i></a>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="mobile-input">
+                                                                    <div *ngIf="selectedService.preInfoTitle" style="font-size: 15px;color: #3c3c3f;
+                                                                            font-weight: 700;text-align: left;margin-top: 10px;margin-left: 5px;
+                                                                            ;">{{selectedService.preInfoTitle}}</div>
+                                                                    <div *ngIf="selectedService.preInfoText"
+                                                                        style="font-size: 14px;padding: 5px;text-align: left !important;">
+                                                                        {{selectedService.preInfoText}}</div>
+                                                                </div>
+                                                                <div>
+                                                                    <div>
+                                                                        <div class="lbl mt-4 amount-section-mobile">
+                                                                            <div>
+                                                                                <div>
+                                                                                    <div class="mobile-input">
+                                                                                        <div
+                                                                                            style="text-align: left; font-size: 15px; font-weight: bold;
+                                                                                        color: #666767;margin-bottom: 5px;">
+                                                                                            Amount(<i
+                                                                                                style=" color: #666767 !important"
+                                                                                                class="fa fa-rupee"></i>)
+                                                                                        </div>
+                                                                                        <label
+                                                                                            style="display:flex !important">
+                                                                                            <input type="number" min="0"
+                                                                                                max="{{selectedService.maxDonationAmount?selectedService.maxDonationAmount:selectedService.minDonationAmount}}"
+                                                                                                class="form-control  rupee-font"
+                                                                                                placeholder="{{(selectedService.minDonationAmount === selectedService.maxDonationAmount)? (selectedService.maxDonationAmount
+                            | currency:'&#8377;':'symbol':'0.0-2') : ((selectedService.minDonationAmount
+                            | currency:'&#8377;':'symbol':'0.0-2') + ' - ' + (selectedService.maxDonationAmount
+                            | currency:'&#8377;':'symbol':'0.0-2'))}}" [(ngModel)]="donationAmount"
+                                                                                                (input)="isValid($event); validate($event)">
+                                                                                        </label>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="prepay-amt mb-4">
+                                                                                    <div *ngIf="selectedService"
+                                                                                        class="form-level-settings applybill red">
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div>
+                                                                                <div>
+                                                                                    <textarea rows="10"
+                                                                                        style="height: 34px !important;border-radius: 5px;"
+                                                                                        placeholder="{{selectedService.consumerNoteTitle}}"
+                                                                                        class="form-control mb-4 "
+                                                                                        [(ngModel)]="consumerNote"
+                                                                                        #consumernote
+                                                                                        (keyup)="autoGrowTextZone($event)"
+                                                                                        (change)="handleConsumerNote(consumernote.value)"
+                                                                                        maxlength="500"></textarea>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="clearfix"></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div
+                                                            class="hf-double-btn-container paymentBtn no-padding-small">
+                                                            <div class="ps-2 pt-3" *ngIf="!from_iOS">
+                                                                <div class="resPaymrntDetails">Select Payment Mode</div>
+                                                            </div>
+                                                            <div *ngIf="!from_iOS" class="ps-2">
+                                                                <ng-container *ngIf="!shownonIndianModes">
+                                                                    <app-payment-modes
+                                                                        [paymentModes]="indian_payment_modes"
+                                                                        (modeSelected)="indian_payment_mode_onchange($event)">
+                                                                    </app-payment-modes>
+                                                                </ng-container>
+                                                                <ng-container *ngIf="shownonIndianModes">
+                                                                    <app-payment-modes [paymentModes]="non_indian_modes"
+                                                                        (modeSelected)="non_indian_modes_onchange($event)">
+                                                                    </app-payment-modes>
+                                                                </ng-container>
+                                                                <div class="clearfix"></div>
+                                                                <div class="txt-align-center pad_link mt-4">
+                                                                    <span [class.disabled]="isClickedOnce"
+                                                                        (click)="togglepaymentMode()"
+                                                                        class="pointer-cursor"><a class="refund_policy"
+                                                                            *ngIf="paymentmodes">
+                                                                            <span
+                                                                                *ngIf="!shownonIndianModes && paymentmodes && paymentmodes.internationalPay">Non
+                                                                                Indian Payment ? Click
+                                                                                here</span>
+                                                                            <span
+                                                                                *ngIf="shownonIndianModes && paymentmodes && paymentmodes.indiaPay">Indian
+                                                                                Payment ? Click
+                                                                                here</span>
+                                                                        </a></span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="clearfix"></div>
+                                                            <div class="txt-align-center mt-4">
+                                                                <button type="button" id="btnProceedToGateway"
+                                                                    class="next-button btn btn-primary mobile-button-color font-weight-bold text-uppercase "
+                                                                    [class.disabled]="isClickedOnce"
+                                                                    (click)="!isClickedOnce && goToGateway()">
+                                                                    Proceed
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div
+                                                        class="col-md-12 col-lg-7 col-12 col-sm-12 px-2 mt-2 check-new-group">
+                                                        <div style="background-color: #e7f0ff"
+                                                            class="p-0 mobile-donation-for-styling ">
+                                                            <div class="p-3">
+                                                                <div style="text-align: center;
+                                                                font-size: 24px;
+                                                                font-weight: bold;
+                                                                color: #133072;box-shadow: 0 1px 1px 0 rgb(0 0 0 / 20%), 0 2px 5px 0 rgb(0 0 0 / 19%) ;background-color: #fff;padding: 20px;border-radius: 10px;"
+                                                                    class="col-md-12 col-12 col-sm-12 lnk my-1 card-title service reverseDetails">
+                                                                    <div *ngIf="selectedServiceId" class="resBgChange">
+                                                                        <div class="resDesName">
+                                                                            {{selectedService.name |
+                                                                            capitalizeFirst}}</div>
+                                                                        <div *ngIf="(selectedService.description.length !=0 && selectedService.description.length <=50)"
+                                                                            style="font-size: 10px;padding: 10px;"
+                                                                            class="textChange desktop_disply">
+                                                                            {{selectedService.description}}
+                                                                        </div>
+                                                                        <div *ngIf="selectedService.description.length >=50"
+                                                                            style="font-size: 10px;padding: 10px;"
+                                                                            class="textChange desktop_disply">
+                                                                            {{selectedService.description}}
+                                                                        </div>
+                                                                        <div *ngIf="(selectedService.description.length !=0 && selectedService.description.length <=50)"
+                                                                            style="font-size: 10px;padding: 10px;"
+                                                                            class="textChange mobile_disply">
+                                                                            {{selectedService.description |
+                                                                            slice:0:120}}...
+                                                                        </div>
+                                                                        <div *ngIf="selectedService.description.length >=50"
+                                                                            style="font-size: 10px;padding: 10px;"
+                                                                            class="textChange mobile_disply">
+                                                                            {{selectedService.description |
+                                                                            slice:0:120}}...
+                                                                            <a data-bs-target="#examplemodaldescriptio"
+                                                                                data-bs-toggle="modal"
+                                                                                aria-hidden="true"
+                                                                                style="color: #fff !important;">See
+                                                                                More</a>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div>
+                                                                        <div
+                                                                            *ngFor="let image of selectedService.servicegallery,let i=index">
+                                                                            <div *ngIf="selectedService.servicegallery.length>0"
+                                                                                style="padding:10px"
+                                                                                class="serviceGalleryImg">
+                                                                                <div
+                                                                                    *ngIf="selectedService.servicegallery.length==1">
+                                                                                    <img class="resImg"
+                                                                                        style="width:100%;"
+                                                                                        src="{{image.url}}"
+                                                                                        alt="Donation">
+                                                                                </div>
+                                                                                <div
+                                                                                    *ngIf="selectedService.servicegallery.length!=1">
+                                                                                    <img class="resImg" *ngIf="i==1"
+                                                                                        (click)="openGallery(image_list_popup[0])"
+                                                                                        style="width:100%;cursor: pointer;"
+                                                                                        src="{{selectedService.servicegallery[0].url}}"
+                                                                                        alt="Donation">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+                                                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="close-btn d-flex justify-content-end">
+                                                            <button type="button" class="close" aria-label="Close"
+                                                                id="btnClose" data-bs-dismiss="modal">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="lbl col-md-12 col-lg-12 col-12 col-sm-12 no-padding-small notes"
+                                                                *ngIf="action=='phone'|| 'donor' || 'email'">
+                                                                <div style="text-align: center;
+                                                                    font-size: 16px;
+                                                                    font-weight: bold;
+                                                                    padding: 10px;                                                                    
+                                                                    color: #2e2e2e;
+                                                                    ">Donor Details</div>
+                                                                <div class=" input-group mobile-error c-checkin-new">
+                                                                    <div>
+                                                                        <div style="font-weight: 400 !important;color: #3f4254 !important;font-size: 13px !important;margin-bottom: 0px !important;"
+                                                                            class="col-md-12 col-12 col-sm-12 lnk  resMobileNum">
+                                                                            First name <span
+                                                                                style="color: #f24949 !important;">*</span>
+                                                                        </div>
+
+                                                                    </div>
+                                                                    <div
+                                                                        class="col-md-12 col-12 col-sm-12 resMobileNum">
+                                                                        <label style="display: contents !important;">
+                                                                            <input (keyup)="resetErrors()" style="background-color: #f6f6f6!important;
+                                                                                    border-radius: 4px;
+                                                                                    border: 1px solid #f6f6f6!important;
+                                                                                    font-size: .875rem;
+                                                                                    font-weight: 500;
+                                                                                    color: #222223;
+                                                                                    text-overflow: ellipsis;"
+                                                                                placeholder="Enter First name"
+                                                                                class="form-control phonenum"
+                                                                                [(ngModel)]="donorFirstName" />
+                                                                            <app-field-error-display
+                                                                                [displayError]="true"
+                                                                                *ngIf="firstNameRequired != null"
+                                                                                errorMsg={{firstNameRequired}}>
+                                                                            </app-field-error-display>
+                                                                            <div>
+                                                                                <div style="font-weight: 400 !important;color: #3f4254 !important;padding-top: 5px !important;font-size: 13px !important;margin-bottom: 0px !important;"
+                                                                                    class="col-md-12 col-12 col-sm-12 lnk mb-1 resMobileNum">
+                                                                                    Last name<span
+                                                                                        style="color: #f24949 !important;">*</span>
+                                                                                </div>
+
+                                                                            </div>
+                                                                            <input (keyup)="resetErrors()" style="background-color: #f6f6f6!important;
+                                                                                border-radius: 4px;
+                                                                                border: 1px solid #f6f6f6!important;
+                                                                                font-size: .875rem;
+                                                                                font-weight: 500;
+                                                                                color: #222223;
+                                                                                text-overflow: ellipsis;"
+                                                                                placeholder="Enter Last name"
+                                                                                class="form-control phonenum"
+                                                                                [(ngModel)]="donorLastName" />
+                                                                            <app-field-error-display
+                                                                                [displayError]="true"
+                                                                                *ngIf="lastNameRequired != null"
+                                                                                errorMsg={{lastNameRequired}}>
+                                                                            </app-field-error-display>
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                                <div
+                                                                    class="lbl col-md-12 col-lg-12 col-12 col-sm-12 no-padding-small notes">
+                                                                    <div
+                                                                        class="mt-1 input-group mobile-error c-checkin-new ">
+                                                                        <div>
+                                                                            <div style="font-weight: 400 !important;color: #3f4254 !important;font-size: 13px !important;margin-bottom: 0px !important;"
+                                                                                class="col-md-12 col-12 col-sm-12 lnk resMobileNum">
+                                                                                Mobile number <span
+                                                                                    style="color: #f24949 !important;">*</span>
+                                                                            </div>
+
+                                                                        </div>
+                                                                        <div
+                                                                            class="col-md-12 col-12 col-sm-12 mb-2 resMobileNum no-padding-large">
+                                                                            <div class="codenumber mb-2">
+                                                                                <app-phone-input name="mobileNumber"
+                                                                                    [initialCountry]="'in'"
+                                                                                    [preferredCountries]="preferredCountries"
+                                                                                    [nationalMode]="false"
+                                                                                    [separateDialCode]="true"
+                                                                                    [(ngModel)]="selectedPhone"
+                                                                                    [ngModelOptions]="{updateOn: 'blur'}"
+                                                                                    (phoneNumberChange)="onPhoneNumberChanged($event)"></app-phone-input>
+                                                                            </div>
+                                                                            <div class="sts-msg error" style="background: white !important;
+                                                                        color: #f24949 !important;
+                                                                        padding: 0px !important;
+                                                                        font-weight: bold !important;"
+                                                                                *ngIf="phoneError!=''">
+                                                                                {{phoneError}}
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 col-sm-12 p-0 email-sec mb-1"
+                                                                    *ngIf="!userEmail">
+                                                                    <div style="display: flex;">
+                                                                        <div style="margin-bottom: 0px !important;font-size: 0.7rem !important;font-weight: 400 !important;color: #3f4254 !important;font-size: 13px !important;"
+                                                                            class="col-md-12 col-12 col-sm-12 lnk  resMobileNum">
+                                                                            Email <span
+                                                                                style="color: #f24949 !important;">*</span>
+                                                                        </div>
+
+                                                                    </div>
+                                                                    <div
+                                                                        class="col-md-12 col-sm-12 col-12 resMobileNum">
+                                                                        <ng-container>
+                                                                            <div class="form-group">
+                                                                                <input style="background-color: #f6f6f6!important;
+                                                                           border-radius: 4px;
+                                                                           border: 1px solid #f6f6f6!important;
+                                                                           font-size: .875rem;
+                                                                           font-weight: 500;
+                                                                           color: #222223;
+                                                                           text-overflow: ellipsis;"
+                                                                                    class="form-control emailPrepay"
+                                                                                    id="email"
+                                                                                    placeholder="Email(user@xyz.com)"
+                                                                                    [(ngModel)]="payEmail"
+                                                                                    autocomplete="off"
+                                                                                    (keyup)="resetApiErrors();showConfrmEmail()">
+                                                                                <app-field-error-display
+                                                                                    [displayError]="true"
+                                                                                    *ngIf="emailerror != null"
+                                                                                    errorMsg={{emailerror}}>
+                                                                                </app-field-error-display>
+                                                                            </div>
+                                                                            <div class="form-group" *ngIf="confrmshow">
+                                                                                <input style="background-color: #f6f6f6!important;
+                                                                                    border-radius: 4px;
+                                                                                    border: 1px solid #f6f6f6!important;
+                                                                                    font-size: .875rem;
+                                                                                    font-weight: 500;
+                                                                                    color: #222223;
+                                                                                    text-overflow: ellipsis;"
+                                                                                    class="form-control emailPrepay"
+                                                                                    id="email1"
+                                                                                    placeholder="Re-enter Email(user@xyz.com)"
+                                                                                    [(ngModel)]="payEmail1"
+                                                                                    autocomplete="off" onpaste="false;"
+                                                                                    oncopy="false" oncut="false"
+                                                                                    ondrag="false" ondrop="false"
+                                                                                    (keyup)="resetApiErrors()">
+                                                                                <app-field-error-display
+                                                                                    [displayError]="true"
+                                                                                    *ngIf="email1error != null"
+                                                                                    errorMsg={{email1error}}>
+                                                                                </app-field-error-display>
+                                                                            </div>
+                                                                        </ng-container>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 col-sm-12 p-0 email-sec mb-1"
+                                                                    *ngIf="userEmail">
+                                                                    <div>
+                                                                        <div style="font-size: 0.7rem !important;font-weight: 400 !important;color: #3f4254 !important;font-size: 13px !important;margin-bottom: 0px !important;"
+                                                                            class="col-md-12 col-12 col-sm-12 lnk  resMobileNum">
+                                                                            Email <span
+                                                                                style="color: #f24949 !important;">*</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div
+                                                                        class="col-md-12 col-sm-12 col-12 resMobileNum">
+                                                                        <ng-container>
+                                                                            <div class="form-group">
+                                                                                <input style="background-color: #f6f6f6!important;
+                                                                          border-radius: 4px;
+                                                                          border: 1px solid #f6f6f6!important;
+                                                                          font-size: .875rem;
+                                                                          font-weight: 500;
+                                                                          color: #222223;
+                                                                          text-overflow: ellipsis;"
+                                                                                    class="form-control emailPrepay"
+                                                                                    id="email"
+                                                                                    placeholder="Email(user@xyz.com)"
+                                                                                    [(ngModel)]="payEmail"
+                                                                                    autocomplete="off"
+                                                                                    (keyup)="resetApiErrors();showConfrmEmail()"
+                                                                                    onpaste="false;" oncopy="false"
+                                                                                    oncut="false" ondrag="false"
+                                                                                    ondrop="false">
+                                                                                <app-field-error-display
+                                                                                    [displayError]="true"
+                                                                                    *ngIf="emailerror != null"
+                                                                                    errorMsg={{emailerror}}>
+                                                                                </app-field-error-display>
+                                                                            </div>
+                                                                            <div class="form-group" *ngIf="confrmshow"
+                                                                                style="margin-top: 15px !important;">
+                                                                                <input style="background-color: #f6f6f6!important;
+                                                                              border-radius: 4px;
+                                                                              border: 1px solid #f6f6f6!important;
+                                                                              font-size: .875rem;
+                                                                              font-weight: 500;
+                                                                              color: #222223;
+                                                                              text-overflow: ellipsis;"
+                                                                                    class="form-control emailPrepay"
+                                                                                    id="email1"
+                                                                                    placeholder="Re-enter Email(user@xyz.com)"
+                                                                                    [(ngModel)]="payEmail1"
+                                                                                    autocomplete="off" onpaste="false;"
+                                                                                    oncopy="false" oncut="false"
+                                                                                    ondrag="false" ondrop="false"
+                                                                                    (keyup)="resetApiErrors()">
+                                                                                <app-field-error-display
+                                                                                    [displayError]="true"
+                                                                                    *ngIf="email1error != null"
+                                                                                    errorMsg={{email1error}}>
+                                                                                </app-field-error-display>
+                                                                            </div>
+                                                                        </ng-container>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="input-group-btn "
+                                                                    style="text-align: center;">
+                                                                    <button style="padding: 9px !important;
+                                                            width: 6rem;
+                                                            border-radius: 5px !important;"
+                                                                        class=" me-2 btn bt3 btnCancel" type="button"
+                                                                        data-bs-dismiss="modal" (click)="resetData()"
+                                                                        id="btnCancel">
+                                                                        Cancel
+                                                                    </button>
+                                                                    <button style="padding: 9px !important;
+                                                            width: 6rem;
+                                                            border-radius: 5px !important;"
+                                                                        class="next-button btn btn-primary font-weight-bold text-uppercase px-9 py-4"
+                                                                        (click)="saveDonorDetails()" id="btnSaveDonor"
+                                                                        type="button">{{!userEmail ?
+                                                                        'Add' : 'Save'}}</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="disp-none modal-footer">
+                                                            <button type="button" id="btnClose1"
+                                                                class="btn btn-light-primary font-weight-bold"
+                                                                data-bs-dismiss="modal" #closebutton></button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal fade" id="examplemodaldescriptio" tabindex="-1"
+                                                role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="close-btn">
+                                                            <button type="button" class="close" aria-label="Close"
+                                                                data-bs-dismiss="modal" id="btnClose2">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div
+                                                                class="lbl col-md-12 col-lg-12 col-12 col-sm-12 no-padding-small notes">
+                                                                <div class=" mt-1 input-group mobile-error c-checkin-new mobile_disply"
+                                                                    *ngIf="selectedServiceId">
+                                                                    <div *ngIf="selectedService.description.length===0"
+                                                                        class="col-md-12 col-12 col-sm-12 lnk mb-2 resMobileNum"
+                                                                        style="font-weight: bold !important;
+                                                                        font-size: 15px !important;
+                                                                    ;display: none;">
+                                                                        {{selectedService.name
+                                                                        |capitalizeFirst}}
+
+                                                                    </div>
+                                                                    <div *ngIf="selectedService.description.length!==0"
+                                                                        class="col-md-12 col-12 col-sm-12 lnk mb-2 resMobileNum"
+                                                                        style="font-size: 15px !important;
+                                                                        font-weight: bold !important;">
+                                                                        {{selectedService.name
+                                                                        |capitalizeFirst}}
+                                                                    </div>
+                                                                    <div
+                                                                        class="col-md-12 col-12 col-sm-12 resMobileNum">
+                                                                        <div *ngIf="selectedServiceId"
+                                                                            class="resBgChange">
+
+                                                                            <div *ngIf="selectedService.description.length===0"
+                                                                                style="color: #2e2e2e !important;
+                                                                            box-shadow: 0 4px 8px 0 rgb(0 0 0 / 20%);
+                                                                            transition: 0.3s;
+                                                                            margin-bottom: 15px;font-size: 12px !important;padding: 10px !important;font-weight: bold !important;word-spacing: 5px !important;display: none;">
+                                                                                {{selectedService.description}}
+                                                                            </div>
+
+                                                                            <div *ngIf="selectedService.description.length!==0"
+                                                                                style="color: #2e2e2e !important;
+                                                                        box-shadow: 0 4px 8px 0 rgb(0 0 0 / 20%);
+                                                                        transition: 0.3s;
+                                                                        margin-bottom: 15px;font-size: 12px !important;padding: 10px !important;font-weight: bold !important;word-spacing: 5px !important;">
+                                                                                {{selectedService.description}}
+                                                                            </div>
+
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="close-btn">
+                                                                        <button type="button" id="btnClose3"
+                                                                            class="btn btn-light-primary font-weight-bold"
+                                                                            aria-label="Close" data-bs-dismiss="modal"
+                                                                            style="font-size: 1rem !important;color: #fff !important;
+                                                                                    background-color: #1e4079 !important;">
+                                                                            <span aria-hidden="true">Close</span>
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

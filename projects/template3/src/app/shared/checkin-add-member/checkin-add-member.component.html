@@ -1,0 +1,27 @@
+<div *ngIf="calledFrom=='checkin'" class="addmem-head">{{fill_fol_det_cap}}</div>
+<div class="outer ynw-common-form">
+    <div class="form-group"
+        *ngIf="globalsettings && globalsettings.customerSeriesEnum && globalsettings.customerSeriesEnum === 'MANUAL'">
+        <input type="text" [(ngModel)]="jaldeeid" (keyup)="valuechange()" class="form-control" id="jid"
+            placeholder="{{customer_label | capitalizeFirst}} Id *" autocomplete="off">
+    </div>
+    <div class="d-flex pb-1 pt-1">
+        <div class="field-ht">
+            <p-dropdown class="form-control" [options]="salutation" [style]="{'width':'100%'}"
+                (onChange)="valuechange()" [(ngModel)]="title" placeholder="Select" ropdownIcon="fa fa-caret-down"
+                class="text-capitalize" optionLabel="name" optionValue="displayName">
+                <ng-template let-item pTemplate="salutation">
+                    {{item.displayName}}
+                </ng-template>
+            </p-dropdown>
+        </div>
+        <div class="flex-grow-1 no-padding">
+            <input pInputText type="text" class="form-control" id="first_name" placeholder="First Name"
+                [(ngModel)]="firstname" autocomplete="off" (keyup)="valuechange()" required pattern="[A-Za-z]" />
+        </div>
+    </div>
+    <div class="form-group">
+        <input type="text" [(ngModel)]="lastname" (keyup)="valuechange()" (keypress)="isNumeric($event)"
+            class="form-control" id="lastname" placeholder="Last Name *" autocomplete="off" required pattern="[A-Za-z]">
+    </div>
+</div>

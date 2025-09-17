@@ -1,0 +1,18 @@
+<section id="busPageId" class="content bus-page p-0" [ngClass]="theme">
+    <div class="bus-page-header" #header>
+        <app-header *ngIf="!loading"></app-header>
+    </div>
+    <div class="content">
+        <router-outlet></router-outlet>
+    </div>
+    <div>
+        <div *ngIf="!hideFooter && cartCount > 0 && smallmobileDevice" class="shopping-cart-footer">
+            <div class="cart-footer">
+                <div>
+                    <span class="Item-count">{{ cartCount }} {{ cartCount === 1 ? 'Item' : 'Items' }} Added</span>
+                </div>
+                <button pRipple type="button" id="btnViewCart" class="btn-viewCart btn-primary" (click)="viewCart()">View Cart</button>
+            </div>
+        </div>
+    </div>
+</section>

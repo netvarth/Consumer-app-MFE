@@ -1,0 +1,254 @@
+.title-gb {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+h5 {
+    font-size: 1.25rem;
+    margin-bottom: 10px;
+}
+
+.back-btn {
+    font-size: 1.25rem !important;
+}
+
+.back-btn i {
+    color: #000;
+}
+
+.fa {
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+}
+
+.content .c-outer .c-body {
+    flex-grow: 1;
+    position: relative;
+    transition: all .3s;
+}
+
+.content .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid rgba(0, 0, 0, .125);
+    border-radius: 0.25rem;
+}
+
+.content .col-a .card {
+    margin-bottom: 30px;
+}
+
+.bill-section-content .global-icons {
+    padding-bottom: 30px;
+    border-bottom: 1px solid #ccc;
+}
+
+.bill-section-content .global-icons button {
+    float: right;
+}
+
+button {
+    border-radius: 0;
+}
+
+.section-one h3 {
+    font-size: 1rem;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.section-one,
+.section-three {
+    padding: 20px;
+    border-bottom: 1px solid #dbdbdb;
+}
+
+.section-three .bill-breakup .list {
+    position: relative;
+    border-bottom: 1px solid #dbdbdb;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+}
+
+.receipt .bill-content .section-three .bill-summary {
+    border-bottom: none !important;
+}
+
+.section-three .bill-breakup {
+    text-align: right !important;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.section-three .bill-breakup .list .list-content .c-row {
+    padding: 5px 0;
+}
+
+.bill-content .bill-responsive .c-row {
+    margin-right: 0 !important;
+    font-size: 0.8rem !important;
+}
+
+.section-three .bill-breakup .list .list-content .c-row.one {
+    display: flex;
+}
+
+.section-three .bill-breakup .list .list-content .c-row.one .name {
+    font-weight: 600;
+    padding-right: 15px;
+    flex-basis: 60%;
+    position: relative;
+}
+
+.section-three .bill-breakup .list .list-content .c-row.one .quantity {
+    flex-basis: 20%;
+}
+
+.rupee-font {
+    font-family: Arial, Helvetica, sans-serif !important;
+}
+
+.no-padding {
+    padding: 0 !important;
+}
+
+.content .c-outer {
+    display: flex;
+    width: 100%;
+    /* margin-top: 20px; */
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.comn-cls .w-dta .copy {
+    display: flex;
+    flex-basis: 100%;
+    font-size: .875rem;
+}
+
+.section-three .bill-breakup .list .list-content .c-row.two .discount-row {
+    margin-right: 50px;
+    display: flex;
+    padding: 5px 0;
+    color: #999;
+}
+
+.section-three .bill-breakup .list .list-content .c-row.two .name-row {
+    margin-right: 50px;
+    display: flex;
+    padding: 5px 0;
+}
+
+.section-three .bill-breakup .list .list-content .c-row.two {
+    display: block;
+    margin-right: 0;
+    padding: 0;
+}
+
+.bill-content .bill-responsive .discount-row,
+.bill-content .bill-responsive .name-row {
+    margin-right: 0 !important;
+}
+
+.section-three .bill-breakup .list .list-content .c-row.two .name-row .name {
+    font-weight: 600;
+}
+
+.section-three .bill-breakup .list .list-content .c-row.two .discount-row .name,
+.section-three .bill-breakup .list .list-content .c-row.two .name-row .name {
+    flex-grow: 1;
+    flex-basis: 60%;
+    padding-right: 15px;
+}
+
+.amountSaved {
+    text-align: left;
+    color: #32cd32;
+    font-weight: 700;
+}
+
+.section-two .edit-row.service .spr .cs-btn {
+    height: 30px;
+    line-height: 12px;
+    padding: 6px 10px;
+    text-transform: none;
+    float: left;
+    font-size: .75rem;
+}
+
+.bt1 {
+    background: #00aef2;
+    border-radius: 3px;
+    background-clip: padding-box;
+    height: 40px;
+    font-family: Montserrat, sans-serif;
+    font-weight: 500;
+    text-transform: uppercase;
+    color: #fff;
+    font-size: .875rem;
+    padding-left: 30px;
+    padding-right: 30px;
+    line-height: inherit;
+    transition: all .3s;
+}
+
+.section-two .edit-row.service .spr .cs-btn.bt2 {
+    margin-left: 10px;
+}
+
+.cs-btn {
+    border-radius: 3px;
+}
+
+.txt-align-center {
+    text-align: center !important;
+}
+
+a:hover {
+    color: #222223;
+    text-decoration: none !important;
+}
+
+.section-three {
+    border: none;
+}
+
+.other-section {
+    border-top: 1px solid #ccc !important;
+}
+
+.jc-sec-bill .section-two {
+    padding: 5px 0 15px !important;
+    border: none !important;
+}
+
+.section-two .edit-row.service .spr {
+    margin-left: 15px;
+}
+
+.section-two .edit-row.service {
+    display: flex;
+}
+.dateError {
+    font-size: 13px;
+    font-weight: 600;
+    color: #ff6a6a !important;
+    font-family: "Open Sans";
+    font-style: normal;
+    font-weight: 600 !important;
+}
+
+.customTxtpaymentDetails,
+small {
+    font-size: 0.8rem;
+}

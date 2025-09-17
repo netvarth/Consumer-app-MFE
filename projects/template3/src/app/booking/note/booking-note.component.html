@@ -1,0 +1,17 @@
+<div class="modal-body">
+    <div class="col-md-12 col-12 col-sm-12 lnk mt-4">
+        {{selectedService.consumerNoteTitle}}
+        <div class="form-level-settings">
+            Add any other notes to the 
+            {{businessProfile.businessName ? businessProfile.businessName : selectedService.name}}
+        </div>
+    </div>
+    <div class="col-md-12 col-sm-12 col-12">
+        <textarea class="form-control my-4"
+            [(ngModel)]="note" #consumernote
+            [ngModelOptions]="{standalone: true}"
+            (change)="handleConsumerNote(consumernote.value)"
+            maxlength="1000"
+            placeholder="{{placeholder}}"></textarea>
+    </div>
+</div>

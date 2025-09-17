@@ -1,0 +1,45 @@
+<mat-radio-group class="text-center mx-auto" name="paymentMode" (change)="paymentModeSelected($event)">
+    <div *ngFor="let modes of paymentModes">
+        <mat-radio-button class="pay-rad mgn-up-5 ml-auto" [value]="modes.mode" [checked]="modes.mode==paymentMode">
+            <div class="clearfix"></div>
+            <div class="modes-row">
+                <div>
+                    <img class="pay-icons" [src]="getImageSrc(modes.mode)" alt="">
+                </div>
+                <div class="modes-label">
+                    <div *ngIf="modes.modeDisplayName === 'UPI'">            
+                        <div>{{modes.modeDisplayName}}</div>
+                    </div>
+                    <div *ngIf="modes.modeDisplayName === 'Credit Card'">
+                        <div>{{modes.modeDisplayName}}</div>
+                    </div>
+                    <div *ngIf="modes.modeDisplayName === 'Debit Card'">
+                        <div> {{modes.modeDisplayName}}</div>
+                    </div>
+                    <div *ngIf="modes.modeDisplayName === 'Net Banking'">
+                        <div> {{modes.modeDisplayName}}</div>
+                    </div>
+                    <div *ngIf="modes.modeDisplayName === 'Wallet'">
+                        <div> {{modes.modeDisplayName}} </div>
+                    </div>
+                    <div *ngIf="modes.mode === 'PAYLATER'">
+                        <div class="text-capitalize"> {{modes.modeDisplayName}} </div>
+                    </div>
+                </div>
+            </div>
+        </mat-radio-button>
+    </div>
+    <div>
+        <mat-radio-button class="pay-rad mgn-up-5" [value]="'cash'" *ngIf="cashPay">
+            <div class="clearfix"></div>
+            <div class="col-12 no-padding pay-mode mgn-up-10">
+                <div class="col-12 no-padding mgn-up-10 text-center">
+                    <img class="pay-icons" [src]="getImageSrc('PAYCASH')" alt="">
+                </div>
+                <div class="col-12 mgn-up-5 no-padding text-center">
+                    Pay by Cash
+                </div>
+            </div>
+        </mat-radio-button>
+    </div>
+</mat-radio-group>
