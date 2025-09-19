@@ -4,6 +4,7 @@ import { PrivacyComponent } from './privacy.component';
 import { FormsModule } from '@angular/forms';
 
 
+
 @NgModule({
   declarations: [
     PrivacyComponent

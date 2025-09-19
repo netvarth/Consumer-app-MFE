@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -102,7 +102,7 @@ export class RootComponent implements OnInit, OnDestroy {
     this.apptSettings = this.accountService.getJson(this.account['appointmentsettings']);
     this.accountProfile = this.accountService.getJson(this.account['businessProfile']);
     this.accountId = this.accountProfile.id;
-    this.customId = this.accountProfile['customId'] ? this.accountProfile['customId'] : this.accountProfile['accEncUid'];
+    // this.customId = this.accountProfile['customId'] ? this.accountProfile['customId'] : this.accountProfile['accEncUid'];
     this.donationServicesJson = this.accountService.getJson(this.account['donationServices']);
     if (this.accountProfile.cover) {
       this.bgCover = this.accountProfile.cover.url;
@@ -487,21 +487,19 @@ export class RootComponent implements OnInit, OnDestroy {
         if (status) {
           _this.showCommunicate(this.accountId);
         } else {
-          let communicateUrl = this.customId + "/" + this.templateJson.template + '?callback=communicate';
+          let communicateUrl = this.sharedService.getRouteID() + "/" + this.templateJson.template + '?callback=communicate';
           this.lStorageService.setitemonLocalStorage('target', communicateUrl);
-          this.router.navigate([this.customId, 'login']);
+          this.router.navigate([this.sharedService.getRouteID(), 'login']);
         }
       });
   }
   profileActionPerformed(action) {
     if (action === 'coupons') {
-      // this.openCoupons()
     } else if (action === 'qrcode') {
-      // this.qrCodegeneraterOnlineID(this.customId);
     } else if (action === 'communicate') {
       this.communicateHandler();
     } else if (action === 'about') {
-      this.router.navigate([this.customId, 'about']);
+      this.router.navigate([this.sharedService.getRouteID(), 'about']);
     }
   }
   actionPerformed(actionObj) {
@@ -513,7 +511,7 @@ export class RootComponent implements OnInit, OnDestroy {
         const navigationExtras: NavigationExtras = {
           queryParams: queryParam
         };
-        this.router.navigate([this.customId, 'service', actionObj['service'].id], navigationExtras);
+        this.router.navigate([this.sharedService.getRouteID(), 'service', actionObj['service'].id], navigationExtras);
       } else {
         this.appointmentClicked(actionObj['location'], actionObj['service']);
       }
@@ -525,7 +523,7 @@ export class RootComponent implements OnInit, OnDestroy {
         const navigationExtras: NavigationExtras = {
           queryParams: queryParam
         };
-        this.router.navigate([this.customId, 'service', actionObj['service'].id], navigationExtras);
+        this.router.navigate([this.sharedService.getRouteID(), 'service', actionObj['service'].id], navigationExtras);
       } else {
         this.checkinClicked(actionObj['location'], actionObj['service']);
       }
@@ -537,7 +535,7 @@ export class RootComponent implements OnInit, OnDestroy {
         const navigationExtras: NavigationExtras = {
           queryParams: queryParam
         };
-        this.router.navigate([this.customId, 'service', actionObj['service'].id], navigationExtras);
+        this.router.navigate([this.sharedService.getRouteID(), 'service', actionObj['service'].id], navigationExtras);
       } else {
         this.donationClicked(actionObj['location'].id, new Date(), actionObj['service']);
       }
@@ -547,14 +545,14 @@ export class RootComponent implements OnInit, OnDestroy {
           back: 1
         }
       };
-      this.router.navigate([this.customId, 'department', actionObj['userId']], navigationExtras);
+      this.router.navigate([this.sharedService.getRouteID(), 'department', actionObj['userId']], navigationExtras);
     } else {
       const navigationExtras: NavigationExtras = {
         queryParams: {
           back: 1
         }
       };
-      this.router.navigate([this.customId, actionObj['userId']], navigationExtras);
+      this.router.navigate([this.sharedService.getRouteID(), actionObj['userId']], navigationExtras);
     }
     if (this.templateJson.section1 && this.templateJson.section1.key === actionObj) {
       this.menuSelected(this.templateJson.section1);
@@ -580,7 +578,7 @@ export class RootComponent implements OnInit, OnDestroy {
         service_id: service.id
       }
     };
-    this.router.navigate([this.customId, 'donations', 'new'], navigationExtras);
+    this.router.navigate([this.sharedService.getRouteID(), 'donations', 'new'], navigationExtras);
   }
   appointmentClicked(location, service) {
     let queryParam = {
@@ -621,7 +619,7 @@ export class RootComponent implements OnInit, OnDestroy {
     const navigationExtras: NavigationExtras = {
       queryParams: queryParam
     };
-    this.router.navigate([this.customId, 'appointment'], navigationExtras);
+    this.router.navigate([this.sharedService.getRouteID(), 'appointment'], navigationExtras);
   }
   checkinClicked(location, service) {
     let queryParam = {
@@ -652,7 +650,7 @@ export class RootComponent implements OnInit, OnDestroy {
     const navigationExtras: NavigationExtras = {
       queryParams: queryParam,
     };
-    this.router.navigate([this.customId, 'checkin'], navigationExtras);
+    this.router.navigate([this.sharedService.getRouteID(), 'checkin'], navigationExtras);
   }
   blogReadMore(blog) {
     window.open(blog.link, "_system");

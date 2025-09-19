@@ -152,7 +152,6 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
    * Phone Number Collection for Account Existencen
    */
   sendOTP(mode?) {
-    alert("SendOTP");
     this.phoneError = null;
     this.btnClicked = true;
     this.lStorageService.removeitemfromLocalStorage('login');

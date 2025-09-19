@@ -31,8 +31,6 @@
               <div class="details">
                 <h5 class="user-head">{{selectedService.name}}</h5>
                 <div *ngIf="datePresent === true">
-                  <!-- <p class="sepcialization" *ngIf="!isFutureDate">Today, {{selectedApptsTime}}</p> -->
-                  <!-- <p *ngIf="isFutureDate">{{appmtDate | date: newDateFormat}}, {{selectedApptsTime}}</p> -->
                   <p>{{appmtDate | date: newDateFormat}}, {{selectedApptsTime}}</p>
                 </div>
               </div>
@@ -59,8 +57,6 @@
                 <h5 class="user-head">{{selectedUser.businessName}}</h5>
                 <h4 class="mt-1">{{selectedService.name}}</h4>
                 <div *ngIf="datePresent === true">
-                  <!-- <p class="sepcialization" *ngIf="!isFutureDate">Today, {{selectedApptsTime}}</p>
-                  <p *ngIf="isFutureDate">{{appmtDate | date: newDateFormat}}, {{selectedApptsTime}}</p> -->
                   <p>{{appmtDate | date: newDateFormat}}, {{selectedApptsTime}}</p>
                 </div>
               </div>
@@ -123,17 +119,10 @@
         </div>
       </p-accordionTab>
     </p-accordion>
-
-
-
   </div>
   <div class="clearfix"></div>
   <div class="mainFlexdate mt-4">
     <div class="dateFlex">
-      <!-- <div class="selectedTimne" *ngIf="!isFutureDate">
-        {{'Today' | translate}}<ng-container *ngIf="selectedApptsTime">,</ng-container>
-      </div> -->
-      <!-- isFutureDate &&  -->
       <div class="selectedTimne" *ngIf="bookingDate">
         {{bookingDate | date: newDateFormat}}<ng-container *ngIf="selectedApptsTime">,</ng-container>
       </div>
@@ -214,7 +203,6 @@
     <div class="waitLine">{{'Waiting in Line' | translate}}</div>
   </div>
   <div class="clearfix"></div>
-  <!-- no-padding -->
   <div class="w-100 p-2 " *ngIf="wt_personaahead && queuejson && queuejson.length > 0">
     <div class="peronDet5ails">
       <span *ngIf="personsAhead <= 0">{{'0 People' | translate}}</span>

@@ -22,6 +22,8 @@ const routes: Routes = [
       { path: 'status/:id', loadChildren: () => import('./status/status.module').then(m => m.StatusModule) },
       { path: 'item/:id', loadChildren: () => import('./item/item.module').then(m => m.ItemModule) },
       { path: 'order', loadChildren: () => import('../orders/orders.module').then(m => m.OrdersModule) },
+      { path: 'appointment', loadChildren: () => import('../booking/appointment/appointment.module').then(m => m.AppointmentModule) },
+      { path: 'checkin', loadChildren: () => import('../booking/checkin/checkin.module').then(m => m.CheckinModule) },  
       { path: 'booking', loadChildren: () => import('../booking/booking.module').then(m => m.BookingModule) },
       { path: 'donation', loadChildren: () => import('../donation/donation.module').then(m=>m.DonationModule)},
       { path: 'about', loadChildren: () => import('./aboutus/aboutus.module').then(m => m.AboutusModule) },

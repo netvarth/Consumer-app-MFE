@@ -41,7 +41,6 @@ export class HomeComponent implements AfterViewInit{
     console.log("Account ID :", this.accountId);
     this.locations = this.sharedService.getJson(account['location']);
     console.log("Locations:", this.locations);
-    alert(this.accountId)
     this.accountService.setActiveLocation(this.locations[0]);
     this.cartFooterSubscription = this.subscriptionService.getMessage().subscribe((message) => {
       switch (message.ttype) {

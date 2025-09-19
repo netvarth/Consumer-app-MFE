@@ -120,11 +120,6 @@ export class ProfileComponent implements OnInit {
     private subscriptionService: SubscriptionService
   ) {
     this.moment = this.dateTimeProcessor.getMoment();
-    this.subs.sink = this.activated_route.queryParams.subscribe(qparams => {
-      // if (qparams && qparams.theme) {
-      //   this.theme = qparams.theme;
-      // }
-    });
   }
   goBack() {
     this.location.back();
