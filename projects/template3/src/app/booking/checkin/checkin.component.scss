@@ -108,6 +108,25 @@ a {
   color: rgba(0, 0, 0, .87);
 }
 
+.question-header {
+    color: #000 !important;
+    font-weight: 500 !important;
+    font-size: 1rem !important;
+    text-align: center;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.question-header .pointer-cursor {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.question-header .pointer-cursor a {
+    color: inherit;
+}
+
 @media (max-width: 575px) {
   .question-header {
     font-size: 14px !important;

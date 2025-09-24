@@ -160,6 +160,25 @@ a {
     color: rgba(0, 0, 0, .87);
 }
 
+.question-header {
+    color: #000 !important;
+    font-weight: 500 !important;
+    font-size: 1rem !important;
+    text-align: center;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.question-header .pointer-cursor {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.question-header .pointer-cursor a {
+    color: inherit;
+}
+
 @media (max-width: 575px) {
     .question-header {
         font-size: 14px !important;
@@ -320,8 +339,22 @@ body.modal-open {
 }
 
 .refund_policy {
-    color: #3c8dbc !important;
-    font-size: .9rem !important;
+    color: #3f51b5 !important;
+    opacity: 0.85;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.refund_policy:hover {
+    text-decoration: underline !important;
+}
+
+.refund_policy span {
+    display: inline-block;
 }
 
 .pad_link {
@@ -562,10 +595,4 @@ mat-chip {
 .modal-footer .cancel {
     background: #dbdbdb !important;
     color: #666 !important;
-}
-
-::ng-deep app-payment-modes .question-header {
-    clear: both;
-    padding-top: 10px;
-    padding-bottom: 10px;
 }
