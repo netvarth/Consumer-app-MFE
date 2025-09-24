@@ -1,0 +1,38 @@
+<div class="fb" *ngIf="!path && !content">
+    <h3>Privacy Policy</h3>
+</div>
+<hr *ngIf="!path && !content" />
+<div class="col-12 col-sm-12 col-md-12 col-lg-12 fontmodel no-padding-small" *ngIf="!path && !content">
+    <ul>
+        <li>Jaldee collects personal information which is willingly provided by the registered
+            service provider only. It includes and is not limited to, name, email address,
+            address, phone numbers and other contact details, GPS location, profile description,
+            password, bank account details and professional credentials /licenses for the
+            purpose of connecting the registered service providers with registered consumers.
+            Jaldee does not rent or sell any of the information to 3rd parties. Jaldee would
+            disclose the information collected only to users of the platform for the purpose of
+            enabling interaction between services providers and consumers. Jaldee will not share
+            any of the information with any 3rd parties without the express consent of the
+            person providing such information. Any information provided by Registered Service
+            Provider/ Consumer shall be secured with industry standard protocols and technology
+            by Jaldee. However, nothing in this agreement shall prevent Jaldee from disclosing
+            any information given to it to any Governmental Agency or Authority who may demand
+            such information as authorized by any law in force. </li>
+        <li>Jaldee would collect IP Address of any person who logs in to its website or on the
+            platform and would also collect information from the browser used as cookies, and
+            store such information. These information are used only for system administration
+            purposes and they are not in any manner linked to personally identifiable
+            information unless in case of detection of fraud or cyber-crime.</li>
+        <li>Any personal information collected by Jaldee is secured through industry standard
+            protocols and technology and is stored on the servers/ systems accessible only to
+            authorized personnel of Jaldee with whom non-disclosure agreements are in place
+            mandating confidentiality in respect of client information.</li>
+    </ul>
+</div>
+<div class="col-12 col-sm-12 col-md-12 col-lg-12 fontmodel no-padding" *ngIf="path || content">
+    <div class="col-md-12 p-0 mgn-bt-50" *ngIf="path">
+        <iframe [src]="path" width="500" height="600"></iframe>
+    </div>
+    <div class="col-md-12 p-0 mgn-bt-50 privacy-data" *ngIf="!path" [innerHTML]="content">
+    </div>
+</div>

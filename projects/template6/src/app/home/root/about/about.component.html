@@ -1,0 +1,111 @@
+<section [ngClass]="theme" class="aboutus">
+    <div class="card shadow d-flex flex-row p-2">
+        <div class="my-auto">
+            <a class="" (click)="goBack()"><i class="fa fa-arrow-left"></i>&emsp;</a>
+        </div>
+    </div>
+    <div class="col-12 no-padding">
+        <div class="col-12 no-padding">
+            <div class="cover no-padding" *ngIf="basicProfile['cover']">
+                <img class="profile-img" [src]="basicProfile['cover']" alt="">
+            </div>
+            <div class="no-cover no-padding" *ngIf="!basicProfile['cover']">
+            </div>
+            <div class="logo">
+                <img class="provider_logo_img" src="{{basicProfile['logo']}}" />
+            </div>
+            <div class="px-3 pt-3 profile-card">
+                <div class="head-area px-3 pt-3 justify-content-between">
+                    <div>
+                        <h1 *ngIf="basicProfile.businessName">{{basicProfile.businessName}}</h1>
+                        <h3 class="font_user_size business-user-name" *ngIf="basicProfile.businessUserName">
+                            {{basicProfile.businessUserName | capitalizeFirst}}
+                        </h3>
+                        <p>
+                            <a [href]="selectedLocation.googleMapUrl" target="_blank"
+                                *ngIf="selectedLocation.googleMapUrl!=''"><i
+                                    class="fa fa-map-marker"></i>&nbsp;{{selectedLocation.place |
+                                capitalizeFirst}}</a>
+                        </p>
+                    </div>
+                </div>
+                <div class="follow-card col-12 no-padding" *ngIf="!extras['hideActions']">
+                    <div class="pointer-cursor actionbtns">
+                        <div class="col-12 ovhd no-padding">
+                            <ul class="bus-actions bus-actions-large">
+                                <ng-container
+                                    *ngIf="extras['icons'] && basicProfile.socialMedia && basicProfile.socialMedia.length>0">
+                                    <ng-container *ngFor="let soc of basicProfile.socialMedia; let i = index">
+                                        <li><a class="like-btn" rel="noopener" [href]="soc.value"
+                                                target="_blank"><span><i
+                                                        [class]="getSocialdet(soc.resource, 'iconClass')"
+                                                        [matTooltip]="getSocialdet(soc.resource, 'displayName')"></i></span></a>
+                                        </li>
+                                    </ng-container>
+                                </ng-container>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 d-flex p-0 justify-start my-2">
+                    <button (click)="bookNow()" role="button" type="submit" class="apptBtn me-2"><span
+                            class="btnFont">{{'Book an Appointment'}}</span></button>
+                    <button (click)="communicate()" role="button" type="submit" class="chatBtn"><span
+                            class="btnFont">{{'Chat With Us'}}</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="p-3">
+        <div class="mt-2">
+            <div class="question-header">{{'About Us' | translate}}
+                <div class="mb-2">
+                    <p class="about">{{accountProfile.businessDesc}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="contact ms-2">
+            <p class="smalltext" *ngIf="accountProfile.phoneNumbers && accountProfile.phoneNumbers.length>0">
+                <span *ngFor="let phoneNo of accountProfile.phoneNumbers">
+                    <a href="tel:{{phoneNo.instance}}" target="_blank"><i
+                            class="fa fa-phone"></i>&nbsp;{{accountProfile.countryCode}}
+                        {{phoneNo.instance}}</a></span>
+            </p>
+            <p class="smalltext" *ngIf="accountProfile.emails && accountProfile.emails.length>0">
+                <span *ngFor="let email of accountProfile.emails"><a class="cut-text" href="mailto:{{email.instance}}"
+                        target="_blank"><i class="fa fa-envelope-o"></i>&nbsp;{{email.instance}}
+                    </a></span>
+            </p>
+        </div>
+        <div class="specialities-header mt-2" *ngIf="this.accountProfile.specialization">
+            {{'Specialities' | translate}}
+            <div class="details ms-2">
+                <div class="pop-box-cont " *ngFor="let speci of this.accountProfile.specialization">
+                    {{speci}}
+                </div>
+            </div>
+        </div>
+
+        <div class="question-main-outer" *ngFor="let vfield of virtualfieldsCombinedjson">
+            <div class="question-outer" *ngIf="vfield.value">
+                <ng-container>
+                    <div class="question-header">{{vfield.displayName}}</div>
+                    <div class="question-value1 pop-box-cont ms-2" *ngIf="vfield.type!= 'object'"
+                        [innerHTML]="wordProcessor.firstToUpper(vfield.value) | nl2br">
+                    </div>
+                    <div class="question-valuearr" *ngIf="vfield.type== 'object'">
+                        <ul class="virtual-field-ul ms-2" *ngFor="let vals of vfield.value">
+                            <li class="vfield-row pop-box-cont" *ngIf="vals.length">
+                                <span *ngFor="let field of vals; let i=index" class="morevalspan  ">
+                                    {{field}}<span *ngIf="i <= (vals.length-2)">,
+                                    </span>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</section>

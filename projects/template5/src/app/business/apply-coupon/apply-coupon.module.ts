@@ -4,6 +4,7 @@ import { ApplyCouponComponent } from './apply-coupon.component';
 import { FormsModule } from '@angular/forms';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { I8nModule } from 'jconsumer-shared';
+import { TranslateModule } from "@ngx-translate/core";
 
 @NgModule({
   declarations: [
@@ -13,8 +14,8 @@ import { I8nModule } from 'jconsumer-shared';
     CommonModule,
     FormsModule,
     MatTooltipModule,
-    SharedModule,
-    I8nModule
+    I8nModule,
+    TranslateModule 
   ],
   exports: [
     ApplyCouponComponent

@@ -1,0 +1,50 @@
+<div class="cover no-padding" *ngIf="basicProfile['cover']">
+    <img class="profile-img" [src]="basicProfile['cover']" alt="">
+</div>
+<div class="no-cover no-padding" *ngIf="!basicProfile['cover']">
+</div>
+<div class="logo">
+    <img class="provider_logo_img" src="{{basicProfile['logo']}}" />
+</div>
+<div class="px-3 pt-3 profile-card">
+    <div class="head-area px-3 pt-3 justify-content-between">
+        <div>
+            <h1 *ngIf="basicProfile.businessName">{{basicProfile.businessName}}</h1>
+            <h3 class="font_user_size business-user-name" *ngIf="basicProfile.businessUserName">
+                {{basicProfile.businessUserName | capitalizeFirst}}
+            </h3>
+            <p>
+                <a [href]="selectedLocation.googleMapUrl" target="_blank" *ngIf="selectedLocation.googleMapUrl!=''"><i
+                        class="fa fa-map-marker"></i>&nbsp;{{selectedLocation.place |
+                    capitalizeFirst}}</a>
+            </p>
+        </div>
+    </div>
+    <div class="follow-card no-padding" *ngIf="!extras['hideActions']">
+        <div class="row m-0 pointer-cursor actionbtns">
+            <div class="col-8 ovhd no-padding">
+                <ul class="bus-actions bus-actions-large">
+                    <ng-container
+                        *ngIf="extras['icons'] && basicProfile.socialMedia && basicProfile.socialMedia.length>0">
+                        <ng-container *ngFor="let soc of basicProfile.socialMedia; let i = index">
+                            <li *ngIf="i<5"><a class="like-btn" rel="noopener" [href]="soc.value"
+                                    target="_blank"><span><i [class]="getSocialdet(soc.resource, 'iconClass')"
+                                            [matTooltip]="getSocialdet(soc.resource, 'displayName')"></i></span></a>
+                            </li>
+                        </ng-container>
+                    </ng-container>
+                </ul>
+            </div>
+            <div class="col-4 more-abt">
+                <a (click)="aboutUs()"> About Us ></a>
+                <a></a>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 d-flex p-0 justify-start mt-3 mb-4">
+        <button (click)="bookNow()" role="button" type="submit" class="apptBtn me-2"><span class="btnFont">{{'Book an
+                Appointment'}}</span></button>
+        <button (click)="communicate()" role="button" type="submit" class="chatBtn"><span class="btnFont">{{'Chat With
+                Us'}}</span></button>
+    </div>
+</div>

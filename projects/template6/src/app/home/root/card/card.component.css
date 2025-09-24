@@ -1,0 +1,1673 @@
+.removeotherstyling .card {
+    width: 400px !important;
+    all: initial !important;
+    min-height: 400px !important;
+}
+
+.up {
+    position: relative !important;
+    bottom: 15px !important;
+}
+
+.artboardimage {
+    width: 150px !important;
+    height: 150px !important;
+    text-align: center !important;
+}
+
+.row .upperpart {
+    max-height: 150px !important;
+}
+
+.row .upperpart1 {
+    max-height: 150px !important;
+}
+
+.bookingButton {
+    width: 90%;
+    border: 1px solid #337ab7;
+    background-color: #337ab7;
+    color: white;
+    font-weight: 600;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19) !important;
+    -webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19) !important;
+}
+
+.imagesectionincards {
+    width: 110px !important;
+    height: 110px !important;
+
+}
+
+.providerimagesection {
+    box-shadow: #00000029 -3pt 22pt 6pt !important;
+    border: 5px solid white !important;
+}
+
+.providerborder {
+    background: orange !important;
+    padding: 4px 4px !important;
+    position: relative !important;
+
+}
+
+.border {
+    background: orange !important;
+    padding: 4px 4px !important;
+    position: relative !important;
+}
+
+.booking-card.card.service,
+.booking-card.card.user {
+    width: 100% !important;
+    font-weight: 400 !important;
+    border: 0 !important;
+    -webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19) !important;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19) !important;
+    margin: auto !important;
+    overflow: hidden !important;
+    height: 300px !important;
+    max-width: 260px !important;
+    min-width: 210px !important;
+}
+
+.mrgn {
+    margin-top: 35px !important;
+}
+
+.display-lg-none {
+    display: none !important;
+}
+
+.booking-card.card.order {
+    width: 100% !important;
+    font-weight: 400 !important;
+    border: 0 !important;
+    -webkit-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12) !important;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12) !important;
+    margin: auto !important;
+    overflow: hidden !important;
+}
+
+@media(max-width:1024px) {
+    .artboardimage {
+        width: 70px !important;
+        height: 70px !important;
+        text-align: center !important;
+    }
+
+    .service-image {
+        width: 70px !important;
+        height: 70px !important;
+    }
+
+    .imagesectionincards {
+        width: 100px !important;
+        height: 100px !important;
+    }
+
+    .mobile-img-size {
+        width: 100px !important;
+        height: 100px !important;
+    }
+}
+
+@media(max-width:1000px) {
+    .artboardimage {
+        width: 70px !important;
+        height: 70px !important;
+        text-align: center !important;
+    }
+
+    .display-lg-none {
+        display: block !important;
+    }
+
+    .display-sm-none {
+        display: none !important;
+    }
+
+    .text-xs-center {
+        text-align: center;
+    }
+
+    .text-xs-center1 {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .getclass {
+        text-align: center;
+    }
+
+    .service-image {
+        width: 70px !important;
+        height: 70px !important;
+    }
+
+    .imagesectionincards {
+        width: 100px !important;
+        height: 100px !important;
+    }
+
+    .mobile-img-size {
+        width: 100px !important;
+        height: 100px !important;
+    }
+
+    .font-xs-size {
+        font-size: 14px;
+    }
+}
+
+@media(min-width: 700px) {
+    .booking-card.card.order {
+        max-width: 250px !important;
+        min-width: 230px !important;
+    }
+}
+
+.booking-card.card.order.items {
+    width: 100% !important;
+    font-weight: 400 !important;
+    border: 0 !important;
+    -webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19) !important;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19) !important;
+    margin: auto !important;
+    overflow: hidden !important;
+    max-width: 260px !important;
+    min-width: 210px !important;
+}
+
+.booking-card.card.order.items.height-301 {
+    height: 301px !important;
+    padding: 16px !important;
+}
+
+.booking-card.card.order.items.height-185 {
+    height: 185px !important;
+    padding: 40px 16px 16px !important;
+}
+
+.booking-card.card p {
+    font-size: 13px !important;
+    line-height: 1.5 !important;
+    margin: 0 0 5px !important;
+}
+
+.booking-card.card.order p {
+    font-weight: 500;
+}
+
+.booking-card-user .card-item-title {
+    height: 100px !important;
+    width: 100% !important;
+}
+
+@media(max-width: 992px) and (min-width: 320px) {
+    .booking-card.card {
+        margin-top: 10px !important;
+    }
+
+    .providerborder {
+        display: none;
+    }
+
+    .providerimagesection {
+        display: none;
+    }
+
+    .text-xs-center {
+        text-align: center;
+    }
+
+    .row.text-xs-center {
+        min-height: 20px;
+    }
+}
+
+.booking-card.card {
+    padding: 5px !important;
+    position: relative !important;
+    display: -ms-flexbox !important;
+    display: flex !important;
+    -ms-flex-direction: column !important;
+    flex-direction: column !important;
+    min-width: 0 !important;
+    word-wrap: break-word !important;
+    background-color: #fff !important;
+    background-clip: border-box !important;
+    border: 1px solid rgba(0, 0, 0, 0.125) !important;
+    border-radius: .50rem !important;
+}
+
+.booking-card .view {
+    position: relative !important;
+    overflow: hidden !important;
+    cursor: default !important;
+}
+
+.booking-card .card-img,
+.booking-card .card-img-top,
+.booking-card .card-img-bottom {
+    -ms-flex-negative: 0 !important;
+    flex-shrink: 0 !important;
+    width: 100% !important;
+}
+
+.booking-card .overlay .mask {
+    opacity: 0 !important;
+    -webkit-transition: all .4s ease-in-out !important;
+    transition: all .4s ease-in-out !important;
+}
+
+.booking-card .view .mask {
+    position: absolute !important;
+    top: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    overflow: hidden !important;
+    background-attachment: fixed !important;
+}
+
+.booking-card .rgba-white-slight,
+.rgba-white-slight:after {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.booking-card .card-body {
+    position: relative;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding-top: 0.25rem !important;
+    padding-bottom: 0.25rem !important;
+    border-radius: 0 !important;
+}
+
+.booking-card .card-body {
+    -ms-flex: 1 1 auto !important;
+    flex: 1 1 auto !important;
+    min-height: 1px !important;
+    padding: 0 !important;
+}
+
+.booking-card .card .card-body h1,
+.booking-card .card .card-body h2,
+.booking-card .card .card-body h3,
+.booking-card .card .card-body h4,
+.booking-card .card .card-body h5,
+.booking-card.card .card-body h6 {
+    font-weight: 400 !important;
+}
+
+h5 {
+    font-size: 1rem;
+}
+
+.booking-card .font-weight-bold {
+    font-weight: 700 !important;
+}
+
+.booking-card .card-title {
+    height: 45px !important;
+    line-height: 1.25 !important;
+    margin-bottom: 0 !important;
+}
+
+.booking-card .card .card-body .card-title a {
+    -webkit-transition: .2s ease-in-out !important;
+    transition: .2s ease-in-out !important;
+}
+
+.booking-card .card.booking-card .rating {
+    font-size: .7rem !important;
+}
+
+.booking-card .rating {
+    padding: 0 !important;
+    color: #ffa000 !important;
+    list-style-type: none !important;
+}
+
+.booking-card .card .card-body .card-text {
+    font-size: .9rem !important;
+    font-weight: 400 !important;
+    color: #747373 !important;
+}
+
+.booking-card .lead {
+    font-size: 1.25rem !important;
+    font-weight: 300 !important;
+}
+
+.booking-card .deep-purple-text {
+    color: #673ab7 !important;
+}
+
+.more-act {
+    font-size: 1.25rem !important;
+    margin-top: -10px !important;
+}
+
+@media(max-width: 992px) {
+    .more-act {
+        margin-top: -5px !important;
+    }
+}
+
+.more-act:hover {
+    border-radius: 20px !important;
+    padding: 5px !important;
+    background-color: #eee !important;
+}
+
+.booking-card .card-footer {
+    height: 50px !important;
+}
+
+.booking-card .card-content {
+    height: 80px !important;
+}
+
+.booking-card .meet-icon,
+.booking-card .phon-icon {
+    width: 20px !important;
+}
+
+.booking-card .module {
+    margin: 0 0 1em 0;
+    overflow: hidden !important;
+}
+
+.booking-card .line-clamp {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    padding: 0 10px;
+}
+
+.booking-card.card.order .module1 {
+    overflow: hidden !important;
+}
+
+.booking-card.card.order .line-clamp1 {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 1 !important;
+    -webkit-box-orient: vertical !important;
+}
+
+.booking-card .card-head {
+    margin-bottom: 1rem !important;
+    height: 40px !important;
+}
+
+.pl-0 {
+    padding-left: 0 !important;
+}
+
+.pb-0 {
+    padding-bottom: 0 !important;
+}
+
+.pt-0 {
+    padding-top: 0 !important;
+}
+
+.booking-card:hover {
+    background-color: #f8f8f8 !important;
+}
+
+.booking-card .card-item-head {
+    height: 100px !important;
+    align-self: center !important;
+}
+
+.booking-card.card.order .card-item-head {
+    height: 140px !important;
+    width: 100% !important;
+}
+
+.booking-card .card-item-content {
+    margin-top: 6px;
+    text-align: center;
+    display: table;
+    width: 100%;
+}
+
+.booking-card.card.order .card-item-content {
+    text-align: left !important;
+}
+
+.booking-card.card.order .card-item-content h4 a.name {
+    overflow: hidden !important;
+}
+
+.booking-card.card.order .card-item-content h4 a.price {
+    font-size: 1rem !important;
+}
+
+.strikeMe {
+    text-decoration: line-through !important;
+    color: #aaa !important;
+    font-size: 0.85rem !important;
+}
+
+.booking-card.card.order .card-item-content {
+    height: 75px !important;
+    margin-top: 10px;
+}
+
+.booking-card.card.order .card-item-content .btn-lt button,
+.booking-card.card.order .card-item-content .btn-rt button {
+    font-size: 1.25rem;
+    padding-left: 7px;
+    padding-right: 7px;
+    background-color: #fff !important;
+    border-color: #ddd !important;
+    border: 1px solid;
+}
+
+.booking-card.card.order .card-item-content .btn-lt button {
+    border-top-left-radius: 20px 20px;
+    border-bottom-left-radius: 20px 20px;
+}
+
+.booking-card.card.order .card-item-content .btn-rt button {
+    border-top-right-radius: 20px 20px;
+    border-bottom-right-radius: 20px 20px;
+}
+
+.booking-card.card.order .card-item-content .count-o {
+    width: 35px !important;
+    height: 32px !important;
+    border: 1px solid #ddd !important;
+    padding-top: 5px !important;
+    text-align: center !important;
+    font-size: .8rem !important;
+}
+
+.booking-card.card.order .card-img,
+.booking-card.card.order .card-img-top {
+    border-top-left-radius: calc(0.25rem - 1px) !important;
+    border-top-right-radius: calc(0.25rem - 1px) !important;
+    height: 140px !important;
+    object-fit: cover !important;
+}
+
+.booking-card .card-item-content h4 {
+    display: table-cell;
+    vertical-align: middle
+}
+
+.booking-card-user .card-img,
+.booking-card-user .card-img-top {
+    width: 90px !important;
+    height: 90px;
+    border: 1px solid #ddd;
+    margin-top: 10px;
+    vertical-align: middle;
+}
+
+.booking-card-user .card-img {
+    border: none !important;
+    margin: 0px !important;
+    padding: 5px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.booking-card h4.card-title a {
+    color: #073B4C !important;
+}
+
+.orange {
+    color: orange !important;
+}
+
+.pad-lt-25 {
+    padding-left: 25px !important;
+}
+
+@media(max-width:575px) {
+    .booking-card.card.order .card-item-content .count-o {
+        height: 29px !important;
+    }
+
+    .booking-card.card.order .card-item-content .btn-lt button {
+        padding-left: 15px !important;
+    }
+}
+
+.booking-card.head .card-item-head {
+    text-align: center !important;
+}
+
+.booking-card.head .card-item-head .card-img {
+    object-fit: scale-down !important;
+}
+
+button.fxmenu {
+    position: absolute;
+    right: 20px;
+    border-radius: 100%;
+    background: white;
+    padding: 2px 5px 0px 5px;
+    text-align: center;
+}
+
+button.fxmenu1 {
+    float: right;
+    right: 20px;
+    border-radius: 100%;
+    background: white;
+    padding: 2px 5px 0px 5px;
+    text-align: center;
+}
+
+.getbookbutton {
+    width: 100%;
+    margin-top: 1%;
+    border: 2px solid #1E4079;
+    border-radius: 5px;
+    background-color: #1E4079;
+    color: white;
+    font-weight: 400;
+    /* font-family: "Poppins"; */
+    display: inline-block;
+    margin-bottom: 0;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    touch-action: manipulation;
+    cursor: pointer;
+    padding: 6px 12px;
+    font-size: 12px;
+    line-height: 1.42857143;
+}
+
+.getappointmentbutton {
+    width: 100%;
+    margin-top: 1%;
+    border: 1px solid #1e4079;
+    background-color: #1e4079;
+
+    color: white;
+    font-weight: 600;
+    /* font-family: "Poppins"; */
+    display: inline-block;
+    margin-bottom: 0;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    touch-action: manipulation;
+    cursor: pointer;
+    padding: 6px 0 6px 0px;
+    font-size: 12px;
+    line-height: 1.42857143;
+    border-radius: 10px;
+}
+
+.getappointmentbutton:hover {
+    background-color: white;
+    color: #1E4079;
+}
+
+.checkavailabilitybutton:hover {
+    background-color: rgba(30, 64, 121, 0.2);
+    color: #4E4D53;
+}
+
+.checkavailabilitytext {
+    box-shadow: 0px, 4px rgba(0, 0, 0, 0.25);
+}
+
+.checkavailabilitybutton {
+    width: 100%;
+    margin-top: 1%;
+    background-color: rgba(30, 64, 121, 0.2);
+    border: 1px solid rgba(30, 64, 121, 0.2);
+    color: #4E4D53;
+    word-wrap: break-word;
+    font-weight: 600;
+    font-family: "Poppins";
+    display: inline-block;
+    margin-bottom: 0;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    touch-action: manipulation;
+    cursor: pointer;
+    padding: 6px 0 6px 0px;
+    font-size: 12px;
+    line-height: 1.42857143;
+    border-bottom-left-radius: 10px;
+}
+
+button:disabled,
+button[disabled] {
+    border: 2px solid #999999;
+    background-color: #f0f0f0;
+    color: #666666;
+}
+
+.booking-card.card.order.disabled .card-item-content,
+.booking-card.card.order.disabled .card-item-head {
+    opacity: .4 !important;
+}
+
+.disabled .btn-rt,
+.disabled.count-o,
+.disabled .btn-lt {
+    pointer-events: none !important;
+}
+
+.ribbon {
+    width: 150px;
+    height: 150px;
+    overflow: hidden;
+    position: absolute;
+}
+
+.ribbon::before,
+.ribbon::after {
+    position: absolute;
+    z-index: -1;
+    content: '';
+    display: block;
+    border: 5px solid #2980b9;
+}
+
+.ribbon span {
+    position: absolute;
+    display: block;
+    width: 200px;
+    padding: 5px 0;
+    background-color: darkred;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, .1);
+    color: #fff;
+    font-size: small;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, .2);
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.ribbon-top-right {
+    top: -10px;
+    right: -10px;
+}
+
+.ribbon-top-right::before,
+.ribbon-top-right::after {
+    border-top-color: transparent;
+    border-right-color: transparent;
+}
+
+.ribbon-top-right::before {
+    top: 0;
+    left: 0;
+}
+
+.ribbon-top-right::after {
+    bottom: 0;
+    right: 0;
+}
+
+.ribbon-top-right span {
+    top: 30px;
+    transform: rotate(45deg);
+}
+
+.twoline-break {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    word-break: break-all;
+    hyphens: auto;
+}
+
+.disabled .btn-rt,
+.disabled.count-o,
+.disabled .btn-lt {
+    pointer-events: none !important;
+}
+
+.booking-card-user.user .card-item-content .card-title.user-name {
+    height: auto !important;
+    font-size: 18px;
+}
+
+.booking-card-user.user .card-item-content .qualification {
+    margin: 4px 0;
+    color: #073B4C;
+    font-size: 15px !important;
+}
+
+.booking-card-user.user .card-item-content .specialization-parent {
+    max-width: 100% !important;
+    margin: 0 10px !important;
+    height: 26px !important;
+}
+
+.booking-card-user.user .card-item-content .specialization {
+    margin: 0 !important;
+    border-radius: 5px;
+    background-color: #FFC107;
+    padding: 2px 6px;
+    color: white;
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 1.5 !important;
+
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+.booking-card-user.user .card-item-content .availability {
+    height: 68px;
+    padding: 10px;
+    font-size: 16px !important;
+    font-weight: 600;
+    color: #073B4C;
+    margin: 0 !important;
+}
+
+
+.booking-card-user.user .card-item-content .btn {
+    width: 90%;
+    border: 1px solid #FFC107;
+    background-color: #FFC107;
+    color: #073B4C;
+    font-weight: 600;
+}
+
+.booking-card-user.user .card-item-content .btn:hover {
+    color: #073B4C !important;
+    background-color: #E0A800 !important;
+    border-color: #D39E00;
+}
+
+.service-image {
+    height: 150px;
+    width: 150px;
+}
+
+.booking-card.card.service .card-body .service-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: 90px;
+    width: 90px;
+    margin: 5px;
+    padding: 5px;
+    font-size: 80px;
+}
+
+.service-image i.wtsapaud-icon,
+.service-image i.zoom-icon {
+    width: 100% !important;
+
+}
+
+.service-image i.wtsapvid-icon {
+    width: 60% !important;
+}
+
+.service-image i.phon-icon,
+.service-image i.meet-icon {
+    width: 60% !important;
+
+}
+
+.booking-card.card.service .card-body .service-image i.wtsapaud-icon,
+.booking-card.card.service .card-body .service-image i.wtsapvid-icon,
+.booking-card.card.service .card-body .service-image i.zoom-icon {
+    width: 100% !important;
+}
+
+.booking-card.card.service .card-body .service-image i.phon-icon,
+.booking-card.card.service .card-body .service-image i.meet-icon {
+    width: 60% !important;
+}
+
+.booking-card.card.service .card-body .service-details {
+    width: 100%;
+    margin-top: 6px;
+}
+
+.booking-card.card.service .card-body .service-details .service-title {
+    margin: 0 !important;
+    color: #073B4C;
+    font-size: 18px !important;
+    height: auto !important;
+    line-height: 1.25 !important;
+}
+
+.booking-card.card.service .card-body .service-details .service-type {
+    margin: 6px 0;
+    color: #073B4C;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+}
+
+.booking-card.card.service .card-body .service-details .donationAmount,
+.booking-card.card.service .card-body .service-details .peopleAhead {
+    margin: 0 !important;
+    padding: 2px 6px;
+    font-weight: 600;
+    font-size: 15px !important;
+    color: #073B4C;
+}
+
+.booking-card.card.service .card-body .service-details .emptySpace {
+    margin: 0 !important;
+    padding: 2px 6px;
+    height: 26px;
+}
+
+.booking-card.card.service .card-body .service-details .availability {
+    height: 68px;
+    margin: 0 !important;
+    padding: 10px;
+    font-size: 16px !important;
+    font-weight: 600;
+    color: #073B4C;
+}
+
+.booking-card.card.service .card-body .service-details .service-buttons {
+    display: flex;
+    justify-content: space-around;
+}
+
+.booking-card.card.service .card-body .service-details .service-buttons .bookingButton {
+    width: 90%;
+    border: 1px solid #FFC107;
+    background-color: #FFC107;
+    color: #073B4C;
+    font-weight: 600;
+}
+
+.booking-card.card.service .card-body .service-details .service-buttons .bookingButton:hover {
+    color: #073B4C !important;
+    background-color: #E0A800 !important;
+    border-color: #D39E00;
+}
+
+.booking-card.card.service .card-body .service-details .service-buttons .moreDetails {
+    position: absolute;
+    top: 0;
+    right: 0;
+    color: #073B4C;
+    font-weight: 700;
+    background-color: transparent;
+    border-color: transparent;
+}
+
+.booking-card.card.service .card-body .service-details .service-buttons .moreDetails:hover {
+    color: #073B4C !important;
+    background-color: transparent !important;
+    border-color: #073B4C;
+}
+
+.card.booking-card.items .card-item-head .card-img {
+    border-radius: 5px !important;
+}
+
+.booking-card.card.items .card-item-content {
+    height: auto !important;
+    margin-top: 8px !important;
+}
+
+.card.booking-card.items .card-item-content .card-title {
+    margin: 0 !important;
+    height: 45px !important;
+    color: #073B4C !important;
+    line-height: 1.25 !important;
+    font-size: 18px !important;
+}
+
+.card.booking-card.items .card-item-content .card-title a {
+    word-break: break-word !important;
+    text-transform: capitalize;
+}
+
+.card.booking-card.items .card-item-content .amount {
+    display: inline-flex !important;
+    flex-direction: column !important;
+    width: 50% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    justify-content: flex-end !important;
+    height: 44px !important;
+}
+
+@media (max-width: 575px) {
+    .card.booking-card.items .card-item-content .amount {
+        height: 40px !important;
+    }
+}
+
+.card.booking-card.items .card-item-content .amount .amount-label {
+    color: gray !important;
+    font-size: 0.875rem !important;
+    font-weight: 700;
+}
+
+.card.booking-card.items .card-item-content .amount .amount-value {
+    color: #073B4C !important;
+    font-size: 1rem !important;
+    font-weight: 700;
+}
+
+.card.booking-card.items .card-item-content .quantity {
+    display: inline-flex !important;
+    flex-direction: column !important;
+    width: 50% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    justify-content: flex-end !important;
+    align-items: flex-end !important;
+    align-self: stretch !important;
+}
+
+.card.booking-card.items .card-item-content .add-to-cart {
+    text-align: center !important;
+    padding: 8px !important;
+    margin: 0 !important;
+    background-color: #35008b;
+    color: white;
+    font-size: 0.875rem;
+    border-radius: 5px;
+    border: 0;
+}
+
+.card.booking-card.items .card-item-content .quantity>div {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.booking-card.card.items .card-item-content .quantity .count-o {
+    line-height: 37px !important;
+    padding: 0 !important;
+    height: 37px !important;
+    color: #073B4C !important;
+    font-size: 0.875rem !important;
+    font-weight: 700 !important;
+}
+
+.booking-card.card.items .card-item-content .quantity .btn-rt button {
+    background-color: #35008B !important;
+    color: white !important;
+    font-size: 0.75rem !important;
+    height: 36px !important;
+    border: 0 !important;
+    border-top-right-radius: 5px !important;
+    border-bottom-right-radius: 5px !important;
+}
+
+.booking-card.card.items .card-item-content .quantity .btn-lt button {
+    background-color: #35008B !important;
+    color: white !important;
+    font-size: 0.75rem !important;
+    height: 36px !important;
+    border: 0 !important;
+    border-top-left-radius: 5px !important;
+    border-bottom-left-radius: 5px !important;
+}
+
+.card.booking-card.items .card-item-content .outstock {
+    text-align: center !important;
+    padding: 8px !important;
+    margin: 0 !important;
+    background-color: darkslategray;
+    color: white;
+    font-size: 0.875rem;
+    border-radius: 5px;
+    border: 0;
+}
+
+.card.booking-card.items .ribbon-new {
+    height: 30px;
+    line-height: 30px;
+    padding-left: 16px;
+    padding-right: 10px;
+    position: absolute;
+    left: 0px;
+    top: 10px;
+    background: darkred;
+    text-transform: uppercase;
+    color: white;
+    z-index: 1;
+}
+
+.card.booking-card.items.height-301 .ribbon-new {
+    top: 20px !important;
+}
+
+.card.booking-card.items .ribbon-new:after {
+    content: "";
+    position: absolute;
+    height: 0;
+    width: 0;
+    right: -15px;
+    border-top: 15px solid transparent;
+    border-bottom: 15px solid transparent;
+    border-left: 15px solid darkred;
+}
+
+.card.booking-card.items .card-item-content .short-description {
+    color: darkslategray !important;
+    font-size: 0.925rem !important;
+    font-weight: 700 !important;
+    line-height: normal !important;
+    margin-bottom: 0 !important;
+    display: block !important;
+
+    white-space: nowrap;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+    /* width: 175px; */
+}
+
+.user-available {
+    height: 60px !important;
+}
+
+.font-normal {
+    font-weight: normal !important;
+}
+
+.service-details .module {
+    height: 45px;
+}
+
+.action-btn {
+    padding: 5px 20px;
+    border: 1px solid #ccc;
+    color: black;
+    border-radius: 5px;
+    border-color: #1e4079 !important;
+}
+
+.action-btn:hover {
+    background: #1e4079 !important;
+    color: white;
+    box-shadow: 0 4px 4px 0 #1e4079;
+}
+
+.wtsapvid-icon {
+    width: 14px !important;
+}
+
+.walkin-icon,
+.online-icon {
+    width: 15px !important;
+}
+
+.view-more {
+    padding: 0px 10px;
+    border: 1px solid #eee;
+    text-align: center;
+    font-size: .7rem;
+    border-radius: 20px;
+}
+
+.token {
+    margin-top: 5px;
+    vertical-align: top;
+    border: 1px solid #eee;
+    padding: 10px 0px;
+    width: 50px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1rem;
+    display: inline-block;
+}
+
+.box1 {
+    width: 45%;
+    display: inline-block;
+}
+
+.box4 {
+    margin-right: 10px;
+    float: right;
+    text-align: right;
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.history .box1 {
+    width: 65%;
+}
+
+.consumer-name {
+    font-weight: bold;
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dash-item {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mgn-bt-minus {
+    margin-bottom: -10px
+}
+
+.view-details {
+    margin-bottom: 3px;
+}
+
+.user-token {
+    margin-top: 5px;
+    vertical-align: top;
+    border: 1px solid #eee;
+    padding: 10px 0px;
+    width: 50px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1rem;
+    display: inline-block;
+    color: white;
+    background: #3E234B;
+}
+
+.user-txt-clr {
+    color: #3E234B;
+}
+
+.cancelled_status_clr {
+    color: red;
+}
+
+.started_status_clr {
+    color: green;
+}
+
+.d-block {
+    display: block !important;
+}
+
+
+
+.pro-img1 {
+    background-color: #f8f8f8 !important;
+    height: 100%;
+}
+
+.pro-img1 img {
+    width: 130px !important;
+    height: 130px !important;
+    padding: 5px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    margin: auto;
+}
+
+@media(max-width:575px) {
+    .pro-img1 img {
+        width: 80px !important;
+        height: 80px !important;
+        margin: auto;
+    }
+}
+
+@media(max-width:375px) {
+    .pro-img1 img {
+        width: 70px !important;
+        height: 70px !important;
+        margin: auto;
+    }
+}
+
+.card-head-grey {
+    color: #B6B1B1;
+    font-size: 12px;
+}
+
+.card-outer-cont {
+    height: 100px;
+}
+
+.line-clamp-ln2 {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden;
+}
+
+.line-clamp-ln3 {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 3 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden;
+}
+
+.card-outer-cont p.card-service-desc {
+    font-size: .75rem !important;
+}
+
+.card-outer-cont img,
+.card-inner-img-cont i {
+    height: 80px !important;
+    width: 80px !important;
+    vertical-align: middle;
+    box-shadow: 0 4px 8px rgb(0 0 0 / 20%), 0 6px 20px rgb(0 0 0 / 19%);
+    padding: 5px;
+    border-radius: 50%;
+}
+
+.card-inner-img-cont {
+    height: 100%;
+}
+
+.card-inner-img i {
+    height: 60px !important;
+    width: 60px !important;
+    vertical-align: middle !important;
+    box-shadow: 0 4px 8px rgb(0 0 0 / 20%), 0 6px 20px rgb(0 0 0 / 19%);
+    padding: 5px;
+    border-radius: 50%;
+    float: right;
+}
+
+.card-inner-img img {
+    height: 60px !important;
+    width: 60px !important;
+    vertical-align: middle !important;
+    box-shadow: 0 4px 8px rgb(0 0 0 / 20%), 0 6px 20px rgb(0 0 0 / 19%);
+    padding: 5px;
+    border-radius: 50%;
+    float: right;
+}
+
+.card-timings-cont {
+    height: 50px;
+}
+
+.card-timings-cont-o {
+    height: 100px;
+}
+
+.card-timings-cont h6 {
+    font-size: 0.98rem !important;
+}
+
+.bord-left {
+    border-left: 1px solid #ddd;
+}
+
+.nohand {
+    cursor: unset !important;
+}
+
+h6 i {
+    text-decoration: none !important;
+    color: #135dd9;
+    font-size: 10px !important;
+    font-style: normal !important;
+}
+
+
+.imageside {
+    height: 140px !important;
+    width: 140px !important;
+    padding: 0px !important;
+    padding-left: 0px !important;
+}
+
+.booking-card.card.order.items.pitem.height-301 {
+    padding: 0px !important;
+    border-radius: 0px !important;
+}
+
+button.fx {
+    position: absolute;
+    right: 10px;
+    border-radius: 100%;
+    background: white;
+    padding: 0px 5px 0px 5px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.card-item-content.pitem.short-description {
+    width: 100% !important;
+    background-color: #337ab7 !important;
+}
+
+.spinner {
+    position: relative;
+}
+
+.spinner:before {
+    content: '';
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    border-radius: 50%;
+    border: 2px solid #D1D3E0;
+    border-right: 2px solid transparent;
+}
+
+.spinner:before {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-top: -0.75rem;
+}
+
+.spinner.spinner-center:before {
+    left: 50%;
+    margin-left: -0.75rem;
+}
+
+.spinner.spinner-left:before {
+    right: auto;
+}
+
+.spinner.spinner-right:before {
+    left: auto;
+}
+
+.spinner.spinner-sm:before {
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-top: -0.625rem;
+}
+
+.spinner.spinner-sm.spinner-center:before {
+    left: 50%;
+    margin-left: -0.625rem;
+}
+
+.spinner.spinner-sm.spinner-left:before {
+    right: auto;
+}
+
+.spinner.spinner-sm.spinner-right:before {
+    left: auto;
+}
+
+.spinner.spinner-lg:before {
+    width: 2rem;
+    height: 2rem;
+    margin-top: -1rem;
+}
+
+.spinner.spinner-lg.spinner-center:before {
+    left: 50%;
+    margin-left: -1rem;
+}
+
+.spinner.spinner-lg.spinner-left:before {
+    right: auto;
+}
+
+.spinner.spinner-lg.spinner-right:before {
+    left: auto;
+}
+
+.spinner:before {
+    -webkit-animation: animation-spinner .5s linear infinite;
+    animation: animation-spinner .5s linear infinite;
+}
+
+.spinner.spinner-primary:before {
+    border: 2px solid #1e4079;
+    border-right: 2px solid transparent;
+}
+
+.spinner.spinner-darker-primary:before {
+    border: 2px solid #1287ff;
+    border-right: 2px solid transparent;
+}
+
+.spinner.spinner-secondary:before {
+    border: 2px solid #E4E6EF;
+    border-right: 2px solid transparent;
+}
+
+.spinner.spinner-darker-secondary:before {
+    border: 2px solid #ced1e2;
+    border-right: 2px solid transparent;
+}
+
+.spinner.spinner-success:before {
+    border: 2px solid #1BC5BD;
+    border-right: 2px solid transparent;
+}
+
+.spinner.spinner-darker-success:before {
+    border: 2px solid #17a69f;
+    border-right: 2px solid transparent;
+}
+
+.spinner.spinner-info:before {
+    border: 2px solid #8950FC;
+    border-right: 2px solid transparent;
+}
+
+.spinner.spinner-darker-info:before {
+    border: 2px solid #712dfb;
+    border-right: 2px solid transparent;
+}
+
+.spinner.spinner-warning:before {
+    border: 2px solid #FFA800;
+    border-right: 2px solid transparent;
+}
+
+.spinner.spinner-darker-warning:before {
+    border: 2px solid #db9000;
+    border-right: 2px solid transparent;
+}
+
+.spinner.spinner-danger:before {
+    border: 2px solid #F64E60;
+    border-right: 2px solid transparent;
+}
+
+.spinner.spinner-darker-danger:before {
+    border: 2px solid #f42c41;
+    border-right: 2px solid transparent;
+}
+
+.spinner.spinner-light:before {
+    border: 2px solid #F3F6F9;
+    border-right: 2px solid transparent;
+}
+
+.spinner.spinner-darker-light:before {
+    border: 2px solid #dbe4ed;
+    border-right: 2px solid transparent;
+}
+
+.spinner.spinner-dark:before {
+    border: 2px solid #181C32;
+    border-right: 2px solid transparent;
+}
+
+.spinner.spinner-darker-dark:before {
+    border: 2px solid #0c0e1a;
+    border-right: 2px solid transparent;
+}
+
+.spinner.spinner-white:before {
+    border: 2px solid #ffffff;
+    border-right: 2px solid transparent;
+}
+
+.spinner.spinner-darker-white:before {
+    border: 2px solid #ededed;
+    border-right: 2px solid transparent;
+}
+
+.spinner.spinner-right:before {
+    left: auto;
+    right: 1rem;
+}
+
+.spinner.spinner-right.btn:not(.btn-block) {
+    padding-right: 3.5rem;
+}
+
+.spinner.spinner-right.btn:not(.btn-block).spinner-sm {
+    padding-right: 3.25rem;
+}
+
+.spinner.spinner-right.btn:not(.btn-block).spinner-lg {
+    padding-right: 4rem;
+}
+
+.spinner.spinner-left:before {
+    right: auto;
+    left: 1rem;
+}
+
+.spinner.spinner-left.btn:not(.btn-block) {
+    padding-left: 3.5rem;
+}
+
+.spinner.spinner-left.btn:not(.btn-block).spinner-sm {
+    padding-left: 3.25rem;
+}
+
+.spinner.spinner-left.btn:not(.btn-block).spinner-lg {
+    padding-left: 4rem;
+}
+
+.spinner.spinner-track:before {
+    -webkit-animation: animation-spinner .5s linear infinite;
+    animation: animation-spinner .5s linear infinite;
+}
+
+.spinner.spinner-track.spinner-primary:before {
+    border: 2px solid #cfe7ff;
+    border-top-color: #2791ff;
+}
+
+.spinner.spinner-track.spinner-darker-primary:before {
+    border: 2px solid #9ccdff;
+    border-top-color: #037fff;
+}
+
+.spinner.spinner-track.spinner-secondary:before {
+    border: 2px solid white;
+    border-top-color: #dadde9;
+}
+
+.spinner.spinner-track.spinner-darker-secondary:before {
+    border: 2px solid white;
+    border-top-color: #c4c8dc;
+}
+
+.spinner.spinner-track.spinner-success:before {
+    border: 2px solid #8aefea;
+    border-top-color: #19b8b0;
+}
+
+.spinner.spinner-track.spinner-darker-success:before {
+    border: 2px solid #5de9e2;
+    border-top-color: #159892;
+}
+
+.spinner.spinner-track.spinner-info:before {
+    border: 2px solid #eee6ff;
+    border-top-color: #7f41fc;
+}
+
+.spinner.spinner-track.spinner-darker-info:before {
+    border: 2px solid #cdb4fe;
+    border-top-color: #671efb;
+}
+
+.spinner.spinner-track.spinner-warning:before {
+    border: 2px solid #ffdc99;
+    border-top-color: #f09e00;
+}
+
+.spinner.spinner-track.spinner-darker-warning:before {
+    border: 2px solid #ffcb66;
+    border-top-color: #cc8600;
+}
+
+.spinner.spinner-track.spinner-danger:before {
+    border: 2px solid #fde0e3;
+    border-top-color: #f53f53;
+}
+
+.spinner.spinner-track.spinner-darker-danger:before {
+    border: 2px solid #fbafb7;
+    border-top-color: #f41d34;
+}
+
+.spinner.spinner-track.spinner-light:before {
+    border: 2px solid white;
+    border-top-color: #e9eef4;
+}
+
+.spinner.spinner-track.spinner-darker-light:before {
+    border: 2px solid white;
+    border-top-color: #d1dde8;
+}
+
+.spinner.spinner-track.spinner-dark:before {
+    border: 2px solid #4a5699;
+    border-top-color: #131628;
+}
+
+.spinner.spinner-track.spinner-darker-dark:before {
+    border: 2px solid #394377;
+    border-top-color: #070910;
+}
+
+.spinner.spinner-track.spinner-white:before {
+    border: 2px solid white;
+    border-top-color: #f7f7f7;
+}
+
+.spinner.spinner-track.spinner-darker-white:before {
+    border: 2px solid white;
+    border-top-color: #e6e6e6;
+}
+
+.spinner-grow {
+    vertical-align: sub;
+}
+
+.spinner-border {
+    vertical-align: sub;
+}
+
+@-webkit-keyframes animation-spinner {
+    to {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes animation-spinner {
+    to {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
+.spinner.spinner-left:before {
+    right: .3rem !important;
+}

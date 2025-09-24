@@ -1,0 +1,432 @@
+<div>
+    <div class="row m-0 heading_nocover" *ngIf="section.profile && section.profileType==='basic_nocover'">
+        <div class="head-area col-12 text-center mgn-up-20">
+            <div>
+                <h3 *ngIf="accountProfile.businessName">{{accountProfile.businessName}}</h3>
+                <p>
+                    <a [href]="selectedLocation.googleMapUrl" target="_blank"
+                        *ngIf="selectedLocation.googleMapUrl!=''"><i
+                            class="fa fa-map-marker"></i>&nbsp;{{selectedLocation.place |
+                        capitalizeFirst}}</a>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 no-padding" *ngIf="section.profile && section.profileType==='basic'">
+        <app-basic-profile></app-basic-profile>
+    </div>
+    <div class="col-12 no-padding" *ngIf="section.profile && section.profileType==='advanced'">
+        <app-about [accountProfile]="accountProfile" [selectedLocation]="selectedLocation"
+            [templateJson]="templateJson"></app-about>
+    </div>
+    <div class="col-12 no-padding" *ngIf="section.profile && section.profileType==='static'">
+        <app-basic-profile-new-static [accountProfile]="accountProfile" [templateJson]="templateJson">
+        </app-basic-profile-new-static>
+    </div>
+    <div class="col-12 no-padding" *ngIf="section.generalDescription !=''"
+        [innerHtml]="section.generalDescription | safeHtml">
+    </div>
+    <div class="px-3 mt-2" *ngIf="section.specializations && section.specializations.show">
+        <div class="col-12 blogs mgn-bt-10 no-padding">
+            <div class="col-12 no-padding mgn-up-10 ">
+                <h5 class="mgn-bt-10">
+                    <i class="i-actions fa" [ngClass]="section.specializations.icon" aria-hidden="true"
+                        *ngIf="section.specializations.icon"></i>
+                    <i class="fa" aria-hidden="true" *ngIf="section.specializations['icon-image']">
+                        <img class="fa iconimage" [src]="section.specializations['icon-image']" /></i>
+                    &nbsp;<span>{{section.specializations.title}}</span>
+                </h5>
+            </div>
+        </div>
+        <div class="col-12 no-padding template-owl">
+            <owl-carousel-o [options]="customOptions"
+                *ngIf="carouselReady && section.specializations?.specialization?.length > 0">
+                <ng-template carouselSlide *ngFor="let specialization of section.specializations.specialization">
+                    <div class="item">
+                        <div class="spec-container d-flex flex-column text-center">
+                            <img class="gallery-img" src="{{specialization.image}}" alt="Card image cap">
+                            <div class="img-title">
+                                {{specialization.title}}
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+            </owl-carousel-o>
+        </div>
+    </div>
+    <div class="px-3 mt-2" *ngIf="section.quickActionMenu && section.quickActionMenu.show">
+        <div class="col-12 blogs q-action">
+            <div class="col-12 no-padding mgn-up-10 ">
+                <h5 class="mgn-bt-10">
+                    <i class="i-actions fa" [ngClass]="section.quickActionMenu.icon" aria-hidden="true"
+                        *ngIf="section.quickActionMenu.icon"></i>
+                    <i class="fa" aria-hidden="true" *ngIf="section.quickActionMenu['icon-image']">
+                        <img class="fa iconimage" [src]="section.quickActionMenu['icon-image']" /></i>
+                    &nbsp;<span>{{section.quickActionMenu.title}}</span>
+                </h5>
+            </div>
+        </div>
+        <app-quick-actions [actionList]="section.quickActionMenu.quickActions"
+            (actionPerformed)="quickActionPerformed($event)"></app-quick-actions>
+    </div>
+    <ng-container *ngIf="section.actions && section.actions.length > 0">
+        <div class="px-3 mt-2 action-new">
+            <div *ngFor="let actionList of section.actions">
+                <div class="col-12 mgn-up-10">
+                    <div class="col-12 no-padding mgn-up-10 mgn-bt-10"
+                        *ngIf="actionList.caption && actionList.caption!=''">
+                        <h5 class="mgn-bt-10 header-sec" [id]="actionList.groupId">
+                            <i class="i-actions fa" [ngClass]="actionList.icon" aria-hidden="true"
+                                *ngIf="actionList.icon"></i>
+                            <i class="fa" aria-hidden="true" *ngIf="actionList['icon-image']">
+                                <img class="fa iconimage" [src]="actionList['icon-image']" />
+                            </i>&nbsp;<span>{{actionList.caption}}</span>
+                        </h5>
+                    </div>
+                    <div class="col-12 blogs mgn-bt-10 no-padding"
+                        *ngIf="!actionList.cols_xs && actionList.layout==='owl-special-oval'">
+                        <div class="col-12 no-padding template-owl">
+                            <owl-carousel-o [options]="customOptions"
+                                *ngIf="carouselReady && actionList?.action?.length > 0">
+                                <ng-template carouselSlide *ngFor="let action of actionList.action">
+                                    <div class="item" (click)="actionClicked(action)">
+                                        <div class="spec-container d-flex flex-column text-center">
+                                            <img class="gallery-img" src="{{action.image}}" alt="Card image cap">
+                                            <div class="img-title">
+                                                {{action.title}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-template>
+                            </owl-carousel-o>
+                        </div>
+                    </div>
+                    <div class="col-12 blogs mgn-bt-10 no-padding"
+                        *ngIf="!actionList.cols_xs && actionList.layout==='two_column'">
+                        <app-quick-actions [actionList]="actionList.action"
+                            (actionPerformed)="quickActionPerformed($event)"></app-quick-actions>
+                    </div>
+                    <div class="col-12 blogs mgn-bt-10 no-padding" *ngIf="actionList.cols_xs">
+                        <div class="col-12 no-padding template-owl"
+                            *ngIf="actionList.layout==='scroll' && actionList.dynamic && allUsers">
+                            <owl-carousel-o #owlUser *ngIf="carouselReady && allUsers?.length > 0"
+                                [options]="small_device_display?actionList.cols_xs_options:actionList.cols_sm_options">
+                                <ng-template carouselSlide *ngFor="let sp of allUsers">
+                                    <div class="bus-item-N item">
+                                        <div class="">
+                                            <app-user-card [theme]="templateJson['theme']" [item]="sp"
+                                                [terminology]='terminologiesjson' [loc]="selectedLocation"
+                                                (actionPerformed)="cardClicked($event)"></app-user-card>
+                                        </div>
+                                    </div>
+                                </ng-template>
+                            </owl-carousel-o>
+                        </div>
+                        <div class="col-12 no-padding template-owl"
+                            *ngIf="actionList.layout==='scroll' && !actionList.dynamic && !actionList.socialIcons">
+                            <owl-carousel-o *ngIf="carouselReady && actionList?.action?.length > 0"
+                                [options]="small_device_display?actionList.cols_xs_options:actionList.cols_sm_options">
+                                <ng-template carouselSlide *ngFor="let action of actionList.action">
+                                    <div class="item" (click)="actionClicked(action)">
+                                        <div class="">
+                                            <img class="gallery-img" src="{{action.image}}" alt="Card image cap">
+                                            <div class="img-title" *ngIf="action.title">
+                                                {{action.title}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-template>
+                            </owl-carousel-o>
+                        </div>
+                        <div class="col-12 social-icons no-padding template-owl"
+                            *ngIf="actionList.layout==='scroll' && !actionList.dynamic && actionList.socialIcons">
+                            <owl-carousel-o *ngIf="carouselReady && actionList?.action?.length > 0"
+                                [options]="small_device_display?actionList.cols_xs_options:actionList.cols_sm_options">
+                                <ng-template carouselSlide *ngFor="let action of actionList.action">
+                                    <div (click)="actionClicked(action)">
+                                        <div class="">
+                                            <img class="" src="{{action.image}}" alt="Card image cap">
+                                            <div class="img-title" *ngIf="action.title">
+                                                {{action.title}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-template>
+                            </owl-carousel-o>
+                        </div>
+                        <div *ngIf="actionList.layout!=='scroll'" class="row m-0">
+                            <div class="col-{{12/actionList.cols_xs}} col-sm-{{12/actionList.cols_sm}} action-item"
+                                *ngFor="let quickAction of actionList.action" [id]="quickAction.targetId"
+                                (click)="actionPerformed(quickAction)">
+                                <div class="card no-padding">
+                                    <div class="img-action">
+                                        <img class="act-img img-responsive" src="{{quickAction.image}}" alt="">
+                                    </div>
+                                    <div class="action-item-label">
+                                        <h3 class="hed">
+                                            <div [innerHtml]="quickAction.title"></div>
+                                        </h3>
+                                    </div>
+                                    <div>
+                                        <p class="detai">{{quickAction.description}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mgn-bt-10 no-padding" [ngClass]="actionList['layout_style']"
+                        *ngIf="!actionList.cols_xs && actionList.layout==='one_column'">
+                        <div class="col-12 blog mgn-up-10 mgn-bt-10 no-padding" (click)="blogReadMore(blog)"
+                            *ngFor="let blog of actionList.action">
+                            <div class="card col-12 mgn-bt-10">
+                                <div class="blog-detail">
+                                    <img *ngIf="blog.image" class="blog-img" [src]="blog.image" alt="">
+                                    <div class="details">
+                                        <p class="date pop-box-cont">
+                                            <i class="fa fa-calendar"></i>
+                                            {{blog.date}}
+                                        </p>
+                                        <h3 class="blog-head hed">{{blog.title}} </h3>
+                                        <p class="blog-description">{{blog.description}} </p>
+                                        <p class="read-more"><span>Read More...</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 no-padding mgn-bt-20 text-center" *ngIf="section.blogs.showMoreBlogs">
+                            <button mat-button
+                                (click)="showMoreVideo(section.blogs.moreBlogsLink)">{{section.blogs.moreBlogsCaption}}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+    <div class="px-3 mt-2">
+        <div class="col-12 mgn-up-10 no-padding" *ngIf="showDepartments && section.departments">
+            <div class="col-12 no-padding" *ngIf="section.departmentsDescription"
+                [innerHtml]="section.departmentsDescription | safeHtml">
+            </div>
+            <div class="col-12 no-padding">
+                <app-cons-departments [terminologiesjson]="terminologiesjson" [templateJson]="templateJson"
+                    [accountProfile]="accountProfile" [selectedLocation]="selectedLocation"
+                    (actionPerformed)="actionPerformed($event)" [departments]="departments"
+                    [cardType]="section.departmentCard">
+                </app-cons-departments>
+            </div>
+        </div>
+        <div class="col-12 mgn-up-10 no-padding" *ngIf="section.testimonials && section.testimonials.show">
+            <div class="col-12 no-padding">
+                <h5 class="mgn-bt-10 header-sec">
+                    <i class="i-actions fa" [ngClass]="section.testimonials.icon" aria-hidden="true"
+                        *ngIf="section.testimonials.icon"></i>
+                    <i class="fa" aria-hidden="true" *ngIf="section.testimonials['icon-image']">
+                        <img class="fa iconimage" [src]="section.testimonials['icon-image']" /></i>
+                    &nbsp;<span>{{section.testimonials.title}}</span>
+                </h5>
+            </div>
+            <div class="col-12 testimonials mgn-bt-10 no-padding">
+                <div class="col-12 testimonial mgn-up-10 mgn-bt-10 no-padding" (click)="blogReadMore(testimonial)"
+                    *ngFor="let testimonial of section.testimonials.testimonial">
+                    <div class="card col-12 no-padding">
+                        <div class="testimonial-detail">
+                            <div class="details">
+                                <p class="testimonial-description">{{testimonial.description}} </p>
+                                <!-- <p class="read-more"><span>Read More...</span></p> -->
+                                <div class="mgn-up-5">
+                                    <span class="author">{{testimonial.title}} </span> | <span
+                                        class="date">{{testimonial.date}}</span>
+                                </div>
+
+                            </div>
+                            <img *ngIf="testimonial.image" class="testimonial-img" [src]="testimonial.image" alt="">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 no-padding mgn-bt-20 text-center"
+                    *ngIf="section.testimonials && section.testimonials.showMore">
+                    <button mat-button
+                        (click)="showMoreVideo(section.testimonials.moreLink)">{{section.testimonials.moreCaption}}</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 mgn-up-10 no-padding" *ngIf="section.blogs && section.blogs.showBlogs">
+            <div class="col-12 no-padding">
+                <h5 class="mgn-bt-10">
+                    <i class="i-actions fa" [ngClass]="section.blogs.icon" aria-hidden="true"
+                        *ngIf="section.blogs.icon"></i>
+                    <i class="fa" aria-hidden="true" *ngIf="section.blogs['icon-image']">
+                        <img class="fa iconimage" [src]="section.blogs['icon-image']" /></i>
+                    &nbsp;<span>{{section.blogs.blogsCaption}}</span>
+                </h5>
+            </div>
+            <div class="col-12 blogs mgn-bt-10 no-padding">
+                <div class="col-12 blog mgn-up-10 mgn-bt-10 no-padding" (click)="blogReadMore(blog)"
+                    *ngFor="let blog of section.blogs.blog">
+                    <div class="card col-12 mgn-bt-10">
+                        <div class="blog-detail">
+                            <img class="blog-img" [src]="blog.image" alt="">
+                            <div class="details">
+                                <p class="date pop-box-cont">
+                                    <i class="fa fa-calendar"></i>
+                                    {{blog.date}}
+                                </p>
+                                <h3 class="blog-head hed">{{blog.title}} </h3>
+                                <p class="blog-description">{{blog.description}} </p>
+                                <p class="read-more"><span>Read More...</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 no-padding mgn-bt-20 text-center"
+                    *ngIf="section.blogs && section.blogs.showMoreBlogs">
+                    <button mat-button
+                        (click)="showMoreVideo(section.blogs.moreBlogsLink)">{{section.blogs.moreBlogsCaption}}</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 mgn-up-10 no-padding" *ngIf="section.latestVideos && section.latestVideos.showVideos">
+            <div class="col-12 no-padding">
+                <h5 class="mgn-bt-10">
+                    <i class="i-actions fa" [ngClass]="section.latestVideos.icon" aria-hidden="true"
+                        *ngIf="section.latestVideos.icon"></i>
+                    <i class="fa" aria-hidden="true" *ngIf="section.latestVideos['icon-image']">
+                        <img class="fa iconimage" [src]="section.latestVideos['icon-image']" /></i>
+                    &nbsp;<span>{{section.latestVideos.videoCaption}}</span>
+                </h5>
+            </div>
+            <div class="col-12 blogs mgn-bt-10 no-padding">
+                <div class="col-12 video mgn-bt-10 no-padding" (click)="videoClicked(video)"
+                    *ngFor="let video of section.latestVideos.videos">
+                    <div class="card col-12">
+                        <img class="video-img" [src]="video.image" alt="">
+                        <h3 class="blog-head hed">{{video.title}} </h3>
+                        <h4 class="blog-description">{{video.description}} </h4>
+                    </div>
+                </div>
+                <div class="col-12 no-padding mgn-bt-20 text-center"
+                    *ngIf="section.latestVideos && section.latestVideos.showMoreVideo">
+                    <button mat-button
+                        (click)="showMoreVideo(section.latestVideos.moreVideosLink)">{{section.latestVideos.moreVideosCaption}}</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 mgn-up-10 no-padding" *ngIf="section.latestArticles && section.latestArticles.showArticles">
+            <div class="col-12 no-padding">
+                <h5 class="mgn-bt-10">
+                    <i class="i-actions fa" [ngClass]="section.latestArticles.icon" aria-hidden="true"
+                        *ngIf="section.latestArticles.icon"></i>
+                    <i class="fa" aria-hidden="true" *ngIf="section.latestArticles['icon-image']">
+                        <img class="fa iconimage" [src]="section.latestArticles['icon-image']" /></i>
+                    &nbsp;<span>{{section.latestArticles.articleCaption}}</span>
+                </h5>
+            </div>
+            <div class="col-12 blogs mgn-bt-10 no-padding">
+                <div class="col-12 video mgn-bt-10 no-padding" (click)="videoClicked(article)"
+                    *ngFor="let article of section.latestArticles.articles">
+                    <div class="card col-12">
+                        <img class="video-img" [src]="article.image" alt="">
+                        <h3 class="blog-head hed">{{article.title}} </h3>
+                        <h4 class="blog-description">{{article.description}} </h4>
+                    </div>
+                </div>
+                <div class="col-12 no-padding mgn-bt-20 text-center"
+                    *ngIf="section.latestArticles && section.latestArticles.showMoreArticles">
+                    <button mat-button
+                        (click)="showMoreVideo(section.latestArticles.moreArticlesLink)">{{section.latestArticles.moreArticlesCaption}}</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 mgn-up-10 no-padding" *ngIf="section.users">
+            <div class="col-12 no-padding  mgn-bt-20" *ngIf="section.usersDescription"
+                [innerHtml]="section.usersDescription | safeHtml">
+            </div>
+            <div class="col-12 no-padding" *ngIf="activeUsers">
+                <app-online-users [terminologiesjson]="terminologiesjson" [templateJson]="templateJson"
+                    [accountProfile]="accountProfile" [selectedLocation]="selectedLocation"
+                    (actionPerformed)="actionPerformed($event)" [users]="activeUsers" [theme]="theme"
+                    [cardType]="section.userCard"></app-online-users>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="col-12 mgn-up-10  no-padding" *ngIf="section.appointments">
+            <div class="col-12 mgn-bt-10 no-padding" *ngIf="section.appointmentsDescription">
+                <h5 class="mgn-bt-10">
+                    <span [innerHtml]="section.appointmentsDescription | safeHtml"></span>
+                </h5>
+            </div>
+            <div class="col-12 no-padding">
+                <ng-container *ngFor="let sp of apptServices">
+                    <div class="bus-item-New" *ngIf="sp['item']['serviceAvailability']">
+                        <app-service-card [theme]="" [item]="sp" [terminology]='terminologiesjson'
+                            [loc]="selectedLocation" (actionPerformed)="actionPerformed($event)" [cardName]="cardName">
+                        </app-service-card>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+        <div class="col-12 mgn-up-10 no-padding" *ngIf="section.checkins">
+            <div class="col-12 mgn-bt-10 no-padding" *ngIf="section.checkinsDescription">
+                <h5 class="mgn-bt-10">
+                    <span [innerHtml]="section.checkinsDescription | safeHtml"></span>
+                </h5>
+            </div>
+            <div class="col-12 no-padding">
+                <ng-container *ngFor="let sp of checkinServices">
+                    <div class="bus-item-New" *ngIf="sp['item']['serviceAvailability']">
+                        <app-service-card [theme]="" [item]="sp" [terminology]='terminologiesjson'
+                            [loc]="selectedLocation" (actionPerformed)="actionPerformed($event)" [cardName]="cardName">
+                        </app-service-card>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+        <div class="col-12 mgn-up-10 no-padding" *ngIf="section.donations">
+            <div class="col-12 mgn-bt-10 no-padding" *ngIf="section.donationsDescription">
+                <h5 class="mgn-bt-10">
+                    <span [innerHtml]="section.donationsDescription | safeHtml"></span>
+                </h5>
+            </div>
+            <div class="col-12 no-padding">
+                <app-donation-services [terminologiesjson]="terminologiesjson" [templateJson]="templateJson"
+                    [accountProfile]="accountProfile" [donationServices]="donationServices"
+                    (actionPerformed)="actionPerformed($event)" [selectedLocation]="selectedLocation"
+                    [cardType]="section.donationCard">
+                </app-donation-services>
+            </div>
+        </div>
+        <div class="col-12 mgn-up-10 no-padding" *ngIf="section.orders">
+            <div class="col-12 mgn-bt-10 no-padding" *ngIf="section.ordersDescripton">
+                <h5 class="mgn-bt-10">
+                    <span [innerHtml]="section.ordersDescripton | safeHtml"></span>
+                </h5>
+            </div>
+            <div class="col-12 no-padding">
+                <app-orders [terminologiesjson]="terminologiesjson" [templateJson]="templateJson"
+                    [accountProfile]="accountProfile" [selectedLocation]="selectedLocation">
+                </app-orders>
+            </div>
+        </div>
+        <div class="col-12 mgn-up-10 no-padding" *ngIf="section.gallery">
+            <div class="col-12 mgn-bt-10 no-padding" *ngIf="section.galleryDescription">
+                <h5 class="mgn-bt-10">
+                    <span [innerHtml]="section.galleryDescription | safeHtml"></span>
+                </h5>
+            </div>
+            <div class="col-12 no-padding" *ngIf="galleryJson && galleryJson.length > 0">
+                <div class="gallery-container">
+                    <div class="gallery-grid">
+                        <div class="gallery-item" *ngFor="let img of image_list_popup" (click)="openGallery(img)">
+                            <img [src]="img.source" alt="Gallery image" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+    <div *ngIf="section && section.socialmedia && section.sociallink">
+        <a class="whatsapp" target="_blank" [href]="section.sociallink"><img width="45px" height="45px"
+                src="./assets/images/whatsapp.png"></a>
+    </div>
+</div>

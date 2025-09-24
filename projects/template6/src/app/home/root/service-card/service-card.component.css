@@ -1,0 +1,80 @@
+.name h5 {
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 20px;
+    letter-spacing: -0.03em;
+}
+
+.card-head-grey {
+    font-weight: 400;
+    font-size: 11px;
+    line-height: 17px;
+}
+
+h6 {
+    font-weight: 600;
+    font-size: 12.5731px;
+    line-height: 17px;
+    color: #1D1E25;
+}
+
+.img-responsive {
+    border-radius: 25.1463px;
+    width: 50px;
+    height: 50px;
+    border: 2px solid #15A4A8;
+    padding: 3px;
+}
+
+.getappointmentbutton {
+    margin-top: 1%;
+    border: 1px solid #15A4A8;
+    background: #15A4A8;
+    color: white;
+    font-weight: 600;
+    font-family: "Poppins";
+    display: inline-block;
+    margin-bottom: 0;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    touch-action: manipulation;
+    cursor: pointer;
+    padding: 8px;
+    font-size: 11px;
+    line-height: 1.42857143;
+    border-radius: 3px;
+}
+
+.getappointmentbutton:hover {
+    background-color: white;
+    color: #1E4079;
+}
+
+.card-outer-cont {
+    display: flex;
+    gap: 10px;
+}
+
+.outer-section {
+    border-left: 3px solid #15A4A8;
+    margin: 5px;
+}
+
+.pad-5 {
+    padding: 5px;
+}
+
+.rupee-font {
+    font-weight: 400;
+    font-size: 14.6687px;
+    line-height: 23px;
+    color: #808D9E;
+}
+.jaldeevideo-icon {
+    border-radius: 25.1463px !important;
+    width: 50px !important;
+    height: 50px !important;
+    border: 2px solid #15A4A8 !important;
+    padding: 3px !important;
+}

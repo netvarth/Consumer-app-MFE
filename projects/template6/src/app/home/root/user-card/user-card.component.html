@@ -1,0 +1,12 @@
+<div class="card no-padding" (click)="cardActionPerformed(item.type, null, null, null, user.id, $event)">
+    <div class="img-action">
+        <img class="act-img img-responsive" [src]="getPic(user)" alt="">
+    </div>
+    <div class="action-item-label">
+        <h3 class="hed">
+            <div [innerHtml]="user.businessName">{{user.businessName}}</div>
+            <div [innerHtml]="user.businessUserName">{{user.businessUserName}}</div>
+            <div class="small" [innerHtml]="user.qualifications">{{user.qualifications}}</div>
+        </h3>
+    </div>
+</div>
