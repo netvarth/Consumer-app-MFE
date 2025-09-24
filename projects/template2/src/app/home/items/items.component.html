@@ -103,7 +103,7 @@
                         </div>
                     </div>
                     </div>                    
-                    <div class="card paginator no-padding flex justify-content-center paginatior-section" *ngIf="itemsCount>0">
+                    <div class="card paginator p-0 flex justify-content-center paginatior-section" *ngIf="itemsCount>0">
                         <p-paginator [rows]="rows" [totalRecords]="itemsCount" [first]="currentPage * rows"
                             (onPageChange)="onPageChange($event)" [rowsPerPageOptions]="[10, 20, 30]">
                         </p-paginator>

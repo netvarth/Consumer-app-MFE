@@ -1,4 +1,4 @@
-<section #consumer_appointmentbill class="container no-padding confirm-aptckn no-padding-small">
+<section #consumer_appointmentbill class="container p-0 confirm-aptckn no-padding-small">
     <div class="content p0 comn-cls cons-check-bill">
         <div class="col-md-12 no-padding">
             <div class="w-dta">
@@ -97,10 +97,10 @@
                                                                 </span>
                                                             </span>
 
-                                                            <div class="col-md-12 col-sm-12 col-lg-12 no-padding red"
+                                                            <div class="col-md-12 col-sm-12 col-lg-12 p-0 red"
                                                                 *ngIf="invoiceDetailsById.billStatus == 'Cancel'">
                                                                 Cancelled</div>
-                                                                <div class="col-md-12 col-sm-12 col-lg-12 no-padding green"
+                                                                <div class="col-md-12 col-sm-12 col-lg-12 p-0 green"
                                                                 *ngIf="invoiceDetailsById.billStatus == 'Settled'">
                                                                 Settled</div>
 

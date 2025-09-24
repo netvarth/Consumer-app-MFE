@@ -30,9 +30,9 @@
     </ul>
 </div>
 <div class="col-12 col-sm-12 col-md-12 col-lg-12 fontmodel no-padding" *ngIf="path || content">
-    <div class="col-md-12 no-padding mgn-bt-50" *ngIf="path">
+    <div class="col-md-12 p-0 mgn-bt-50" *ngIf="path">
         <iframe [src]="path" width="500" height="600"></iframe>
     </div>
-    <div class="col-md-12 no-padding mgn-bt-50 privacy-data" *ngIf="!path" [innerHTML]="content">
+    <div class="col-md-12 p-0 mgn-bt-50 privacy-data" *ngIf="!path" [innerHTML]="content">
     </div>
 </div>

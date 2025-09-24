@@ -22,7 +22,7 @@
         *ngIf="couponsList && couponsList.length>0">
         <div *ngFor="let coupon of couponsList let i=index">
             <div class="d-flex row coupon-add-msg">
-                <div class="col-md-5 col-sm-7 col-xs-7 col-lg-4 no-padding">
+                <div class="col-md-5 col-sm-7 col-xs-7 col-lg-4 p-0">
                     {{coupon.couponCode}} </div>
                 <div class="col-md-7 col-sm-5 col-5 col-lg-8 delteTC">
                     <span><a *ngIf="coupon.instructions" (click)="toggleterms(i)"

@@ -7,7 +7,7 @@
         </app-booking-accountinfo>
     </div>
 </div>
-<section #consumer_checkin class="consumerCheckin no-padding"
+<section #consumer_checkin class="consumerCheckin p-0"
     [ngClass]="[smallDevice?'container':'container-fluid', theme?theme:'']">
     <div [ngClass]="{'loadingpaytm': loadingPaytm}"></div>
     <div class="customLoader" *ngIf="loadingPaytm">
@@ -22,7 +22,7 @@
         </div>
     </div>
     <div class="clearfix"></div>
-    <div class="col-12 d-flex no-padding " *ngIf="loggedIn">
+    <div class="col-12 d-flex p-0 " *ngIf="loggedIn">
         <div class="col-md-4 col-lg-4 col-sm-12 col-12 d-flex align-items-stretch desktop-only p-1"
             *ngIf="!smallDevice">
             <div class="card shadow">
@@ -88,10 +88,10 @@
                     <hr />
                     <div class="col-md-12 col-12 col-sm-12">
                         <div *ngIf="wt_personaahead && personsAhead>=0 && queuejson && queuejson.length > 0"
-                            class="text-primary col-md-12 col-12 col-sm-12 no-padding lnk">
+                            class="text-primary col-md-12 col-12 col-sm-12 p-0 lnk">
                             <h5><b>Waiting in Line</b></h5>
                         </div>
-                        <div class="col-md-12 col-12 col-sm-12 no-padding"
+                        <div class="col-md-12 col-12 col-sm-12 p-0"
                             *ngIf="wt_personaahead && queuejson && queuejson.length > 0">
                             <h6 class="card-title serv-time">
                                 <span *ngIf="personsAhead <= 0">0
@@ -121,7 +121,7 @@
                     </div>
                     <div class="col-md-12 col-12 col-sm-12">
                         <div *ngIf="type === 'waitlistreschedule'"
-                            class="col-sm-12 col-12 chk-btns-div col-md-12 no-padding">
+                            class="col-sm-12 col-12 chk-btns-div col-md-12 p-0">
                             <a #modal data-bs-toggle="modal" data-bs-target="#exampleModalCenter"></a>
                             <div>
                                 <label class="question-header">Add notes/upload files you
@@ -219,7 +219,7 @@
                     </div>
                     <div class="clearfix"></div>
                 </div>
-                <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 col-sm-12 no-padding right-part"
+                <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 col-sm-12 p-0 right-part"
                     data-wizard-type="step-content" data-wizard-state="current" *ngIf="bookStep === 4">
                     <div class="pad-20 quest-head">
                         We need some more information
@@ -295,7 +295,7 @@
                     </div>
                 </div>
                 <div class="clearfix"></div>
-                <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 no-padding"
+                <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 p-0"
                     data-wizard-type="step-content" data-wizard-state="current" *ngIf="bookStep === 5">
                     <div *ngIf="api_loading_video" class="incomplete-msg">
                         <div style="padding: 0 30px;">
@@ -304,8 +304,8 @@
                     </div>
                     <app-common-innerloading-spinner *ngIf="api_loading_video">
                     </app-common-innerloading-spinner>
-                    <div class="col-md-12 col-12 col-sm-12 mgn-bt-10 no-padding">
-                        <div class="col-md-12 col-lg-12 col-12 col-sm-12 check-new-group no-padding"
+                    <div class="col-md-12 col-12 col-sm-12 mgn-bt-10 p-0">
+                        <div class="col-md-12 col-lg-12 col-12 col-sm-12 check-new-group p-0"
                             *ngIf="selectedService">
                             <label class="question-header">Service Details</label>
                             <app-service-info-display [selectedService]="selectedService" [userInfo]="selectedUser"
@@ -340,9 +340,9 @@
                             <br />
                             <div class="booking-for-section">
                                 <div class="">
-                                    <div class="col-sm-12 col-12 col-md-12 no-padding">
-                                        <div class="no-padding">
-                                            <div class="col-sm-12 col-12 col-md-12 no-padding">
+                                    <div class="col-sm-12 col-12 col-md-12 p-0">
+                                        <div class="p-0">
+                                            <div class="col-sm-12 col-12 col-md-12 p-0">
                                                 <app-booking-for [apptDetails_firstName]="wtlst_for_fname"
                                                     [apptDetails_lastName]="wtlst_for_lname"
                                                     [commObj]="commObj" (editEvent)="handleSideScreen('members')">
@@ -355,7 +355,7 @@
                             <div class="clearfix"></div>
                             <hr *ngIf="!questionnaireList.labels" />
                             <div *ngIf="!questionnaireList.labels"
-                                class="col-sm-12 col-12 chk-btns-div col-md-12 no-padding">
+                                class="col-sm-12 col-12 chk-btns-div col-md-12 p-0">
                                 <a #modal data-bs-toggle="modal" data-bs-target="#exampleModalCenter"></a>
                                 <div>
                                     <label class="question-header">Add notes/upload files you
@@ -397,7 +397,7 @@
                                 <app-coupon-status [paymentDetails]="paymentDetails"></app-coupon-status>
                             </div>
                             <div class="clearfix"></div>
-                            <div class="col-md-12 col-12 col-sm-12 no-padding" *ngIf="type!=='waitlistreschedule'">
+                            <div class="col-md-12 col-12 col-sm-12 p-0" *ngIf="type!=='waitlistreschedule'">
                                 <app-payment-summary [paymentDetails]="paymentDetails" [paymentMode]="paymentMode" 
                                     [serviceOptions]="serviceOptionApptt" [service]="selectedService"
                                     [gatewayFee]="gatewayFee" [convenientFee]="convenientFee"></app-payment-summary>
@@ -434,7 +434,7 @@
                             </ng-container>
                             <div class="clearfix"></div>
                             <div  *ngIf="type!=='waitlistreschedule'">
-                                <div class="mx-auto no-padding" *ngIf="paymentDetails.amountRequiredNow > 0">
+                                <div class="mx-auto p-0" *ngIf="paymentDetails.amountRequiredNow > 0">
                                     <label class="custom resPaymrntDetails mgn-up-20">{{'Select Payment Mode' |
                                         translate}}</label><br />
                                     <ng-container *ngIf="!shownonIndianModes && loadedConvenientfee"
@@ -453,7 +453,7 @@
                                     </ng-container>
                                 </div>
                                 <div class="clearfix"></div>
-                                <div class="mgn-up-20 col-md-12 col-12 no-padding"
+                                <div class="mgn-up-20 col-md-12 col-12 p-0"
                                     *ngIf="paymentDetails['amountToPay']">
                                     <div class="col-md-12 txt-align-center pad_link question-header"
                                         *ngIf="paymentmodes && paymentmodes.internationalPay">
@@ -581,10 +581,10 @@
                                         Coupon Code
                                     </div>
                                     <div class="col-12 col-sm-12 col-md-12 col-lg-12 mgn-up-20">
-                                        <div class="col-md-12 col-sm-12 col-lg-12 col-12 no-padding"
+                                        <div class="col-md-12 col-sm-12 col-lg-12 col-12 p-0"
                                             *ngIf="showCouponWB">
                                             <div
-                                                class="col-md-12 col-sm-12 col-lg-12 col-12 form-level-settings applybill no-padding">
+                                                class="col-md-12 col-sm-12 col-lg-12 col-12 form-level-settings applybill p-0">
                                                 <i class="icon-bell"></i>{{applied_inbilltime}}
                                             </div>
                                             <div class="width-60">
@@ -595,21 +595,21 @@
                                                         [ngModelOptions]="{standalone: true}">
                                                 </div>
                                             </div>
-                                            <div class="col-md-12 col-sm-12 col-lg-12 col-12 no-padding"
+                                            <div class="col-md-12 col-sm-12 col-lg-12 col-12 p-0"
                                                 style="color: red;" *ngIf="api_cp_error !== null">
                                                 {{api_cp_error}}</div>
                                             <div
-                                                class="col-md-12 col-12 col-sm-12 col-lg-12 no-padding mgn-up-10 mgn-bt-20">
+                                                class="col-md-12 col-12 col-sm-12 col-lg-12 p-0 mgn-up-10 mgn-bt-20">
 
                                             </div>
                                         </div>
                                         <div class="col-md-12 col-sm-12 col-lg-12 col-12 mgn-up-20 mgn-bt-30 pad-up-10"
                                             *ngIf="couponsList && couponsList.length>0">
-                                            <div class="col-md-12 col-sm-12 col-lg-12 col-12 no-padding"
+                                            <div class="col-md-12 col-sm-12 col-lg-12 col-12 p-0"
                                                 *ngFor="let coupon of couponsList let i=index">
                                                 <div
-                                                    class="col-md-12 col-sm-12 col-lg-12 col-12 no-padding coupon-add-msg">
-                                                    <div class="col-md-5 col-sm-7 col-7 col-lg-4 no-padding">
+                                                    class="col-md-12 col-sm-12 col-lg-12 col-12 p-0 coupon-add-msg">
+                                                    <div class="col-md-5 col-sm-7 col-7 col-lg-4 p-0">
                                                         {{coupon.couponCode}} </div>
                                                     <div class="col-md-12 col-sm-5 col-5 col-lg-8 delteTC">
                                                         <span><a *ngIf="coupon.instructions" (click)="toggleterms(i)"
@@ -622,7 +622,7 @@
                                                                     [matTooltip]="'Remove Coupon'"></i></a></span>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-12 col-sm-12 col-lg-12 col-12 mgn-up-10 pre-instr no-padding"
+                                                <div class="col-md-12 col-sm-12 col-lg-12 col-12 mgn-up-10 pre-instr p-0"
                                                     *ngIf="coupon.showme">
                                                     {{coupon.instructions}}
                                                 </div>

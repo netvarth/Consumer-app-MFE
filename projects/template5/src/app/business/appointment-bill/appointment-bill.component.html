@@ -1,4 +1,4 @@
-<section #consumer_appointmentbill class="container no-padding confirm-aptckn no-padding-small" *ngIf="invoiceInfo === 'false'">
+<section #consumer_appointmentbill class="container p-0 confirm-aptckn no-padding-small" *ngIf="invoiceInfo === 'false'">
     <div [ngClass]="{'loadingpaytm': loadingPaytm}"></div>
     <div class="content p0 comn-cls cons-check-bill">
         <div class="col-md-12 no-padding">
@@ -92,10 +92,10 @@
                                                                 </span>
                                                             </span>
 
-                                                            <div class="col-md-12 col-sm-12 col-lg-12 no-padding red"
+                                                            <div class="col-md-12 col-sm-12 col-lg-12 p-0 red"
                                                                 *ngIf="bill_data.billStatus == 'Cancel'">
                                                                 Cancelled</div>
-                                                                <div class="col-md-12 col-sm-12 col-lg-12 no-padding green"
+                                                                <div class="col-md-12 col-sm-12 col-lg-12 p-0 green"
                                                                 *ngIf="bill_data.billStatus == 'Settled'">
                                                                 Settled</div>
 
@@ -410,7 +410,7 @@
                                                             <span class="">Coupon</span>
                                                         </div>
                                                         <div
-                                                            class="col-md-12 col-sm-12 col-12 no-padding jc-sec-bill">
+                                                            class="col-md-12 col-sm-12 col-12 p-0 jc-sec-bill">
                                                             <div class="section-two">
                                                                 <div class="add-j-coupon edit-row service">
                                                                     <div
@@ -489,7 +489,7 @@
                                                                 </a></span>
                                                         </div>
                                                         <div
-                                                            class="col-md-12 col-sm-12 col-12 cc-dc-nb no-padding text-center mr-auto mt-3">
+                                                            class="col-md-12 col-sm-12 col-12 cc-dc-nb p-0 text-center mr-auto mt-3">
                                                             <button type="button"
                                                                 class=" next-button btn btn-primary font-weight-bold text-uppercase "
                                                                 [class.disabled]="isClickedOnce"
@@ -539,7 +539,7 @@
 </section>
 
 
-<section #consumer_appointmentbill class="container no-padding confirm-aptckn no-padding-small" *ngIf="invoiceInfo === 'true'">
+<section #consumer_appointmentbill class="container p-0 confirm-aptckn no-padding-small" *ngIf="invoiceInfo === 'true'">
     <div [ngClass]="{'loadingpaytm': loadingPaytm}"></div>
     <div class="content p0 comn-cls cons-check-bill">
         <div class="col-md-12 no-padding">
@@ -643,10 +643,10 @@
                                                                 </span>
                                                             </span>
 
-                                                            <div class="col-md-12 col-sm-12 col-lg-12 no-padding red"
+                                                            <div class="col-md-12 col-sm-12 col-lg-12 p-0 red"
                                                                 *ngIf="invoiceDetailsById.billStatus == 'Cancel'">
                                                                 Cancelled</div>
-                                                                <div class="col-md-12 col-sm-12 col-lg-12 no-padding green"
+                                                                <div class="col-md-12 col-sm-12 col-lg-12 p-0 green"
                                                                 *ngIf="invoiceDetailsById.billStatus == 'Settled'">
                                                                 Settled</div>
 
@@ -991,7 +991,7 @@
                                                             <span class="">Coupon</span>
                                                         </div>
                                                         <div
-                                                            class="col-md-12 col-sm-12 col-12 no-padding jc-sec-bill">
+                                                            class="col-md-12 col-sm-12 col-12 p-0 jc-sec-bill">
                                                             <div class="section-two">
                                                                 <div class="add-j-coupon edit-row service">
                                                                     <div
@@ -1070,7 +1070,7 @@
                                                                 </a></span>
                                                         </div>
                                                         <div
-                                                            class="col-md-12 col-sm-12 col-12 cc-dc-nb no-padding text-center mr-auto mt-3">
+                                                            class="col-md-12 col-sm-12 col-12 cc-dc-nb p-0 text-center mr-auto mt-3">
                                                             <button type="button"
                                                                 class=" next-button btn btn-primary font-weight-bold text-uppercase "
                                                                 [class.disabled]="isClickedOnce"

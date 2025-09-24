@@ -1,17 +1,17 @@
-<section class="container no-padding cust-book-details customWidth">
+<section class="container p-0 cust-book-details customWidth">
     <div class="content p0 comn-cls checkin-details">
         <div>
             <div class="panel panel-default">
                 <div class="panel-body no-padding">
                     <div class="c-outer m0">
                         <div class="c-body booking-content col-md-12 col-12 col-sm-12 no-padding">
-                            <div class="panel-heading col-12 col-sm-12 co-md-12 col-lg-12 no-padding cstmHeader">
+                            <div class="panel-heading col-12 col-sm-12 co-md-12 col-lg-12 p-0 cstmHeader">
                                 <div (click)="gotoPrev()" class="backFlex">
                                     <div><i class="fa fa-arrow-left" aria-hidden="true"></i></div>
                                     <div>{{'Appointment Details' | translate}}</div>
                                 </div>
                             </div>
-                            <div class="lbl col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 no-padding mgn-up-8">
+                            <div class="lbl col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 p-0 mgn-up-8">
                                 <div class="card" *ngIf="!api_loading">
                                     <app-common-innerloading-spinner> </app-common-innerloading-spinner>
                                 </div>

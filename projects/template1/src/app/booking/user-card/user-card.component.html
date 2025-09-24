@@ -27,15 +27,15 @@
     </div>
     <div class="serviceFlex">
         <div class="col-md-12 col-12 col-sm-12 col-lg-12 card-timings-cont" >
-            <div class="col-sm-6 col-6 col-md-6 col-lg-6 no-padding"
+            <div class="col-sm-6 col-6 col-md-6 col-lg-6 p-0"
                 *ngIf="user.apptTime && user.apptTime.caption && user.apptTime.availableSchedule.availableDate">
-                <div class="no-padding card-head-grey">{{user.apptTime.caption | translate}}</div>
-                <h6 class="no-padding">{{user.apptTime.date}}</h6>
+                <div class="p-0 card-head-grey">{{user.apptTime.caption | translate}}</div>
+                <h6 class="p-0">{{user.apptTime.date}}</h6>
             </div>
-            <div class="col-sm-6 col-6 col-md-6 col-lg-6 no-padding"
+            <div class="col-sm-6 col-6 col-md-6 col-lg-6 p-0"
                 *ngIf="!user.apptTime && user.waitingTime && user.waitingTime.caption">
-                <div class="no-padding card-head-grey">{{user.waitingTime.caption | translate}}</div>
-                <h6 class="no-padding">{{user.waitingTime.date}}</h6>
+                <div class="p-0 card-head-grey">{{user.waitingTime.caption | translate}}</div>
+                <h6 class="p-0">{{user.waitingTime.date}}</h6>
             </div>
         </div>
     </div>

@@ -24,7 +24,7 @@
 
     <div *ngIf="showHomeDelivery">
         <div class="order-cart" *ngIf="items && items?.length > 0 && sessionCart && !loading">
-            <div class="cart-wrapper card no-padding">
+            <div class="cart-wrapper card p-0">
                 <div class="cart-container">
                     <div class="cart-container-section1">
                         <div class="">
@@ -105,8 +105,8 @@
                                     </ng-template>
                                     <ng-template *ngIf="smallDevice" pTemplate="body" let-item>
                                         <tr class="small_item_container">
-                                            <td class="card no-padding">
-                                                <div class="item-container-tbl no-padding">
+                                            <td class="card p-0">
+                                                <div class="item-container-tbl p-0">
                                                     <div class="item-container-tbl-cont-left p-2">
                                                         <img *ngIf="item && item.spItem && item.spItem.attachments && item.spItem.attachments.length > 0"
                                                             [src]="item.spItem?.attachments?.[0]?.s3path" alt=""
@@ -211,7 +211,7 @@
 
     <div *ngIf="showStorePickup">
         <div class="order-cart" *ngIf="storeItems && storeItems.length > 0 && sessionCart && !loading">
-            <div class="cart-wrapper card no-padding">
+            <div class="cart-wrapper card p-0">
                 <div class="cart-container">
                     <div class="cart-container-section1">
                         <div class="">
@@ -292,8 +292,8 @@
                                     </ng-template>
                                     <ng-template *ngIf="smallDevice" pTemplate="body" let-item>
                                         <tr class="small_item_container">
-                                            <td class="card no-padding">
-                                                <div class="item-container-tbl no-padding">
+                                            <td class="card p-0">
+                                                <div class="item-container-tbl p-0">
                                                     <div class="item-container-tbl-cont-left p-2">
                                                         <img *ngIf="item && item.spItem && item.spItem.attachments && item.spItem.attachments.length > 0"
                                                             [src]="item.spItem?.attachments?.[0]?.s3path" alt=""

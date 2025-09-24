@@ -1,17 +1,17 @@
 <section class="container no-padding-small cust-book-details customWidth">
     <div class="content p0 comn-cls checkin-details">
         <div  [ngClass]="{row: !smallDevice}">
-            <div class="panel panel-default no-padding">
+            <div class="panel panel-default p-0">
                 <div class="panel-body no-padding">
                     <div class="c-outer m0">
-                        <div class="c-body booking-content col-md-12 col-12 col-sm-12 no-padding">
-                            <div class="panel-heading col-12 col-sm-12 co-md-12 col-lg-12 no-padding cstmHeader">
+                        <div class="c-body booking-content col-md-12 col-12 col-sm-12 p-0">
+                            <div class="panel-heading col-12 col-sm-12 co-md-12 col-lg-12 p-0 cstmHeader">
                                 <div (click)="gotoPrev()" class="backFlex">
                                     <div><i class="fa fa-arrow-left" aria-hidden="true"></i></div>
                                     <div>{{titlename | capitalizeFirst}}</div>
                                 </div>
                             </div>
-                            <div class="lbl col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 no-padding">
+                            <div class="lbl col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 p-0">
                                 <div class="card" *ngIf="!api_loading">
                                     <app-common-innerloading-spinner> </app-common-innerloading-spinner>
                                 </div>
@@ -732,7 +732,7 @@
                                         </h3>
                                     </div>
                                     <ng-container *ngIf="questionnaires.length > 1">
-                                        <mat-accordion class="qnr-accord no-padding" *ngFor="let qnr of questionnaires">
+                                        <mat-accordion class="qnr-accord p-0" *ngFor="let qnr of questionnaires">
                                             <mat-expansion-panel>
                                                 <mat-expansion-panel-header>
                                                     <mat-panel-title>

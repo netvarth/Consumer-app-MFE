@@ -1,8 +1,8 @@
-<section class="container no-padding confirm-aptckn hf-no-bg no-padding-small" [ngClass]="theme?theme:''">
-    <div class="content p0 loc-list hf-bg-white hf-no-padding">
+<section class="container p-0 confirm-aptckn hf-no-bg no-padding-small" [ngClass]="theme?theme:''">
+    <div class="content p0 loc-list hf-bg-white hf-p-0">
         <div class="copy locd block-level" *ngIf="!apiloading">
             <div id="scriptContainer"></div>
-            <div class="card col-sm-12 col-md-12 col-lg-12 post-info no-padding hgt-adjust"
+            <div class="card col-sm-12 col-md-12 col-lg-12 post-info p-0 hgt-adjust"
                 *ngFor="let wtlst of waitlist;let i=index">
                 <div class="details">
                     <div class="book-head" *ngIf="type !== 'waitlistreschedule'"> Booking Confirmed

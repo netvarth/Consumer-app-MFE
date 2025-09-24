@@ -1,4 +1,4 @@
-<section class="container no-padding confirm-aptckn no-padding-small cstmWidth">
+<section class="container p-0 confirm-aptckn no-padding-small cstmWidth">
     <div class="content p0 loc-list">
         <div id="scriptContainer"></div>
         <div class="panel panel-default">
@@ -10,7 +10,7 @@
                     <div>{{booking['id']}}</div>
                 </div>
             </div>
-            <div class=" no-padding cstmCardBooking mt-4" *ngIf="booking['info']">
+            <div class=" p-0 cstmCardBooking mt-4" *ngIf="booking['info']">
                 <div class="cardCustom" *ngIf="!apiloading">
                     <div class="bookingForTxt">{{booking['bookingForCaption'] | translate}}</div>
                     <div class="apptDetails">

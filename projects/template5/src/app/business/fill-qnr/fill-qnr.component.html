@@ -5,7 +5,7 @@
                 Please provide us with a little more information to complete your order
             </div>
         </div>
-        <div class="col-12 no-padding" *ngIf="questionnaireList">
+        <div class="col-12 p-0" *ngIf="questionnaireList">
             <app-questionnaire [questionnaireList]="questionnaireList" [questionAnswers]="questionAnswers" [source]="'condumerOrder'"
                 (returnAnswers)="getQuestionAnswers($event)"></app-questionnaire>
             <div class="ps-4 py-4 actiondiv">

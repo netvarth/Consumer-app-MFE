@@ -35,6 +35,8 @@
     "assert": "^2.1.0",
     "bootstrap": "^5.3.3",
     "chart.js": "^4.4.5",
+    "date-fns": "^3.6.0",
+    "date-fns-tz": "^3.2.0",
     "datebook": "^8.0.1",
     "es-module-shims": "^1.5.12",
     "font-awesome": "^4.7.0",

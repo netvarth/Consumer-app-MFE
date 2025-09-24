@@ -27,7 +27,6 @@ import { ApplyCouponModule } from '../../shared/apply-coupon/apply-coupon.module
 import { PaymentSummaryModule } from '../../shared/payment-summary/payment-summary.module';
 import { PrivacyModule } from '../../shared/privacy/privacy.module';
 import { TranslateModule } from '@ngx-translate/core';
-// import { DatePaginationModule } from '../../shared/date-pagination/date-pagination.module';
 import { DatePaginationModule } from './date-pagination/date-pagination.module';
 const routes: Routes = [
     { path: '', component: AppointmentComponent},

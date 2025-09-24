@@ -1,4 +1,4 @@
-<section class="container consumer-dashhome no-padding no-padding-small mt-5" [ngClass]="theme">
+<section class="container consumer-dashhome p-0 no-padding-small mt-5" [ngClass]="theme">
     <!-- <div *ngIf="api_loading">
         <app-common-innerloading-spinner></app-common-innerloading-spinner>
     </div> -->
@@ -6,15 +6,15 @@
         [accountId]="accountId"></app-authentication>
     <div class="content settings container checkin-details" *ngIf="isLoggedIn">
         <div class="card no-padding-small">
-            <div class="col-md-12 no-padding">
+            <div class="col-md-12 p-0">
                 <div class="col-md-12 ">
                     <h1 class="tel-serv-a mgn-up-20">{{loggedUser.userName}}'s Tele Meetings</h1>
                     <p>List all of your virtual scheduled meetings</p>
                 </div>
-                <div class="col-md-12 no-padding">
+                <div class="col-md-12 p-0">
                     <hr />
                 </div>
-                <div class="col-md-12 no-padding">
+                <div class="col-md-12 p-0">
                     <div class="col-md-6 col-12 col-sm-12 no-padding-small consumer-dash tele-home">
                         <div class="grid-card">
                             <div *ngFor="let gBooking of gBookings | keyvalue; let i = index">
@@ -30,7 +30,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card no-padding">
+                                <div class="card p-0">
                                     <mat-grid-list cols="1" rowHeight="240px" [gutterSize]="'10px'">
                                         <mat-grid-tile *ngFor="let booking of gBookings[gBooking.key]">
                                             <ng-container>
@@ -42,7 +42,7 @@
                                                     </div>
                                                     <!-- Icon -->
                                                     <div
-                                                        class="row align-items-center no-padding">
+                                                        class="row align-items-center p-0">
                                                         <div class="d-flex">
                                                             <div>
                                                                 <i style="width: 4rem;" class="fa appt-icon"
@@ -122,8 +122,8 @@
                                                             </div>
                                                         </div>
                                                         <div
-                                                            class="col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 no-padding mgn-up-5">
-                                                            <div class="pull-left col-6 no-padding"
+                                                            class="col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 p-0 mgn-up-5">
+                                                            <div class="pull-left col-6 p-0"
                                                                 *ngIf="booking.provider">
                                                                 <div class="prov_lbl">Provider</div>
                                                                 <!-- <div class="prov_nme">{{booking.userName}}</div> -->
@@ -132,7 +132,7 @@
                                                                 </div>
                                                             </div>
                                                             <div class="col-6 "
-                                                                [class.no-padding]="!booking.provider">
+                                                                [class.p-0]="!booking.provider">
                                                                 <div class="prov_lbl">Video Status</div>
                                                                 <div class="prov_nme"
                                                                     [class.red]="booking.btnStatus==='DISABLED'"

@@ -1,7 +1,7 @@
-<section #consumer_bill class="container no-padding confirm-aptckn">
+<section #consumer_bill class="container p-0 confirm-aptckn">
     <div [ngClass]="{'loadingpaytm': loadingPaytm}"></div>
     <div class="content p0 comn-cls cons-check-bill">
-        <div class="col-md-12 no-padding">
+        <div class="col-md-12 p-0">
             <div class="w-dta">
                 <div class="row" *ngIf="booking['invoice']">
                     <div class="c-outer m0 no-padding-small">
@@ -93,10 +93,10 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-12 col-sm-12 col-lg-12 no-padding red"
+                                                            <div class="col-md-12 col-sm-12 col-lg-12 p-0 red"
                                                                 *ngIf="booking['invoice'].billStatus == 'Cancel'">
                                                                 Cancelled</div>
-                                                            <div class="col-md-12 col-sm-12 col-lg-12 no-padding green"
+                                                            <div class="col-md-12 col-sm-12 col-lg-12 p-0 green"
                                                                 *ngIf="booking['invoice'].billStatus == 'Settled'">
                                                                 Settled</div>
                                                         </div>
@@ -397,18 +397,18 @@
                                                         </div>
                                                         <div class="section-three other-section no-padding-small"
                                                             *ngIf="booking['invoice'].billStatus !== 'Cancel' && booking['invoice'].billStatus !== 'Settled' && (booking['invoice'].amountDue > 0)">
-                                                            <div class="col-md-12 col-sm-12 col-12 no-padding" *ngIf="this.couponList.OWN.length >0 && booking['invoice'].billPaymentStatus!='FullyPaid' && booking['invoice'].billStatus != 'Settled'
+                                                            <div class="col-md-12 col-sm-12 col-12 p-0" *ngIf="this.couponList.OWN.length >0 && booking['invoice'].billPaymentStatus!='FullyPaid' && booking['invoice'].billStatus != 'Settled'
                                                          && paymode && (booking['invoice'].amountDue > 0)">
                                                                 <div
-                                                                    class="title-sec col-md-12 col-sm-12 col-12 no-padding">
+                                                                    class="title-sec col-md-12 col-sm-12 col-12 p-0">
                                                                     <span class="">Coupon</span>
                                                                 </div>
                                                                 <div
-                                                                    class="col-md-12 col-sm-12 col-12 no-padding jc-sec-bill">
+                                                                    class="col-md-12 col-sm-12 col-12 p-0 jc-sec-bill">
                                                                     <div class="section-two">
                                                                         <div class="add-j-coupon edit-row service">
                                                                             <div
-                                                                                class="spl col-md-3 col-sm-4 col-lg-3 col-5 no-padding">
+                                                                                class="spl col-md-3 col-sm-4 col-lg-3 col-5 p-0">
                                                                                 <div class="item selectbox">
                                                                                     <input class="coupon-text-bill"
                                                                                         type="text" #jcoupon
@@ -417,7 +417,7 @@
                                                                                 </div>
                                                                             </div>
                                                                             <div
-                                                                                class="spr col-md-9 col-sm-8 col-lg-9 col-7 no-padding">
+                                                                                class="spr col-md-9 col-sm-8 col-lg-9 col-7 p-0">
                                                                                 <button class="cs-btn bt1" id="btnApply"
                                                                                     (click)="applyJCoupon()">Apply</button>
                                                                                 <button class="cs-btn bt2" id="btnClear"
@@ -469,7 +469,7 @@
                                                                         </a></span>
                                                                 </div>
                                                                 <div
-                                                                    class="col-md-12 col-sm-12 col-12 cc-dc-nb no-padding text-center mr-auto mt-3">
+                                                                    class="col-md-12 col-sm-12 col-12 cc-dc-nb p-0 text-center mr-auto mt-3">
                                                                     <button type="button" id="btnPayment"
                                                                         class=" next-button btn btn-primary font-weight-bold text-uppercase "
                                                                         [class.disabled]="isClickedOnce"

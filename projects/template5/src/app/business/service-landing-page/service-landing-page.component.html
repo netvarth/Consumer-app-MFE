@@ -1,18 +1,18 @@
-<div class="card col-12 bus-page service-landing no-padding" >
+<div class="card col-12 bus-page service-landing p-0" >
     <div class="card shadow d-flex flex-row header p-2">
         <div class="my-auto" *ngIf="back">
             <a class="pointer-cursor" (click)="goBack()"><i class="fa fa-arrow-left"></i>&emsp;</a>
         </div>
     </div>
-    <div class="col-12 mgn-up-10 no-padding">
+    <div class="col-12 mgn-up-10 p-0">
         <app-basic-profile-new (actionPerformed)="profileActionPerformed($event)" [profile]="basicProfile"
             [selectedLocation]="selectedLocation" [extras]="extras"></app-basic-profile-new>
     </div>
     <div class="col-12 mgn-up-10" *ngIf="serviceDetails">
         <div class="col-12 card">
-            <div class="col-md-12 col-12 col-sm-12 col-lg-12 no-padding">
-                <div class="d-flex no-padding card-outer-cont align-items-center">
-                    <div class="no-padding card-inner-img-cont">
+            <div class="col-md-12 col-12 col-sm-12 col-lg-12 p-0">
+                <div class="d-flex p-0 card-outer-cont align-items-center">
+                    <div class="p-0 card-inner-img-cont">
                         <div class="img-circle"
                             *ngIf="serviceDetails.servicegallery && serviceDetails.servicegallery.length > 0"
                             (click)="openImageModalRow(serviceGalleryPopup[0],serviceGalleryPopup,0 )">

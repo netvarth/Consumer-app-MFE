@@ -66,7 +66,7 @@
                                             </button>
                                         </div>
                                     </div>
-                                    <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12  no-padding"
+                                    <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12  p-0"
                                         data-wizard-type="step-content" data-wizard-state="current">
                                         <div *ngIf="api_loading_video" class="incomplete-msg">
                                             <div style="padding: 0 30px;">
@@ -82,19 +82,19 @@
                                         *ngIf="bookStep === 'donation'" [ngClass]="{'highlight': api_loading_video}">
                                             <div class="c-outer m0" style="display: contents !important;">
                                                 <div class="c-body">
-                                                    <div class="col-sm-12 col-md-12 col-lg-12 col-12 no-padding">
+                                                    <div class="col-sm-12 col-md-12 col-lg-12 col-12 p-0">
                                                         <div class="copy locd">
                                                             <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12  no-padding-small resCard"
                                                                 style="display:flex;gap: 15px;">
 
                                                                 <div
-                                                                    class="col-md-12 col-lg-5 col-12 col-sm-12 no-padding check-new-group ">
+                                                                    class="col-md-12 col-lg-5 col-12 col-sm-12 p-0 check-new-group ">
                                                                     <div
-                                                                        class="col-md-12 col-12 col-lg-12 col-sm-12 no-padding">
+                                                                        class="col-md-12 col-12 col-lg-12 col-sm-12 p-0">
                                                                         <div style="box-shadow: 0 1px 1px 0 rgb(0 0 0 / 20%), 0 2px 5px 0 rgb(0 0 0 / 19%) !important;
                                                                 padding: 10px !important;
                                                                 border-radius: 10px;"
-                                                                            class="col-md-12 col-12 col-lg-12 col-sm-12 no-padding mgn-up-10 no-padding c-checkin-new">
+                                                                            class="col-md-12 col-12 col-lg-12 col-sm-12 p-0 mgn-up-10 p-0 c-checkin-new">
                                                                             <div class="clearfix"></div>
                                                                             <!---donor name phno email start-->
                                                                             <div class="mobile-donor-details">
@@ -178,7 +178,7 @@
                                                                             <!---donor name phno email end-->
                                                                             <!---pre ins start-->
                                                                             <div
-                                                                                class="col-md-12 col-12 col-sm-12 no-padding mobile-input">
+                                                                                class="col-md-12 col-12 col-sm-12 p-0 mobile-input">
                                                                                 <div *ngIf="selectedService.preInfoTitle" style="font-size: 15px;color: #3c3c3f;
                                                                             font-weight: 700;text-align: left;margin-top: 10px;margin-left: 5px;
                                                                             ;">{{selectedService.preInfoTitle}}</div>
@@ -189,7 +189,7 @@
                                                                             <div>
                                                                                 <!--amount start-->
                                                                                 <div
-                                                                                    class="col-sm-12 col-12 col-md-12 no-padding">
+                                                                                    class="col-sm-12 col-12 col-md-12 p-0">
                                                                                     <div
                                                                                         class="lbl col-sm-12 col-md-12 col-lg-12 col-12 col-sm-12 mgn-up-20 amount-section-mobile">
 
@@ -198,12 +198,12 @@
                                                                                                 <!-- <div -->
                                                                                                 <!-- > -->
                                                                                                 <!-- <div
-                                                                                        class="col-md-12 col-12 col-sm-12 no-padding amount mgn-bt-10">
+                                                                                        class="col-md-12 col-12 col-sm-12 p-0 amount mgn-bt-10">
                                                                                         Amount (<i
                                                                                             class="fa fa-inr"></i>)
                                                                                     </div> -->
                                                                                                 <div
-                                                                                                    class="col-md-12 col-12 col-sm-12 no-padding mobile-input">
+                                                                                                    class="col-md-12 col-12 col-sm-12 p-0 mobile-input">
                                                                                                     <div
                                                                                                         style="text-align: left;
                                                                                         font-size: 15px;
@@ -236,7 +236,7 @@
                                                                                             <div
                                                                                                 class="prepay-amt mgn-bt-20">
                                                                                                 <div *ngIf="selectedService"
-                                                                                                    class="col-md-12 col-sm-12 col-lg-12 col-12 form-level-settings applybill no-padding red">
+                                                                                                    class="col-md-12 col-sm-12 col-lg-12 col-12 form-level-settings applybill p-0 red">
                                                                                                 </div>
                                                                                             </div>
                                                                                         </div>
@@ -265,10 +265,10 @@
                                                                     </div>
                                                                 </div>
                                                                 <!--donation for details start -->
-                                                                <div class="col-md-12 col-lg-7 col-12 col-sm-12 no-padding check-new-group container cardTop"
+                                                                <div class="col-md-12 col-lg-7 col-12 col-sm-12 p-0 check-new-group container cardTop"
                                                                     style="margin-top: 10px;">
                                                                     <div style="background-color: #e7f0ff"
-                                                                        class="col-md-12 col-12 col-sm-12 no-padding mobile-donation-for-styling ">
+                                                                        class="col-md-12 col-12 col-sm-12 p-0 mobile-donation-for-styling ">
                                                                         <div style="padding: 15px;">
 
                                                                             <div style="text-align: center;
@@ -473,7 +473,7 @@
                                                                             </div>
                                                                             <!---edit ph no end-->
                                                                             <!--edit not useremail id start-->
-                                                                            <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 col-sm-12 no-padding email-sec mgn-bt-5"
+                                                                            <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 col-sm-12 p-0 email-sec mgn-bt-5"
                                                                                 *ngIf="!userEmail"
                                                                                 style="margin-top: -15px !important">
                                                                                 <div style="display: flex;">
@@ -540,7 +540,7 @@
                                                                             </div>
                                                                             <!---edit not useremail id  end-->
                                                                             <!----edit email start-->
-                                                                            <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 col-sm-12 no-padding email-sec mgn-bt-5"
+                                                                            <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 col-sm-12 p-0 email-sec mgn-bt-5"
                                                                                 style="margin-top: -15px !important"
                                                                                 *ngIf="userEmail">
                                                                                 <div>

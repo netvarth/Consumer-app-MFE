@@ -11,7 +11,7 @@
       <app-common-innerloading-spinner></app-common-innerloading-spinner>
     </div>
   </div>
-  <div class="login login-3 wizard d-flex flex-column flex-lg-row flex-column-fluid no-padding" *ngIf="!loading">
+  <div class="login login-3 wizard d-flex flex-column flex-lg-row flex-column-fluid p-0" *ngIf="!loading">
     <!--begin::Aside-->
     <div class="login-aside d-flex flex-column flex-row-auto">
       <!--begin::Aside Top-->
@@ -119,7 +119,7 @@
                           </mat-option>
                       </mat-select>
                   </div>
-                  <div class="flex-grow-1 no-padding mgn-lt-1">
+                  <div class="flex-grow-1 p-0 mgn-lt-1">
                     <div class="form-group otp">
                       <input type="text" class="form-control" id="first_name" [(ngModel)]="firstName" autocomplete="off" />
                     </div>

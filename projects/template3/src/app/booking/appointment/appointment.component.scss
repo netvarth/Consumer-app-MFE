@@ -563,3 +563,9 @@ mat-chip {
     background: #dbdbdb !important;
     color: #666 !important;
 }
+
+::ng-deep app-payment-modes .question-header {
+    clear: both;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}

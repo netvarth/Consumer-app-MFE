@@ -9,7 +9,10 @@ module.exports = withNativeFederation({
   },
 
   shared: {
-    ...shareAll({ singleton: true, strictVersion: true, requiredVersion: 'auto' }),
+    ...shareAll({ singleton: true, strictVersion: true, requiredVersion: 'auto', includeSecondaries: true }),
+    'date-fns': { singleton: true, strictVersion: true, requiredVersion: 'auto', includeSecondaries: true },
+    'date-fns/format': { singleton: true, strictVersion: true, requiredVersion: 'auto' },
+    'date-fns-tz': { singleton: true, strictVersion: true, requiredVersion: 'auto' }
   },
 
   skip: [

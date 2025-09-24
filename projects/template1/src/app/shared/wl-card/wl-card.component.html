@@ -1,5 +1,5 @@
 <!----new ui start big device-->
-<div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 fit_in no-padding cstmWlCard"
+<div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 fit_in p-0 cstmWlCard"
   *ngIf="booking !==undefined && !smallDevice && history===undefined && type !=='previous'">
   <div class="providerDeatils">
     <div class="providerNameLoc" *ngIf="(booking && booking.providerAccount && booking.providerAccount.businessName)">
@@ -409,7 +409,7 @@
     </div>
   </div>
 </div>
-<div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 fit_in no-padding cstmWlCard"
+<div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 fit_in p-0 cstmWlCard"
   *ngIf="booking===undefined && !smallDevice && history !==undefined && type ==='previous'">
   <div class="providerDeatils">
     <div class="providerNameLoc" *ngIf="(history && history.providerAccount && history.providerAccount.businessName)">

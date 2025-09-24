@@ -2050,7 +2050,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                                 queryParams: queryParams
                             };
                             _this.setAnalytics();
-                            _this.router.navigate(['consumer', 'appointment', 'confirm'], navigationExtras);
+                            _this.router.navigate([_this.sharedService.getRouteID(),'booking', 'confirm'], navigationExtras);
                         }
                     }, error => {
                         _this.isClickedOnce = false;
@@ -2183,7 +2183,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                 queryParams: queryParams
             };
             this.setAnalytics();
-            this.router.navigate([this.customId, 'appointment', 'confirm'], navigationExtras);
+            this.router.navigate([this.sharedService.getRouteID(),'booking', 'confirm'], navigationExtras);
         }
     }
     getPaymentRequest(paymentMode) {
@@ -2261,7 +2261,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                         if (!_this.wallet.isGateWayPaymentNeeded && _this.wallet.isJCashPaymentSucess) {
                             setTimeout(() => {
                                 _this.setAnalytics();
-                                _this.router.navigate([_this.customId, 'appointment', 'confirm'], { queryParams: { account_id: _this.accountId, uuid: _this.trackUuid } });
+                                _this.router.navigate([_this.sharedService.getRouteID(),'booking', 'confirm'], { queryParams: { account_id: _this.accountId, uuid: _this.trackUuid } });
                             }, 500);
                         }
                     } else if (_this.balanceToPay > 0) {
@@ -2332,7 +2332,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                 queryParams: queryParams
             };
             this.setAnalytics();
-            this.ngZone.run(() => this.router.navigate([this.customId, 'appointment', 'confirm'], navigationExtras));
+            this.ngZone.run(() => this.router.navigate([this.sharedService.getRouteID(),'booking', 'confirm'], navigationExtras));
         } else {
             this.closeloading();
         }
@@ -2448,7 +2448,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                     let navigationExtras: NavigationExtras = {
                         queryParams: queryParams
                     };
-                    this.router.navigate([this.customId, 'appointment', 'confirm'], navigationExtras);
+                    this.router.navigate([this.sharedService.getRouteID(),'booking', 'confirm'], navigationExtras);
                 },
                 error => {
                     let errorObj = this.errorService.getApiError(error);

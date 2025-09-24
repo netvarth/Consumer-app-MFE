@@ -1,14 +1,14 @@
-<section class="container  container-width no-padding mt-3" [ngClass]="theme">
+<section class="container  container-width p-0 mt-3" [ngClass]="theme">
   <div class="content status-page loc-list ">
-    <div class="card no-padding">
+    <div class="card p-0">
       <div class="copy locd" *ngIf="!api_loading">
-        <div class="col-sm-12 col-md-12 col-lg-12 no-padding">
+        <div class="col-sm-12 col-md-12 col-lg-12 p-0">
           <div class="text-center">
             <img class="businessLogo" *ngIf="businessLogo" src="{{businessLogo}}" width="80" height="80" >
             <h3 *ngIf="businessName">{{businessName}}</h3>
             <h4 class="mb-2" *ngIf="businessPlace">{{businessPlace}}<span class="icon-location"></span></h4>
           </div>
-          <div class="details card no-padding mgn-up-100">
+          <div class="details card p-0 mgn-up-100">
             <div class="book-head ynw-common-form-nm" *ngIf="type!='wl' && type!='appt' && type!='order'">
               <div class="col-md-8 col-8 col-sm-8">
                 <mat-form-field>
@@ -16,7 +16,7 @@
                     autocomplete="off">
                 </mat-form-field>
               </div>
-              <div class="col-md-2 col-2 col-sm-2 no-padding details-search">
+              <div class="col-md-2 col-2 col-sm-2 p-0 details-search">
                 <span class="cs-btn bt3 status-btn" (click)="gespanetails(encId)">Check your status</span>
               </div>
             </div>
@@ -370,53 +370,53 @@
                             </p-table>
                             <div class="row amount-section">
                               <div class="row justify-content-end">
-                                <div class="col-8 col-md-4 no-padding text-end"> Subtotal </div>
-                                <div class="col-4 col-md-3 no-padding text-end fw-bold">₹{{statusInfo.netTotal | number:'1.2-2'}}</div>
+                                <div class="col-8 col-md-4 p-0 text-end"> Subtotal </div>
+                                <div class="col-4 col-md-3 p-0 text-end fw-bold">₹{{statusInfo.netTotal | number:'1.2-2'}}</div>
                               </div>
                               <div *ngIf="statusInfo.taxTotal && statusInfo.taxTotal > 0" class="row justify-content-end">
-                                <div class="col-8 col-md-4 no-padding text-end"> GST</div>
-                                <div class="col-4 col-md-3 no-padding text-end fw-bold">₹{{statusInfo.taxTotal | number:'1.2-2'}}</div>
+                                <div class="col-8 col-md-4 p-0 text-end"> GST</div>
+                                <div class="col-4 col-md-3 p-0 text-end fw-bold">₹{{statusInfo.taxTotal | number:'1.2-2'}}</div>
                               </div>
                               <div *ngIf="statusInfo.netTotalWithTax && statusInfo.taxTotal && statusInfo.taxTotal > 0" class="row justify-content-end">
-                                <div class="col-8 col-md-4 no-padding text-end"> Net Total With GST </div>
-                                <div class="col-4 col-md-3 no-padding text-end fw-bold">₹{{statusInfo.netTotalWithTax | number:'1.2-2'}}</div>
+                                <div class="col-8 col-md-4 p-0 text-end"> Net Total With GST </div>
+                                <div class="col-4 col-md-3 p-0 text-end fw-bold">₹{{statusInfo.netTotalWithTax | number:'1.2-2'}}</div>
                               </div>
                               <div *ngIf="statusInfo.discounts && statusInfo.discounts.length >0"  class="row justify-content-end">
                                 <div  *ngFor="let discount of statusInfo.discounts" class="row justify-content-end">
-                                  <div class="col-8 col-md-4 no-padding text-end">{{discount.name}}</div>
-                                  <div class="col-4 col-md-3 no-padding text-end fw-bold">(-)₹{{discount.discountValue | number:'1.2-2'}}</div>
+                                  <div class="col-8 col-md-4 p-0 text-end">{{discount.name}}</div>
+                                  <div class="col-4 col-md-3 p-0 text-end fw-bold">(-)₹{{discount.discountValue | number:'1.2-2'}}</div>
                                 </div>
                               </div>
                               <div *ngIf="statusInfo.deliveryCharges >0" class="row justify-content-end">
-                                <div class="col-8 col-md-4 no-padding text-end"> Delivery Charge </div>
-                                <div class="col-4 col-md-3 no-padding text-end fw-bold">₹{{statusInfo.deliveryCharges | number:'1.2-2'}}</div>
+                                <div class="col-8 col-md-4 p-0 text-end"> Delivery Charge </div>
+                                <div class="col-4 col-md-3 p-0 text-end fw-bold">₹{{statusInfo.deliveryCharges | number:'1.2-2'}}</div>
                               </div>
                               <div *ngIf="statusInfo.providerCoupons && statusInfo.providerCoupons.length >0"  class="row justify-content-end">
                                 <div  *ngFor="let coupon of statusInfo.providerCoupons" class="row justify-content-end">
-                                  <div class="col-8 col-md-4 no-padding text-end"> {{coupon.couponCode}}(coupon) </div>
-                                  <div class="col-4 col-md-3 no-padding text-end fw-bold">(-)₹{{coupon.discount | number:'1.2-2'}}</div>
+                                  <div class="col-8 col-md-4 p-0 text-end"> {{coupon.couponCode}}(coupon) </div>
+                                  <div class="col-4 col-md-3 p-0old">(-)₹{{coupon.discount | number:'1.2-2'}}</div>
                                 </div>
                               </div>
                               <div *ngIf="statusInfo.roundedValue != 0" class="row justify-content-end">
-                                <div class="col-8 col-md-4 no-padding text-end"> Rounded Value </div>
-                                <div class="col-4 col-md-3 no-padding text-end fw-bold">{{ statusInfo.roundedValue > 0 ? '₹+' : '₹' }}{{ statusInfo.roundedValue | number: '1.2-2' }}</div>
+                                <div class="col-8 col-md-4 p-0 text-end"> Rounded Value </div>
+                                <div class="col-4 col-md-3 p-0 text-end fw-bold">{{ statusInfo.roundedValue > 0 ? '₹+' : '₹' }}{{ statusInfo.roundedValue | number: '1.2-2' }}</div>
                               </div>
                               <div class="row justify-content-end">
-                                <div class="col-8 col-md-4 no-padding text-end"> Net Total </div>
-                                <div class="col-4 col-md-3 no-padding text-end fw-bold">₹{{statusInfo.netRate | number:'1.2-2'}}</div>
+                                <div class="col-8 col-md-4 p-0 text-end"> Net Total </div>
+                                <div class="col-4 col-md-3 p-0 text-end fw-bold">₹{{statusInfo.netRate | number:'1.2-2'}}</div>
                               </div>
                               <div *ngIf="statusInfo.processingFee > 0" class="row justify-content-end">
-                                <div class="col-8 col-md-4 no-padding text-end"> Processing Fee </div>
-                                <div class="col-4 col-md-3 no-padding text-end fw-bold">₹{{statusInfo.processingFee | number:'1.2-2'}}</div>
+                                <div class="col-8 col-md-4 p-0 text-end"> Processing Fee </div>
+                                <div class="col-4 col-md-3 p-0 text-end fw-bold">₹{{statusInfo.processingFee | number:'1.2-2'}}</div>
                               </div>
                               <div class="row justify-content-end">
-                                <div class="col-8 col-md-4 no-padding text-end"> Amount Paid </div>
-                                <!-- <div *ngIf="statusInfo.amountPaid && statusInfo.amountPaid > 0  && !statusInfo.amountPaidWithProcessingFee" class="col-4 col-md-3 no-padding text-end fw-bold">₹{{statusInfo.amountPaid | number:'1.2-2'}}</div> -->
-                                <div class="col-4 col-md-3 no-padding text-end fw-bold">₹{{statusInfo.amountPaidWithProcessingFee | number:'1.2-2'}}</div>
+                                <div class="col-8 col-md-4 p-0 text-end"> Amount Paid </div>
+                                <!-- <div *ngIf="statusInfo.amountPaid && statusInfo.amountPaid > 0  && !statusInfo.amountPaidWithProcessingFee" class="col-4 col-md-3 p-0 text-end fw-bold">₹{{statusInfo.amountPaid | number:'1.2-2'}}</div> -->
+                                <div class="col-4 col-md-3 p-0 text-end fw-bold">₹{{statusInfo.amountPaidWithProcessingFee | number:'1.2-2'}}</div>
                               </div>
                               <div class="row justify-content-end">
-                                <div class="col-8 col-md-4 no-padding text-end"> Amount Due </div>
-                                <div class="col-4 col-md-3 no-padding text-end fw-bold">₹{{statusInfo.amountDue | number:'1.2-2'}}</div>
+                                <div class="col-8 col-md-4 p-0 text-end"> Amount Due </div>
+                                <div class="col-4 col-md-3 p-0 text-end fw-bold">₹{{statusInfo.amountDue | number:'1.2-2'}}</div>
                               </div>
                             </div>
                           </div>

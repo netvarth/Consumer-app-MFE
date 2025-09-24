@@ -1,16 +1,16 @@
 <p-toast [breakpoints]="{'920px': {width: '100%', right: '0', left: '0'}}"></p-toast>
 <section class="full-height">
-    <div class="videocontainer no-padding">
+    <div class="videocontainer p-0">
         <div class="container previewDiv" [ngStyle]="{'height.px': (screenHeight-100)}"
             [ngClass]="{'hide': !twilioService.preview}">
-            <div class="col-md-7 col-lg-6 col-sm-7 col-12 previewSubDiv no-padding mt-3">
+            <div class="col-md-7 col-lg-6 col-sm-7 col-12 previewSubDiv p-0 mt-3">
                 <div #previewContainer [ngClass]="{'videohgt': (twilioService.camDeviceCount == 0)}"
                     id="previewContainer" class="previewContainer col-md-7 col-lg-7 col-sm-7 col-12">
                 </div>
             </div>           
-            <div class="col-md-5 col-lg-6 col-sm-5 col-12 no-padding">
-                <div class="col-md-12 col-lg-12 col-sm-12 col-12 no-padding">
-                    <div class="mgn-up-50 mgn-bt-20 centeralign col-12 col-sm-12 col-md-12 col-lg-12 no-padding">
+            <div class="col-md-5 col-lg-6 col-sm-5 col-12 p-0">
+                <div class="col-md-12 col-lg-12 col-sm-12 col-12 p-0">
+                    <div class="mgn-up-50 mgn-bt-20 centeralign col-12 col-sm-12 col-md-12 col-lg-12 p-0">
                         <h1 *ngIf="loading" class="mgn-up-20">Getting Ready...</h1>
                         <h2 *ngIf="!loading && twilioService.loading" class="mgn-up-20 mgn-bt-20">Trying to Join,</h2>
                         <p *ngIf="!loading && twilioService.loading">if unable to join in a few seconds please refresh the page and try again..</p>
@@ -23,7 +23,7 @@
                     </div>
                     <app-common-innerloading-spinner *ngIf="loading"></app-common-innerloading-spinner>
                     <app-common-innerloading-spinner *ngIf="!loading && twilioService.loading"></app-common-innerloading-spinner>                   
-                    <div class="text-center join-vid-btn mgn-bt-20 col-12 col-sm-12 col-md-12 col-lg-12 no-padding"
+                    <div class="text-center join-vid-btn mgn-bt-20 col-12 col-sm-12 col-md-12 col-lg-12 p-0"
                         *ngIf="!loading">
                         <button class="startshare" [disabled]="!providerReady || btnClicked" (click)="!btnClicked && providerReady && joinRoom()">Start Sharing Video
                         </button> <button class="mgn-lt-5 exit" [disabled]="btnClicked" (click)="!btnClicked && disconnect()">Exit</button>
@@ -32,7 +32,7 @@
                 </div>
             </div>
         </div>                  
-        <div class="col-md-12 col-12 col-sm-12 col-lg-12 video-container-org no-padding"
+        <div class="col-md-12 col-12 col-sm-12 col-lg-12 video-container-org p-0"
             [ngStyle]="{'height.px': (screenHeight)}" [ngClass]="{'hide': twilioService.preview}">
             <div class="remote" id="remote-video" #remoteVideo
                 [ngClass]="{'remote': twilioService.participantsCount > 0, 'remove-hide': twilioService.participantsCount == 0}">

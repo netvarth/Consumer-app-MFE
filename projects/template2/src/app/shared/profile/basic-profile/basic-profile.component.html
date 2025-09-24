@@ -2,9 +2,9 @@
   [ngClass]="[profile['theme'] ? profile['theme'] : '', profile.cover ? 'bg-basic-profile-img' : '']"
   [ngStyle]="{ 'background': (profile.cover) ? 'url(' + profile.cover + ')': ''}">
   <div>
-    <div class="no-padding">
-      <div class="d-flex no-padding card-outer-cont align-items-center">
-        <div class="no-padding card-inner-img-cont" *ngIf="profile['logo']">
+    <div class="p-0">
+      <div class="d-flex p-0 card-outer-cont align-items-center">
+        <div class="p-0 card-inner-img-cont" *ngIf="profile['logo']">
           <div class="img-circle">
             <img class="img-responsive" [src]="profile['logo']" alt="">
           </div>
@@ -12,7 +12,7 @@
         <div class="ms-2 pointer-cursor">
           <h5 class="line-clamp-ln2 mb-1">{{profile.businessName}}</h5>
           <div class="pointer-cursor actionbtns">
-            <ul class="bus-actions bus-actions-large no-padding mt-2">
+            <ul class="bus-actions bus-actions-large p-0 mt-2">
               <li class="message" [matTooltip]="'Send Message'" *ngIf="extras['communicate']">
                 <a class="like-btn" (click)="communicateHandler()">
                   <span>
@@ -47,7 +47,7 @@
       </div>
       <div class="p-2 bline mt-2"></div>
       <div
-        class="mt-2 d-flex justify-content-between align-items-center no-padding">
+        class="mt-2 d-flex justify-content-between align-items-center p-0">
         <a *ngIf="phoneNo" href="tel:{{phoneNo.instance}}" target="_blank">
           <i class="fa fa-phone"></i> {{profile.countryCode}} {{phoneNo.instance}}
         </a>

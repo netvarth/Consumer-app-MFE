@@ -1,4 +1,4 @@
-<section class="container consumer-dashhome no-padding no-padding-small" [ngClass]="theme">
+<section class="container consumer-dashhome p-0 no-padding-small" [ngClass]="theme">
   <div class="card shadow d-flex flex-row header p-2 goBack" *ngIf="loggedIn">
     <div class="my-auto d-flex" (click)="goBack()">
       <i class="fa fa-arrow-left mgn-rt-10"></i>
@@ -27,7 +27,7 @@
             {{'MY ORDERS' | translate}}</div>
           <div class="no-padding-small">
             <div class="d-flex justify-content-end">
-              <div class="no-padding item-btn-div">
+              <div class="p-0 item-btn-div">
                 <button *ngIf="!showOrder && onlineOrder" class="flat-btn full-wdth" mat-flat-button
                   (click)="showOrders()">{{'My
                   Orders' | translate}}</button>
@@ -42,7 +42,7 @@
                   <i class="fa bookin_ico"></i>
                 </button>
               </div>
-              <div class="no-padding item-btn-div">
+              <div class="p-0 item-btn-div">
                 <button (click)="paymentsClicked('payments')" class="flat-btn full-wdth" mat-flat-button>
                   {{'My Payments' |translate}}</button>
                 <button class="flat-icon-btn" mat-flat-button (click)="paymentsClicked('payments')"
@@ -50,14 +50,14 @@
                   <i class="fa myjld-payment"></i>
                 </button>
               </div>
-              <div class="no-padding item-btn-div">
+              <div class="p-0 item-btn-div">
                 <button class="flat-btn full-wdth" mat-flat-button (click)="gotoHistory()">{{'History' |
                   translate}}</button>
                 <button class="flat-icon-btn" mat-flat-button (click)="gotoHistory()" [matTooltip]="'History'">
                   <i class="fa myjld-histry"></i>
                 </button>
               </div>
-              <div class="no-padding item-btn-div">
+              <div class="p-0 item-btn-div">
                 <button class="flat-btn full-wdth" mat-flat-button
                   (click)="paymentsClicked('Prescriptions')">{{'Documents' |
                   translate}}</button>
@@ -209,7 +209,7 @@
       </div>
       <div class="table-outer1  ng-tns-c16-57" *ngIf="!loading && showOrder && onlineOrder"
         [ngClass]="customId?'cuA':''">
-        <div class="table-outer1 booking-dash no-padding">
+        <div class="table-outer1 booking-dash p-0">
           <div *ngIf="myOrders && myOrders.length > 0 && !loading" class="grid-card">
             <div *ngFor="let order of myOrders | slice:0:orderLimit" (click)="showOrderDetails(order, orderTitle)">
               <div class=" fit_in mainFlexOrder">

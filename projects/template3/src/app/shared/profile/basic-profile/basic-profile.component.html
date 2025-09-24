@@ -3,8 +3,8 @@
   [ngStyle]="{ 'background': (profile.cover) ? 'url(' + profile.cover + ')': ''}">
   <div>
     <div class="no-padding">
-      <div class="d-flex no-padding card-outer-cont align-items-center">
-        <div class="no-padding card-inner-img-cont" *ngIf="profile['logo']">
+      <div class="d-flex p-0 card-outer-cont align-items-center">
+        <div class="p-0 card-inner-img-cont" *ngIf="profile['logo']">
           <div class="img-circle">
             <img class="img-responsive" [src]="profile['logo']" alt="">
           </div>
@@ -12,7 +12,7 @@
         <div class="ms-2 pointer-cursor">
           <h5 class="line-clamp-ln2 mb-1">{{profile.businessName}}</h5>
           <div class="pointer-cursor actionbtns">
-            <ul class="bus-actions bus-actions-large no-padding mt-2">
+            <ul class="bus-actions bus-actions-large p-0 mt-2">
               <li class="message" [matTooltip]="'Send Message'" *ngIf="extras['communicate']">
                 <a class="like-btn" (click)="communicateHandler()">
                   <span>

@@ -22,7 +22,7 @@
         </div>
     </div>
     <div class="clearfix"></div>
-    <div class="col-12 d-flex no-padding " *ngIf="loggedIn">
+    <div class="col-12 d-flex p-0 " *ngIf="loggedIn">
         <div class="col-md-4 col-lg-4 col-sm-12 col-12 d-flex align-items-stretch desktop-only p-1"
             *ngIf="!smallDevice">
             <div class="card shadow">
@@ -88,7 +88,7 @@
                     <hr />
                     <div class="col-md-12 col-12 col-sm-12">
                         <div *ngIf="wt_personaahead && personsAhead>=0 && queuejson && queuejson.length > 0"
-                            class="text-primary col-md-12 col-12 col-sm-12 no-padding lnk">
+                            class="text-primary col-md-12 col-12 col-sm-12 p-0 lnk">
                             <h5><b>Waiting in Line</b></h5>
                         </div>
                         <div class="col-md-12 col-12 col-sm-12 no-padding"
@@ -219,7 +219,7 @@
                     </div>
                     <div class="clearfix"></div>
                 </div>
-                <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 col-sm-12 no-padding right-part"
+                <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 col-sm-12 p-0 right-part"
                     data-wizard-type="step-content" data-wizard-state="current" *ngIf="bookStep === 4">
                     <div class="pad-20 quest-head">
                         We need some more information
@@ -599,7 +599,7 @@
                                                 style="color: red;" *ngIf="api_cp_error !== null">
                                                 {{api_cp_error}}</div>
                                             <div
-                                                class="col-md-12 col-12 col-sm-12 col-lg-12 no-padding mgn-up-10 mgn-bt-20">
+                                                class="col-md-12 col-12 col-sm-12 col-lg-12 p-0 mgn-up-10 mgn-bt-20">
 
                                             </div>
                                         </div>
@@ -608,7 +608,7 @@
                                             <div class="col-md-12 col-sm-12 col-lg-12 col-12 no-padding"
                                                 *ngFor="let coupon of couponsList let i=index">
                                                 <div
-                                                    class="col-md-12 col-sm-12 col-lg-12 col-12 no-padding coupon-add-msg">
+                                                    class="col-md-12 col-sm-12 col-lg-12 col-12 p-0 coupon-add-msg">
                                                     <div class="col-md-5 col-sm-7 col-7 col-lg-4 no-padding">
                                                         {{coupon.couponCode}} </div>
                                                     <div class="col-md-12 col-sm-5 col-5 col-lg-8 delteTC">

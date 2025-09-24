@@ -1,5 +1,5 @@
 <section class="cons-inbox no-padding-small" *ngIf="!showservice">
-  <div class="container consumer-dashhome no-padding no-padding-small" *ngIf="!type && source!='proLead'">
+  <div class="container consumer-dashhome p-0 no-padding-small" *ngIf="!type && source!='proLead'">
     <div class="card title-gb rounded-0" *ngIf="uuid">
       <h5 class="mgn-up-10 bold">{{questionnaire_heading | capitalizeFirst}} <a class="pull-left mgn-rt-20 back-btn"
           (click)="goBack()"><i class="fa fa-arrow-left"></i></a></h5>
@@ -11,8 +11,8 @@
     <button class="normal-btn edit" mat-flat-button (click)="editQnr()">Edit</button>
   </div>
   <div class="d-flex flex-column-fluid width-100" [class.qnrDisableState]="disableInput()"
-    [class.no-padding]="uuid && (source === 'consCheckin' || source === 'consAppt' || source === 'consOrder' || source === 'paper' || source === 'consDonationDetails' || source === 'ivr')">
-    <div class="col-xl-12 force_center" [class.no-padding]="uuid" [class.no-padding-small]="source && source=='ivr'">
+    [class.p-0]="uuid && (source === 'consCheckin' || source === 'consAppt' || source === 'consOrder' || source === 'paper' || source === 'consDonationDetails' || source === 'ivr')">
+    <div class="col-xl-12 force_center" [class.p-0]="uuid" [class.no-padding-small]="source && source=='ivr'">
       <div class="">
         <div class="qnrsec" *ngFor="let qnr of groupedQnr | keyvalue: asIsOrder"
           [class.section-shadow]="getSectionCount() > 1" [class.no-padding-small]="source && source=='ivr'">
@@ -37,7 +37,7 @@
                   [value]="document" (click)="changeImageSelected(getQuestion(question), document)">
                   {{document}}</mat-option>
               </mat-select>
-              <div class="col-lg-12 col-12 col-md-12 col-sm-12 no-padding mgn-up-20"
+              <div class="col-lg-12 col-12 col-md-12 col-sm-12 p-0 mgn-up-20"
                 *ngIf="getDocuments(getQuestion(question)) && getDocuments(getQuestion(question)).length > 0">
                 <div class="dropzone dropzone-default dropzone-primary dz-clickable"
                   [class.single-file]="getQuestion(question).filePropertie.allowedDocuments.length==1"
@@ -264,7 +264,7 @@
           </div>
         </div>
       </div>
-      <div class="col-md-12 col-12 col-sm-12 col-lg-12 no-padding submit-pad"
+      <div class="col-md-12 col-12 col-sm-12 col-lg-12 p-0 submit-pad"
         *ngIf="type !== 'qnrLinkProvider' && source!=='proLead' && (uuid || source === 'customer-details' || source === 'proDonation') && !disableInput()">
         <button class="normal-btn" mat-flat-button [class.spinner]="buttonDisable"
           [class.spinner-darker-success]="buttonDisable" [class.spinner-center]="buttonDisable"
@@ -275,7 +275,7 @@
   </div>
 </section>
 <section class="cons-inbox no-padding-small" *ngIf="showservice">
-  <div class="container consumer-dashhome no-padding no-padding-small" *ngIf="!type">
+  <div class="container consumer-dashhome p-0 no-padding-small" *ngIf="!type">
     <div class="card title-gb rounded-0" *ngIf="uuid">
       <h5 class="mgn-up-10 bold">{{questionnaire_heading | capitalizeFirst}} <a class="pull-left mgn-rt-20 back-btn"
           (click)="goBack()"><i class="fa fa-arrow-left"></i></a></h5>

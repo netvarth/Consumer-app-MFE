@@ -208,4 +208,8 @@ export class DashboardComponent {
     const slots = slot.split('-');
     return this.dateTimeProcessor.convert24HourtoAmPm(slots[0]);
   }
+
+  actionPerformedUpcoming() {
+    this.actionPerformTo('My Bookings');
+  }
 }

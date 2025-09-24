@@ -10,7 +10,7 @@
             </div>
         </div>
         <app-common-innerloading-spinner *ngIf="api_loading"></app-common-innerloading-spinner>
-        <div class="col-md-12 no-padding" *ngIf="!api_loading">
+        <div class="col-md-12 p-0" *ngIf="!api_loading">
             <div class="w-dta">
                 <div class="row m-0">
                     <div class="c-outer m0">
@@ -24,7 +24,7 @@
                                             class="fa fa-arrow-left"></i></a></h5>
                             </div>
                             <div class="copy one">
-                                <div class="col-a pl0 col-md-12 col-lg-12 col-xl-12 col-sm-12 col-12 no-padding">
+                                <div class="col-a pl0 col-md-12 col-lg-12 col-xl-12 col-sm-12 col-12 p-0">
                                     <div class="card bill-section  checkin-invoice">
                                         <div class="bill-section-content">
                                             <div class="col-md-12 col-sm-12 col-lg-12 bill-wrapper viewBill no-padding-small"
@@ -104,10 +104,10 @@
                                                                 </span>
                                                             </span>
 
-                                                            <div class="col-md-12 col-sm-12 col-lg-12 no-padding red"
+                                                            <div class="col-md-12 col-sm-12 col-lg-12 p-0 red"
                                                                 *ngIf="bill_data.billStatus == 'Cancel'">
                                                                 Cancelled</div>
-                                                                <div class="col-md-12 col-sm-12 col-lg-12 no-padding green"
+                                                                <div class="col-md-12 col-sm-12 col-lg-12 p-0 green"
                                                                 *ngIf="bill_data.billStatus == 'Settled'">
                                                                 Settled</div>
 
@@ -413,17 +413,17 @@
                                                 </div>
                                                 <div class="section-three other-section no-padding-small"
                                                     *ngIf="bill_data.billStatus !== 'Cancel' && bill_data.billStatus !== 'Settled' && (bill_data.amountDue > 0)">
-                                                    <div class="col-md-12 col-sm-12 col-12 no-padding"
+                                                    <div class="col-md-12 col-sm-12 col-12 p-0"
                                                         *ngIf="this.couponList.JC.length > 0 ||this.couponList.OWN.length && bill_data && bill_data.billPaymentStatus!='FullyPaid' && bill_data.billStatus != 'Settled' && paymode && (bill_data.amountDue > 0)">
-                                                        <div class="title-sec col-md-12 col-sm-12 col-12 no-padding">
+                                                        <div class="title-sec col-md-12 col-sm-12 col-12 p-0">
                                                             <span class=""> Coupon</span>
                                                         </div>
                                                         <div
-                                                            class="col-md-12 col-sm-12 col-12 no-padding jc-sec-bill">
+                                                            class="col-md-12 col-sm-12 col-12 p-0 jc-sec-bill">
                                                             <div class="section-two">
                                                                 <div class="add-j-coupon edit-row service">
                                                                     <div
-                                                                        class="spl col-md-3 col-sm-4 col-lg-3 col-5 no-padding">
+                                                                        class="spl col-md-3 col-sm-4 col-lg-3 col-5 p-0">
                                                                         <div class="item selectbox">
                                                                             <input class="coupon-text-bill" type="text"
                                                                                 #jcoupon
@@ -432,7 +432,7 @@
                                                                         </div>
                                                                     </div>
                                                                     <div
-                                                                        class="spr col-md-9 col-sm-8 col-lg-9 col-7 no-padding">
+                                                                        class="spr col-md-9 col-sm-8 col-lg-9 col-7 p-0">
                                                                         <button class="cs-btn bt1"
                                                                             (click)="applyJCoupon()">Apply</button>
                                                                         <button class="cs-btn bt2"
@@ -454,10 +454,10 @@
                                                             Balance amount can be paid by other payment methods
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-12 col-sm-12 col-12 no-padding"
+                                                    <div class="col-md-12 col-sm-12 col-12 p-0"
                                                         *ngIf=" paidStatus == 'false' && bill_data && bill_data.billPaymentStatus!='FullyPaid' && bill_data.billStatus != 'Settled'  && (bill_data.amountDue > 0)">
                                                         <div
-                                                            class="title-sec col-md-12 col-sm-12 col-12-4 no-padding">
+                                                            class="title-sec col-md-12 col-sm-12 col-12-4 p-0">
                                                             <span class="">Choose any Payment Option</span>
                                                         </div>
                                                         <div class="clearfix"></div>
@@ -492,7 +492,7 @@
                                                                         here</span>
                                                                 </a></span>
                                                         </div>
-                                                        <div class="col-md-12 col-sm-12 col-12 cc-dc-nb no-padding"
+                                                        <div class="col-md-12 col-sm-12 col-12 cc-dc-nb p-0"
                                                             style="display: flex">
                                                             <button type="button"
                                                                 class="mx-auto mt-3 text-center next-button btn btn-primary font-weight-bold text-uppercase "
@@ -553,7 +553,7 @@
             </div>
         </div>
         <app-common-innerloading-spinner *ngIf="api_loading"></app-common-innerloading-spinner>
-        <div class="col-md-12 no-padding" *ngIf="!api_loading">
+        <div class="col-md-12 p-0" *ngIf="!api_loading">
             <div class="w-dta">
                 <div class="row m-0">
                     <div class="c-outer m0">
@@ -567,7 +567,7 @@
                                             class="fa fa-arrow-left"></i></a></h5>
                             </div>
                             <div class="copy one">
-                                <div class="col-a pl0 col-md-12 col-lg-12 col-xl-12 col-sm-12 col-12 no-padding">
+                                <div class="col-a pl0 col-md-12 col-lg-12 col-xl-12 col-sm-12 col-12 p-0">
                                     <div class="card bill-section checkin-invoice">
                                         <div class="bill-section-content">
                                             <div class="col-md-12 col-sm-12 col-lg-12 bill-wrapper viewBill no-padding-small"
@@ -647,10 +647,10 @@
                                                                 </span>
                                                             </span>
 
-                                                            <div class="col-md-12 col-sm-12 col-lg-12 no-padding red"
+                                                            <div class="col-md-12 col-sm-12 col-lg-12 p-0 red"
                                                                 *ngIf="invoiceDetailsById.billStatus == 'Cancel'">
                                                                 Cancelled</div>
-                                                                <div class="col-md-12 col-sm-12 col-lg-12 no-padding green"
+                                                                <div class="col-md-12 col-sm-12 col-lg-12 p-0 green"
                                                                 *ngIf="invoiceDetailsById.billStatus == 'Settled'">
                                                                 Settled</div>
 
@@ -988,17 +988,17 @@
                                                 </div>
                                                 <div class="section-three other-section no-padding-small"
                                                     *ngIf="invoiceDetailsById.billStatus !== 'Cancel' && invoiceDetailsById.billStatus !== 'Settled' && (invoiceDetailsById.amountDue > 0)">
-                                                    <div class="col-md-12 col-sm-12 col-12 no-padding"
+                                                    <div class="col-md-12 col-sm-12 col-12 p-0"
                                                         *ngIf="this.couponList.JC.length > 0 ||this.couponList.OWN.length && invoiceDetailsById && invoiceDetailsById.billPaymentStatus!='FullyPaid' && invoiceDetailsById.billStatus != 'Settled' && paymode && (invoiceDetailsById.amountDue > 0)">
-                                                        <div class="title-sec col-md-12 col-sm-12 col-12 no-padding">
+                                                        <div class="title-sec col-md-12 col-sm-12 col-12 p-0">
                                                             <span class=""> Coupon</span>
                                                         </div>
                                                         <div
-                                                            class="col-md-12 col-sm-12 col-12 no-padding jc-sec-bill">
+                                                            class="col-md-12 col-sm-12 col-12 p-0 jc-sec-bill">
                                                             <div class="section-two">
                                                                 <div class="add-j-coupon edit-row service">
                                                                     <div
-                                                                        class="spl col-md-3 col-sm-4 col-lg-3 col-5 no-padding">
+                                                                        class="spl col-md-3 col-sm-4 col-lg-3 col-5 p-0">
                                                                         <div class="item selectbox">
                                                                             <input class="coupon-text-bill" type="text"
                                                                                 #jcoupon
@@ -1007,7 +1007,7 @@
                                                                         </div>
                                                                     </div>
                                                                     <div
-                                                                        class="spr col-md-9 col-sm-8 col-lg-9 col-7 no-padding">
+                                                                        class="spr col-md-9 col-sm-8 col-lg-9 col-7 p-0">
                                                                         <button class="cs-btn bt1"
                                                                             (click)="applyJCoupon()">Apply</button>
                                                                         <button class="cs-btn bt2"
@@ -1029,10 +1029,10 @@
                                                             Balance amount can be paid by other payment methods
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-12 col-sm-12 col-12 no-padding"
+                                                    <div class="col-md-12 col-sm-12 col-12 p-0"
                                                         *ngIf=" paidStatus == 'false' && invoiceDetailsById && invoiceDetailsById.billPaymentStatus!='FullyPaid' && invoiceDetailsById.billStatus != 'Settled'  && (invoiceDetailsById.amountDue > 0)">
                                                         <div
-                                                            class="title-sec col-md-12 col-sm-12 col-12 mb-4 no-padding">
+                                                            class="title-sec col-md-12 col-sm-12 col-12 mb-4 p-0">
                                                             <span class="">Choose any Payment Option</span>
                                                         </div>
                                                         <div class="clearfix"></div>
@@ -1069,7 +1069,7 @@
                                                                 </a></span>
                                                         </div>
                                                         <div class="clearfix"></div>
-                                                        <div class="col-md-12 col-sm-12 col-12 cc-dc-nb no-padding"
+                                                        <div class="col-md-12 col-sm-12 col-12 cc-dc-nb p-0"
                                                             style="display: flex">
                                                             <button type="button"
                                                                 class="mx-auto mt-3 text-center next-button btn btn-primary font-weight-bold text-uppercase "

@@ -3,7 +3,7 @@
     {{booking.token}}
   </div>
   <!-- icon -->
-  <div class="col-2 no-padding mgn-up-10">
+  <div class="col-2 p-0 mgn-up-10">
     <div>
       <i *ngIf="!booking.token" style="width: 3.8rem;" class="fa chckn-icon" [matTooltip]="'Check-in'"></i>
       <i *ngIf="booking.token" style="width: 3.8rem;" class="fa token-icon" [matTooltip]="'Token'"></i>
@@ -60,7 +60,7 @@
   <!-- extra info -->
   <div class="col-12">
     <div class="col-12  no-padding">
-      <div class="pull-left  col-6 no-padding ">
+      <div class="pull-left  col-6 p-0 ">
         <div class="prov_lbl">{{'Service' | translate}}</div>
         <div class="prov_nme disply-flex">
           <span class="serv-name">
@@ -142,8 +142,8 @@
     <br>
     <div class="col-12 d-flex">
       <div class="col-6 no-padding">
-        <div class="pull-left no-padding col-5 " *ngIf="showViewPrescritionBtn"
-          [ngClass]="showViewPrescritionBtn ? 'pull-left no-padding col-6 ' : ''">
+        <div class="pull-left p-0 col-5 " *ngIf="showViewPrescritionBtn"
+          [ngClass]="showViewPrescritionBtn ? 'pull-left p-0 col-6 ' : ''">
           <div class="prov_lbl"></div>
           <div class="prov_nme">
             <button mat-flat-button class="btns"
@@ -151,7 +151,7 @@
               {{'View Prescription' | translate}}</button>
           </div>
         </div>
-        <div class="pull-left no-padding col-7">
+        <div class="pull-left p-0 col-7">
           <div class="">
             <span *ngIf="showQnrBtn" class="mgn-rt-5">
               <button mat-flat-button class="btns" (click)="cardActionPerformed('wl', 'details', booking, $event)">

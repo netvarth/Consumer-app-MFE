@@ -1,5 +1,5 @@
 <section class="container consumer-appthistory no-padding-small" [ngClass]="theme">
-    <div class="col-12 col-sm-12 co-md-12 col-lg-12 no-padding">
+    <div class="col-12 col-sm-12 co-md-12 col-lg-12 p-0">
         <div class="loading-hgt my-1 login-form_custom" *ngIf="!loggedIn">
             <div class="card card-custom no-margin hgt-adjust">
                 <div class="card-body p-0">
@@ -11,14 +11,14 @@
         <div class="c-outer" *ngIf="loggedIn">
             <div class="c-body">
                 <div class="card title-gb clearfix">
-                    <h5 class="col-12 col-md-12 col-sm-12 col-lg-12 mgn-up-10 no-padding clearfix">
+                    <h5 class="col-12 col-md-12 col-sm-12 col-lg-12 mgn-up-10 p-0 clearfix">
                          <a class="pull-left mgn-rt-20 back-btn" (click)="goback()"><i
                                 class="fa fa-arrow-left">&nbsp;</i>  {{'Prescriptions' | translate}}</a>
                     </h5> 
                 </div>
                 <app-common-innerloading-spinner *ngIf="loading"></app-common-innerloading-spinner>
                 <div class="card history one" *ngIf="!loading">
-                    <div class="history-tbl no-padding" *ngIf="prescriptions && prescriptions.length > 0">
+                    <div class="history-tbl p-0" *ngIf="prescriptions && prescriptions.length > 0">
                         <table class="table">
                             <thead>
                                 <tr>

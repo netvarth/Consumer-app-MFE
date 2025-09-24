@@ -1,6 +1,6 @@
 <div class="row fit_in p-0 m-0" *ngIf="booking">
     <!-- Icon -->
-    <div class="col-2 no-padding mgn-up-10">
+    <div class="col-2 p-0 mgn-up-10">
         <div><i style="width: 4rem;" class="fa appt-icon" [matTooltip]="'Appointment'"></i>
         </div>
     </div>
@@ -130,7 +130,7 @@
                         'RequestRejected' ? 'Request Rejected' : booking.apptStatus}}</span>
                 </div>
             </div>
-            <div *ngIf="showViewPrescritionBtn" [ngClass]="showViewPrescritionBtn ? 'no-padding col-6 ' : ''">
+            <div *ngIf="showViewPrescritionBtn" [ngClass]="showViewPrescritionBtn ? 'p-0 col-6 ' : ''">
                 <div class="prov_lbl"></div>
                 <div class="prov_nme">
                     <button mat-flat-button class="btns"
@@ -140,18 +140,18 @@
             </div>            
         </div>
         <div class="col-12 px-3">
-            <div class="col-5 no-padding mgn-up-5">
+            <div class="col-5 p-0 mgn-up-5">
                 <span *ngIf="showReceiptBtn &&  showPaidInfo && !booking.invoiceCreated"
                     class="amtPaid  rupee-font mgn-rt-5">{{ 'Paid' |
                     translate }}
                     {{booking.amountPaid | currency:'&#8377;'}}</span>
             </div>
-            <div class="col-7 no-padding mgn-up-5">
+            <div class="col-7 p-0 mgn-up-5">
                 <button *ngIf="showPayBtn && !booking.invoiceCreated" mat-flat-button class="btns rupee-font mgn-rt-5"
                     (click)="cardActionPerformed('appt', 'viewBill', booking, $event)">{{'Pay' | translate}}
                 </button>
             </div>
-            <div class="col-7 no-padding mgn-up-5">
+            <div class="col-7 p-0 mgn-up-5">
                 <button *ngIf="showInvoiceBtn && booking.invoiceCreated" mat-flat-button
                     class="btns rupee-font mgn-rt-5"
                     (click)="cardActionPerformed('appt', 'viewBill', booking, $event)">{{'Invoice' | translate}}

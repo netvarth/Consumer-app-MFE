@@ -32,14 +32,14 @@
             [apptSettings]="apptSettings" [galleryJson]="galleryJson" [accountConfig]="accountConfig" [apptServices]="apptServices"
             [checkinServices]="checkinServices" [donationServices]="donationServices"></app-template>
         </section>
-        <section class="pageitem mgn-bt-70 col-12 no-padding"
+        <section class="pageitem mgn-bt-70 col-12 p-0"
             *ngIf="templateJson.section2 && selectedIndex==templateJson.section2.title">             
             <app-template [section]="templateJson.section2" [terminologiesjson]="terminologiesjson" [templateJson]="templateJson"
             [accountProfile]="accountProfile" [selectedLocation]="selectedLocation" [settings]="settings" [apptSettings]="apptSettings"
              [galleryJson]="galleryJson" [accountConfig]="accountConfig" [apptServices]="apptServices" [checkinServices]="checkinServices"
              [donationServices]="donationServices"></app-template>
         </section>
-        <section class="col-12 no-padding"
+        <section class="col-12 p-0"
             *ngIf="templateJson.section3 && selectedIndex==templateJson.section3.title">
             <app-template [section]="templateJson.section3" [terminologiesjson]="terminologiesjson" [templateJson]="templateJson"
             [accountProfile]="accountProfile" [selectedLocation]="selectedLocation" [settings]="settings"

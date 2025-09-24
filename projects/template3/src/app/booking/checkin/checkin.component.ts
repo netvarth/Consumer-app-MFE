@@ -770,7 +770,7 @@ export class CheckinComponent implements OnInit, OnDestroy {
                     let navigationExtras: NavigationExtras = {
                         queryParams: queryParams
                     };
-                    this.router.navigate([this.customId, 'checkin', 'confirm'], navigationExtras);
+                    this.router.navigate([this.sharedService.getRouteID(),'booking', 'confirm'], navigationExtras);
                 },
                 error => {
                     // this.snackbarService.openSnackBar(error, { 'panelClass': 'snackbarerror' });
@@ -1219,7 +1219,7 @@ export class CheckinComponent implements OnInit, OnDestroy {
                 queryParams: queryParams
             };
             this.setAnalytics();
-            this.router.navigate([this.customId, 'checkin', 'confirm'], navigationExtras);
+            this.router.navigate([this.sharedService.getRouteID(),'booking', 'confirm'], navigationExtras);
         }
     }
 
@@ -1244,7 +1244,7 @@ export class CheckinComponent implements OnInit, OnDestroy {
                 queryParams: queryParams
             };
             this.setAnalytics();
-            this.ngZone.run(() => this.router.navigate([this.customId, 'checkin', 'confirm'], navigationExtras));
+            this.ngZone.run(() => this.router.navigate([this.sharedService.getRouteID(),'booking', 'confirm'], navigationExtras));
         } else {
             this.closeloading();
         }
@@ -1583,7 +1583,7 @@ export class CheckinComponent implements OnInit, OnDestroy {
                             queryParams: queryParams
                         };
                         _this.setAnalytics();
-                        _this.router.navigate([_this.customId, 'checkin', 'confirm'], navigationExtras);
+                        _this.router.navigate([_this.sharedService.getRouteID(),'booking', 'confirm'], navigationExtras);
                     }
                 }
             )
@@ -1880,7 +1880,7 @@ export class CheckinComponent implements OnInit, OnDestroy {
                             }
                             setTimeout(() => {
                                 _this.setAnalytics();
-                                _this.router.navigate([_this.customId, 'appointment', 'confirm'], { queryParams: { account_id: _this.accountId, uuid: _this.trackUuid } });
+                                _this.router.navigate([_this.sharedService.getRouteID(),'booking', 'confirm'], { queryParams: { account_id: _this.accountId, uuid: _this.trackUuid } });
                             }, 500);
                         }
                     } else if (_this.balanceToPay > 0) {

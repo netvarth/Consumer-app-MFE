@@ -137,7 +137,7 @@
             </div>
         </div>
     </div>
-    <div class="col-12 no-padding d-flex align-items-stretch" [ngClass]="{flexBasic: !smallDevice}" *ngIf="loggedIn">
+    <div class="col-12 p-0 d-flex align-items-stretch" [ngClass]="{flexBasic: !smallDevice}" *ngIf="loggedIn">
         <div class="col-12 d-flex align-items-stretch p-1">
             <div class="card hgtadjust no-padding-small">
                 <div class="col-12" *ngIf="!bookStep && bookStep != '0'">
@@ -178,12 +178,12 @@
                     <div class="clearfix"></div>
                     <hr />
                 </div>
-                <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 no-padding" data-wizard-type="step-content"
+                <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 p-0" data-wizard-type="step-content"
                     data-wizard-state="current" *ngIf="bookStep === 2">
                     <app-date-time-selection [paymentRequestId]="paymentRequestId"
                         (actionPerformed)="bookingActionPerformed($event)"></app-date-time-selection>
                 </div>
-                <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 no-padding" data-wizard-type="step-content"
+                <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 p-0" data-wizard-type="step-content"
                     data-wizard-state="current" *ngIf="bookStep === 3">
                     <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 p-1">
                         <div class="">
@@ -209,7 +209,7 @@
                     </div>
                     <div class="clearfix"></div>
                 </div>
-                <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 col-sm-12 no-padding right-part"
+                <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 col-sm-12 p-0 right-part"
                     data-wizard-type="step-content" data-wizard-state="current" *ngIf="bookStep === 4">
                     <div class="pad-20 quest-head">
                         {{'We need some more information' | translate}}
@@ -285,7 +285,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 col-sm-12 no-padding"
+                <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 col-sm-12 p-0"
                     data-wizard-type="step-content" data-wizard-state="current" *ngIf="bookStep === 5"
                     [ngClass]="{'highlight': api_loading_video}">
                     <div *ngIf="api_loading_video" class="incomplete-msg">
@@ -294,7 +294,7 @@
                         </div>
                     </div>                   
                     <div class="col-md-12 col-12 col-sm-12 mb-2 no-padding-small">
-                        <div class="col-md-12 col-lg-12 col-12 col-sm-12 check-new-group no-padding">
+                        <div class="col-md-12 col-lg-12 col-12 col-sm-12 check-new-group p-0">
                             <div class="hedaerCstm">{{confirm_pageTitle | translate}}</div>
                             <div class="mainflex cstmMarginConfirmPay">
                                 <div class="cstmWidth cstmWidthSmall">
@@ -346,7 +346,7 @@
                                                                         {{(readMore) ? 'less': 'more'}}</a>
                                                                 </div> -->
                                                                 <div class="contact-section text-primary pointer-cursor" >
-                                                                    <div class="col-md-12 col-sm-12 col-12 no-padding  module-nomargin line-clamp-ln2" *ngIf="!showmoreSpec"
+                                                                    <div class="col-md-12 col-sm-12 col-12 p-0  module-nomargin line-clamp-ln2" *ngIf="!showmoreSpec"
                                                                         (click)="showSpec()" [innerHTML] = "selectedService.preInfoText">
                                                                   </div>
                                                                     <div class="" *ngIf="showmoreSpec" (click)="showSpec()" [innerHTML] = "selectedService.preInfoText">
@@ -419,7 +419,7 @@
                                                         </div>
                                                     </div>
                                                     <div *ngIf="!questionnaireList.labels"
-                                                        class="col-sm-12 col-12 chk-btns-div col-md-12 no-padding">
+                                                        class="col-sm-12 col-12 chk-btns-div col-md-12 p-0">
                                                         <div class="cstmMgn mt-2"
                                                             [class.mandatoryChip]="selectedService.consumerNoteMandatory && bookingType != 'reschedule'">
                                                             <textarea class="cstmFormField" [(ngModel)]="consumerNote"
@@ -465,7 +465,7 @@
                                         <app-coupon-status [paymentDetails]="paymentDetails"></app-coupon-status>
                                     </div>
                                     <div class="clearfix"></div>
-                                    <div class="col-md-12 col-12 col-sm-12 no-padding"
+                                    <div class="col-md-12 col-12 col-sm-12 p-0"
                                         *ngIf="bookingType !=='reschedule'">
                                         <app-payment-summary [paymentDetails]="paymentDetails"
                                             [paymentMode]="paymentMode" [serviceOptions]="serviceOptionApptt"
@@ -508,7 +508,7 @@
                                 </div>
                                 <div class="customPaymentcard" *ngIf="paymentDetails.amountRequiredNow > 0 && bookingType !=='reschedule'">
                                     <div *ngIf="bookingType !=='reschedule'">
-                                        <div class="mx-auto no-padding" *ngIf="paymentDetails.amountRequiredNow > 0">
+                                        <div class="mx-auto p-0" *ngIf="paymentDetails.amountRequiredNow > 0">
                                             <div class="resPaymrntDetails">
                                                 <label class="custom resPaymrntDetails">{{'Select Payment Mode' |
                                                     translate}}</label>
@@ -529,7 +529,7 @@
                                             </ng-container>
                                         </div>
                                         <div class="clearfix"></div>
-                                        <div class="mt-4 col-md-12 col-12 no-padding"
+                                        <div class="mt-4 col-md-12 col-12 p-0"
                                             *ngIf="paymentDetails['amountToPay']">
                                             <div class="col-md-12 txt-align-center pad_link question-header"
                                                 *ngIf="paymentmodes && paymentmodes.internationalPay">
@@ -578,21 +578,21 @@
                         <app-privacy (approvePolicy)="policyApproved($event)"></app-privacy>
                     </ng-container>
                 </div>
-                <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 no-padding" data-wizard-type="step-content"
+                <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 p-0" data-wizard-type="step-content"
                     data-wizard-state="current" *ngIf="bookStep === 6">
                     <app-service-selection [config]="accountConfig" (serviceSelected)="serviceSelected($event)"
                         (actionPerformed)="bookingActionPerformed($event)"></app-service-selection>
                 </div>
-                <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 no-padding" data-wizard-type="step-content"
+                <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 p-0" data-wizard-type="step-content"
                     data-wizard-state="current" *ngIf="bookStep === 7 && !(target=='service') && !(target=='user')">
                     <app-department-selection (departmentSelected)="departmentClicked($event)"
                         (actionPerformed)="bookingActionPerformed($event)"></app-department-selection>
                 </div>
-                <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 no-padding" data-wizard-type="step-content"
+                <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 p-0" data-wizard-type="step-content"
                     data-wizard-state="current" *ngIf="bookStep === 8 && !(target=='service') && !(target=='user')">
                     <app-user-selection (actionPerformed)="bookingActionPerformed($event)"></app-user-selection>
                 </div>
-                <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 no-padding" data-wizard-type="step-content"
+                <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 p-0" data-wizard-type="step-content"
                     data-wizard-state="current" *ngIf="bookStep === 0">
                     <app-location-selection (actionPerformed)="bookingActionPerformed($event)"
                         (locationSelected)="locationClicked($event)"></app-location-selection>

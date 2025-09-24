@@ -1,4 +1,4 @@
-<section class="container no-padding cons-payments no-padding-small">
+<section class="container p-0 cons-payments no-padding-small">
 
     <div class="bill-section">
         <div class="c-outer">
@@ -19,7 +19,7 @@
                 <div class="c-outer bill-section-content" *ngIf="!loading && type && type==='payments'">
                     <app-common-innerloading-spinner *ngIf="loading"></app-common-innerloading-spinner>
                     <div class="c-body bill-wrapper">
-                        <div class="card history one section-four no-padding hgt-adjust">
+                        <div class="card history one section-four p-0 hgt-adjust">
                             <div class="list-outer consumer-pay">
                                 <div *ngIf="payments && payments.length === 0" class="no-payment card">
                                     {{'No payments' | translate}}

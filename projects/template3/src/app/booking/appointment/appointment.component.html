@@ -7,7 +7,7 @@
     </app-booking-accountinfo>
   </div>
 </div>
-<section #consumer_appointment class="consumerAppt no-padding"
+<section #consumer_appointment class="consumerAppt p-0"
   [ngClass]="[smallDevice?'container':'container-fluid', theme?theme:'']">
   <div [ngClass]="{'loadingpaytm': loadingPaytm}"></div>
   <!-- <div class="customLoader" *ngIf="loadingPaytm">
@@ -24,7 +24,7 @@
     </div>
   </div>
   <div class="clearfix"></div>
-  <div class="col-12 d-flex no-padding" *ngIf="loggedIn">
+  <div class="col-12 d-flex p-0" *ngIf="loggedIn">
     <div class="col-md-4 col-lg-4 col-sm-12 col-12s-stretch desktop-only p-1" *ngIf="!smallDevice">
       <div class="card shadow">
         <app-booking-accountinfo [businessInfo]="businessInfo" [smallDevice]="smallDevice">
@@ -65,9 +65,9 @@
           <div class="clearfix"></div>
           <hr />
         </div>
-        <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 no-padding" data-wizard-type="step-content"
+        <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 p-0" data-wizard-type="step-content"
           data-wizard-state="current" *ngIf="bookStep === 2 && showSlot">
-          <div class="col-md-12 col-12 col-sm-12 no-padding"
+          <div class="col-md-12 col-12 col-sm-12 p-0"
             *ngIf="selectedService && selectedService.serviceBookingType === 'request' && selectedService.date">
             <h6 class="custom text-dark">
               <b>{{'Choose Date' | translate}}
@@ -81,18 +81,18 @@
             </div>
 
           </div>
-          <div class="col-12 mgn-bt-20 no-padding" *ngIf="selectedService">
+          <div class="col-12 mgn-bt-20 p-0" *ngIf="selectedService">
             <app-service-info-display [selectedService]="selectedService"
               [userInfo]="selectedUser"></app-service-info-display>
           </div>
-          <div class="col-12 no-padding"
+          <div class="col-12 p-0"
             *ngIf="selectedService && !selectedService.date && !selectedService.noDateTime">
             <app-date-pagination (date_change_event)="appointmentDateChanged($event)" [selected_date]="appmtDate"
               [availableDates]="availableDates">
             </app-date-pagination>
           </div>
           <ng-container *ngIf="selectedService && !selectedService.date && !selectedService.noDateTime">
-            <div class="col-12 no-padding" *ngIf="allSlots && allSlots.length > 0 && multipleSelection">
+            <div class="col-12 p-0" *ngIf="allSlots && allSlots.length > 0 && multipleSelection">
               <app-slot-picker (slotSelected)="slotSelected($event)" [selectedSlot]="selectedSlots" [slots]="allSlots"
                 [mode]="'appt'" [multiple]="multipleSelection" [criteria]="selectedService.showOnlyAvailableSlots">
               </app-slot-picker>
@@ -113,7 +113,7 @@
           </div>
         </div>
         <!-- Step 1 One Time Info Collection if any -->
-        <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 no-padding" data-wizard-type="step-content"
+        <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 p-0" data-wizard-type="step-content"
           data-wizard-state="current" *ngIf="bookStep === 3">
           <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 p-1">
             <div class="">
@@ -140,7 +140,7 @@
 
         <!-- Normal Questionaire-->
 
-        <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 col-sm-12 no-padding right-part"
+        <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 col-sm-12 p-0 right-part"
           data-wizard-type="step-content" data-wizard-state="current" *ngIf="bookStep === 4">
           <div class="pad-20 quest-head">
             {{'We need some more information' | translate}}
@@ -211,7 +211,7 @@
         </div>
         <div class="clearfix"></div>
         <!-- Review & Confirm Real Appointment happening here -->
-        <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 col-sm-12 no-padding" data-wizard-type="step-content"
+        <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 col-sm-12 p-0" data-wizard-type="step-content"
           data-wizard-state="current" *ngIf="bookStep === 5" [ngClass]="{'highlight': api_loading_video}">
           <div *ngIf="api_loading_video" class="incomplete-msg">
             <div style="padding: 0 30px;">
@@ -220,8 +220,8 @@
           </div>
           <!-- <app-common-innerloading-spinner *ngIf="api_loading_video">
           </app-common-innerloading-spinner> -->
-          <div class="col-md-12 col-12 col-sm-12 mgn-bt-10 no-padding">
-            <div class="col-md-12 col-lg-12 col-12 col-sm-12 check-new-group no-padding" *ngIf="selectedService">
+          <div class="col-md-12 col-12 col-sm-12 mgn-bt-10 p-0">
+            <div class="col-md-12 col-lg-12 col-12 col-sm-12 check-new-group p-0" *ngIf="selectedService">
               <label class="question-header">{{'Service Details'| translate}}</label>
               <app-service-info-display [selectedService]="selectedService" [appmtDate]="appmtDate"
                 [userInfo]="selectedUser" [selectedApptsTime]="selectedApptsTime" [isFutureDate]="isFutureDate"
@@ -255,9 +255,9 @@
               <br />
               <div class="booking-for-section ">
                 <div class="">
-                  <div class="col-sm-12 col-12 col-md-12 no-padding">
-                    <div class="no-padding">
-                      <div class="col-sm-12 col-12 col-md-12 no-padding">
+                  <div class="col-sm-12 col-12 col-md-12 p-0">
+                    <div class="p-0">
+                      <div class="col-sm-12 col-12 col-md-12 p-0">
                         <app-booking-for [bookingType]="appointmentType" [apptDetails_firstName]="apptDetails_firstName"
                           [apptDetails_lastName]="apptDetails_lastName"  [apptDetails_title]="apptDetails_title" [commObj]="commObj"
                           (editEvent)="handleSideScreen('members')"></app-booking-for>
@@ -268,7 +268,7 @@
               </div>
               <div class="clearfix"></div>
               <hr *ngIf="!questionnaireList.labels" />
-              <div *ngIf="!questionnaireList.labels" class="col-sm-12 col-12 chk-btns-div col-md-12 no-padding">
+              <div *ngIf="!questionnaireList.labels" class="col-sm-12 col-12 chk-btns-div col-md-12 p-0">
                 <a #modal data-bs-toggle="modal" data-bs-target="#exampleModalCenter"></a>
                 <div>
                   <label class="question-header">
@@ -307,7 +307,7 @@
                 <app-coupon-status [paymentDetails]="paymentDetails"></app-coupon-status>
               </div>
               <div class="clearfix"></div>
-              <div class="col-md-12 col-12 col-sm-12 no-padding"  *ngIf="appointmentType !=='reschedule'">
+              <div class="col-md-12 col-12 col-sm-12 p-0"  *ngIf="appointmentType !=='reschedule'">
                 <app-payment-summary [paymentDetails]="paymentDetails" [paymentMode]="paymentMode"
                   [serviceOptions]="serviceOptionApptt" [service]="selectedService" [gatewayFee]="gatewayFee"
                   [convenientFee]="convenientFee"></app-payment-summary>
@@ -342,7 +342,7 @@
               </ng-container>
               <div class="clearfix"></div>
               <div *ngIf="appointmentType !=='reschedule'">
-                <div class="mx-auto no-padding" *ngIf="paymentDetails.amountRequiredNow > 0">
+                <div class="mx-auto p-0" *ngIf="paymentDetails.amountRequiredNow > 0">
                   <label class="custom resPaymrntDetails mgn-up-10">{{'Select Payment Mode' | translate}}</label><br />
                   <ng-container *ngIf="!shownonIndianModes && loadedConvenientfee" class="text-center mx-auto">
                     <app-payment-modes [paymentModes]="indian_payment_modes" [selectedMode]="paymentMode"
@@ -356,7 +356,7 @@
                   </ng-container>
                 </div>
                 <div class="clearfix"></div>
-                <div class="mgn-up-20 col-md-12 col-12 no-padding" *ngIf="paymentDetails['amountToPay']">
+                <div class="mgn-up-20 col-md-12 col-12 p-0" *ngIf="paymentDetails['amountToPay']">
                   <div class="col-md-12 txt-align-center question-header"
                     *ngIf="paymentmodes && paymentmodes.internationalPay">
                     <span (click)="togglepaymentMode()" class="pointer-cursor">

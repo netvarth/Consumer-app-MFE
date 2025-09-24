@@ -1,10 +1,10 @@
-<div class="col-12 mgn-bt-50 bus-page no-padding">
+<div class="col-12 mgn-bt-50 bus-page p-0">
     <div class="card shadow d-flex flex-row header p-2">
         <div class="my-auto" *ngIf="back">
             <a class="pointer-cursor" (click)="goBack()"><i class="fa fa-arrow-left"></i>&emsp;</a>
         </div>
     </div>
-    <div class="col-12 mgn-up-10 no-padding">
+    <div class="col-12 mgn-up-10 p-0">
         <app-basic-profile-new (actionPerformed)="profileActionPerformed($event)" [profile]="basicProfile"
                     [selectedLocation]="selectedLocation" [extras]="extras"></app-basic-profile-new>
         <!-- <app-basic-profile (actionPerformed)="profileActionPerformed($event)" [profile]="basicProfile"
@@ -16,26 +16,26 @@
         <p *ngIf="activeDepartment.departmentsDescription" class="justify description">{{activeDepartment.departmentsDescription}}</p>
     </div>
     <div class="col-12 mgn-up-10">
-        <div class="col-12 no-padding" *ngIf="loaded_appointments && apptServices && apptServices.length > 0">
+        <div class="col-12 p-0" *ngIf="loaded_appointments && apptServices && apptServices.length > 0">
             <app-appointment-services [terminologiesjson]="terminologiesjson" [theme]="theme"
                 [accountProfile]="accountProfile" [config]="accountConfig" [filteredServices]="apptServices"
                 [selectedLocation]="selectedLocation" (actionPerformed)="actionPerformed($event)">
             </app-appointment-services>
         </div>
-        <div class="col-12 no-padding" *ngIf="loaded_checkins && checkinServices && checkinServices.length > 0">
+        <div class="col-12 p-0" *ngIf="loaded_checkins && checkinServices && checkinServices.length > 0">
             <app-checkin-services [terminologiesjson]="terminologiesjson" [theme]="theme"
                 [accountProfile]="accountProfile" [config]="accountConfig" [filteredServices]="checkinServices"
                 [selectedLocation]="selectedLocation" (actionPerformed)="actionPerformed($event)">
             </app-checkin-services>
         </div>
-        <div class="col-12 no-padding" *ngIf="onlineUsers && onlineUsers.length>0">
+        <div class="col-12 p-0" *ngIf="onlineUsers && onlineUsers.length>0">
             <app-online-users [terminologiesjson]="terminologiesjson" [theme]="theme" [accountProfile]="accountProfile"
                 [selectedLocation]="selectedLocation" [users]="onlineUsers" (actionPerformed)="actionPerformed($event)">
             </app-online-users>
         </div>
     </div>
     <div class="clearfix"></div>
-    <footer class="site-footer bus-page-footer mgn-up-10 no-padding" [ngClass]="accountConfig?accountConfig['theme']:''">
+    <footer class="site-footer bus-page-footer mgn-up-10 p-0" [ngClass]="accountConfig?accountConfig['theme']:''">
         <div class="footer-bottom brd-tp">
                 <div class="align-items-center justify-content-between text-center">
                     <div class="footer-bottom--links col-md-auto ">

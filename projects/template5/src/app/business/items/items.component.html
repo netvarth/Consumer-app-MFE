@@ -51,11 +51,11 @@
                     </p-accordion>
                 </div>
             </div>
-            <div class="no-padding">
-                <div class="card no-padding p-2" *ngIf="itemsLoading">
+            <div class="p-0">
+                <div class="card p-0 p-2" *ngIf="itemsLoading">
                     <app-skeleton-loading></app-skeleton-loading>
                 </div>
-                <div class="card itemGrid no-padding p-2" *ngIf="!itemsLoading">
+                <div class="card itemGrid p-0 p-2" *ngIf="!itemsLoading">
                     <!-- <div class="p-2 for-small-screen" *ngIf="categoryNames && categoryNames.length > 0">
                         <span>{{ categoryNames.length > 1 ? 'Categories:' : 'Category:' }}</span>                        <span class="fw-bold">
                             <span *ngFor="let cat of categoryNames; let last = last">
@@ -122,7 +122,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="card paginator no-padding flex justify-content-center paginatior-section"
+                <div class="card paginator p-0 flex justify-content-center paginatior-section"
                     *ngIf="itemsCount>50">
                     <p-paginator [rows]="rows" [totalRecords]="itemsCount" [first]="currentPage * rows"
                         (onPageChange)="onPageChange($event)" [rowsPerPageOptions]="[50, 100, 150]">
