@@ -4,12 +4,12 @@
             <a class="" (click)="goBack()"><i class="fa fa-arrow-left"></i>&emsp;</a>
         </div>
     </div>
-    <div class="col-12 no-padding">
-        <div class="col-12 no-padding">
-            <div class="cover no-padding" *ngIf="basicProfile['cover']">
+    <div class="col-12 p-0">
+        <div class="col-12 p-0">
+            <div class="cover p-0" *ngIf="basicProfile['cover']">
                 <img class="profile-img" [src]="basicProfile['cover']" alt="">
             </div>
-            <div class="no-cover no-padding" *ngIf="!basicProfile['cover']">
+            <div class="no-cover p-0" *ngIf="!basicProfile['cover']">
             </div>
             <div class="logo">
                 <img class="provider_logo_img" src="{{basicProfile['logo']}}" />
@@ -29,9 +29,9 @@
                         </p>
                     </div>
                 </div>
-                <div class="follow-card col-12 no-padding" *ngIf="!extras['hideActions']">
+                <div class="follow-card col-12 p-0" *ngIf="!extras['hideActions']">
                     <div class="pointer-cursor actionbtns">
-                        <div class="col-12 ovhd no-padding">
+                        <div class="col-12 ovhd p-0">
                             <ul class="bus-actions bus-actions-large">
                                 <ng-container
                                     *ngIf="extras['icons'] && basicProfile.socialMedia && basicProfile.socialMedia.length>0">

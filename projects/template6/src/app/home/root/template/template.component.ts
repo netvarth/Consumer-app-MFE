@@ -38,7 +38,7 @@ export class TemplateComponent implements AfterViewInit {
   screenWidth: number;
   small_device_display: boolean;
   allUsers: any;
-  carouselReady: boolean = false;
+  carouselReady: boolean = true;
   @HostListener('window:resize', ['$event'])
   onResize() {
     this.screenWidth = window.innerWidth;
@@ -54,42 +54,42 @@ export class TemplateComponent implements AfterViewInit {
     private cdRef: ChangeDetectorRef) {
     this.onResize();
   }
-  resetCarousel() {
-    this.carouselReady = false;
+  // resetCarousel() {
+  //   this.carouselReady = false;
 
-    // Wait for DOM teardown
-    setTimeout(() => {
-      this.cdRef.detectChanges(); // Ensure Angular processes the removal
+  //   // Wait for DOM teardown
+  //   setTimeout(() => {
+  //     this.cdRef.detectChanges(); // Ensure Angular processes the removal
 
-      // Wait for DOM rebuild and trigger layout recalculation
-      setTimeout(() => {
-        this.carouselReady = true;
-        this.cdRef.detectChanges();
+  //     // Wait for DOM rebuild and trigger layout recalculation
+  //     setTimeout(() => {
+  //       this.carouselReady = true;
+  //       this.cdRef.detectChanges();
 
-        // Force browser repaint to help Owl Carousel recalculate layout
-        requestAnimationFrame(() => {
-          document.body.offsetHeight; // dummy read to flush layout
-        });
+  //       // Force browser repaint to help Owl Carousel recalculate layout
+  //       requestAnimationFrame(() => {
+  //         document.body.offsetHeight; // dummy read to flush layout
+  //       });
 
-        console.log("Carousel reset triggered");
-      }, 200); // Slightly longer delay for WebView stability
-    }, 50);
-  }
+  //       console.log("Carousel reset triggered");
+  //     }, 200); // Slightly longer delay for WebView stability
+  //   }, 50);
+  // }
   ngAfterViewInit() {
     this.showDepartments = this.settings.filterByDept;
     this.allUsers = this.templateService.getUsers();
-    const carouselEl = document.querySelector('.template-owl');
-    if (carouselEl) {
-      const observer = new ResizeObserver(() => {
-        this.resetCarousel();
-      });
-      observer.observe(carouselEl);
-    }
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible') {
-        this.resetCarousel();
-      }
-    });
+    // const carouselEl = document.querySelector('.template-owl');
+    // if (carouselEl) {
+    //   const observer = new ResizeObserver(() => {
+    //     this.resetCarousel();
+    //   });
+    //   observer.observe(carouselEl);
+    // }
+    // document.addEventListener('visibilitychange', () => {
+    //   if (document.visibilityState === 'visible') {
+    //     this.resetCarousel();
+    //   }
+    // });
     if (this.galleryjson && this.galleryjson.length > 0) {
       this.loadImages(this.galleryjson);
     }

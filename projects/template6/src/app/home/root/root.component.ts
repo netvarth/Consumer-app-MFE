@@ -75,6 +75,7 @@ export class RootComponent implements OnInit, OnDestroy {
     private sharedService: SharedService,
     private jGalleryService: JGalleryService
   ) {
+    console.log("Root component loaded");
     let language = this.lStorageService.getitemfromLocalStorage('translatevariable');
     this.translate.setDefaultLang(language);
     this.translate.use(language);
@@ -119,6 +120,8 @@ export class RootComponent implements OnInit, OnDestroy {
     }
     this.selectedLocation = this.accountService.getActiveLocation();
     this.templateJson = this.sharedService.getTemplateJSON();
+    console.log("Template Json:", this.templateJson);
+    
     this.galleryJson = this.accountService.getJson(this.account['gallery']);
     this.loadImages(this.galleryJson);
     this.subscriptionService.sendMessage({ ttype: 'showLocation' });

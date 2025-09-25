@@ -56,6 +56,7 @@ export class HeaderComponent implements OnInit {
     private accountService: AccountService,
     private activatedRoute: ActivatedRoute
   ) {
+    console.log("Header component loaded");
     this.cdnPath = this.sharedService.getCDNPath();
     this.onResize();
     this.activatedRoute.queryParams.subscribe((qparams: any) => {
@@ -70,7 +71,7 @@ export class HeaderComponent implements OnInit {
     this.storeEncId = this.lStorageService.getitemfromLocalStorage('storeEncId')
     this.isSessionCart = this.lStorageService.getitemfromLocalStorage('isSessionCart')
     this.translate.use(JSON.parse(localStorage.getItem('translatevariable')));
-    this.initHeader('refresh');
+    // this.initHeader('refresh');
   }
   initHeader(refresh: any) {
     const activeUser = this.groupService.getitemFromGroupStorage('jld_scon');
@@ -129,7 +130,7 @@ export class HeaderComponent implements OnInit {
     let account = this.sharedService.getAccountInfo();
     this.locations = this.sharedService.getJson(account['location']);
     this.initSubscriptions();
-    this.initHeader(null);
+    this.initHeader('refresh');
     if (this.accountService.getAccountLocations()) {
       this.selectedLocation = this.accountService.getActiveLocation();
       this.showLocation = true;

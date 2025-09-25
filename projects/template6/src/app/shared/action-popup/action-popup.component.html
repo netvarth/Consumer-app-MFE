@@ -4,7 +4,7 @@
         <button mat-dialog-close class="modal_close" tabindex="-1" id="btnClose"><i class="fa fa-window-close"
                 aria-hidden="true"></i></button>
     </h1>
-    <div *ngIf="!fromOrderDetails" class="action-section consumer-action col-md-12 no-padding">
+    <div *ngIf="!fromOrderDetails" class="action-section consumer-action col-md-12 p-0">
         <div class=" col-12 col-sm-12 col-md-12 col-lg-12 pad-30">
             <!-- For large devices -->
             <mat-grid-list cols="4" rowHeight="120px" [gutterSize]="'30px'" class="action-big">
@@ -97,8 +97,8 @@
         </div>
     </div>
     <mat-dialog-content class="consumer-action" *ngIf="fromOrderDetails">
-        <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 no-padding">
-            <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4 col-4 no-padding">
+        <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 p-0">
+            <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4 col-4 p-0">
                 <img class="img-msg" src="{{cdnPath}}assets/images/order/chat.svg" alt="messsage">
             </div>
             <div class="col-sm-8 col-md-8 col-lg-8 col-xl-8 col-8 mb-2">

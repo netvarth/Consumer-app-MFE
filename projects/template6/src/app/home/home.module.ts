@@ -5,12 +5,13 @@ import { HomeComponent } from './home.component';
 import { HeaderModule } from './header/header.module';
 import { DialogService } from 'primeng/dynamicdialog';
 import { AuthenticationModule } from '../shared/authentication/authentication.module';
+import { OnetimeQuestionnaireModule } from '../shared/onetime-questionnaire/onetime-questionnaire.module';
 
 const routes: Routes = [
   {
     path: '', component: HomeComponent,
     children: [
-      { path: '', loadChildren: () => import('./root/root.module').then(m => m.RootModule) },
+      { path: '', pathMatch:'full', loadChildren: () => import('./root/root.module').then(m => m.RootModule) },
       { path: 'login', loadChildren: () => import('./login/login.module').then(m => m.LoginModule) },
       { path: 'inbox', loadChildren: () => import('./inbox/inbox-outer/inbox.module').then(m => m.InboxModule) },
       { path: 'dashboard', loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardModule) },
@@ -40,6 +41,7 @@ const routes: Routes = [
     CommonModule,
     HeaderModule,
     AuthenticationModule,
+    OnetimeQuestionnaireModule,
     [RouterModule.forChild(routes)]
   ],
   providers: [

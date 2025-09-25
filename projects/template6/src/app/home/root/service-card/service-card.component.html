@@ -38,7 +38,7 @@
             </div>
             <div class="name">
                 <h5 class="line-clamp-ln2 mgn-bt-5"
-                    [ngClass]="{'no-padding':service.serviceType && service.serviceType == 'virtualService'}">
+                    [ngClass]="{'p-0':service.serviceType && service.serviceType == 'virtualService'}">
                     {{service.name
                     |
                     capitalizeFirst}}</h5>
@@ -51,12 +51,12 @@
             <div class="row m-0">
                 <div class="col-7">
                     <div *ngIf="timings">
-                        <div class="no-padding card-head-grey">{{timingCaption | translate}}</div>
-                        <h6 class="no-padding " *ngIf="timings">{{timings}}</h6>
+                        <div class="p-0 card-head-grey">{{timingCaption | translate}}</div>
+                        <h6 class="p-0 " *ngIf="timings">{{timings}}</h6>
                     </div>
                     <div *ngIf="personsAheadText">
-                        <div class="no-padding card-head-grey">{{personsAheadCaption | translate}}</div>
-                        <h6 class="no-padding">{{personsAheadText}}</h6>
+                        <div class="p-0 card-head-grey">{{personsAheadCaption | translate}}</div>
+                        <h6 class="p-0">{{personsAheadText}}</h6>
                     </div>
                 </div>
                 <div class="col-5">

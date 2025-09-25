@@ -48,6 +48,9 @@ export class HomeComponent implements AfterViewInit {
     private consumerService: ConsumerService
   ) {
     this.onResize();
+    // this.router.routeReuseStrategy.shouldReuseRoute = function () {
+    //   return false;
+    // };
   }
 
   @HostListener('window:resize', ['$event'])
