@@ -1,6 +1,6 @@
-<div>
+<div class="pb-1">
     <div class="row m-0 heading_nocover" *ngIf="section.profile && section.profileType==='basic_nocover'">
-        <div class="head-area col-12 text-center mgn-up-20">
+        <div class="head-area col-12 text-center mt-4">
             <div>
                 <h3 *ngIf="accountProfile.businessName">{{accountProfile.businessName}}</h3>
                 <p>
@@ -27,9 +27,9 @@
         [innerHtml]="section.generalDescription | safeHtml">
     </div>
     <div class="px-3 mt-2" *ngIf="section.specializations && section.specializations.show">
-        <div class="col-12 blogs mgn-bt-10 p-0">
-            <div class="col-12 p-0 mgn-up-10 ">
-                <h5 class="mgn-bt-10">
+        <div class="col-12 blogs mb-2 p-0">
+            <div class="col-12 p-0 mt-2 ">
+                <h5 class="mb-2">
                     <i class="i-actions fa" [ngClass]="section.specializations.icon" aria-hidden="true"
                         *ngIf="section.specializations.icon"></i>
                     <i class="fa" aria-hidden="true" *ngIf="section.specializations['icon-image']">
@@ -56,8 +56,8 @@
     </div>
     <div class="px-3 mt-2" *ngIf="section.quickActionMenu && section.quickActionMenu.show">
         <div class="col-12 blogs q-action">
-            <div class="col-12 p-0 mgn-up-10 ">
-                <h5 class="mgn-bt-10">
+            <div class="col-12 p-0 mt-2 ">
+                <h5 class="mb-2">
                     <i class="i-actions fa" [ngClass]="section.quickActionMenu.icon" aria-hidden="true"
                         *ngIf="section.quickActionMenu.icon"></i>
                     <i class="fa" aria-hidden="true" *ngIf="section.quickActionMenu['icon-image']">
@@ -72,10 +72,10 @@
     <ng-container *ngIf="section.actions && section.actions.length > 0">
         <div class="px-3 mt-2 action-new">
             <div *ngFor="let actionList of section.actions">
-                <div class="col-12 mgn-up-10">
-                    <div class="col-12 p-0 mgn-up-10 mgn-bt-10"
+                <div class="col-12 mt-2">
+                    <div class="col-12 p-0 my-2"
                         *ngIf="actionList.caption && actionList.caption!=''">
-                        <h5 class="mgn-bt-10 header-sec" [id]="actionList.groupId">
+                        <h5 class="mb-2 header-sec" [id]="actionList.groupId">
                             <i class="i-actions fa" [ngClass]="actionList.icon" aria-hidden="true"
                                 *ngIf="actionList.icon"></i>
                             <i class="fa" aria-hidden="true" *ngIf="actionList['icon-image']">
@@ -83,7 +83,7 @@
                             </i>&nbsp;<span>{{actionList.caption}}</span>
                         </h5>
                     </div>
-                    <div class="col-12 blogs mgn-bt-10 p-0"
+                    <div class="col-12 blogs mb-2 p-0"
                         *ngIf="!actionList.cols_xs && actionList.layout==='owl-special-oval'">
                         <div class="col-12 p-0 template-owl">
                             <owl-carousel-o [options]="customOptions"
@@ -101,12 +101,12 @@
                             </owl-carousel-o>
                         </div>
                     </div>
-                    <div class="col-12 blogs mgn-bt-10 p-0"
+                    <div class="col-12 blogs mb-2 p-0"
                         *ngIf="!actionList.cols_xs && actionList.layout==='two_column'">
                         <app-quick-actions [actionList]="actionList.action"
                             (actionPerformed)="quickActionPerformed($event)"></app-quick-actions>
                     </div>
-                    <div class="col-12 blogs mgn-bt-10 p-0" *ngIf="actionList.cols_xs">
+                    <div class="col-12 blogs mb-2 p-0" *ngIf="actionList.cols_xs">
                         <div class="col-12 p-0 template-owl"
                             *ngIf="actionList.layout==='scroll' && actionList.dynamic && allUsers">
                             <owl-carousel-o #owlUser *ngIf="carouselReady && allUsers?.length > 0"
@@ -174,11 +174,11 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 mgn-bt-10 p-0" [ngClass]="actionList['layout_style']"
+                    <div class="col-12 mb-2 p-0" [ngClass]="actionList['layout_style']"
                         *ngIf="!actionList.cols_xs && actionList.layout==='one_column'">
-                        <div class="col-12 blog mgn-up-10 mgn-bt-10 p-0" (click)="blogReadMore(blog)"
+                        <div class="col-12 blog my-2 p-0" (click)="blogReadMore(blog)"
                             *ngFor="let blog of actionList.action">
-                            <div class="card col-12 mgn-bt-10">
+                            <div class="card col-12 mb-2">
                                 <div class="blog-detail">
                                     <img *ngIf="blog.image" class="blog-img" [src]="blog.image" alt="">
                                     <div class="details">
@@ -193,7 +193,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-12 p-0 mgn-bt-20 text-center" *ngIf="section.blogs.showMoreBlogs">
+                        <div class="col-12 p-0 mb-4 text-center" *ngIf="section.blogs.showMoreBlogs">
                             <button mat-button
                                 (click)="showMoreVideo(section.blogs.moreBlogsLink)">{{section.blogs.moreBlogsCaption}}</button>
                         </div>
@@ -203,7 +203,7 @@
         </div>
     </ng-container>
     <div class="px-3 mt-2">
-        <div class="col-12 mgn-up-10 p-0" *ngIf="showDepartments && section.departments">
+        <div class="col-12 mt-2 p-0" *ngIf="showDepartments && section.departments">
             <div class="col-12 p-0" *ngIf="section.departmentsDescription"
                 [innerHtml]="section.departmentsDescription | safeHtml">
             </div>
@@ -215,9 +215,9 @@
                 </app-cons-departments>
             </div>
         </div>
-        <div class="col-12 mgn-up-10 p-0" *ngIf="section.testimonials && section.testimonials.show">
+        <div class="col-12 mt-2 p-0" *ngIf="section.testimonials && section.testimonials.show">
             <div class="col-12 p-0">
-                <h5 class="mgn-bt-10 header-sec">
+                <h5 class="mb-2 header-sec">
                     <i class="i-actions fa" [ngClass]="section.testimonials.icon" aria-hidden="true"
                         *ngIf="section.testimonials.icon"></i>
                     <i class="fa" aria-hidden="true" *ngIf="section.testimonials['icon-image']">
@@ -225,15 +225,15 @@
                     &nbsp;<span>{{section.testimonials.title}}</span>
                 </h5>
             </div>
-            <div class="col-12 testimonials mgn-bt-10 p-0">
-                <div class="col-12 testimonial mgn-up-10 mgn-bt-10 p-0" (click)="blogReadMore(testimonial)"
+            <div class="col-12 testimonials mb-2 p-0">
+                <div class="col-12 testimonial my-2 p-0" (click)="blogReadMore(testimonial)"
                     *ngFor="let testimonial of section.testimonials.testimonial">
                     <div class="card col-12 p-0">
                         <div class="testimonial-detail">
                             <div class="details">
                                 <p class="testimonial-description">{{testimonial.description}} </p>
                                 <!-- <p class="read-more"><span>Read More...</span></p> -->
-                                <div class="mgn-up-5">
+                                <div class="mt-1">
                                     <span class="author">{{testimonial.title}} </span> | <span
                                         class="date">{{testimonial.date}}</span>
                                 </div>
@@ -243,16 +243,16 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-12 p-0 mgn-bt-20 text-center"
+                <div class="col-12 p-0 mb-4 text-center"
                     *ngIf="section.testimonials && section.testimonials.showMore">
                     <button mat-button
                         (click)="showMoreVideo(section.testimonials.moreLink)">{{section.testimonials.moreCaption}}</button>
                 </div>
             </div>
         </div>
-        <div class="col-12 mgn-up-10 p-0" *ngIf="section.blogs && section.blogs.showBlogs">
+        <div class="col-12 mt-2 p-0" *ngIf="section.blogs && section.blogs.showBlogs">
             <div class="col-12 p-0">
-                <h5 class="mgn-bt-10">
+                <h5 class="mb-2">
                     <i class="i-actions fa" [ngClass]="section.blogs.icon" aria-hidden="true"
                         *ngIf="section.blogs.icon"></i>
                     <i class="fa" aria-hidden="true" *ngIf="section.blogs['icon-image']">
@@ -260,10 +260,10 @@
                     &nbsp;<span>{{section.blogs.blogsCaption}}</span>
                 </h5>
             </div>
-            <div class="col-12 blogs mgn-bt-10 p-0">
-                <div class="col-12 blog mgn-up-10 mgn-bt-10 p-0" (click)="blogReadMore(blog)"
+            <div class="col-12 blogs mb-2 p-0">
+                <div class="col-12 blog my-2 p-0" (click)="blogReadMore(blog)"
                     *ngFor="let blog of section.blogs.blog">
-                    <div class="card col-12 mgn-bt-10">
+                    <div class="card col-12 mb-2">
                         <div class="blog-detail">
                             <img class="blog-img" [src]="blog.image" alt="">
                             <div class="details">
@@ -278,16 +278,16 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-12 p-0 mgn-bt-20 text-center"
+                <div class="col-12 p-0 mb-4 text-center"
                     *ngIf="section.blogs && section.blogs.showMoreBlogs">
                     <button mat-button
                         (click)="showMoreVideo(section.blogs.moreBlogsLink)">{{section.blogs.moreBlogsCaption}}</button>
                 </div>
             </div>
         </div>
-        <div class="col-12 mgn-up-10 p-0" *ngIf="section.latestVideos && section.latestVideos.showVideos">
+        <div class="col-12 mt-2 p-0" *ngIf="section.latestVideos && section.latestVideos.showVideos">
             <div class="col-12 p-0">
-                <h5 class="mgn-bt-10">
+                <h5 class="mb-2">
                     <i class="i-actions fa" [ngClass]="section.latestVideos.icon" aria-hidden="true"
                         *ngIf="section.latestVideos.icon"></i>
                     <i class="fa" aria-hidden="true" *ngIf="section.latestVideos['icon-image']">
@@ -295,8 +295,8 @@
                     &nbsp;<span>{{section.latestVideos.videoCaption}}</span>
                 </h5>
             </div>
-            <div class="col-12 blogs mgn-bt-10 p-0">
-                <div class="col-12 video mgn-bt-10 p-0" (click)="videoClicked(video)"
+            <div class="col-12 blogs mb-2 p-0">
+                <div class="col-12 video mb-2 p-0" (click)="videoClicked(video)"
                     *ngFor="let video of section.latestVideos.videos">
                     <div class="card col-12">
                         <img class="video-img" [src]="video.image" alt="">
@@ -304,16 +304,16 @@
                         <h4 class="blog-description">{{video.description}} </h4>
                     </div>
                 </div>
-                <div class="col-12 p-0 mgn-bt-20 text-center"
+                <div class="col-12 p-0 mb-4 text-center"
                     *ngIf="section.latestVideos && section.latestVideos.showMoreVideo">
                     <button mat-button
                         (click)="showMoreVideo(section.latestVideos.moreVideosLink)">{{section.latestVideos.moreVideosCaption}}</button>
                 </div>
             </div>
         </div>
-        <div class="col-12 mgn-up-10 p-0" *ngIf="section.latestArticles && section.latestArticles.showArticles">
+        <div class="col-12 mt-2 p-0" *ngIf="section.latestArticles && section.latestArticles.showArticles">
             <div class="col-12 p-0">
-                <h5 class="mgn-bt-10">
+                <h5 class="mb-2">
                     <i class="i-actions fa" [ngClass]="section.latestArticles.icon" aria-hidden="true"
                         *ngIf="section.latestArticles.icon"></i>
                     <i class="fa" aria-hidden="true" *ngIf="section.latestArticles['icon-image']">
@@ -321,8 +321,8 @@
                     &nbsp;<span>{{section.latestArticles.articleCaption}}</span>
                 </h5>
             </div>
-            <div class="col-12 blogs mgn-bt-10 p-0">
-                <div class="col-12 video mgn-bt-10 p-0" (click)="videoClicked(article)"
+            <div class="col-12 blogs mb-2 p-0">
+                <div class="col-12 video mb-2 p-0" (click)="videoClicked(article)"
                     *ngFor="let article of section.latestArticles.articles">
                     <div class="card col-12">
                         <img class="video-img" [src]="article.image" alt="">
@@ -330,15 +330,15 @@
                         <h4 class="blog-description">{{article.description}} </h4>
                     </div>
                 </div>
-                <div class="col-12 p-0 mgn-bt-20 text-center"
+                <div class="col-12 p-0 mb-4 text-center"
                     *ngIf="section.latestArticles && section.latestArticles.showMoreArticles">
                     <button mat-button
                         (click)="showMoreVideo(section.latestArticles.moreArticlesLink)">{{section.latestArticles.moreArticlesCaption}}</button>
                 </div>
             </div>
         </div>
-        <div class="col-12 mgn-up-10 p-0" *ngIf="section.users">
-            <div class="col-12 p-0  mgn-bt-20" *ngIf="section.usersDescription"
+        <div class="col-12 mt-2 p-0" *ngIf="section.users">
+            <div class="col-12 p-0  mb-4" *ngIf="section.usersDescription"
                 [innerHtml]="section.usersDescription | safeHtml">
             </div>
             <div class="col-12 p-0" *ngIf="activeUsers">
@@ -349,9 +349,9 @@
             </div>
             <div class="clearfix"></div>
         </div>
-        <div class="col-12 mgn-up-10  p-0" *ngIf="section.appointments">
-            <div class="col-12 mgn-bt-10 p-0" *ngIf="section.appointmentsDescription">
-                <h5 class="mgn-bt-10">
+        <div class="col-12 mt-2  p-0" *ngIf="section.appointments">
+            <div class="col-12 mb-2 p-0" *ngIf="section.appointmentsDescription">
+                <h5 class="mb-2">
                     <span [innerHtml]="section.appointmentsDescription | safeHtml"></span>
                 </h5>
             </div>
@@ -365,9 +365,9 @@
                 </ng-container>
             </div>
         </div>
-        <div class="col-12 mgn-up-10 p-0" *ngIf="section.checkins">
-            <div class="col-12 mgn-bt-10 p-0" *ngIf="section.checkinsDescription">
-                <h5 class="mgn-bt-10">
+        <div class="col-12 mt-2 p-0" *ngIf="section.checkins">
+            <div class="col-12 mb-2 p-0" *ngIf="section.checkinsDescription">
+                <h5 class="mb-2">
                     <span [innerHtml]="section.checkinsDescription | safeHtml"></span>
                 </h5>
             </div>
@@ -381,9 +381,9 @@
                 </ng-container>
             </div>
         </div>
-        <div class="col-12 mgn-up-10 p-0" *ngIf="section.donations">
-            <div class="col-12 mgn-bt-10 p-0" *ngIf="section.donationsDescription">
-                <h5 class="mgn-bt-10">
+        <div class="col-12 mt-2 p-0" *ngIf="section.donations">
+            <div class="col-12 mb-2 p-0" *ngIf="section.donationsDescription">
+                <h5 class="mb-2">
                     <span [innerHtml]="section.donationsDescription | safeHtml"></span>
                 </h5>
             </div>
@@ -395,9 +395,9 @@
                 </app-donation-services>
             </div>
         </div>
-        <div class="col-12 mgn-up-10 p-0" *ngIf="section.orders">
-            <div class="col-12 mgn-bt-10 p-0" *ngIf="section.ordersDescripton">
-                <h5 class="mgn-bt-10">
+        <div class="col-12 mt-2 p-0" *ngIf="section.orders">
+            <div class="col-12 mb-2 p-0" *ngIf="section.ordersDescripton">
+                <h5 class="mb-2">
                     <span [innerHtml]="section.ordersDescripton | safeHtml"></span>
                 </h5>
             </div>
@@ -407,9 +407,9 @@
                 </app-orders>
             </div>
         </div>
-        <div class="col-12 mgn-up-10 p-0" *ngIf="section.gallery">
-            <div class="col-12 mgn-bt-10 p-0" *ngIf="section.galleryDescription">
-                <h5 class="mgn-bt-10">
+        <div class="col-12 mt-2 p-0" *ngIf="section.gallery">
+            <div class="col-12 mb-2 p-0" *ngIf="section.galleryDescription">
+                <h5 class="mb-2">
                     <span [innerHtml]="section.galleryDescription | safeHtml"></span>
                 </h5>
             </div>

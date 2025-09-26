@@ -1,5 +1,5 @@
 <div id="page" *ngIf="templateJson">
-    <div id="footer-bar" class="footer-bar-1" *ngIf="selectedIndex!==-1">
+    <div id="footer-bar" #footerBar class="footer-bar-1" *ngIf="selectedIndex!==-1">
         <a (click)="menuSelected(templateJson.section1)"
             [ngClass]="{'active-nav' : selectedIndex === templateJson.section1.title }" *ngIf="templateJson.section1">
             <i class="fa"
@@ -50,47 +50,47 @@
                 <img class="fa iconimage" [src]="templateJson.section5['icon-image']" /></i>
             <span>{{templateJson.section5.title}}</span></a>
     </div>
-    <div class="page-content header-clear-small mgn-bt-100">
+    <div class="page-content header-clear-small">
         <section class="pageitem" *ngIf="templateJson.section1 && selectedIndex==templateJson.section1.title">
             <app-template [section]="templateJson.section1" [terminologiesjson]="terminologiesjson"
                 [templateJson]="templateJson" [accountProfile]="accountProfile" [selectedLocation]="selectedLocation"
                 [settings]="settings" [activeUsers]="onlineUsers" [apptSettings]="apptSettings"
                 [galleryJson]="galleryJson" [accountConfig]="accountConfig" [apptServices]="apptServices"
-                [checkinServices]="checkinServices" [donationServices]="donationServices"></app-template>
+                [checkinServices]="checkinServices"></app-template>
         </section>
-        <section class="pageitem mgn-bt-70 col-12 p-0"
+        <section class="pageitem col-12 p-0"
             *ngIf="templateJson.section2 && selectedIndex==templateJson.section2.title">
             <app-template [section]="templateJson.section2" [terminologiesjson]="terminologiesjson"
                 [templateJson]="templateJson" [accountProfile]="accountProfile" [selectedLocation]="selectedLocation"
                 [settings]="settings" [apptSettings]="apptSettings" [galleryJson]="galleryJson"
                 [accountConfig]="accountConfig" [apptServices]="apptServices" [checkinServices]="checkinServices"
-                [donationServices]="donationServices" [activeUsers]="onlineUsers" [allUsers]="allUsers"></app-template>
+                [activeUsers]="onlineUsers" [allUsers]="allUsers"></app-template>
         </section>
-        <section class="col-12 p-0"
+        <section class="col-12 p-0 pageitem"
             *ngIf="templateJson.section3 && selectedIndex==templateJson.section3.title">
             <app-template [section]="templateJson.section3" [terminologiesjson]="terminologiesjson"
                 [templateJson]="templateJson" [accountProfile]="accountProfile" [selectedLocation]="selectedLocation"
                 [settings]="settings" [activeUsers]="onlineUsers" [apptSettings]="apptSettings"
                 [galleryJson]="galleryJson" [accountConfig]="accountConfig" [apptServices]="apptServices"
-                [checkinServices]="checkinServices" [donationServices]="donationServices"> </app-template>
+                [checkinServices]="checkinServices" > </app-template>
         </section>
-        <section class="ftco-section bg-light" id="counselling-section"
+        <section class="ftco-section bg-light pageitem" id="counselling-section"
             *ngIf="templateJson.section4 && selectedIndex==templateJson.section4.title">
             <app-template [section]="templateJson.section4" [terminologiesjson]="terminologiesjson"
                 [templateJson]="templateJson" [accountProfile]="accountProfile" [selectedLocation]="selectedLocation"
                 [settings]="settings" [activeUsers]="onlineUsers" [apptSettings]="apptSettings"
                 [galleryJson]="galleryJson" [accountConfig]="accountConfig" [apptServices]="apptServices"
-                [checkinServices]="checkinServices" [donationServices]="donationServices"></app-template>
+                [checkinServices]="checkinServices" ></app-template>
         </section>
-        <section class="ftco-section contact-section" id="contact-section"
+        <section class="ftco-section contact-section pageitem" id="contact-section"
             *ngIf="templateJson.section5 && selectedIndex==templateJson.section5.title">
             <app-template [section]="templateJson.section5" [terminologiesjson]="terminologiesjson"
                 [templateJson]="templateJson" [accountProfile]="accountProfile" [selectedLocation]="selectedLocation"
                 [settings]="settings" [activeUsers]="onlineUsers" [apptSettings]="apptSettings"
                 [galleryJson]="galleryJson" [accountConfig]="accountConfig" [apptServices]="apptServices"
-                [checkinServices]="checkinServices" [donationServices]="donationServices"></app-template>
+                [checkinServices]="checkinServices" ></app-template>
         </section>
-        <section class="general" *ngIf="selectedIndex === -1">
+        <section class="general pageitem" *ngIf="selectedIndex === -1">
             <app-custom-page [parentIndex]="parentIndex" [action]="pageAction" [apptServices]="apptServices"
                 [checkinServices]="checkinServices" [templateJson]="templateJson" [accountProfile]="accountProfile"
                 [selectedLocation]="selectedLocation" [accountConfig]="accountConfig"

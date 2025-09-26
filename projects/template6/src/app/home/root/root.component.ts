@@ -1,16 +1,21 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
-import { AccountService, AuthService, BookingService, ConsumerService, DateTimeProcessor, JGalleryService, LocalStorageService, Messages, SharedService, SubscriptionService } from 'jconsumer-shared';
+import { AccountService, AuthService, BookingService, ConsumerService, DateTimeProcessor, JGalleryService, LocalStorageService, Messages, projectConstantsLocal, SharedService, SubscriptionService, WordProcessor } from 'jconsumer-shared';
 import { AddInboxMessagesComponent } from '../../shared/add-inbox-messages/add-inbox-messages.component';
+import { Template6Service } from './template/template6.service';
 @Component({
   selector: 'app-root',
   templateUrl: './root.component.html',
   styleUrls: ['./root.component.scss']
 })
-export class RootComponent implements OnInit, OnDestroy {
+export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
+
+  @ViewChild('footerBar') footerElement!: ElementRef;
+  private subscriptions: Subscription = new Subscription();
+
   basicProfile: any = {};
   templateJson: any;
   locationjson: any;
@@ -39,7 +44,7 @@ export class RootComponent implements OnInit, OnDestroy {
   settings: any;
   waitlisttime_arr: any = [];
   appttime_arr: any = [];
-  deptUsers: any;
+  deptUsers: any = [];
   selectedIndex;
   nextavailableCaption = Messages.NXT_AVAILABLE_TIME_CAPTION;
   account: any;
@@ -55,11 +60,28 @@ export class RootComponent implements OnInit, OnDestroy {
   callback: any;
   customId: any;
   accountId: any;
+  private subscription: Subscription;
   users_loaded: boolean;
   blogs: any = [];
   videos: any = [];
-  image_list_popup: any = [];
-  private subscriptions: Subscription = new Subscription();
+  newDateFormat = projectConstantsLocal.DATE_EE_MM_DD_YY_FORMAT;
+  consumer_label: any;
+  appmtDate: any = new Date();
+  isFutureDate: boolean;
+  availableDates: any = [];
+  selected_date: any;
+  tempselectedDate: any;
+  minDate: any = new Date();
+  maxDate: any;
+  tempWeekList: any = [];
+  term: any;
+  hidden = false;
+  selectedAnswer: string = null;
+  checked = true;
+  provider_label = '';
+  allUsers: any;
+  parentIndex;
+  pageAction: any;
   constructor(
     private accountService: AccountService,
     private consumerService: ConsumerService,
@@ -73,7 +95,9 @@ export class RootComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private subscriptionService: SubscriptionService,
     private sharedService: SharedService,
-    private jGalleryService: JGalleryService
+    private cdRef: ChangeDetectorRef,
+    private templateService: Template6Service,
+    private wordProcessor: WordProcessor
   ) {
     console.log("Root component loaded");
     let language = this.lStorageService.getitemfromLocalStorage('translatevariable');
@@ -91,39 +115,98 @@ export class RootComponent implements OnInit, OnDestroy {
           }
         }));
     }));
+    this.subscriptionService.getMessage().subscribe(
+      (message) => {
+        switch (message.ttype) {
+          case 'communicate':
+            this.communicateHandler();
+            break;
+          case 'menu':
+            if (this.templateJson.section1['key'] === message.value.key) {
+              this.menuSelected(this.templateJson.section1, message.value);
+            } else if (this.templateJson.section2['key'] === message.value.key) {
+              this.menuSelected(this.templateJson.section2, message.value);
+            } else if (this.templateJson.section3['key'] === message.value.key) {
+              this.menuSelected(this.templateJson.section3, message.value);
+            } else if (this.templateJson.section4['key'] === message.value.key) {
+              this.menuSelected(this.templateJson.section4, message.value);
+            } else {
+              this.menuSelected(this.templateJson.section5, message.value);
+            }
+            break;
+          case 'quickaction':
+            this.actionPerformed(message.value);
+            break;
+          case 'action':
+            this.actionPerformed(message.value);
+            break;
+          case 'profile':
+            this.profileActionPerformed(message.value);
+            break;
+          case 'page':
+            this.actionPerformed(message.value);
+            break;
+          case 'link':
+            this.actionPerformed(message.value);
+            break;
+          case 'back':
+            this.selectedIndex = message.value;
+            this.lStorageService.removeitemfromLocalStorage('action-src');
+            break;
+        }
+      }
+    )
+  }
+  ngAfterViewInit(): void {
+    this.updateFooterHeight();
+  }
+
+  updateFooterHeight() {
+    if (this.footerElement) {
+      const height = this.footerElement.nativeElement.offsetHeight;
+      console.log("Height:", height)
+      document.documentElement.style.setProperty('--footer-height', `${height}px`);
+    }
   }
   ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
   ngOnInit(): void {
     this.serverDate = this.lStorageService.getitemfromLocalStorage('sysdate');
     this.account = this.sharedService.getAccountInfo();
+    this.accountConfig = this.accountService.getAccountConfig();
+    if (this.accountConfig && this.accountConfig['theme']) {
+      this.theme = this.accountConfig['theme'];
+    }
     this.settings = this.accountService.getJson(this.account['settings']);
     this.showDepartments = this.settings.filterByDept;
     this.apptSettings = this.accountService.getJson(this.account['appointmentsettings']);
     this.accountProfile = this.accountService.getJson(this.account['businessProfile']);
+    let domain = this.accountProfile.serviceSector.domain;
+    this.templateService.setDomain(domain);
     this.accountId = this.accountProfile.id;
-    // this.customId = this.accountProfile['customId'] ? this.accountProfile['customId'] : this.accountProfile['accEncUid'];
     this.donationServicesJson = this.accountService.getJson(this.account['donationServices']);
+    this.provider_label = this.wordProcessor.getTerminologyTerm('provider');
+    this.consumer_label = this.wordProcessor.getTerminologyTerm('consumer');
     if (this.accountProfile.cover) {
       this.bgCover = this.accountProfile.cover.url;
     }
     this.terminologiesjson = this.account['terminologies'];
     this.setBasicProfile();
+    this.templateService.setExtras(this.extras);
     this.accountConfig = this.accountService.getAccountConfig();
     if (this.accountConfig && this.accountConfig['theme']) {
       this.theme = this.accountConfig['theme'];
     }
     this.deptUsers = this.accountService.getJson(this.account['departmentProviders']);
+    console.log('showDepartments', this.showDepartments)
     if (this.showDepartments) {
       this.setDepartments(this.deptUsers);
     }
     this.selectedLocation = this.accountService.getActiveLocation();
     this.templateJson = this.sharedService.getTemplateJSON();
-    console.log("Template Json:", this.templateJson);
-    
-    this.galleryJson = this.accountService.getJson(this.account['gallery']);
-    this.loadImages(this.galleryJson);
     this.subscriptionService.sendMessage({ ttype: 'showLocation' });
     if (this.templateJson.section1.blog) {
       this.blogs = this.templateJson.section1.blog;
@@ -132,6 +215,7 @@ export class RootComponent implements OnInit, OnDestroy {
       this.videos = this.templateJson.section1.videos;
     }
     if (this.templateJson.section1.donations || this.templateJson.section2.donations || this.templateJson.section3.donations) {
+      console.log("donations?")
       this.getDonationServices();
     }
     this.selectedIndex = this.templateJson.section1.title;
@@ -139,8 +223,19 @@ export class RootComponent implements OnInit, OnDestroy {
     if (this.callback === 'communicate') {
       this.communicateHandler();
     }
+    console.log("Selected Index:", this.selectedIndex);
+    let src = this.lStorageService.getitemfromLocalStorage('action-src');
+    if (src) {
+      this.pageAction = src;
+      this.lStorageService.removeitemfromLocalStorage('action-src');
+      this.actionPerformed(src);
+    } else {
+      let tabIndex = this.lStorageService.getitemfromLocalStorage('tabIndex');
+      if (tabIndex) {
+        this.selectedIndex = tabIndex;
+      }
+    }
   }
-
   setDepartments(depts) {
     let departmentsS3 = [];
     let checkinServices = this.accountService.getJson(this.account['services']);
@@ -158,6 +253,7 @@ export class RootComponent implements OnInit, OnDestroy {
       }
     }
     this.departments = departmentsS3;
+    console.log('departments', this.departments);
   }
   setJaldeeCoupons(res) {
     if (res !== undefined) {
@@ -174,38 +270,6 @@ export class RootComponent implements OnInit, OnDestroy {
       this.s3CouponList.OWN = [];
     }
     this.extras['coupons'] = this.s3CouponList;
-  }
-  menuSelected(section) {
-    console.log(section.title);
-    if (section.type !== 'action') {
-      this.selectedIndex = section.title;
-      this.lStorageService.setitemonLocalStorage('tabIndex', this.selectedIndex);
-    } else {
-      console.log(section.link);
-      let url = section.link;
-      this.router.navigateByUrl(url);
-    }
-  }
-  quickActionPerformed(action) {
-    if (action['key']) {
-      this.selectedIndex = action['key'];
-      this.lStorageService.setitemonLocalStorage('tabIndex', this.selectedIndex);
-      if (action['target']) {
-        let e1 = '#' + action['target'];
-        setTimeout(() => {
-          document.querySelector(e1).scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 100);
-      }
-    }
-  }
-  cardActionPerformed(action) {
-    if (action.link && action.link.startsWith('http')) {
-      window.open(action.link, "_system");
-    } else if (action.link) {
-      this.router.navigateByUrl(action.link);
-    } else if (action.type === 'menu') {
-      this.actionPerformed(action);
-    }
   }
   setBasicProfile() {
     this.basicProfile['theme'] = this.theme;
@@ -228,10 +292,12 @@ export class RootComponent implements OnInit, OnDestroy {
     }
     this.basicProfile['logo'] = this.accountProfile.logo?.url;
     this.basicProfile['socialMedia'] = this.accountProfile.socialMedia;
+    this.templateService.setBasicProfile(this.basicProfile);
   }
   changeLocation(loc: any) {
     const _this = this;
     this.selectedLocation = loc;
+    this.templateService.setLocation(this.selectedLocation);
     if (this.templateJson.section1.appointments || this.templateJson.section2.appointments || this.templateJson.section3.appointments) {
       this.getAppointmentServices(this.selectedLocation.id);
     }
@@ -246,6 +312,10 @@ export class RootComponent implements OnInit, OnDestroy {
           _this.setUserWaitTime();
         })
       }
+    }
+    let allUsers = this.accountService.getJson(this.account['departmentProviders']);
+    if (allUsers) {
+      this.setAllUsers(allUsers);
     }
   }
   getUsersByLocation() {
@@ -271,6 +341,7 @@ export class RootComponent implements OnInit, OnDestroy {
     this.getUserApptTime(apptTimearr, waitTimearr);
   }
   getAvailableSlot(slots) {
+    console.log('slots', slots)
     let slotAvailable = '';
     for (let i = 0; i < slots.length; i++) {
       if (slots[i].active) {
@@ -278,6 +349,7 @@ export class RootComponent implements OnInit, OnDestroy {
         break;
       }
     }
+    console.log('slotAvailable', slotAvailable)
     return slotAvailable;
   }
   getSingleTime(slot) {
@@ -328,6 +400,7 @@ export class RootComponent implements OnInit, OnDestroy {
           this.getUserWaitingTime(waitTimearr);
         });
     }
+    console.log('appttime_arr', this.appttime_arr)
   }
   getUserWaitingTime(provids) {
     console.log("In Get UserTime:", provids);
@@ -392,9 +465,35 @@ export class RootComponent implements OnInit, OnDestroy {
               }
             }
           }
+          console.log('this.deptUsers', this.deptUsers)
           this.setUsers(this.deptUsers);
         });
     }
+  }
+  setAllUsers(deptUsers) {
+    this.allUsers = [];
+    if (this.settings.enabledWaitlist || this.apptSettings.enableAppt) {
+      for (let dIndex = 0; dIndex < deptUsers.length; dIndex++) {
+        if (!this.showDepartments) {
+          // const userWaitTime = this.waitlisttime_arr.filter(time => time.provider.id === deptUsers[dIndex].id);
+          //   const userApptTime = this.appttime_arr.filter(time => time.provider.id === deptUsers[dIndex].id);
+          // deptUsers[dIndex]['users'][pIndex]['waitingTime'] = userWaitTime[0];
+          // deptUsers[dIndex]['users'][pIndex]['apptTime'] = userApptTime[0];
+          this.allUsers.push({ 'type': 'provider', 'item': deptUsers[dIndex] });
+        }
+        else if (deptUsers[dIndex]['users']) {
+          for (let pIndex = 0; pIndex < deptUsers[dIndex]['users'].length; pIndex++) {
+            const userWaitTime = this.waitlisttime_arr.filter(time => time.provider.id === deptUsers[dIndex]['users'][pIndex].id);
+            const userApptTime = this.appttime_arr.filter(time => time.provider.id === deptUsers[dIndex]['users'][pIndex].id);
+            deptUsers[dIndex]['users'][pIndex]['waitingTime'] = userWaitTime[0];
+            deptUsers[dIndex]['users'][pIndex]['apptTime'] = userApptTime[0];
+            this.allUsers.push({ 'type': 'provider', 'item': deptUsers[dIndex]['users'][pIndex] });
+          }
+        }
+      }
+    }
+    this.templateService.setUsers(this.allUsers);
+    this.users_loaded = true;
   }
   setUsers(deptUsers) {
     this.onlineUsers = [];
@@ -407,11 +506,10 @@ export class RootComponent implements OnInit, OnDestroy {
         console.log(deptUsers[dIndex]);
         this.onlineUsers.push({ 'type': 'provider', 'item': deptUsers[dIndex] });
       }
+      console.log(' this.onlineUsers', this.onlineUsers)
     }
     this.users_loaded = true;
   }
-
-
   getDonationServices() {
     this.donationServices = [];
     console.log("Loaded before:", this.loaded_donations);
@@ -423,7 +521,6 @@ export class RootComponent implements OnInit, OnDestroy {
       console.log("Loaded after:", this.loaded_donations);
     }
   }
-
   getAppointmentServices(locationId) {
     const _this = this;
     const apptServiceList = [];
@@ -434,6 +531,7 @@ export class RootComponent implements OnInit, OnDestroy {
           apptServiceList.push({ 'type': 'appt', 'item': apptServicesList[aptIndex] });
         }
         _this.apptServices = apptServiceList;
+        console.log('apptServices', this.apptServices)
         _this.loaded_appointments = true;
       }, (error) => {
         _this.apptServices = apptServiceList;
@@ -441,7 +539,6 @@ export class RootComponent implements OnInit, OnDestroy {
       }
     );
   }
-
   getCheckinServices(locationId) {
     const self = this;
     const checkinServiceList = [];
@@ -452,6 +549,7 @@ export class RootComponent implements OnInit, OnDestroy {
           checkinServiceList.push({ 'type': 'waitlist', 'item': checkinServicesList[wlIndex] });
         }
         self.checkinServices = checkinServiceList;
+        console.log('checkinServices', this.checkinServices)
         self.loaded_checkins = true;
       }, (error) => {
         self.checkinServices = checkinServiceList;
@@ -459,8 +557,6 @@ export class RootComponent implements OnInit, OnDestroy {
       }
     );
   }
-
-
   showCommunicate(provid) {
     const dialogRef = this.dialog.open(AddInboxMessagesComponent, {
       width: '50%',
@@ -498,15 +594,47 @@ export class RootComponent implements OnInit, OnDestroy {
   }
   profileActionPerformed(action) {
     if (action === 'coupons') {
+      // this.openCoupons()
     } else if (action === 'qrcode') {
+      // this.qrCodegeneraterOnlineID(this.sharedService.getRouteID());
     } else if (action === 'communicate') {
       this.communicateHandler();
     } else if (action === 'about') {
       this.router.navigate([this.sharedService.getRouteID(), 'about']);
     }
   }
+  menuSelected(section, action) {
+    this.lStorageService.removeitemfromLocalStorage('action-src');
+    if (section && section.type !== 'action') {
+      this.selectedIndex = section.title;
+      this.lStorageService.setitemonLocalStorage('tabIndex', this.selectedIndex);
+      if (action && action['target']) {
+        let e1 = '#' + action['target'];
+        setTimeout(() => {
+          document.querySelector(e1).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      }
+    } else {
+      let url = section.link;
+      this.router.navigateByUrl(url);
+    }
+    this.cdRef.detectChanges();
+  }
   actionPerformed(actionObj) {
-    if (actionObj['type'] === 'appt') {
+    console.log("Here");
+    if (actionObj.type === 'menu' && actionObj.dynamic) {
+      this.pageAction = actionObj;
+      this.parentIndex = this.selectedIndex;
+      this.lStorageService.setitemonLocalStorage('action-src', actionObj);
+      this.selectedIndex = -1;
+    } else if (actionObj.type === 'menu') {
+      this.lStorageService.removeitemfromLocalStorage('action-src');
+      this.subscriptionService.sendMessage({ ttype: 'menu', value: actionObj });
+    } else if (actionObj.link && actionObj.link.startsWith('http')) {
+      window.open(actionObj.link, "_system");
+    } else if (actionObj.link) {
+      this.router.navigateByUrl(actionObj.link);
+    } else if (actionObj['type'] === 'appt') {
       if (actionObj['action'] === 'view') {
         let queryParam = {
           back: 1
@@ -516,7 +644,7 @@ export class RootComponent implements OnInit, OnDestroy {
         };
         this.router.navigate([this.sharedService.getRouteID(), 'service', actionObj['service'].id], navigationExtras);
       } else {
-        this.appointmentClicked(actionObj['location'], actionObj['service']);
+        this.appointmentClicked(this.selectedLocation, actionObj['item']['item']);
       }
     } else if (actionObj['type'] === 'waitlist') {
       if (actionObj['action'] === 'view') {
@@ -528,7 +656,7 @@ export class RootComponent implements OnInit, OnDestroy {
         };
         this.router.navigate([this.sharedService.getRouteID(), 'service', actionObj['service'].id], navigationExtras);
       } else {
-        this.checkinClicked(actionObj['location'], actionObj['service']);
+        this.checkinClicked(this.selectedLocation, actionObj['item']['item']);
       }
     } else if (actionObj['type'] === 'donation') {
       if (actionObj['action'] === 'view') {
@@ -557,22 +685,7 @@ export class RootComponent implements OnInit, OnDestroy {
       };
       this.router.navigate([this.sharedService.getRouteID(), actionObj['userId']], navigationExtras);
     }
-    if (this.templateJson.section1 && this.templateJson.section1.key === actionObj) {
-      this.menuSelected(this.templateJson.section1);
-    }
-    if (this.templateJson.section2 && this.templateJson.section2.key === actionObj) {
-      this.menuSelected(this.templateJson.section2);
-    }
-    if (this.templateJson.section3 && this.templateJson.section3.key === actionObj) {
-      this.menuSelected(this.templateJson.section3);
-    }
-    if (this.templateJson.section4 && this.templateJson.section4.key === actionObj) {
-      this.menuSelected(this.templateJson.section4);
-    }
   }
-
-
-
   donationClicked(locid, curdate, service) {
     const navigationExtras: NavigationExtras = {
       queryParams: {
@@ -587,7 +700,6 @@ export class RootComponent implements OnInit, OnDestroy {
     let queryParam = {
       loc_id: location.id,
       locname: location.place,
-      // googleMapUrl: location.googleMapUrl,
       futureAppt: true,
       service_id: service.id,
       sel_date: service.serviceAvailability.nextAvailableDate
@@ -628,8 +740,6 @@ export class RootComponent implements OnInit, OnDestroy {
     let queryParam = {
       loc_id: location.id,
       locname: location.place,
-      // googleMapUrl: gMapUrl,
-      // sel_date: curdate,
       service_id: service.id,
       sel_date: service.serviceAvailability.availableDate
     };
@@ -655,36 +765,8 @@ export class RootComponent implements OnInit, OnDestroy {
     };
     this.router.navigate([this.sharedService.getRouteID(), 'checkin'], navigationExtras);
   }
-  blogReadMore(blog) {
-    window.open(blog.link, "_system");
+  navigate() {
+    this.router.navigate([this.sharedService.getRouteID(), 'template5']);
   }
-  videoClicked(video) {
-    window.open(video.link, "_system");
-  }
-  showMoreVideo(link) {
-    window.open(link, "_system");
-  }
-  loadImages(imagelist) {
-    console.log("Image List:", imagelist);
-    
-    this.image_list_popup = [];
-    if (imagelist?.length > 0) {
-      for (let i = 0; i < imagelist.length; i++) {
-        let imgobj = {
-          source: imagelist[i].url,
-          thumb: imagelist[i].url,
-          alt: imagelist[i].caption || ''
-        };
-        this.image_list_popup.push(imgobj);
-      }
-    }
-    console.log("Image List:", this.image_list_popup);
-  }
-      private getCurrentIndexCustomLayout(image, images): number {
-        return image ? images.indexOf(image) : -1;
-    }
-      openGallery(image): void {
-        let imageIndex = this.getCurrentIndexCustomLayout(image, this.image_list_popup);
-        this.jGalleryService.open(this.image_list_popup, imageIndex);
-    }
+
 }
