@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { DateFormatPipe, DateTimeProcessor, LocalStorageService, Messages, WordProcessor } from 'jconsumer-shared';
+import { DateFormatPipe, DateTimeProcessor, LocalStorageService, Messages, SharedService, WordProcessor } from 'jconsumer-shared';
 
 @Component({
   selector: 'app-service-card',
@@ -28,14 +28,17 @@ export class ServiceCardComponent implements OnInit {
   waitlist: any;
   appointment: any;
   @Input() config: any;
+  cdnPath: string;
   
   constructor(
     public translate: TranslateService,
     private wordProcessor: WordProcessor,
     private datePipe: DateFormatPipe,
     private dateTimeProcessor: DateTimeProcessor,
-    private lStorageService: LocalStorageService
+    private lStorageService: LocalStorageService,
+    private sharedService: SharedService
   ) {
+    this.cdnPath = this.sharedService.getCDNPath();
     this.server_date = this.lStorageService.getitemfromLocalStorage('sysdate');
   }
 

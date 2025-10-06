@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { AccountService, AuthService, GroupStorageService, LocalStorageService, Messages, OrderService, SharedService, SubscriptionService } from 'jconsumer-shared';
@@ -9,7 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss', './modal.scss']
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, OnDestroy {
   restrictNavigation: boolean = false;
   isLoggedIn: boolean = false;
   loggedUser: any;
@@ -73,6 +73,9 @@ export class HeaderComponent implements OnInit {
     this.translate.use(JSON.parse(localStorage.getItem('translatevariable')));
     // this.initHeader('refresh');
   }
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
+  }
   initHeader(refresh: any) {
     const activeUser = this.groupService.getitemFromGroupStorage('jld_scon');
     if (activeUser) {
@@ -116,6 +119,7 @@ export class HeaderComponent implements OnInit {
   }
   ngOnInit(): void {
     this.config = this.sharedService.getTemplateJSON();
+    console.log("Header Config:", this.config);
     this.isCartVisible = this.config.header?.showCart;
     this.headerName = this.config.header?.name ? this.config.header.name : 'header1';
     if (this.config && this.config['theme']) {
@@ -129,6 +133,14 @@ export class HeaderComponent implements OnInit {
     }
     let account = this.sharedService.getAccountInfo();
     this.locations = this.sharedService.getJson(account['location']);
+    let accountProfile = this.sharedService.getJson(account['businessProfile']);
+    if (accountProfile.businessLogo && accountProfile.businessLogo.length > 0) {
+      this.logo = accountProfile.businessLogo[0].s3path;
+    } else {
+      this.logo = accountProfile.logo?.url;
+    }
+
+
     this.initSubscriptions();
     this.initHeader('refresh');
     if (this.accountService.getAccountLocations()) {

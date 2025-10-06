@@ -129,7 +129,7 @@ export class ActionPopupComponent implements OnInit {
     const navigationExtras: NavigationExtras = {
       queryParams: queryParams
     };
-    this.router.navigate(['consumer', 'appointment'], navigationExtras);
+    this.router.navigate([this.sharedService.getRouteID(), 'appointment'], navigationExtras);
     this.dialogRef.close();
   }
 

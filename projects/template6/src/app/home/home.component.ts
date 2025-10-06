@@ -127,7 +127,7 @@ export class HomeComponent implements AfterViewInit {
     })
     setTimeout(() => {
       this.updateHeaderHeight();
-    }, 750);
+    }, 1000);
   }
 
   getStores() {

@@ -8,7 +8,6 @@ import { CapitalizeFirstPipeModule, JGalleryModule, SafeHtmlModule } from 'jcons
 import { QuickActionsModule } from '../quick-actions/quick-actions.module';
 import { ConsDepartmentsModule } from '../departments/cons-departments.module';
 import { OnlineUsersModule } from '../online-users/online-users.module';
-import { DonationServicesModule } from '../services/donation/donation-services.module';
 import { ServiceCardModule } from '../service-card/service-card.module';
 import { UserCardModule } from '../user-card/user-card.module';
 
@@ -26,7 +25,6 @@ import { UserCardModule } from '../user-card/user-card.module';
     ConsDepartmentsModule,
     OnlineUsersModule,
     ServiceCardModule,
-    DonationServicesModule,
     CapitalizeFirstPipeModule,
     AboutModule,
     UserCardModule,

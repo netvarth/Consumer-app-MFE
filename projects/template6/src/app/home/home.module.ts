@@ -6,6 +6,7 @@ import { HeaderModule } from './header/header.module';
 import { DialogService } from 'primeng/dynamicdialog';
 import { AuthenticationModule } from '../shared/authentication/authentication.module';
 import { OnetimeQuestionnaireModule } from '../shared/onetime-questionnaire/onetime-questionnaire.module';
+import { DateFormatPipeModule } from 'jconsumer-shared';
 
 const routes: Routes = [
   {
@@ -23,6 +24,7 @@ const routes: Routes = [
       { path: 'pay/:id', loadChildren: () => import('./payment-link/payment-link.module').then(m => m.PaymentLinkModule) },
       { path: 'status/:id', loadChildren: () => import('./status/status.module').then(m => m.StatusModule) },
       { path: 'item/:id', loadChildren: () => import('./item/item.module').then(m => m.ItemModule) },
+      { path: 'department/:deptId', loadChildren: () => import('./department-service-page/department-service-page.module').then(m => m.DepartmentServicePageModule) },
       { path: 'order', loadChildren: () => import('../orders/orders.module').then(m => m.OrdersModule) },
       { path: 'appointment', loadChildren: () => import('../booking/appointment/appointment.module').then(m => m.AppointmentModule) },
       { path: 'checkin', loadChildren: () => import('../booking/checkin/checkin.module').then(m => m.CheckinModule) },  
@@ -31,6 +33,7 @@ const routes: Routes = [
       { path: 'about', loadChildren: () => import('./aboutus/aboutus.module').then(m => m.AboutusModule) },
       { path: 'faq', loadChildren: () => import('./faq/faq.module').then(m => m.FaqModule) },
       { path: 'service/:serid', loadChildren: () => import('./service-page/service-page.module').then(m => m.ServicePageModule) },
+      { path: ':userEncId', loadChildren: () => import('./root/user-page/user-page.module').then(m => m.UserPageModule) }
     ]
   }
 ]
@@ -41,6 +44,7 @@ const routes: Routes = [
     CommonModule,
     HeaderModule,
     AuthenticationModule,
+    DateFormatPipeModule,
     OnetimeQuestionnaireModule,
     [RouterModule.forChild(routes)]
   ],

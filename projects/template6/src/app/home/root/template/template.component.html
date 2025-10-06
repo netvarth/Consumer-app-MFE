@@ -381,20 +381,6 @@
                 </ng-container>
             </div>
         </div>
-        <div class="col-12 mt-2 p-0" *ngIf="section.donations">
-            <div class="col-12 mb-2 p-0" *ngIf="section.donationsDescription">
-                <h5 class="mb-2">
-                    <span [innerHtml]="section.donationsDescription | safeHtml"></span>
-                </h5>
-            </div>
-            <div class="col-12 p-0">
-                <app-donation-services [terminologiesjson]="terminologiesjson" [templateJson]="templateJson"
-                    [accountProfile]="accountProfile" [donationServices]="donationServices"
-                    (actionPerformed)="actionPerformed($event)" [selectedLocation]="selectedLocation"
-                    [cardType]="section.donationCard">
-                </app-donation-services>
-            </div>
-        </div>
         <div class="col-12 mt-2 p-0" *ngIf="section.orders">
             <div class="col-12 mb-2 p-0" *ngIf="section.ordersDescripton">
                 <h5 class="mb-2">

@@ -554,6 +554,7 @@ h3 {
   align-items: center;
   height: 35px !important;
   margin-top: 5px !important;
+  padding: 5px !important;
 }
 
 .action-item img {

@@ -9,13 +9,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatRadioModule } from '@angular/material/radio';
 import { CheckinComponent } from './checkin.component';
-import { CapitalizeFirstPipeModule, FileService, I8nModule, JaldeeTimeService, LoadingSpinnerModule, PaymentModesModule, PaytmService, QuestionnaireModule, RazorpayService } from 'jconsumer-shared';
+import { CapitalizeFirstPipeModule, DateFormatPipeModule, FileService, I8nModule, JaldeeTimeService, LoadingSpinnerModule, PaymentModesModule, PaytmService, QuestionnaireModule, RazorpayService } from 'jconsumer-shared';
 import { CheckinAddMemberModule } from '../../shared/checkin-add-member/checkin-add-member.module';
 import { RefundpolicyModule } from '../../shared/refundpolicy/refundpolicy.module';
 import { PrivacyModule } from '../../shared/privacy/privacy.module';
 import { MembersModule } from '../home/members/members.module';
 import { CommunicationsModule } from '../communications/communications.module';
-import { DatePaginationModule } from '../../shared/date-pagination/date-pagination.module';
 import { SlotPickerModule } from '../../shared/slot-picker/slot-picker.module';
 import { BookingNoteModule } from '../note/booking-note.module';
 import { ServiceInfoDisplayModule } from '../../shared/service-info-display/service-info-display.module';
@@ -26,6 +25,7 @@ import { CouponStatusModule } from '../../shared/coupon-status/coupon-status.mod
 import { ApplyCouponModule } from '../../shared/apply-coupon/apply-coupon.module';
 import { PaymentSummaryModule } from '../../shared/payment-summary/payment-summary.module';
 import { ConsumerEmailModule } from '../../shared/consumer-email/consumer-email.module';
+import { DatePaginationModule } from '../date-pagination/date-pagination.module';
 
 const routes: Routes = [
     { path: '', component: CheckinComponent},
@@ -38,6 +38,7 @@ const routes: Routes = [
     ],
     imports: [
         CommonModule,
+        DateFormatPipeModule,
         CapitalizeFirstPipeModule,
         MatFormFieldModule,
         MatDatepickerModule,

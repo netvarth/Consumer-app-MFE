@@ -193,76 +193,75 @@ export class ServicePageComponent implements OnInit, OnDestroy {
     let queryParam = {
       loc_id: location.id,
       type: 'Appointment',
-      // locname: location.place,
-      // googleMapUrl: location.googleMapUrl,
-      // futureAppt: true,
+      locname: location.place,
+      googleMapUrl: location.googleMapUrl,
+      futureAppt: true,
       service_id: service.id,
-      // sel_date: service.serviceAvailability.nextAvailableDate
+      sel_date: service.serviceAvailability.nextAvailableDate
     };
-    // if (!location.futureAppt) {
-    //   queryParam['futureAppt'] = false;
-    // }
+    if (!location.futureAppt) {
+      queryParam['futureAppt'] = false;
+    }
     if (service.provider) {
       queryParam['user'] = service.provider.id;
     }
-    // if (service['serviceType'] === 'virtualService') {
-    //   queryParam['tel_serv_stat'] = true;
-    // } else {
-    //   queryParam['tel_serv_stat'] = false;
-    // }
-    // if (service['department']) {
-    //   queryParam['dept'] = service['department'];
-    // }
-    // if (location.time) {
-    //   queryParam['ctime'] = location.time
-    // }
-    // if (location.date) {
-    //   queryParam['cdate'] = location.date
-    //   service.serviceAvailability.nextAvailableDate = location.date
-    // }
-    // const dtoday = this.dateTimeProcessor.getStringFromDate_YYYYMMDD(this.dateTimeProcessor.getLocaleDateFromServer(this.serverDate));
-    // if (dtoday === service.serviceAvailability.nextAvailableDate) {
-    //   queryParam['cur'] = false;
-    // } else {
-    //   queryParam['cur'] = true;
-    // }
+    if (service['serviceType'] === 'virtualService') {
+      queryParam['tel_serv_stat'] = true;
+    } else {
+      queryParam['tel_serv_stat'] = false;
+    }
+    if (service['department']) {
+      queryParam['dept'] = service['department'];
+    }
+    if (location.time) {
+      queryParam['ctime'] = location.time
+    }
+    if (location.date) {
+      queryParam['cdate'] = location.date
+      service.serviceAvailability.nextAvailableDate = location.date
+    }
+    const dtoday = this.dateTimeProcessor.getStringFromDate_YYYYMMDD(this.dateTimeProcessor.getLocaleDateFromServer(this.serverDate));
+    if (dtoday === service.serviceAvailability.nextAvailableDate) {
+      queryParam['cur'] = false;
+    } else {
+      queryParam['cur'] = true;
+    }
     const navigationExtras: NavigationExtras = {
       queryParams: queryParam
     };
-    // this.router.navigate([this.customId, 'appointment'], navigationExtras);
-    this.router.navigate([this.sharedService.getRouteID(), 'booking'], navigationExtras);
+    this.router.navigate([this.sharedService.getRouteID(), 'appointment'], navigationExtras);
   }
   checkinClicked(location, service) {
     let queryParam = {
       loc_id: location.id,
       type: 'Waitlist',
-      // locname: location.place,
+      locname: location.place,
       // googleMapUrl: gMapUrl,
       // sel_date: curdate,
       service_id: service.id,
-      // sel_date: service.serviceAvailability.availableDate
+      sel_date: service.serviceAvailability.availableDate
     };
     if (service.provider) {
       queryParam['user'] = service.provider.id;
     }
-    // const dtoday = this.dateTimeProcessor.getStringFromDate_YYYYMMDD(this.dateTimeProcessor.getLocaleDateFromServer(this.serverDate));
-    // if (dtoday === service.serviceAvailability.availableDate) {
-    //   queryParam['cur'] = false;
-    // } else {
-    //   queryParam['cur'] = true;
-    // }
-    // if (service['serviceType'] === 'virtualService') {
-    //   queryParam['tel_serv_stat'] = true;
-    // } else {
-    //   queryParam['tel_serv_stat'] = false;
-    // }
-    // if (service['department']) {
-    //   queryParam['dept'] = service['department'];
-    // }
+    const dtoday = this.dateTimeProcessor.getStringFromDate_YYYYMMDD(this.dateTimeProcessor.getLocaleDateFromServer(this.serverDate));
+    if (dtoday === service.serviceAvailability.availableDate) {
+      queryParam['cur'] = false;
+    } else {
+      queryParam['cur'] = true;
+    }
+    if (service['serviceType'] === 'virtualService') {
+      queryParam['tel_serv_stat'] = true;
+    } else {
+      queryParam['tel_serv_stat'] = false;
+    }
+    if (service['department']) {
+      queryParam['dept'] = service['department'];
+    }
     const navigationExtras: NavigationExtras = {
       queryParams: queryParam,
     };
-    this.router.navigate([this.sharedService.getRouteID(), 'booking'], navigationExtras);
+    this.router.navigate([this.sharedService.getRouteID(), 'appointment'], navigationExtras);
     // this.router.navigate([this.customId, 'checkin'], navigationExtras);
   }
   changeLocation(loc: any) {

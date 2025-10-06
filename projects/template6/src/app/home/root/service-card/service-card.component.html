@@ -23,16 +23,16 @@
                 </div>
                 <div class="img-circle "
                     *ngIf="!service.servicegallery && service.serviceType && service.serviceType != 'virtualService' && service.serviceType == 'donationService'">
-                    <img class=" img-responsive" src="./assets/images/webP/donation.webp" alt="Donation Image">
+                    <img class=" img-responsive" src="{{cdnPath}}customapp/assets/images/webP/donation.webp" alt="Donation Image">
                 </div>
                 <div class="img-circle"
                     *ngIf="!service.servicegallery && service.serviceType && service.serviceType != 'virtualService' && service.serviceType == 'physicalService' && domain != 'religiousPriests'">
-                    <img class="img-responsive" src="./assets/images/webP/meeting_Artboard.webp"
+                    <img class="img-responsive" src="{{cdnPath}}customapp/assets/images/webP/meeting_Artboard.webp"
                         alt="Physical Service Image">
                 </div>
                 <div class="img-circle "
                     *ngIf="!service.servicegallery && service.serviceType && service.serviceType != 'virtualService' && service.serviceType == 'physicalService' && domain == 'religiousPriests'">
-                    <img class=" img-responsive" src="./assets/images/webP/hindu-temple-clipart.webp"
+                    <img class=" img-responsive" src="{{cdnPath}}customapp/assets/images/webP/hindu-temple-clipart.webp"
                         alt="Physical Service Image">
                 </div>
             </div>

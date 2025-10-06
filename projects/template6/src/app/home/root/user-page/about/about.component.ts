@@ -1,13 +1,15 @@
-import { Component, OnInit } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
 import { Location } from '@angular/common';
-import { AccountService, CommonService, LocalStorageService, projectConstantsLocal, SharedService, SubscriptionService, WordProcessor } from 'jconsumer-shared';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
+import { AccountService, CommonService, LocalStorageService, projectConstantsLocal, SharedService, WordProcessor } from 'jconsumer-shared';
+
 @Component({
   selector: 'app-about',
   templateUrl: './about.component.html',
   styleUrls: ['./about.component.scss']
 })
-export class AboutComponent implements OnInit {
+export class AboutUserComponent implements OnInit {
   serverDate: any;
   account: any;
   accountConfig: any;
@@ -19,80 +21,80 @@ export class AboutComponent implements OnInit {
   basicProfile: any = {};
   phoneNumbers;
   emails;
-  extras = {
-    icons: true,
-    more: false,
-    enquiry: false
-  };
   virtualfieldsjson: any;
   virtualfieldsDomainjson: any[];
   virtualfieldsCombinedjson: any[];
   virtualfieldsSubdomainjson: any[];
   orgsocial_list = projectConstantsLocal.SOCIAL_MEDIA_CONSUMER;
-
+  userId: string;
+  userProfile: any;
+  extras = {
+    icons: true
+  }
   constructor(
     private lStorageService: LocalStorageService,
     private accountService: AccountService,
-    private commonService: CommonService,
     private sharedService: SharedService,
     public translate: TranslateService,
     private location: Location,
+    private activatedRoute: ActivatedRoute,
     public wordProcessor: WordProcessor,
-    private subscriptionService: SubscriptionService
+    private commonService: CommonService
   ) {
-
+    this.activatedRoute.paramMap.subscribe(params => {
+      this.userId = params.get('userEncId');
+    });
   }
-
+  profileActionPerformed(event) {
+  }
   ngOnInit(): void {
     this.serverDate = this.lStorageService.getitemfromLocalStorage('sysdate');
     let language = this.lStorageService.getitemfromLocalStorage('translatevariable');
     this.translate.setDefaultLang(language);
     this.translate.use(language);
     this.account = this.sharedService.getAccountInfo();
-    this.accountConfig = this.accountService.getAccountConfig();
+    this.accountConfig = this.sharedService.getAccountConfig();
     if (this.accountConfig && this.accountConfig['theme']) {
       this.theme = this.accountConfig['theme'];
     }
-    this.accountProfile = this.accountService.getJson(this.account['businessProfile']);
-    let virtualFields = this.accountService.getJson(this.account['virtualFields']);
-    this.setAccountVirtualFields(virtualFields);
-    this.setBasicProfile();
+    this.accountProfile = this.sharedService.getJson(this.account['businessProfile']);
     this.selectedLocation = this.accountService.getActiveLocation();
+    const _this = this;
+    this.accountService.getUserInformation(this.accountProfile.uniqueId, this.userId).then(
+      (userAccountInfo: any) => {
+        this.userProfile = _this.accountService.getJson(userAccountInfo['providerBusinessProfile']);
+        _this.setBasicProfile(this.userProfile);
+        let virtualFields = this.accountService.getJson(userAccountInfo['providerVirtualFields']);
+        this.setUserVirtualFields(virtualFields);
+      }
+    );
   }
   goBack() {
     this.location.back();
   }
-  bookNow() {
-    this.subscriptionService.sendMessage({ ttype: 'menu', value: 'Services' });
-  }
-
-  communicate() {
-    this.subscriptionService.sendMessage({ ttype: 'communicate' });
-  }
-  setBasicProfile() {
+  setBasicProfile(accountProfile) {
     this.basicProfile['theme'] = this.theme;
-    this.basicProfile['businessName'] = this.accountProfile['businessName'];
-    if (this.accountProfile['businessUserName']) {
-      this.basicProfile['businessUserName'] = this.accountProfile['businessUserName'];
-    }
+    this.basicProfile['businessName'] = accountProfile['businessName'];
     if (this.accountProfile.cover) {
       this.bgCover = this.accountProfile.cover.url;
     }
     this.basicProfile['cover'] = this.bgCover;
     if (this.accountProfile.emails) {
-      this.basicProfile['emails'] = this.accountProfile.emails;
+      this.basicProfile['emails'] = accountProfile.emails;
     }
     if (this.accountProfile.phoneNumbers) {
-      this.basicProfile['phoneNumbers'] = this.accountProfile.phoneNumbers;
+      this.basicProfile['phoneNumbers'] = accountProfile.phoneNumbers;
     }
-    if (this.accountProfile.baseLocation) {
-      this.basicProfile['baseLocation'] = this.accountProfile.baseLocation;
+    if (accountProfile.baseLocation) {
+      this.basicProfile['baseLocation'] = accountProfile.baseLocation;
     }
-    this.basicProfile['logo'] = this.accountProfile.logo?.url;
-    this.basicProfile['socialMedia'] = this.accountProfile.socialMedia;
+    this.basicProfile['logo'] = accountProfile.logo?.url;
+    this.basicProfile['socialMedia'] = accountProfile.socialMedia;
+
+    console.log("Social Media", accountProfile.socialMedia);
   }
 
-  setAccountVirtualFields(res) {
+  setUserVirtualFields(res) {
     this.virtualfieldsjson = res;
     this.virtualfieldsCombinedjson = [];
     this.virtualfieldsDomainjson = [];
@@ -119,5 +121,9 @@ export class AboutComponent implements OnInit {
       returndet = 'bizyGlobe';
     }
     return returndet;
+  }
+
+  actionPerformed(action) {
+
   }
 }

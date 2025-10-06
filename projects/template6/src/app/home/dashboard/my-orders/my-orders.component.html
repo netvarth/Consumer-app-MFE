@@ -1,4 +1,4 @@
-<div class="panel container mt-1" [ngClass]="theme">
+<div class="panel p-0 container mt-1" [ngClass]="theme">
     <div class="loading-hgt my-1 login-form_custom" *ngIf="!loggedIn">
         <div class="card card-custom no-margin hgt-adjust">
             <div class="card-body p-0">
@@ -8,12 +8,12 @@
         </div>
     </div>
     <div *ngIf="loggedIn">
-        <div class="col-12 col-sm-12 co-md-12 col-lg-12 p-0 cstmHeader">
-            <div (click)="goBack()" class="backFlex pointer-cursor">
-                <div><i class="fa fa-arrow-left" aria-hidden="true"></i></div>
-                <div class="col-sm-12 col-md-12 col-lg-12 col-12 my-2">
-                    <div class="cstmHeaderTemp">{{'My Orders' | translate}}</div>
-                    <div class="sub_cstmHeader">{{'Choose and view your orders' | translate}}</div>
+        <div class="customCard title-gb headerBorder" (click)="goBack()">
+            <div (click)="goBack()"><i class="fa fa-arrow-left clrChangeHeader"></i> </div>
+            <div>
+                <div>
+                    <div class="myAcText">{{'My Orders' | translate}}</div>
+                    <div class="accountEditText">{{'Choose and view your orders' | translate}}</div>
                 </div>
             </div>
         </div>

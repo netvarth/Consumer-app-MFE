@@ -71,17 +71,9 @@
             </ul>
         </div>
     </div>
-    <div class="col-12 mt-2"
+    <div class="col-12 mt-2 p-2"
         *ngIf="servicesAndProviders && servicesAndProviders.length >0">
         <div class="bus-item-N" *ngFor="let sp of servicesAndProviders">
-            <app-card [source]="'service-view'" [item]="sp" [domain]="businessjson?.serviceSector?.domain"
-                [terminology]='terminologiesjson' [loc]="selectedLocation" (actionPerformed)="actionPerformed($event)">
-            </app-card>
-        </div>
-    </div>
-    <div class="col-12 mt-2 marginalignmentincards"
-        *ngIf="donationServices && donationServices.length >0">
-        <div class="bus-item-N" *ngFor="let sp of donationServices">
             <app-card [source]="'service-view'" [item]="sp" [domain]="businessjson?.serviceSector?.domain"
                 [terminology]='terminologiesjson' [loc]="selectedLocation" (actionPerformed)="actionPerformed($event)">
             </app-card>

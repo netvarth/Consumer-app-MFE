@@ -13,12 +13,12 @@ import { ServiceInfoDisplayModule } from '../../shared/service-info-display/serv
 import { ConsDepartmentsModule } from './departments/cons-departments.module';
 import { OnlineUsersModule } from './online-users/online-users.module';
 import { AppointmentServicesModule } from './services/appointment/appointment-services.module';
-import { DonationServicesModule } from './services/donation/donation-services.module';
 import { CheckinServicesModule } from './services/checkin/checkin-services.module';
 import { BasicProfileModule } from './basic-profile/basic-profile.module';
 import { QuickActionsModule } from './quick-actions/quick-actions.module';
 import { AdvancedProfileModule } from '../../shared/profile/advanced-profile/advanced-profile.module';
 import { TemplateModule } from './template/template.module';
+import { CustomPageModule } from './custom-page/custom-page.module';
 
 const routes: Routes = [
   { path: '', component: RootComponent }
@@ -36,7 +36,6 @@ const routes: Routes = [
     ConsDepartmentsModule,
     OnlineUsersModule,
     AppointmentServicesModule,
-    DonationServicesModule,
     CheckinServicesModule,
     MatDialogModule,
     MatButtonModule,
@@ -47,6 +46,7 @@ const routes: Routes = [
     QuickActionsModule,
     AdvancedProfileModule,
     TemplateModule,
+    CustomPageModule,
     RouterModule.forChild(routes)
   ],
   exports: [RootComponent],

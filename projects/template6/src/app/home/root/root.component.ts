@@ -23,14 +23,11 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
   terminologiesjson: any;
   apptSettings: any;
   accountProfile: any;
-  donationServices: any;
   selectedLocation: any;
   accountConfig: any;
-  loaded_donations = false;
   loaded_orders = false;
   loaded_appointments = false;
   loaded_checkins = false;
-  donationServicesJson: any;
   apptServices: any = [];
   checkinServices: any = [];
   s3CouponList: any = {
@@ -187,7 +184,6 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
     let domain = this.accountProfile.serviceSector.domain;
     this.templateService.setDomain(domain);
     this.accountId = this.accountProfile.id;
-    this.donationServicesJson = this.accountService.getJson(this.account['donationServices']);
     this.provider_label = this.wordProcessor.getTerminologyTerm('provider');
     this.consumer_label = this.wordProcessor.getTerminologyTerm('consumer');
     if (this.accountProfile.cover) {
@@ -213,10 +209,6 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     if (this.templateJson.section1.videos) {
       this.videos = this.templateJson.section1.videos;
-    }
-    if (this.templateJson.section1.donations || this.templateJson.section2.donations || this.templateJson.section3.donations) {
-      console.log("donations?")
-      this.getDonationServices();
     }
     this.selectedIndex = this.templateJson.section1.title;
     this.changeLocation(this.accountService.getActiveLocation());
@@ -475,10 +467,6 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.settings.enabledWaitlist || this.apptSettings.enableAppt) {
       for (let dIndex = 0; dIndex < deptUsers.length; dIndex++) {
         if (!this.showDepartments) {
-          // const userWaitTime = this.waitlisttime_arr.filter(time => time.provider.id === deptUsers[dIndex].id);
-          //   const userApptTime = this.appttime_arr.filter(time => time.provider.id === deptUsers[dIndex].id);
-          // deptUsers[dIndex]['users'][pIndex]['waitingTime'] = userWaitTime[0];
-          // deptUsers[dIndex]['users'][pIndex]['apptTime'] = userApptTime[0];
           this.allUsers.push({ 'type': 'provider', 'item': deptUsers[dIndex] });
         }
         else if (deptUsers[dIndex]['users']) {
@@ -510,17 +498,7 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     this.users_loaded = true;
   }
-  getDonationServices() {
-    this.donationServices = [];
-    console.log("Loaded before:", this.loaded_donations);
-    if (this.donationServicesJson && this.accountProfile.donationFundRaising && this.accountProfile.onlinePresence) {
-      for (let dIndex = 0; dIndex < this.donationServicesJson.length; dIndex++) {
-        this.donationServices.push({ 'type': 'donation', 'item': this.donationServicesJson[dIndex] });
-      }
-      this.loaded_donations = true;
-      console.log("Loaded after:", this.loaded_donations);
-    }
-  }
+ 
   getAppointmentServices(locationId) {
     const _this = this;
     const apptServiceList = [];
@@ -593,18 +571,16 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
       });
   }
   profileActionPerformed(action) {
-    if (action === 'coupons') {
-      // this.openCoupons()
-    } else if (action === 'qrcode') {
-      // this.qrCodegeneraterOnlineID(this.sharedService.getRouteID());
-    } else if (action === 'communicate') {
+   if (action === 'communicate') {
       this.communicateHandler();
     } else if (action === 'about') {
       this.router.navigate([this.sharedService.getRouteID(), 'about']);
     }
   }
   menuSelected(section, action) {
+    console.log("Menu Selected:", section, action);
     this.lStorageService.removeitemfromLocalStorage('action-src');
+    
     if (section && section.type !== 'action') {
       this.selectedIndex = section.title;
       this.lStorageService.setitemonLocalStorage('tabIndex', this.selectedIndex);
@@ -614,14 +590,17 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
           document.querySelector(e1).scrollIntoView({ behavior: 'smooth', block: 'start' });
         }, 100);
       }
-    } else {
+    } else  if(section?.link) {
       let url = section.link;
-      this.router.navigateByUrl(url);
+      this.router.navigateByUrl(this.sharedService.getRouteID() + '/' + url);
+    } else {
+      this.selectedIndex = action;
+      this.lStorageService.setitemonLocalStorage('tabIndex', this.selectedIndex);
     }
     this.cdRef.detectChanges();
   }
   actionPerformed(actionObj) {
-    console.log("Here");
+    console.log("Here:", actionObj);
     if (actionObj.type === 'menu' && actionObj.dynamic) {
       this.pageAction = actionObj;
       this.parentIndex = this.selectedIndex;
@@ -633,7 +612,10 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
     } else if (actionObj.link && actionObj.link.startsWith('http')) {
       window.open(actionObj.link, "_system");
     } else if (actionObj.link) {
-      this.router.navigateByUrl(actionObj.link);
+      let url = this.sharedService.getRouteID() + "/" + actionObj.link;
+      console.log("Action URL:", url);
+      
+      this.router.navigateByUrl(url);
     } else if (actionObj['type'] === 'appt') {
       if (actionObj['action'] === 'view') {
         let queryParam = {
@@ -658,18 +640,6 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
       } else {
         this.checkinClicked(this.selectedLocation, actionObj['item']['item']);
       }
-    } else if (actionObj['type'] === 'donation') {
-      if (actionObj['action'] === 'view') {
-        let queryParam = {
-          back: 1
-        }
-        const navigationExtras: NavigationExtras = {
-          queryParams: queryParam
-        };
-        this.router.navigate([this.sharedService.getRouteID(), 'service', actionObj['service'].id], navigationExtras);
-      } else {
-        this.donationClicked(actionObj['location'].id, new Date(), actionObj['service']);
-      }
     } else if (actionObj['type'] === 'department') {
       const navigationExtras: NavigationExtras = {
         queryParams: {
@@ -686,16 +656,7 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
       this.router.navigate([this.sharedService.getRouteID(), actionObj['userId']], navigationExtras);
     }
   }
-  donationClicked(locid, curdate, service) {
-    const navigationExtras: NavigationExtras = {
-      queryParams: {
-        loc_id: locid,
-        sel_date: curdate,
-        service_id: service.id
-      }
-    };
-    this.router.navigate([this.sharedService.getRouteID(), 'donations', 'new'], navigationExtras);
-  }
+
   appointmentClicked(location, service) {
     let queryParam = {
       loc_id: location.id,
@@ -766,7 +727,7 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
     this.router.navigate([this.sharedService.getRouteID(), 'checkin'], navigationExtras);
   }
   navigate() {
-    this.router.navigate([this.sharedService.getRouteID(), 'template5']);
+    this.router.navigate([this.sharedService.getRouteID()]);
   }
 
 }
