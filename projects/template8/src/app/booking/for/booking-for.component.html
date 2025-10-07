@@ -1,0 +1,22 @@
+<div class="booking-for-parent">
+    <div class="booking-for-child card col-12  p-0"> 
+        <span *ngIf="bookingType ==='reschedule'">&nbsp;</span>    
+        <div class="begin"*ngIf="bookingType!='reschedule'">            
+            <a  class="link edit" (click)="edit('member')"  data-bs-toggle="modal"
+            data-bs-target="#exampleModalCenter">{{'Edit' | translate}}</a>
+        </div>            
+        <div class="user-head">            
+            <span class="symbol symbol-lg-35 symbol-25 ">
+                <span class="symbol-label font-size-h5 font-weight-bold">{{getUserFirstLetter()}}</span>
+            </span>
+            <div class="user">
+                <h5 class="user-name">{{apptDetails_firstName | capitalizeFirst}} {{apptDetails_lastName | capitalizeFirst}}</h5>                
+            </div>
+        </div>        
+        <div class="user-detail">         
+                <p class="phone">{{commObj['comWhatsappCountryCode']}}
+                    {{commObj['comWhatsappNo']}}</p>
+                <p class="email">{{commObj['communicationEmail']}}</p>                            
+        </div>        
+    </div>
+</div>

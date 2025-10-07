@@ -1,0 +1,96 @@
+.serv-head {
+    background: rgba(0, 0, 0, 0.04) !important;
+    padding: 10px 0 3px 10px !important;
+  }
+  .codenumber {
+    display: flex;
+    margin-left: auto;
+    width: 100%;
+  }
+  .codenumber #countryCode,
+  .codenumber #whatsappCountryCode {
+    border-right: none;
+  }
+  .email-border {
+    border: 1px solid #cccc;
+   }
+   .width100 {
+    width: 100%;
+  }
+  .code-field {
+    width: 40px !important;
+  }
+  .input-field {
+    padding: 5px;
+  }
+.email-field {
+    padding: 5px;
+  }
+  .number-caption {
+    margin-right: 10px;
+    margin-top: auto;
+    margin-bottom: auto;
+    width: 40%;
+  }
+  .width-input {
+    width: 40% !important;
+  }
+  .question-header {
+    color: #000 !important;
+    font-weight: 500 !important;
+    font-size: 1rem !important;
+  }
+
+  .contact-section {
+    font-weight: 800;
+  }
+  .text-primary{
+    color: #1e4079 !important;
+}
+.italic {
+  font-style: italic;
+}
+.wtsapaud-icon {
+  margin-left: -9px !important;
+}
+::ng-deep ngx-intl-tel-input .iti {
+  width: 100% !important;
+}
+
+::ng-deep ngx-intl-tel-input input::-webkit-input-placeholder {
+  color: #ddd !important;
+}
+
+::ng-deep ngx-intl-tel-input input:focus {
+  outline: none !important;
+  border-color: #E1E2E3 !important;
+}
+
+::ng-deep ngx-intl-tel-input input {
+  height: 40px !important;
+  width: 100% !important;
+  background: #FFFF !important;
+  border: 1.39032px solid #E1E2E3 !important;
+  border-radius: 5px !important;
+  padding: 15px;
+  font-size: 15px;
+}
+::ng-deep .comm-form ngx-intl-tel-input input.custom:focus {
+  color: #495057 !important;
+  background-color: #fff !important;
+  border-color: #3c8dbc !important;
+  outline: 0 !important;
+  box-shadow: 0 0 0 0 #fff !important;
+}
+::ng-deep .comm-form .sts-msg.error {
+  padding-left: 0 !important;
+  font-weight: 500 !important;
+  font-size: 0.8rem !important;
+  color: red !important;
+}
+.width-100{
+  width: 55%;
+}
+.envelope-stl{
+  margin-top: 8px !important;
+}

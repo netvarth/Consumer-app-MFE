@@ -1,0 +1,38 @@
+<div class="lnk mt-1">
+    <div class="coupon-area d-flex justify-content-between">
+        <div class="coupon-head">
+            <input (change)="couponCheck($event)" type="checkbox" class="ckbx pull-left mgn-rt-5"
+                style="margin: 0px;">{{'Use Coupon Code' | translate}}
+        </div>
+        <div class="coupons-icon" (click)="openCoupons()">
+            <i class="fa fa-tags  mgn-rt-5"></i>{{'Coupons' | translate}}
+        </div>
+    </div>
+    <div class="input-group">
+        <div *ngIf="couponChecked == true" class="mt-4">
+            <div class="input-group-append">
+                <input [ngClass]="{'invalid':!couponValid}" (keydown)="clearCouponErrors()"
+                    placeholder="Enter coupon code" type="text" class="form-control" [(ngModel)]="selectedCoupon">
+                <button id="btnApply" class="btn bt3 btn-default coupon-apply-btn" (click)="applyCoupons()" type="button">Add</button>
+            </div>
+        </div>
+        <div style="color: red;" *ngIf="couponError !== null">{{couponError}}</div>
+    </div>
+    <div class="px-2 pt-2 my-4"
+        *ngIf="couponsList && couponsList.length>0">
+        <div *ngFor="let coupon of couponsList let i=index">
+            <div class="d-flex row coupon-add-msg">
+                <div class="col-md-5 col-sm-7 col-xs-7 col-lg-4 p-0">
+                    {{coupon.couponCode}} </div>
+                <div class="col-md-7 col-sm-5 col-5 col-lg-8 delteTC">
+                    <span><a *ngIf="coupon.instructions" (click)="toggleterms(i)"
+                            class="pointer-cursor lnk read-more-checkin">{{'Read T&C' | translate}} </a></span>
+                    <span><a class="pointer-cursor lnk"><i class="pointer-cursor icon-delete lnk"
+                                (click)="removeJCoupon(i)" [matTooltipClass]="tooltipcls"
+                                [matTooltip]="'Remove Coupon'"></i></a></span>
+                </div>
+            </div>
+            <div class="mt-2 pre-instr" *ngIf="coupon.showme">{{coupon.instructions}}</div>
+        </div>
+    </div>
+</div>

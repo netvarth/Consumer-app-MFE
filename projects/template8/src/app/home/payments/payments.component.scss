@@ -1,0 +1,596 @@
+  .back-btn i {
+    color: #000;
+  }
+
+  .title-gb i {
+    cursor: pointer;
+  }
+
+  .back-btn {
+    font-size: 1.25rem !important;
+  }
+
+  .pull-left {
+    float: left !important;
+  }
+
+  h5 {
+    font-size: 1.25rem;
+    font-weight: 500;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .title-gb {
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+
+  p {
+    line-height: 1.75;
+    font-size: .875rem;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  @media (max-width: 575px) {
+    h5 {
+      font-size: 17.5px;
+    }
+  }
+
+  //new ui style sccc
+  .headerBorder {
+    border-bottom: 1.21389px solid #DADCE0 !important;
+    display: flex;
+    gap: 15px;
+    flex-direction: row !important;
+    padding: 15px !important;
+    align-items: center;
+    box-shadow: 0 1px 1px rgb(0 0 0 / 8%);
+    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+  }
+
+  .clrChangeHeader {
+    color: #464849 !important;
+    cursor: pointer;
+  }
+
+  .accountEditText {
+    color: #5F6368;
+    font-size: 13px;
+    margin-top: 5px;
+  }
+
+  .myAcText {
+    color: rgba(0, 0, 0, 0.87) !important;
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .customCard {
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .05) !important;
+    border-radius: 5px;
+    background: #fff;
+    background-clip: padding-box;
+    border: none !important;
+    width: 100%;
+  }
+
+  .mainFlex {
+    display: flex;
+    margin-top: 15px;
+    gap: 30px;
+    width: 100%;
+  }
+
+  .tabText {
+    font-size: 14px;
+    font-weight: 600;
+    color: #878994;
+    margin-top: 15px;
+    cursor: pointer;
+    font-family: 'Open Sans';
+    font-style: normal;
+    padding: 10px;
+    margin-left: 10px;
+  }
+
+  .tabText:hover {
+    color: #33CCCC;
+    font-weight: bold;
+  }
+
+  .tabImgCustom {
+    height: 30px;
+    width: 30px;
+    border: 1px solid #413F3F;
+    background: #413F3F;
+    padding: 6px;
+    border-radius: 50%;
+  }
+
+  .fullWidth {
+    width: 100%;
+  }
+
+  .fullWidthLinks {
+    width: 25%;
+    background: #EDF1F7;
+
+  }
+
+  .userImg {
+    border: 1px solid #AAACAF;
+    border-radius: 50%;
+    padding: 10px;
+    height: 85px;
+    width: 85px;
+  }
+
+  .newImgUpload {
+    box-shadow: 0.417685px 2.50611px 8.77138px 1.25305px rgb(30 64 121 / 15%) !important;
+    border-radius: 3.75916px !important;
+    border: 0px solid !important;
+    padding: 6px 12px;
+    background: #33CCCC;
+  }
+
+  .flexClassImg {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+  }
+
+  .deleteBtn {
+    box-shadow: 0.417685px 2.50611px 8.77138px 1.25305px rgb(30 64 121 / 15%) !important;
+    border-radius: 3.75916px !important;
+    padding: 6px 12px;
+    background: #FFFFFF;
+    border: 1.03704px solid #AAACAF !important;
+    color: #AAACAF;
+  }
+
+  .btntxt {
+    color: #fff;
+    font-weight: 500 !important;
+    font-size: 15px;
+    font-family: 'Open Sans';
+  }
+
+  .btntxtClr {
+    color: #AAACAF;
+    font-weight: 500 !important;
+    font-size: 15px;
+    font-family: 'Open Sans';
+  }
+
+  .forMFieldInput {
+    border: none !important;
+    color: #403B48 !important;
+  }
+
+  .matFormField {
+    width: 100% !important;
+  }
+
+  .labeltag {
+    font-size: 15px;
+    color: rgba(58, 53, 65, 0.68);
+  }
+
+  .widthCls {
+    width: 100%;
+  }
+
+  .tabTextCstmClr {
+    /* color: #33CCCC;
+      font-weight: bold; */
+    color: #413F3F;
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 700;
+    background: #FFFFFF;
+    padding: 10px;
+    margin-left: 10px
+  }
+
+  .customCardMr {
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .05) !important;
+    border-radius: 5px;
+    background: #fff;
+    background-clip: padding-box;
+    border: none !important;
+    width: 100%;
+  }
+
+  .nameFlex {
+    display: flex;
+    gap: 5px;
+    padding: 15px;
+  }
+
+  .tHEAD {
+    background: #FAFAFA;
+    height: 50px;
+  }
+
+  .tHEAD .tHeadTr {
+    padding: 15px !important;
+    color: #696969;
+    font-weight: 500 !important;
+    font-size: 15px !important;
+    border: none !important;
+  }
+
+  .presName {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .padCls {
+    padding: 5px;
+  }
+
+  .cstmnameText {
+    color: #3D3D3D;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .cstmGenderText {
+    font-size: 13px;
+    font-weight: 500;
+    color: #353638;
+  }
+
+  .btnClrText {
+    /* color: #45C3D3;
+      font-size: 14px; */
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .profileCls {
+    display: flex;
+    gap: 5px;
+    background: #45C3D3;
+    border: 0.818713px solid #45C3D3;
+    border-radius: 46.6667px;
+    align-items: baseline;
+    padding: 5px;
+    cursor: pointer;
+  }
+
+  .deleteCls {
+    background: #ff6a6a !important;
+    display: flex;
+    grid-gap: 5px;
+    gap: 5px;
+    border: 0.818713px solid #ff6a6a !important;
+    border-radius: 46.6667px;
+    align-items: baseline;
+    padding: 5px;
+    cursor: pointer;
+  }
+
+  .btnClrTextRemove {
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .custpadCls {
+    padding: 15px;
+  }
+
+  .table-outer table tbody tr td {
+    // border-bottom: 1px solid #E9E9E9 !important;
+    border-top: none !important;
+  }
+
+  .table-outer table {
+    border: none;
+  }
+
+  .addFamilyMemberBtn {
+    background: #45C3D3;
+    border-radius: 5.0633px;
+    border: none;
+    padding: 12px;
+    color: #fff;
+    cursor: pointer;
+  }
+
+  .btnTextCust {
+    text-align: center;
+    text-transform: uppercase;
+    color: #FFFFFF;
+    font-style: normal;
+    font-weight: 500;
+    margin-left: 10px;
+  }
+
+  .table-outer table tbody tr {
+    box-shadow: 0px 3px 9px rgba(113, 113, 113, 0.15);
+    border-radius: 5px;
+    margin-top: 10px;
+  }
+
+  .table-outer table tbody tr td {
+    padding: 15px;
+  }
+
+  .cstmServiceName {
+    color: #0D2348 !important;
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  .cstmPaymentInfo {
+    font-weight: 500;
+    font-size: 14px;
+    color: #353638;
+  }
+
+  .txnTypeCust {
+    color: #353638;
+    font-weight: 500;
+    font-size: 12px;
+  }
+
+  .paymentGatewayCstm {
+    color: #00D1FF;
+    font-weight: 500;
+    font-size: 12px;
+  }
+
+  .successPayTxt {
+    border-radius: 5.32806px;
+    background: #D2FDED;
+    color: #52BD94;
+    padding: 5px;
+    font-weight: 600;
+    font-size: 12px;
+    text-align: center;
+  }
+
+  .failedPayTxt {
+    background: #FFF4F4;
+    border-radius: 5.32806px;
+    color: #FF4E4E;
+    padding: 5px;
+    font-weight: 600;
+    font-size: 12px;
+    text-align: center;
+  }
+
+  .pendingPayTxt {
+    background: #FEECD7;
+    border-radius: 5.32806px;
+    color: #FF9549;
+    padding: 5px;
+    font-weight: 600;
+    font-size: 12px;
+    text-align: center;
+  }
+
+  //new style small device
+  .flexBasisSmall {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 5px;
+  }
+
+  .labelAns {
+    font-size: 14px;
+    font-weight: 500;
+    color: #232121;
+  }
+
+  .labelHeader {
+    font-size: 16px;
+    font-weight: 600;
+    color: #000000;
+  }
+
+  table {
+    border-collapse: separate;
+    border-spacing: 0 15px;
+  }
+
+  .action {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .pointer {
+    cursor: pointer;
+  }
+
+  .block {
+    display: block !important;
+  }
+
+  .modal-header {
+    border-bottom: none !important;
+  }
+
+  .modal-footer {
+    border-top: none !important;
+  }
+
+  .presciption {
+    font-size: 14px;
+  }
+
+  .imageDoc {
+    width: 265px;
+  }
+
+  .confirmBtn {
+    background: #0D2348 !important;
+    border-radius: 3.25709px;
+    border: none;
+    outline: none;
+    padding: 10px;
+    width: 9rem;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 14px;
+    color: #FFFFFF;
+  }
+
+  .backBtn {
+    background: #E5E8E8;
+    border-radius: 3.25709px;
+    border: none;
+    outline: none;
+    padding: 10px;
+    width: 8rem;
+    text-align: center;
+    text-transform: uppercase;
+    color: #A9A9A9;
+  }
+
+  .card_1 {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .calendarInfo {
+    display: flex;
+    justify-content: space-between;
+    gap: 5px;
+    align-items: center;
+  }
+
+  .matMenuBtn {
+    background: #ffffff !important;
+    border: none !important;
+
+  }
+
+  .width_1 {
+    width: 80%;
+  }
+
+  .width_2 {
+    width: 100%;
+  }
+
+  .modal-header_cust {
+    margin-top: 30px;
+
+  }
+
+  .flex_1 {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 5px;
+  }
+
+  .flex_2 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+  }
+
+  .cust_Pad_1 {
+    padding: 5px;
+  }
+
+  .label_herader {
+    color: #363636;
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .label_herader_2 {
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .modal-title_cust {
+    color: #000000;
+    font-weight: bold;
+    font-size: 20px;
+  }
+
+  .modal-header .close {
+    font-size: 50px;
+  }
+
+  .modal-dialog {
+    max-width: 765px;
+    margin: 1.75rem auto;
+
+  }
+
+  .pointer {
+    cursor: pointer;
+  }
+
+
+  @media (max-width: 768px) {
+    .customCardMr {
+      line-height: 1.5;
+    }
+
+    .successPayTxt {
+      color: #52BD94 !important;
+      padding: 0px !important;
+      border-radius: 0% !important;
+      background: none !important;
+    }
+
+    .failedPayTxt {
+      color: #FF4E4E !important;
+      padding: 0px !important;
+      border-radius: 0% !important;
+      background: none !important;
+    }
+
+    .pendingPayTxt {
+      color: #FF9549 !important;
+      padding: 0px !important;
+      border-radius: 0% !important;
+      background: none !important;
+    }
+
+    .cstmGapGateWay {
+      justify-content: start !important;
+      gap: 30px !important;
+    }
+
+    .ammtFlex {
+      display: flex;
+      gap: 5px;
+    }
+
+    .customCardMr {
+      margin-bottom: 10px !important;
+    }
+  }
+
+  .serviceName {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+  }

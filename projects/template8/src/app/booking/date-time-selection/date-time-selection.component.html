@@ -1,0 +1,236 @@
+<div>
+  <div class="selectDateTimetXt">
+    <div>{{'Select Date & Time' | translate}}</div>
+    <div style="font-size:12px">{{'Select date to see a time line of available slots' | translate}}</div>
+  </div>
+  <div class="col-12 p-0" *ngIf="selectedService">
+    <p-accordion>
+      <p-accordionTab>
+        <ng-template pTemplate="header">
+          <div class="col-12">
+            <!-- <div>
+                    <p class="service-info-info">Service Info</p>
+                </div> -->
+            <div class="user-detail" *ngIf="!selectedUser">
+              <img class="service-img" *ngIf="(selectedService.serviceType !== 'virtualService') && (selectedService.servicegallery && selectedService.servicegallery.length > 0)"
+              [src]="selectedService.servicegallery[0].thumbUrl" alt="">
+              <img class="service-img" *ngIf="(selectedService.serviceType !== 'virtualService')&& !selectedService.servicegallery"
+                src="{{cdnPath}}assets/images/meeting_Artboard.png" alt="">
+              <i class="fa meet-icon"
+                *ngIf="selectedService.serviceType === 'virtualService' && selectedService.virtualCallingModes[0].callingMode === 'GoogleMeet'"></i>
+              <i class="fa zoom-icon"
+                *ngIf="selectedService.serviceType === 'virtualService' && selectedService.virtualCallingModes[0].callingMode === 'Zoom'"></i>
+              <i class="fa fa jvideo-icon jvideo-icon-s jvideo-icon-mgm5"
+                *ngIf="selectedService.serviceType === 'virtualService' && selectedService.virtualCallingModes[0].callingMode === 'VideoCall'"></i>
+              <i class="fa phon-icon"
+                *ngIf="selectedService.serviceType === 'virtualService' && selectedService.virtualCallingModes[0].callingMode === 'Phone'"></i>
+              <i class="fa wtsapaud-icon"
+                *ngIf="selectedService.serviceType === 'virtualService' && selectedService.virtualCallingModes[0].callingMode === 'WhatsApp' && selectedService.virtualServiceType === 'audioService'"></i>
+              <i class="fa wtsapvid-icon"
+                *ngIf="selectedService.serviceType === 'virtualService' && selectedService.virtualCallingModes[0].callingMode === 'WhatsApp' && selectedService.virtualServiceType === 'videoService'"></i>
+              <div class="details">
+                <h5 class="user-head">{{selectedService.name}}</h5>
+                <div *ngIf="datePresent === true">
+                  <p>{{appmtDate | date: newDateFormat}}, {{selectedApptsTime}}</p>
+                </div>
+              </div>
+            </div>
+            <div class="user-detail" *ngIf="selectedUser">
+              <img class="service-img" *ngIf="selectedUser.profilePicture" [src]="selectedUser.profilePicture.url"
+                alt="">
+              <img class="service-img"
+                *ngIf="(!selectedUser.profilePicture) && (selectedService.serviceType !== 'virtualService')"
+                src="{{cdnPath}}assets/images/myjaldee/defultUser.png" alt="">
+              <i class="fa meet-icon"
+                *ngIf="!selectedUser.profilePicture && selectedService.serviceType === 'virtualService' && selectedService.virtualCallingModes[0].callingMode === 'GoogleMeet'"></i>
+              <i class="fa zoom-icon"
+                *ngIf="!selectedUser.profilePicture && selectedService.serviceType === 'virtualService' && selectedService.virtualCallingModes[0].callingMode === 'Zoom'"></i>
+              <i class="fa fa jvideo-icon jvideo-icon-s jvideo-icon-mgm5"
+                *ngIf="!selectedUser.profilePicture && selectedService.serviceType === 'virtualService' && selectedService.virtualCallingModes[0].callingMode === 'VideoCall'"></i>
+              <i class="fa phon-icon"
+                *ngIf="!selectedUser.profilePicture && selectedService.serviceType === 'virtualService' && selectedService.virtualCallingModes[0].callingMode === 'Phone'"></i>
+              <i class="fa wtsapaud-icon"
+                *ngIf="!selectedUser.profilePicture && selectedService.serviceType === 'virtualService' && selectedService.virtualCallingModes[0].callingMode === 'WhatsApp' && selectedService.virtualServiceType === 'audioService'"></i>
+              <i class="fa wtsapvid-icon"
+                *ngIf="!selectedUser.profilePicture && selectedService.serviceType === 'virtualService' && selectedService.virtualCallingModes[0].callingMode === 'WhatsApp' && selectedService.virtualServiceType === 'videoService'"></i>
+              <div class="details">
+                <h5 class="user-head">{{selectedUser.businessName}}</h5>
+                <h4 class="mt-1">{{selectedService.name}}</h4>
+                <div *ngIf="datePresent === true">
+                  <p>{{appmtDate | date: newDateFormat}}, {{selectedApptsTime}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+        <div class="card"
+          *ngIf="selectedService && (HHMM || selectedService.totalAmount || selectedService.isPrePayment)">
+          <p
+            *ngIf="selectedService && selectedService.description" >
+            {{selectedService.description}}
+          </p>
+          <ul class="service-ul flex">
+            <li [ngStyle]="setImagePathStyle('serviceicon-bg')"
+              *ngIf="selectedService && selectedService.serviceDuration && selectedService.serviceDurationEnabled && !is_donation_serv && HHMM">
+              <span class="service-li-title">Duration</span><br /><span class="bold service-li-value">{{HHMM}}</span>
+            </li>
+            <li [ngStyle]="setImagePathStyle('serviceicon-bg')"
+              *ngIf="selectedService && selectedService.totalAmount && selectedService.totalAmount != 0 && selectedService.showPrice">
+              <span class="service-li-title">Service Fee <i class="fa fa-info-circle"
+                  *ngIf="selectedService.paymentDescription"
+                  [matTooltip]="selectedService.paymentDescription"></i></span><br /><span
+                class="bold price rupee-font service-li-value">{{selectedService.totalAmount |
+                currency:'&#8377;'}}</span>
+            </li>
+            <li [ngStyle]="setImagePathStyle('serviceicon-bg')" *ngIf="selectedService && selectedService.isPrePayment && selectedService.minPrePaymentAmount">
+              <span class="service-li-title">Amount Required Now <i class="fa fa-info-circle"
+                  *ngIf="selectedService.paymentDescription"
+                  [matTooltip]="selectedService.paymentDescription"></i></span><br />
+              <span class="bold price rupee-font service-li-value"
+                *ngIf="selectedService && selectedService.prePaymentType === 'percentage'">{{selectedService.minPrePaymentAmount}}{{percentage_symbol}}
+                of Service Price</span>
+              <span class="bold price rupee-font service-li-value"
+                *ngIf="selectedService && selectedService.prePaymentType === 'fixed'">{{selectedService.minPrePaymentAmount
+                | currency:'&#8377;'}}</span>
+            </li>
+          </ul>
+        </div>
+        <div class="">
+          <div class="callingmode ms-2" *ngIf="selectedService.serviceType==='virtualService' && showVirtualInfo">
+            <div class="mb-2 mt-1">
+              <div class="" *ngFor="let mode of selectedService.virtualCallingModes;let i = index">
+                <div style="visibility: hidden;">
+                  {{virtualModes[mode.callingMode]}}
+                </div>
+                <div class="cal-mod-instrct pre-check-title color-grey" *ngIf="mode.callingMode">
+                  {{mode.instructions}}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="prenotes mb-2" *ngIf="selectedService.preInfoEnabled">
+            <div class="preinfo-title">
+              {{selectedService.preInfoTitle}}
+            </div>
+            <div [innerHTML] = "selectedService.preInfoText">
+            </div>
+          </div>
+          
+        </div>
+      </p-accordionTab>
+    </p-accordion>
+  </div>
+  <div class="clearfix"></div>
+  <div class="mainFlexdate mt-4">
+    <div class="dateFlex">
+      <div class="selectedTimne" *ngIf="bookingDate">
+        {{bookingDate | date: newDateFormat}}<ng-container *ngIf="selectedApptsTime">,</ng-container>
+      </div>
+      <div class="selectedTimne" *ngIf="selectedApptsTime">
+        {{selectedApptsTime}}
+      </div>
+    </div>
+    <div class="availableTimeTxt"
+      *ngIf="selectedService && !selectedService.date && selectedService.bType==='Appointment'">{{'Available slots' |
+      translate}}
+    </div>
+    <div class="availableTimeTxt" *ngIf="selectedService.bType==='Waitlist'">{{'Available queues' | translate}}
+    </div>
+  </div>
+</div>
+<div class="mainflex" *ngIf="selectedService.bType==='Appointment'">
+  <div class="datePicker" *ngIf="selectedService && !selectedService.date && !selectedService.noDateTime  && isAvailableDatesLoaded">
+    <app-date-pagination (date_change_event)="bookingDateChanged($event)" [selected_date]="bookingDate"
+      [availableDates]="availableDates" [paymentRequestId]="paymentRequestId" (month_change_event)="bookingMonthChanged($event)">
+    </app-date-pagination>
+  </div>
+  <div class="datePicker"
+    *ngIf="selectedService && selectedService.date && !selectedService.noDateTime && this.selectedService && this.selectedService['serviceBookingType'] && this.selectedService['serviceBookingType']==='request' && isAvailableDatesLoaded">
+    <app-date-pagination [width]="selectedService.date" (date_change_event)="bookingDateChanged($event)"
+      [selected_date]="bookingDate" [paymentRequestId]="paymentRequestId" [availableDates]="availableDates" (month_change_event)="bookingMonthChanged($event)">
+    </app-date-pagination>
+  </div>
+  <div class="w-100 p-2 timeSlotCstm"
+    *ngIf="allSlots && allSlots.length > 0 && selectedService && selectedService['multipleSelection'] && selectedService['serviceBookingType'] !=='request'">
+    <div class="timeSlotCstm">
+      <div>{{'Available slots' | translate}}</div>
+    </div>
+  </div>
+  <div class="w-100 p-2 timeSlotCstm"
+    *ngIf="allSlots && allSlots.length > 0 && selectedService && selectedService['multipleSelection'] && selectedService['serviceBookingType'] ==='request' && selectedService['dateTime']===true">
+    <div class="timeSlotCstm">
+      <div>{{'Available slots' | translate}}</div>
+    </div>
+  </div>
+  <ng-container *ngIf="selectedService && !selectedService.date && !selectedService.noDateTime">
+    <div class="w-100 p-2 slotPicker" *ngIf="allSlots && allSlots.length > 0 && selectedService['multipleSelection']">
+      <app-slot-picker (slotSelected)="slotSelected($event)" [selectedSlot]="selectedSlots" [slots]="allSlots"
+        [mode]="'appt'" [multiple]="selectedService['multipleSelection']"
+        [criteria]="selectedService.showOnlyAvailableSlots">
+      </app-slot-picker>
+    </div>
+  </ng-container>
+
+  <div class="w-100 p-2 slotdiv red mt-3 text-center noAvailable slotPicker"
+    *ngIf="allSlots && allSlots.length <= 0 && slotLoaded">
+    <div class="dateError">{{'No availability on selected date. Please choose another date.' | translate}}</div>
+  </div>
+</div>
+<div class="mainflex" *ngIf="selectedService.bType==='Waitlist'">
+  <div class="datePicker" *ngIf="selectedService"> 
+    <app-date-pagination (month_change_event)="bookingMonthChanged($event)" (date_change_event)="bookingDateChanged($event)" [paymentRequestId]="paymentRequestId" [selected_date]="bookingDate"
+      [availableDates]="availableDates" >
+    </app-date-pagination>
+  </div>
+  <div class="w-100 p-2 timeSlotCstm" *ngIf="queuejson && queuejson.length > 0">
+    <div class="timeSlotCstm">
+      <div>{{'Available queues' | translate}}</div>
+    </div>
+  </div>
+  <div class="w-100 p-2 slotPicker" *ngIf="queuejson && queuejson.length > 0">
+    <app-slot-picker (slotSelected)="qSelected($event)" [slots]="queuejson" [selectedSlot]="queuejson[0]">
+    </app-slot-picker>
+  </div>
+  <div class="w-100 p-2 slotdiv red mt-3 text-center noAvailable"
+    *ngIf="queuejson && queuejson.length <= 0 && queuesLoaded">
+    <div class="dateError">
+      {{'No availability on selected date. Please choose another date.' | translate}}
+    </div>
+  </div>
+</div>
+<div class="w-100 p-2 mt-2 mb-4" *ngIf="selectedService.bType==='Waitlist'">
+  <div class="mb-2" *ngIf="wt_personaahead && personsAhead>=0 && queuejson && queuejson.length > 0">
+    <div class="waitLine">{{'Waiting in Line' | translate}}</div>
+  </div>
+  <div class="clearfix"></div>
+  <div class="w-100 p-2 " *ngIf="wt_personaahead && queuejson && queuejson.length > 0">
+    <div class="peronDet5ails">
+      <span *ngIf="personsAhead <= 0">{{'0 People' | translate}}</span>
+      <span *ngIf="personsAhead == 1">1<span>{{'Person' |
+          translate}}</span></span>
+      <span *ngIf="personsAhead > 1">{{personsAhead}}<span>{{'People' |
+          translate}}</span></span>
+      <span *ngIf="calc_mode=='NoCalc'">
+        <span *ngIf="!isFutureDate">
+        </span>
+      </span>
+      <span *ngIf="serviceTime=='' && calc_mode!='NoCalc'">
+        <span class="color-grey">\</span>
+        <span>{{waitingTime}}</span>
+      </span>
+      <span *ngIf="serviceTime!='' && calc_mode!='NoCalc'">
+        <ng-container *ngIf="isFutureDate">
+        </ng-container>
+        <ng-container *ngIf="!isFutureDate">
+          <span><span class="color-grey"> \
+            </span>{{serviceTime}}</span>
+        </ng-container>
+      </span>
+    </div>
+  </div>
+</div>
+<div class="mt-4 dualBtn">
+  <button type="button" id="btnNext" class="confirmBtn" (click)="goToStep()" [class.disabled]="allSlots && allSlots.length === 0">
+    {{'Next' | translate}}
+  </button>
+</div>

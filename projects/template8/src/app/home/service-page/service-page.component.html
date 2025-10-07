@@ -1,0 +1,82 @@
+<div class="card p-0 bus-page service-landing" >
+    <div class="card shadow d-flex flex-row header p-2">
+        <div class="my-auto" *ngIf="back">
+            <a class="pointer-cursor" (click)="goBack()"><i class="fa fa-arrow-left"></i>&emsp;</a>
+        </div>
+    </div>
+    <div class="col-12 mt-2 p-0">
+        <app-basic-profile-new (actionPerformed)="profileActionPerformed($event)" [profile]="basicProfile"
+            [selectedLocation]="selectedLocation" [extras]="extras"></app-basic-profile-new>
+    </div>
+    <div class="col-12 mt-2" *ngIf="serviceDetails">
+        <div class="col-12 card">
+            <div class="col-12 p-0">
+                <div class="d-flex p-0 card-outer-cont align-items-center">
+                    <div class="p-0 card-inner-img-cont">
+                        <div class="img-circle"
+                            *ngIf="serviceDetails.servicegallery && serviceDetails.servicegallery.length > 0"
+                            (click)="openGallery(serviceGalleryPopup[0])">
+                            <img class="img-responsive" [src]="serviceDetails.servicegallery[0].thumbUrl" alt="">
+                        </div>
+                        <div class="img-circle"
+                            *ngIf="!serviceDetails.servicegallery || serviceDetails.servicegallery.length == 0">
+                            <i class="fa phon-icon"
+                                *ngIf="serviceDetails.virtualCallingModes && serviceDetails.virtualCallingModes[0].callingMode === 'Phone'"></i>
+                            <i class="fa meet-icon" style="background: #1E4079 !important;"
+                                *ngIf="serviceDetails.virtualCallingModes && serviceDetails.virtualCallingModes[0].callingMode === 'GoogleMeet'"></i>
+                            <i class="fa zoom-icon"
+                                *ngIf="serviceDetails.virtualCallingModes && serviceDetails.virtualCallingModes[0].callingMode === 'Zoom'"></i>
+                            <i class="fa wtsapaud-icon" style="background: #1E4079 !important;"
+                                *ngIf="serviceDetails.virtualCallingModes && serviceDetails.virtualCallingModes[0].callingMode === 'WhatsApp' && serviceDetails.virtualServiceType === 'audioService'"></i>
+                            <i class="fa wtsapvid-icon" style="background: #1E4079 !important;"
+                                *ngIf="serviceDetails.virtualCallingModes && serviceDetails.virtualCallingModes[0].callingMode === 'WhatsApp' && serviceDetails.virtualServiceType === 'videoService'"></i>
+                            <i class="fa jaldeevideo-icon"
+                                *ngIf="serviceDetails.virtualCallingModes  && serviceDetails.virtualCallingModes[0].callingMode === 'VideoCall'"></i>
+                        </div>
+                    </div>
+                    <div class="ms-2 pointer-cursor service-head-cont ">
+                        <h5 class="line-clamp-ln2 mb-1 service-name">{{serviceDetails.name}}</h5>
+                        <p class="user-name" *ngIf="userName">{{userName}}</p>
+                        <p class="description" *ngIf="serviceDetails && serviceDetails.description">
+                            <span>{{serviceDetails.description}}</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12"
+        *ngIf="serviceDetails && (HHMM || serviceDetails.totalAmount || serviceDetails.isPrePayment)">
+        <div class="col-12">
+            <ul class="service-ul flex">
+                <li
+                    *ngIf="serviceDetails && serviceDetails.serviceDuration && serviceDetails.serviceDurationEnabled && !is_donation_serv && HHMM">
+                    <span class="service-li-title">Duration</span><br /><span class="bold">{{HHMM}}</span>
+                </li>
+                <li
+                    *ngIf="serviceDetails && serviceDetails.totalAmount && serviceDetails.totalAmount != 0 && serviceDetails.showPrice">
+                    <span class="service-li-title">Service Fee<i class="fa fa-info-circle"
+                            *ngIf="serviceDetails.paymentDescription"
+                            [matTooltip]="serviceDetails.paymentDescription"></i></span><br /><span
+                        class="bold price rupee-font">{{serviceDetails.totalAmount |
+                        currency:'&#8377;'}}</span>
+                </li>
+                <li *ngIf="serviceDetails && serviceDetails.isPrePayment && serviceDetails.minPrePaymentAmount">
+                    <span class="service-li-title">Amount Required Now <i class="fa fa-info-circle"
+                            *ngIf="serviceDetails.paymentDescription"
+                            [matTooltip]="serviceDetails.paymentDescription"></i></span><br /><span
+                        class="bold price rupee-font">{{serviceDetails.minPrePaymentAmount |
+                        currency:'&#8377;'}}</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="col-12 mt-2 p-2"
+        *ngIf="servicesAndProviders && servicesAndProviders.length >0">
+        <div class="bus-item-N" *ngFor="let sp of servicesAndProviders">
+            <app-card [source]="'service-view'" [item]="sp" [domain]="businessjson?.serviceSector?.domain"
+                [terminology]='terminologiesjson' [loc]="selectedLocation" (actionPerformed)="actionPerformed($event)">
+            </app-card>
+        </div>
+    </div>
+</div>

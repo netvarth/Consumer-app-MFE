@@ -1,0 +1,478 @@
+.headerBorder {
+      border-bottom: 1.21389px solid #DADCE0 !important;
+      display: flex;
+      gap: 15px;
+      flex-direction: row !important;
+      padding: 15px !important;
+      align-items: center;
+      box-shadow: 0 1px 1px rgb(0 0 0 / 8%);
+      transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+  }
+
+  .clrChangeHeader {
+      color: #464849 !important;
+      cursor: pointer;
+  }
+
+  .myAcText {
+      color: rgba(0, 0, 0, 0.87) !important;
+      font-size: 18px;
+      font-weight: bold;
+  }
+
+  .accountEditText {
+      color: #5F6368;
+      font-size: 13px;
+      margin-top: 5px;
+  }
+
+
+  .customCard {
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, .05) !important;
+      border-radius: 5px;
+      background: #fff;
+      background-clip: padding-box;
+      border: none !important;
+      width: 100%;
+  }
+
+.mainFlexOrder {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    background: #FFFFFF;
+    border: 1px solid #E5E5E5;
+    box-shadow: 0px 4px 11px rgb(0 0 0 / 12%);
+    border-radius: 5px;
+    padding: 5px;
+}
+
+@media (max-width:768px) {
+    .mainFlexOrder {
+        flex-direction: column !important;
+    }
+}
+
+.orderCstmWidth {
+    width: 100%;
+}
+
+.orderImgInfoSmall {
+    background: #F6F6F6;
+    border: 1px solid #E5E5E5;
+    width: 7rem;
+    height: 6.8rem;
+}
+
+.flexItemViewBtnSmall {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.viewBtnSmall {
+    width: 8rem;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+
+.orderImgInfo {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    align-items: flex-start;
+    background: #F6F6F6;
+    border: 1px solid #E5E5E5;
+    width: 7.5rem !important;
+    height: 7rem !important;
+}
+
+.orderProvidernameSmall {
+    color: #000000;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.date_TimeOrderInfoSmall {
+    margin-top: 2px;
+    width: 13rem;
+}
+
+.orderIdInfoSmall {
+    display: flex;
+    align-items: center;
+    grid-gap: 38px;
+    gap: 38px;
+}
+
+.addressOrderSmall {
+    color: #9F9F9F;
+    font-size: 13px;
+    font-weight: 400;
+}
+
+.orderImgInfoSmallTemp {
+    display: flex;
+    grid-gap: 10px;
+    gap: 10px;
+    align-items: flex-start;
+    height: 50%;
+    width: 100%;
+}
+
+.emptyOrderImg {
+    // height: 25%;
+    width: 75%;
+    object-fit: cover;
+}
+
+.orderImg {
+    height: 6rem;
+    width: 6.2rem;
+}
+
+.orderFlexMenu {
+    display: flex;
+    padding: 5px;
+    gap: 10px;
+    background: #FFFFFF;
+    border-bottom: 1px solid #E5E5E5
+}
+
+.cancelledOrder {
+    color: #EF6359;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.orderConfirm {
+    color: #08B675;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.OrderProviderInfo {
+    margin-top: 5px;
+}
+
+.orderProvidername {
+    color: #000000;
+    font-weight: 600;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.addressInfoOrder {
+    margin-top: 5px;
+}
+
+.addressOrder {
+    color: #9F9F9F;
+    font-size: 15px;
+    font-weight: 400;
+}
+
+.orderDateTime {
+    color: #232121;
+    font-weight: 400;
+    font-size: 13px;
+}
+
+.dateTimeTxt {
+    color: #999999;
+    font-size: 13px;
+    font-weight: 400;
+}
+
+.date_TimeOrderInfo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.orderIdInfo {
+    display: flex;
+    align-items: center;
+    gap: 38px;
+    margin-top: 5px;
+}
+
+.orderId {
+    color: #999999;
+    font-size: 13px;
+    font-weight: 400;
+}
+
+.orderNumber {
+    color: #232121;
+    font-weight: 400;
+    font-size: 13px;
+}
+
+.statusNameBtnInfo {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 10px;
+}
+
+.viewBtn {
+    font-family: "Open Sans";
+    font-style: normal;
+    font-weight: 500;
+    outline: none;
+    border: 1px solid #0D2348;
+    background: #0D2348;
+    padding: 6px;
+    cursor: pointer;
+    border-radius: 5px;
+    color: #fff;
+    margin-right: 15px;
+    margin-top: -5px;
+    width: 7rem;
+    font-size: 14px;
+}
+
+.orderItem {
+    display: flex;
+    gap: 5px;
+    color: rgba(116, 115, 115, 0.75);
+    font-size: 15px;
+    font-weight: 400;
+}
+
+.cstmGapQty {
+    gap: 67px;
+}
+
+.cstmIconClr {
+    // color: rgba(116, 115, 115, 0.75) !important;
+    color: rgb(211, 9, 9) !important;
+}
+
+.itemList {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+}
+
+.cstmListInfo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.amtPaid {
+    color: #0D2348 !important;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.paidBtnInfo {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-top: 5px;
+}
+
+.store_pick_ico {
+    position: relative;
+    width: 96px;
+    height: 98px;
+    margin-top: 5px;
+    border: 2px solid #f1b616ba;
+    border-radius: 10%;
+    padding: 5px;
+    margin-left: 4px;
+    background: #fcebbea1;
+}
+
+.hom_deliver_ico {
+    position: relative;
+    width: 96px;
+    height: 98px;
+    margin-top: 5px;
+    border: 2px solid #f1b616ba;
+    border-radius: 10%;
+    padding: 5px;
+    margin-left: 4px;
+    background: #fcebbea1;
+
+}
+
+.electronic_deliver_icon {
+    position: relative;
+    width: 96px;
+    height: 98px;
+    margin-top: 5px;
+    border: 2px solid #f1b616ba;
+    border-radius: 10%;
+    padding: 5px;
+    margin-left: 4px;
+    background: #fcebbea1;
+}
+
+.payBtn {
+    background: #F06D63 !important;
+    border: 1.43669px solid #F06D63 !important;
+    border-radius: 4.75758px !important;
+    width: 7rem !important;
+    padding: 5px !important;
+    color: #ffffff !important;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.flexBasis {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.cstmWidth {
+    width: 100% !important;
+}
+
+.mainFlexOrderSmall {
+    margin-bottom: 10px;
+    background: #FFFFFF;
+    border: 1px solid #E5E5E5;
+    box-shadow: 0px 4px 11px rgb(0 0 0 / 12%);
+    border-radius: 5px;
+}
+
+.store_pick_icosmall {
+    position: relative;
+    width: 88px;
+    height: 85px;
+    margin-top: 5px;
+    border: 2px solid #f1b616ba;
+    border-radius: 10%;
+    padding: 5px;
+    margin-left: 4px;
+    background: #fcebbea1;
+}
+
+.hom_deliver_icoSmall {
+    position: relative;
+    margin-top: 5px;
+    border: 2px solid #f1b616ba;
+    border-radius: 10%;
+    padding: 5px;
+    margin-left: 4px;
+    background: #fcebbea1;
+    width: 88px;
+    height: 85px;
+}
+
+.electronic_deliver_iconSmall {
+    position: relative;
+    width: 88px;
+    height: 85px;
+    margin-top: 5px;
+    border: 2px solid #f1b616ba;
+    border-radius: 10%;
+    padding: 5px;
+    margin-left: 4px;
+    background: #fcebbea1;
+}
+
+.itemListsmall {
+    padding: 10px;
+    display: block;
+
+}
+
+.orderItemSmall {
+    display: flex;
+    grid-gap: 5px;
+    gap: 5px;
+    color: rgba(116, 115, 115, 0.75);
+    font-size: 13px;
+    font-weight: 400;
+}
+
+.payBTnOrder {
+    background: #F06D63 !important;
+    border-radius: 2.55033px !important;
+    padding: 6px;
+    border: none !important;
+    cursor: pointer;
+}
+
+.payBTnOrderReceipt {
+    width: 8rem;
+    margin-right: 10px;
+    margin-top: 10px;
+    font-family: "Open Sans";
+    font-style: normal;
+    font-weight: 500;
+    outline: none;
+    border: 1px solid #0D2348;
+    background: #0D2348;
+    padding: 6px;
+    cursor: pointer;
+    border-radius: 5px;
+    color: #fff;
+    margin-left: 0rem;
+    width: 8rem;
+}
+
+.amtPaidSmall {
+    color: #0D2348 !important;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+@media (max-width: 768px) {
+    .emptyOrderImg {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+    }
+
+    .amtPaidSmall {
+        font-weight: 500;
+        margin-top: 5px;
+    }
+}
+
+.grid-card .btns {
+    color: #fff;
+}
+
+.btns {
+    width: 48%;
+    font-size: 0.75rem;
+}
+
+.stats-head-card-title {
+    color: #272D37;
+    font-size: 16.07px;
+    font-weight: 600;
+    word-wrap: break-word;
+}
+
+.head-title {
+    padding: 5px 10px 0 10px;
+    font-weight: 600;
+}
+
+.show_more {
+    cursor: pointer !important;
+    color: #171ffc !important;
+    font-weight: 600 !important;
+    font-size: 12px !important
+}
+// .panel {
+//     margin-bottom: 20px;
+//     background-color: #fff;
+//     border: 1px solid #ddd !important;
+//     border-radius: 4px;
+//     box-shadow: 0 1px 1px #0000000d;
+// }
