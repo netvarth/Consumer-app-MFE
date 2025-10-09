@@ -1,0 +1,20 @@
+.pl-15 {
+    padding-left: 10px;
+  }
+  .book-service .d-flex {
+    justify-content: space-between;
+    font-size: 0.8rem !important;
+  }
+  .book-service .rupee-font{
+    font-weight: 600;
+  }
+  .dateError {
+    font-weight: 600;
+    color: #ff6a6a !important;
+    font-family: "Open Sans";
+    font-style: normal;
+    font-weight: 600 !important;
+  }
+  .customTxtpaymentDetails, small {
+    font-size: 0.8rem;
+  }

@@ -1,0 +1,5 @@
+<div class="bus-item-N" *ngFor="let department of departments">
+    <app-card [theme]="" [item]="department" [terminology]='terminologiesjson' [loc]="selectedLocation"
+        (actionPerformed)="cardClicked($event)" [domain]="accountProfile?.serviceSector?.domain" [cardType]="cardType">
+    </app-card>
+</div>

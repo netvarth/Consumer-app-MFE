@@ -1,0 +1,42 @@
+<div>
+    <div>
+        <div class="service-icon serviceAlign">
+            <img class="cstmServiceIconServiceInfo" *ngIf="user && !user['profilePicture']"
+                src="{{cdnPath}}assets/images/myjaldee/defultUser.png" />
+            <img class="cstmServiceIconServiceInfo" *ngIf="user && user['profilePicture'] && user['profilePicture']['url']"
+                src="{{user['profilePicture']['url']}}" />
+        </div>
+        <div *ngIf="user['businessName']" class="userName">
+            <div>{{user['businessName']}}</div>
+        </div>
+        <div *ngIf="user && user['businessUserName']" class="userName cstmheight doctorName">
+            <div>{{user['businessUserName']}}</div>
+        </div>
+        <div *ngIf="user && user['specialization']" class="specialization">
+            <div>{{user['specialization']}}</div>
+        </div>
+        <div *ngIf="user && user['businessDesc']" class="specialization">
+            <div>{{user['businessDesc']}}</div>
+        </div>
+        <div *ngFor="let email of user['emails']" class="specialization">
+            <div>{{email['instance']}}</div>
+        </div>
+        <div *ngIf="user && user['qualifications']" class="specialization">
+            {{user['qualifications']}}
+        </div>
+    </div>
+    <div class="serviceFlex">
+        <div class="col-md-12 col-12 col-sm-12 col-lg-12 card-timings-cont" >
+            <div class="col-sm-6 col-6 col-md-6 col-lg-6 p-0"
+                *ngIf="user.apptTime && user.apptTime.caption && user.apptTime.availableSchedule.availableDate">
+                <div class="p-0 card-head-grey">{{user.apptTime.caption | translate}}</div>
+                <h6 class="p-0">{{user.apptTime.date}}</h6>
+            </div>
+            <div class="col-sm-6 col-6 col-md-6 col-lg-6 p-0"
+                *ngIf="!user.apptTime && user.waitingTime && user.waitingTime.caption">
+                <div class="p-0 card-head-grey">{{user.waitingTime.caption | translate}}</div>
+                <h6 class="p-0">{{user.waitingTime.date}}</h6>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,29 @@
+
+    <div class="modal-dialog refundpol" role="document">
+        <div class="modal-content">
+            <div class="modal-body pt-8 pb-0 refund_size">
+                <span>Note:</span> Jaldee is not responsible for the
+                transactions between {{customer_label | capitalizeFirst}} and {{provider_label | capitalizeFirst}}.
+                <ul>
+                    <li>{{customer_label | capitalizeFirst}}s can cancel the appointment anytime</li>
+                    <li>If the {{customer_label}} cancels the appointment, 3% will
+                        be
+                        deducted from the amount(which includes Jaldee
+                        service charges and Online Gateway fees).</li>
+                    <li>Refund will be received directly to the
+                        {{customer_label}}'s
+                        bank account after he/she cancels the future
+                        appointments.</li>
+                    <li>If the appointment is cancelled on the date of
+                        appointment,
+                        refund will not be processed automatically(i.e
+                        {{customer_label | capitalizeFirst}} must inform the {{provider_label}} to initiate
+                        the
+                        refund)</li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button id="btn_close" type="button" class="btn btn-light-primary font-weight-bold" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>

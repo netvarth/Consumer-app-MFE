@@ -1,0 +1,289 @@
+<section class="cons-inbox no-padding-small" *ngIf="!showservice">
+  <div class="container consumer-dashhome p-0 no-padding-small" *ngIf="!type && source!='proLead'">
+    <div class="card title-gb rounded-0" *ngIf="uuid">
+      <h5 class="mgn-up-10 bold">{{questionnaire_heading | capitalizeFirst}} <a class="pull-left mgn-rt-20 back-btn"
+          (click)="goBack()"><i class="fa fa-arrow-left"></i></a></h5>
+    </div>
+  </div>
+  <app-common-innerloading-spinner *ngIf="loading"></app-common-innerloading-spinner>
+  <div class="d-flex flex-column-fluid pull-right mgn-rt-10 mgn-bt-20"
+    *ngIf="type !== 'qnrLinkProvider' && !buttonDisable && waitlistStatus">
+    <button class="normal-btn edit" mat-flat-button (click)="editQnr()">Edit</button>
+  </div>
+  <div class="d-flex flex-column-fluid width-100" [class.qnrDisableState]="disableInput()"
+    [class.p-0]="uuid && (source === 'consCheckin' || source === 'consAppt' || source === 'consOrder' || source === 'paper' || source === 'consDonationDetails' || source === 'ivr')">
+    <div class="col-xl-12 force_center" [class.p-0]="uuid" [class.no-padding-small]="source && source=='ivr'">
+      <div class="">
+        <div class="qnrsec" *ngFor="let qnr of groupedQnr | keyvalue: asIsOrder"
+          [class.section-shadow]="getSectionCount() > 1" [class.no-padding-small]="source && source=='ivr'">
+          <div class="form-group card mgn-0" *ngFor="let question of qnr.value">
+            <label class="col-12 quest">{{getQuestion(question).label}}
+              <i class="fa fa-plus-circle pull-right" aria-hidden="true"
+                [class.addicon]="!buttonDisable && !disableInput()"
+                *ngIf="getQuestion(question).fieldDataType === 'dataGrid' && !showDataGrid[getQuestion(question).labelName]"
+                (click)="!buttonDisable && !disableInput() && showDataGridAddSection(getQuestion(question), true)"></i>
+              <div class="pro-only" *ngIf="showProviderText(getQuestion(question))">For Providers</div>
+              <span class="red" *ngIf="getQuestion(question).mandatory">*</span>
+              <div class="form-level-settings" *ngIf="getQuestion(question).hint"
+                [innerHTML]="getQuestion(question).hint | safeHtml">
+              </div>
+            </label>
+            <!-- for file upload -->
+            <div class="col-12" *ngIf="getQuestion(question).fieldDataType === 'fileUpload'">
+              <mat-select multiple #deptsel [disabled]="buttonDisable || disableInput()"
+                *ngIf="getQuestion(question).filePropertie.maxNoOfFile > 1 && getQuestion(question).filePropertie.minNoOfFile !== getQuestion(question).filePropertie.maxNoOfFile"
+                [(ngModel)]="uploadFilesTemp[getQuestion(question).labelName]" class="select-box" placeholder="Select">
+                <mat-option *ngFor="let document of getQuestion(question).filePropertie.allowedDocuments"
+                  [value]="document" (click)="changeImageSelected(getQuestion(question), document)">
+                  {{document}}</mat-option>
+              </mat-select>
+              <div class="col-lg-12 col-12 col-md-12 col-sm-12 p-0 mgn-up-20"
+                *ngIf="getDocuments(getQuestion(question)) && getDocuments(getQuestion(question)).length > 0">
+                <div class="dropzone dropzone-default dropzone-primary dz-clickable"
+                  [class.single-file]="getQuestion(question).filePropertie.allowedDocuments.length==1"
+                  style="cursor: auto;">
+                  <ng-container *ngFor="let doc of getDocuments(getQuestion(question))">
+                    <div class="dz-preview dz-processing dz-image-preview dz-error dz-complete"
+                      *ngIf="getImg(getQuestion(question), doc)">
+                      <div class="docname" *ngIf="getQuestion(question).filePropertie.allowedDocuments.length > 1">
+                        {{doc}}</div>
+                      <div class="dzimage pointer-cursor" (click)="openAttachmentGallery(getQuestion(question), doc)">
+                        <img alt="" class="img_fit" [src]="getImg(getQuestion(question), doc)">
+                      </div>
+                      <input [disabled]="buttonDisable || disableInput()" (blur)="onSubmit('inputChange');"
+                        [(ngModel)]="comments[getQuestion(question).labelName + '=' + doc]">
+                      <div class="gal_action" *ngIf="!buttonDisable && !disableInput() && mode!=='read'"
+                        (click)="changeImageSelected(getQuestion(question), doc)">
+                        <i class="fa fa-times-circle" aria-hidden="true"></i>
+                      </div>
+                    </div>
+                    <div class="dz-preview dz-processing dz-image-preview dz-error dz-complete"
+                      (click)="logofile1.click()" *ngIf="!getImg(getQuestion(question), doc)">
+                      <div class="docname" *ngIf="getQuestion(question).filePropertie.allowedDocuments.length > 1">
+                        {{doc}}</div>
+                      <div class="dz-image pointer-cursor">
+                      </div>
+                      <input #logofile1 type="file" accept="/*;capture=camera" style="display:none;"
+                        [disabled]="buttonDisable || disableInput()"
+                        (change)="filesSelected($event, getQuestion(question), doc)">
+                      <div class="dz-error-mark">
+                        <a class="btn btn-icon btn-light-success btn-circle mr-2"><i
+                            class="text-dark-50 flaticon-upload"></i></a>
+                      </div>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+              <div class="mt-2 text-danger" *ngIf="apiError[getQuestion(question).labelName]">
+                {{apiError[getQuestion(question).labelName]}}</div>
+            </div>
+            <!-- for checkbox -->
+            <div class="col-12"
+              *ngIf="getQuestion(question).fieldDataType === 'list' && getQuestion(question).listPropertie.maxAnswers > 1">
+              <div class="checkbox-list">
+                <label class="checkbox" *ngFor="let value of getQuestion(question).labelValues">
+                  <input type="checkbox" [checked]="isChecked(value, getQuestion(question))"
+                    (change)="listChange($event, value, getQuestion(question))"
+                    [disabled]="buttonDisable || disableInput()">
+                  <span></span>
+                  {{value}}
+                </label>
+              </div>
+              <div class="mt-2 text-danger" *ngIf="apiError[getQuestion(question).labelName]">
+                {{apiError[getQuestion(question).labelName]}}</div>
+            </div>
+            <!-- for radio -->
+            <div class="col-12"
+              *ngIf="getQuestion(question).fieldDataType === 'list' && getQuestion(question).listPropertie.maxAnswers === 1">
+              <div class="radio-list">
+                <label class="radio" *ngFor="let value of getQuestion(question).labelValues">
+                  <input type="radio" [disabled]="buttonDisable || disableInput()"
+                    [checked]="isChecked(value, getQuestion(question))"
+                    (change)="listChange($event, value, getQuestion(question))">
+                  <span></span>
+                  {{value}}
+                </label>
+              </div>
+              <div class="mt-2 text-danger" *ngIf="apiError[getQuestion(question).labelName]">
+                {{apiError[getQuestion(question).labelName]}}</div>
+            </div>
+            <!-- for toggel boolean -->
+            <div class="col-12" *ngIf="getQuestion(question).fieldDataType === 'bool'">
+              <div class="radio-list">
+                <label class="radio" *ngFor="let value of getQuestion(question).labelValues">
+                  <input type="radio" [disabled]="buttonDisable || disableInput()"
+                    [checked]="isBooleanChecked(value, getQuestion(question))"
+                    (change)="booleanChange($event, value, getQuestion(question))">
+                  <span></span>
+                  {{value}}
+                </label>
+              </div>
+              <div class="mt-2 text-danger" *ngIf="apiError[getQuestion(question).labelName]">
+                {{apiError[getQuestion(question).labelName]}}</div>
+            </div>
+            <!-- for Text -->
+            <div class="col-12" *ngIf="getQuestion(question).fieldDataType === 'plainText'">
+              <input *ngIf="getQuestion(question).plainTextPropertie.maxNoOfLetter<=100"
+                [(ngModel)]="answers[getQuestion(question).labelName]" (input)="onSubmit('inputChange');"
+                [minlength]="getQuestion(question).plainTextPropertie.minNoOfLetter"
+                [maxlength]="getQuestion(question).plainTextPropertie.maxNoOfLetter"
+                class="form-control1 form-control-solid" type="text" [disabled]="buttonDisable || disableInput()">
+              <textarea rows="3" *ngIf="getQuestion(question).plainTextPropertie.maxNoOfLetter>100"
+                [(ngModel)]="answers[getQuestion(question).labelName]" (input)="onSubmit('inputChange');"
+                [minlength]="getQuestion(question).plainTextPropertie.minNoOfLetter"
+                [maxlength]="getQuestion(question).plainTextPropertie.maxNoOfLetter"
+                [disabled]="buttonDisable || disableInput()" class="form-control2 form-control-solid"></textarea>
+              <div class="mt-2 text-danger" *ngIf="apiError[getQuestion(question).labelName]">
+                {{apiError[getQuestion(question).labelName]}}</div>
+            </div>
+            <!-- for Number -->
+            <div class="col-12" *ngIf="getQuestion(question).fieldDataType === 'number'">
+              <input [(ngModel)]="answers[getQuestion(question).labelName]" (input)="onSubmit('inputChange');"
+                [min]="getQuestion(question).numberPropertie.start" [max]="getQuestion(question).numberPropertie.end"
+                [disabled]="buttonDisable || disableInput()" class="form-control1 form-control-solid" type="number"
+                (keypress)="isNumeric($event)">
+              <div class="mt-2 text-danger" *ngIf="apiError[getQuestion(question).labelName]">
+                {{apiError[getQuestion(question).labelName]}}</div>
+            </div>
+            <!-- for Date -->
+            <div class="col-12 disp-flex" *ngIf="getQuestion(question).fieldDataType === 'date'">
+              <input class="form-control1" [matDatepicker]="picker" [max]="getMaxdate(question)"
+                [min]="getMindate(question)" [(ngModel)]="answers[getQuestion(question).labelName]"
+                (dateChange)="onSubmit('inputChange')" [disabled]="buttonDisable || disableInput()"
+                (click)="picker.open()">
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker [disabled]="buttonDisable || disableInput()"></mat-datepicker>
+              <div class="mt-2 text-danger" *ngIf="apiError[getQuestion(question).labelName]">
+                {{apiError[getQuestion(question).labelName]}}</div>
+            </div>
+            <!-- for Datagrid -->
+            <div class="table-responsive1"
+              *ngIf="getQuestion(question).fieldDataType === 'dataGrid' && dataGridColumnsAnswerList[getQuestion(question).labelName] && dataGridColumnsAnswerList[getQuestion(question).labelName].length > 0">
+              <table class="table table-head-custom table-head-bg table-borderless table-vertical-center">
+                <thead>
+                  <th *ngFor="let column of getQuestion(question).dataGridProperties.dataGridColumns">
+                    {{column.columnId}}</th>
+                  <th *ngIf="!buttonDisable && !disableInput() && !showDataGrid[getQuestion(question).labelName]">
+                  </th>
+                  <th *ngIf="!buttonDisable && !disableInput() && !showDataGrid[getQuestion(question).labelName]">
+                  </th>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let column of dataGridColumnsAnswerList[getQuestion(question).labelName];let i =index">
+                    <td *ngFor="let data of column | keyvalue">
+                      <div
+                        *ngIf="getColumnType(getQuestion(question).dataGridProperties.dataGridColumns, data.key) === 'date'">
+                        {{data.value | date : newTimeDateFormat}}
+                      </div>
+                      <div
+                        *ngIf="getColumnType(getQuestion(question).dataGridProperties.dataGridColumns, data.key) === 'bool'">
+                        {{getBoolValue(data.value)}}
+                      </div>
+                      <div
+                        *ngIf="getColumnType(getQuestion(question).dataGridProperties.dataGridColumns, data.key) !== 'date' && getColumnType(getQuestion(question).dataGridProperties.dataGridColumns, data.key) !== 'bool'">
+                        {{data.value}}
+                      </div>
+                    </td>
+                    <td *ngIf="!buttonDisable && !disableInput() && !showDataGrid[getQuestion(question).labelName]">
+                      <i class="fa fa-pen" (click)="editDataGrid(getQuestion(question), column)"></i>
+                    </td>
+                    <td *ngIf="!buttonDisable && !disableInput() && !showDataGrid[getQuestion(question).labelName]">
+                      <i class="fa fa-trash" (click)="deleteDataGrid(getQuestion(question), column)"></i>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="gridSection" *ngIf="showDataGrid[getQuestion(question).labelName]">
+              <div class="gridColumn" *ngFor="let column of getQuestion(question).dataGridProperties.dataGridColumns">
+                <label>{{column.label}}
+                  <span class="red" *ngIf="column.mandatory">*</span>
+                </label>
+                <!-- for checkbox -->
+                <div class="col-12" *ngIf="column.dataType === 'list'">
+                  <div class="checkbox-list">
+                    <label class="checkbox" *ngFor="let value of column.listPropertie.values">
+                      <input type="checkbox" [checked]="isChecked(value, getQuestion(question), column)"
+                        (change)="listChange($event, value, getQuestion(question), column)"
+                        [disabled]="buttonDisable || disableInput()">
+                      <span></span>
+                      {{value}}
+                    </label>
+                  </div>
+                </div>
+                <!-- for toggel boolean -->
+                <div class="col-12" *ngIf="column.dataType === 'bool'">
+                  <div class="radio-list">
+                    <label class="radio">
+                      <input type="radio" [disabled]="buttonDisable || disableInput()"
+                        [checked]="isBooleanChecked('yes', getQuestion(question), column)"
+                        (change)="booleanChange($event, 'yes', getQuestion(question), column)">
+                      <span></span>
+                      Yes
+                    </label>
+                    <label class="radio">
+                      <input type="radio" [disabled]="buttonDisable || disableInput()"
+                        [checked]="isBooleanChecked('no', getQuestion(question), column)"
+                        (change)="booleanChange($event, 'no', getQuestion(question), column)">
+                      <span></span>
+                      No
+                    </label>
+                  </div>
+                </div>
+                <!-- for Text -->
+                <div class="col-12" *ngIf="column.dataType === 'plainText'">
+                  <input [(ngModel)]="dataGridColumns[getQuestion(question).labelName + '=' + column.order]"
+                    [disabled]="buttonDisable || disableInput()" class="form-control1 form-control-solid" type="text">
+                </div>
+                <!-- for Number -->
+                <div class="col-12" *ngIf="column.dataType === 'number'">
+                  <input [(ngModel)]="dataGridColumns[getQuestion(question).labelName + '=' + column.order]"
+                    [disabled]="buttonDisable || disableInput()" [min]="column.numberPropertie.start"
+                    [max]="column.numberPropertie.end" class="form-control1 form-control-solid" type="number">
+                </div>
+                <!-- for Date -->
+                <div class="col-12 disp-flex" *ngIf="column.dataType === 'date'">
+                  <input class="form-control1" [matDatepicker]="picker" [max]="getMaxdate(question)"
+                    [min]="getMindate(question)"
+                    [(ngModel)]="dataGridColumns[getQuestion(question).labelName + '=' + column.order]"
+                    [disabled]="buttonDisable || disableInput()" (click)="picker.open()">
+                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker #picker [disabled]="buttonDisable || disableInput()">
+                  </mat-datepicker>
+                </div>
+              </div>
+              <div class="act-btns">
+                <button type="button" class="btn btn-light-primary font-weight-bold"
+                  (click)="cancelAddorUpdate(getQuestion(question))">
+                  Cancel
+                </button>
+                <button type="button" class="btn btn-primary font-weight-bold"
+                  (click)="saveDataGridColumn(getQuestion(question))">Add</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12 col-12 col-sm-12 col-lg-12 p-0 submit-pad"
+        *ngIf="type !== 'qnrLinkProvider' && source!=='proLead' && (uuid || source === 'customer-details' || source === 'proDonation') && !disableInput()">
+        <button class="normal-btn" mat-flat-button [class.spinner]="buttonDisable"
+          [class.spinner-darker-success]="buttonDisable" [class.spinner-center]="buttonDisable"
+          (click)="!buttonDisable && onSubmit('submit')" [disabled]="buttonDisable"
+          [class.disabled]="buttonDisable">{{(type == 'qnr-link') ? 'Submit' : 'Update'}}</button>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="cons-inbox no-padding-small" *ngIf="showservice">
+  <div class="container consumer-dashhome p-0 no-padding-small" *ngIf="!type">
+    <div class="card title-gb rounded-0" *ngIf="uuid">
+      <h5 class="mgn-up-10 bold">{{questionnaire_heading | capitalizeFirst}} <a class="pull-left mgn-rt-20 back-btn"
+          (click)="goBack()"><i class="fa fa-arrow-left"></i></a></h5>
+    </div>
+  </div>
+  <app-common-innerloading-spinner *ngIf="loading"></app-common-innerloading-spinner>
+  <div class="d-flex flex-column-fluid pull-right mgn-rt-10 mgn-bt-20"
+    *ngIf="type !== 'qnrLinkProvider' && !buttonDisable && waitlistStatus">
+    <button class="normal-btn edit" mat-flat-button (click)="editQnr()">Edit</button>
+  </div>
+</section>

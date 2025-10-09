@@ -1,0 +1,192 @@
+<div class="row m-0 fit_in p-0" *ngIf="booking">
+  <div *ngIf="booking.token" class="ribbon">&nbsp;&nbsp;{{'Token' | translate}}
+    {{booking.token}}
+  </div>
+  <!-- icon -->
+  <div class="col-2 p-0 mgn-up-10">
+    <div>
+      <i *ngIf="!booking.token" style="width: 3.8rem;" class="fa chckn-icon" [matTooltip]="'Check-in'"></i>
+      <i *ngIf="booking.token" style="width: 3.8rem;" class="fa token-icon" [matTooltip]="'Token'"></i>
+    </div>
+  </div>
+  <!-- More options -->
+  <div class="more_opt">
+    <button mat-icon-button [matMenuTriggerFor]="appMenu" (click)="stopprop($event)">
+      <mat-icon>more_horiz</mat-icon>
+    </button>
+    <mat-menu #appMenu="matMenu">
+      <button mat-menu-item *ngIf="showRescheduleBtn"
+        (click)="cardActionPerformed('wl', 'reschedule', booking, $event)">
+        <i class="consumer-reschedule-icon"></i>{{'Reschedule' | translate}}</button>
+      <button mat-menu-item *ngIf="showCancelBtn" (click)="cardActionPerformed('wl', 'cancel', booking, $event)">
+        <i class="fa cross-icon"></i>{{'Cancel' | translate}}</button>
+      <button mat-menu-item (click)="cardActionPerformed('wl', 'communicate', booking, $event)">
+        <i class="fa chat-icon"></i>{{send_msg_cap | translate}}</button>
+      <button mat-menu-item (click)="cardActionPerformed('wl', 'sendAttachment', booking, $event)">
+        <i class="material-icons">attach_file</i>{{'Send Attachments' | translate}}</button>
+      <button mat-menu-item *ngIf="showViewAttachBtn"
+        (click)="cardActionPerformed('wl', 'viewAttachment', booking, $event)">
+        <i class="material-icons">attach_file</i>{{'View Attachments' | translate}}</button>
+      <button mat-menu-item *ngIf="showRateBtn" (click)="cardActionPerformed('wl', 'rating', booking, $event)">
+        <i class="fa fa-star-o" aria-hidden="true"></i>{{rate_visit | translate}}</button>      
+    </mat-menu>
+  </div>
+  <!-- Basic Info -->
+  <div class="col-10 mgn-up-20 pad-lt-40">
+    <span class="ordr_no"
+      *ngIf="(booking.waitlistStatus == 'arrived' || booking.waitlistStatus == 'checkedIn') && booking.calculationMode !== 'NoCalc'">
+      <span *ngIf="!booking.serviceTime">
+        Est wait time: {{getTimeToDisplay(booking.appxWaitingTime)}}
+      </span>
+      <span *ngIf="booking.serviceTime">
+        {{'Starts at' | translate}}: {{booking.serviceTime}}
+      </span>
+    </span>
+    <div class="ordr_no font-size-9">
+      {{booking.date | date: monthFormat}}, {{booking.queue.queueStartTime}} - {{booking.queue.queueEndTime}}<span
+        *ngIf="booking.timezone" class="timezone">({{booking.timezone}})</span>
+    </div>
+    <!-- <div class="ordr_no font-size-9" *ngIf="type!=='future'">
+        {{'Today' | translate}}, {{booking.queue.queueStartTime}} - {{booking.queue.queueEndTime}} <span></span></div> -->
+    <div class="sp_name wrap_txt" (click)="cardActionPerformed('wl', 'providerDetails', booking, $event)">
+      {{booking.providerAccount.businessName || '' | capitalizeFirst}}</div>
+    <div *ngIf="booking?.location?.place">
+            <span class="loc-cls">
+                <i class="fa fa-map-marker"></i>
+                {{booking.location.place | capitalizeFirst}}
+            </span>
+        </div>
+  </div>
+  <!-- extra info -->
+  <div class="col-12">
+    <div class="col-12  p-0">
+      <div class="pull-left  col-6 p-0 ">
+        <div class="prov_lbl">{{'Service' | translate}}</div>
+        <div class="prov_nme disply-flex">
+          <span class="serv-name">
+            <span
+              *ngIf="booking.service.serviceType === 'virtualService' && booking.service.virtualCallingModes && booking.service.virtualCallingModes.length > 0">
+              <i class="fa phon-icon" *ngIf="booking.service.virtualCallingModes[0].callingMode === 'Phone'"></i>
+              <i class="fa meet-icon" *ngIf="booking.service.virtualCallingModes[0].callingMode === 'GoogleMeet'"></i>
+              <i class="fa zoom-icon" *ngIf="booking.service.virtualCallingModes[0].callingMode === 'Zoom'"></i>
+              <i class="fa jvideo-icon jvideo-icon-s jvideo-icon-mgm5"
+                *ngIf="booking.service.virtualCallingModes[0].callingMode === 'VideoCall'"></i>
+              <i class="fa wtsapaud-icon"
+                *ngIf="booking.service.virtualCallingModes[0].callingMode === 'WhatsApp' && booking.service.virtualServiceType ==='audioService'"></i>
+              <i class="fa wtsapvid-icon"
+                *ngIf="booking.service.virtualCallingModes[0].callingMode === 'WhatsApp' && booking.service.virtualServiceType ==='videoService'"></i>
+            </span>
+            {{booking.service.name | capitalizeFirst}}</span>
+        </div>
+      </div>
+      <div class="pull-left col-6 con-width">
+        <div class="prov_lbl" *ngIf="booking.showToken">{{'Token for' | translate}}</div>
+        <div class="prov_lbl" *ngIf="!booking.showToken">{{'Check-in for' | translate}}
+        </div>
+        <div class="prov_nme">
+          <span
+                    *ngIf="booking && booking.waitlistingFor[0] && booking.waitlistingFor[0].title">{{booking.waitlistingFor[0].title}}</span>
+          {{booking.waitlistingFor[0].firstName}}
+          {{booking.waitlistingFor[0].lastName}}</div>
+      </div>
+    </div>
+    <div class="col-12 p-0">
+      <div class="pull-left col-6 p-0" *ngIf="booking.provider">
+        <div class="prov_lbl">{{'Provider' | translate}}</div>
+        <div class="prov_nme">
+          {{(booking.provider.businessName) ? booking.provider.businessName : booking.provider.firstName +
+          ' ' + booking.provider.lastName}}
+        </div>
+      </div>
+      <div
+        *ngIf="booking.service.serviceType === 'virtualService' && booking.waitlistStatus!=='cancelled' && booking.waitlistStatus!=='done'"
+        [class.col-6]="booking.provider" [class.pull-left]="booking.provider" [class.col-12]="!booking.provider"
+        [class.p-0]="!booking.provider">
+        <div class="prov_lbl">{{'Status' | translate}}</div>
+        <div class="prov_nme line-clamp">
+          <span [class.red]="booking.videoCallButton==='DISABLED'"
+            [class.green]="booking.videoCallButton==='ENABLED'">{{booking.videoCallMessage}}</span>
+        </div>
+      </div>
+      <div
+        *ngIf="booking.service.serviceType !== 'virtualService' || booking.waitlistStatus==='cancelled' ||  booking.waitlistStatus==='done'"
+        [class.col-6]="booking.provider" [class.pull-left]="booking.provider" [class.col-12]="!booking.provider"
+        [class.p-0]="!booking.provider">
+        <div class="prov_lbl">{{'Status' | translate}}</div>
+        <div class="prov_nme line-clamp">
+          <div class="book_stats mgn-up-20">
+            <span [class]="getBookingStatusClass(booking.waitlistStatus)"
+              *ngIf="(booking.service.serviceType === 'virtualService' && booking.waitlistStatus !== 'arrived')">
+              <span *ngIf="booking.waitlistStatus=='done'">{{'Completed' | translate}}</span>
+              <span *ngIf="booking.waitlistStatus=='checkedIn'">
+                {{'Checked-in' | translate}}
+              </span>
+              <span
+                *ngIf="booking.waitlistStatus!=='done' && booking.waitlistStatus !=='checkedIn'">{{booking.waitlistStatus
+                | capitalizeFirst}}</span>
+            </span>
+            <span [class]="getBookingStatusClass(booking.waitlistStatus)"
+              *ngIf="(booking.service.serviceType !== 'virtualService')">
+              <span *ngIf="booking.waitlistStatus=='done'">{{'Completed' | translate}}</span>
+              <span *ngIf="booking.waitlistStatus=='checkedIn'">
+                {{'Checked-in' | translate}}
+              </span>
+              <span
+                *ngIf="booking.waitlistStatus!=='done' && booking.waitlistStatus !=='checkedIn'">{{booking.waitlistStatus
+                | capitalizeFirst}}</span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br>
+    <div class="col-12 d-flex">
+      <div class="col-6 p-0">
+        <div class="pull-left p-0 col-5 " *ngIf="showViewPrescritionBtn"
+          [ngClass]="showViewPrescritionBtn ? 'pull-left p-0 col-6 ' : ''">
+          <div class="prov_lbl"></div>
+          <div class="prov_nme">
+            <button mat-flat-button class="btns"
+              (click)="cardActionPerformed('wl', 'viewPrescription', booking, $event)">
+              {{'View Prescription' | translate}}</button>
+          </div>
+        </div>
+        <div class="pull-left p-0 col-7">
+          <div class="">
+            <span *ngIf="showQnrBtn" class="mgn-rt-5">
+              <button mat-flat-button class="btns" (click)="cardActionPerformed('wl', 'details', booking, $event)">
+                {{'More Info' | translate}}</button>
+            </span>
+            <span class="mgn-rt-5" (click)="stopprop($event)"
+              *ngIf="showJoinOtherVideoBtn && booking.service.virtualCallingModes && booking.service.virtualCallingModes.length>0">
+              <a [href]="booking.service.virtualCallingModes[0].value" target="_blank">
+                <button mat-flat-button class="btns">{{videoBtnCaption | translate}}</button>
+              </a>
+            </span>
+            <span *ngIf="showJoinJaldeeVideoBtn" class="mgn-rt-5">
+              <button mat-flat-button class="btns"
+                (click)="cardActionPerformed('wl', 'joinVideo', booking, $event)">{{videoBtnCaption | translate}}</button>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 p-0">
+        <div class="pull-left  col-5 p-0">
+          <span *ngIf="showReceiptBtn &&  showPaidInfo && !booking.invoiceCreated"
+            class="amtPaid  rupee-font mgn-rt-5">{{'Paid' | translate}}
+            {{booking.amountPaid | currency:'&#8377;'}}</span>
+        </div>
+        <div class="pull-left  col-7 p-0">
+          <button *ngIf="showPayBtn && !booking.invoiceCreated" mat-flat-button class="btns rupee-font mgn-rt-5"
+            (click)="cardActionPerformed('wl', 'viewBill', booking, $event)"> {{'Pay' | translate}}
+          </button>
+        </div>
+        <div class="pull-left  col-3 p-0">
+          <button *ngIf="showInvoiceBtn && booking.invoiceCreated" mat-flat-button class="btns rupee-font mgn-rt-5"
+            (click)="cardActionPerformed('wl', 'viewBill', booking, $event)"> {{'Invoice' | translate}}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

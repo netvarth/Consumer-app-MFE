@@ -1,0 +1,278 @@
+.title-gb {
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+  
+  h5 {
+    font-size: 1.25rem;
+    margin-bottom: 10px;
+  }
+  
+  .back-btn {
+    font-size: 1.25rem !important;
+    cursor: pointer;
+  }
+  
+  .back-btn i {
+    color: #000;
+  }
+
+  .content .c-outer .c-body {
+    flex-grow: 1;
+    position: relative;
+    transition: all .3s;
+  }
+  .content .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid rgba(0, 0, 0, .125);
+    border-radius: 0.25rem;
+  }
+  
+  .content .col-a .card {
+    margin-bottom: 30px;
+  }
+  
+  .bill-section-content .global-icons {
+    padding-bottom: 30px;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .bill-section-content .global-icons button {
+    float: right;
+  }
+  
+  button {
+    border-radius: 0;
+  }
+  
+  // .bill-section .bill-section-content .bill-wrapper .section-one h3 {
+  //   font-size: 1rem;
+  //   margin-bottom: 15px;
+  //   text-align: center;
+  // }
+  
+  .bill-section .bill-section-content .bill-wrapper .section-one,
+  .bill-section .bill-section-content .bill-wrapper .section-three {
+    padding: 20px;
+    // border-bottom: 1px solid #dbdbdb;
+  }
+  
+  .bill-section .bill-section-content .bill-wrapper .section-three .bill-breakup .list {
+    position: relative;
+    border-bottom: 1px solid #dbdbdb;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+  }
+  
+  .receipt .bill-content .section-three .bill-summary {
+    border-bottom: none !important;
+  }
+  
+  .bill-section .bill-section-content .bill-wrapper .section-three .bill-breakup {
+    text-align: right !important;
+  }
+  
+  .cons-check-bill .bill-section .bill-section-content .bill-wrapper .section-three .bill-breakup .list .list-content .servlist .name,
+  .cons-check-bill .bill-section .bill-section-content .bill-wrapper .section-three .bill-breakup .list .list-content .c-row.one .price,
+  .cons-check-bill .bill-section .bill-section-content .bill-wrapper .section-three .bill-breakup .list .list-content .c-row.two .discount-row .price {
+    flex-basis: 40% !important;
+    font-weight: 600;
+  }
+  
+  .bill-section .bill-section-content .bill-wrapper .section-three .bill-breakup .list .list-content .c-row {
+  
+    padding: 5px 0;
+  }
+  
+  .bill-content .bill-responsive .c-row {
+    margin-right: 0 !important;
+  }
+  
+  .bill-section .bill-section-content .bill-wrapper .section-three .bill-breakup .list .list-content .c-row.one {
+    display: flex;
+  }
+  
+  .bill-section .bill-section-content .bill-wrapper .section-three .bill-breakup .list .list-content .c-row.one .name {
+    // font-weight: 600;
+    padding-right: 15px;
+    flex-basis: 60%;
+    position: relative;
+  }
+  
+  .bill-section .bill-section-content .bill-wrapper .section-three .bill-breakup .list .list-content .c-row.one .quantity {
+    flex-basis: 20%;
+  }
+  
+  .rupee-font {
+    font-family: Arial, Helvetica, sans-serif !important;
+  }
+
+  .content .c-outer {
+    display: flex;
+    width: 100%;
+    /* margin-top: 20px; */
+    margin-bottom: 30px;
+    position: relative;
+  }
+  
+  .comn-cls .w-dta .copy {
+    display: flex;
+    flex-basis: 100%;
+    font-size: .875rem;
+  }
+  
+  .bill-section .bill-section-content .bill-wrapper .section-three .bill-breakup .list .list-content .c-row.two .discount-row {
+    margin-right: 50px;
+    display: flex;
+    padding: 5px 0;
+    color: #999;
+  }
+  
+  .bill-section .bill-section-content .bill-wrapper .section-three .bill-breakup .list .list-content .c-row.two {
+    display: block;
+    margin-right: 0;
+    padding: 0;
+  }
+  
+  .bill-content .bill-responsive .discount-row {
+    margin-right: 0 !important;
+  }
+  
+  .bill-section .bill-section-content .bill-wrapper .section-three .bill-breakup .list .list-content .c-row.two .discount-row .name {
+    flex-grow: 1;
+    flex-basis: 60%;
+    padding-right: 15px;
+  }
+  
+  .amountSaved {
+    text-align: left;
+    color: #32cd32;
+    font-weight: 700;
+  }
+  
+  .bill-section .bill-section-content .bill-wrapper .section-two .edit-row.service .spr .cs-btn {
+    height: 30px;
+    line-height: 12px;
+    padding: 6px 10px;
+    text-transform: none;
+    float: left;
+    font-size: .75rem;
+  }
+  
+  .bt1 {
+    background: #00aef2;
+    border-radius: 3px;
+    background-clip: padding-box;
+    height: 40px;
+    font-family: Montserrat, sans-serif;
+    font-weight: 500;
+    text-transform: uppercase;
+    color: #fff;
+    font-size: .875rem;
+    padding-left: 30px;
+    padding-right: 30px;
+    line-height: inherit;
+    transition: all .3s;
+  }
+  
+  .bill-section .bill-section-content .bill-wrapper .section-two .edit-row.service .spr .cs-btn.bt2 {
+    margin-left: 10px;
+  }
+  
+  .cs-btn {
+    border-radius: 3px;
+  }
+  
+  .txt-align-center {
+    text-align: center !important;
+  }
+  
+  a:hover {
+    color: #222223;
+    text-decoration: none !important;
+  }
+  
+  .bill-section .bill-section-content .bill-wrapper .section-three {
+    border: none;
+  }
+  
+  .other-section {
+    border-top: 1px solid #ccc !important;
+  }
+  
+  .mt-3 {
+    margin-top: 1rem !important;
+  }
+  
+  .jc-sec-bill .section-two {
+    padding: 5px 0 15px !important;
+    border: none !important;
+  }
+  
+  .bill-section .bill-section-content .bill-wrapper .section-two .edit-row.service .spr {
+    margin-left: 15px;
+  }
+  
+  .bill-section .bill-section-content .bill-wrapper .section-two .edit-row.service {
+    display: flex;
+  }
+  
+  .row {
+    margin-right: 0px !important;
+    margin-left: 0px !important;
+  }
+  
+  .loadingpaytm {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 9999 !important;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, .5) !important;
+    pointer-events: none !important;
+  }
+  
+  @media screen and (max-width: 767px) {
+    .disp-none {
+      display: none !important;
+    }
+    .bill-section {
+      padding: 0 !important;
+    }
+  }
+  
+  .bill-table-head {
+    // border-bottom: 1px solid #dbdbdb;
+    border-top: 1px solid #dbdbdb;
+    padding: 10px 0px 0px 0px !important;
+  }
+  
+  .head-name {
+    padding-right: 15px;
+    flex-basis: 40%;
+    position: relative;
+  }
+  
+  .head-rate {
+    flex-basis: 20%;
+  }
+  
+  .head-price {
+    flex-basis: 20%;
+  }
+  
+  .head-quantity {
+    flex-basis: 20%;
+  }
+  
+  .rounded-circle {
+    border-radius: 50% !important;
+  }

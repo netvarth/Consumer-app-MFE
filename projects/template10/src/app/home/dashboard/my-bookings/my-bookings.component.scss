@@ -1,0 +1,82 @@
+  .headerBorder {
+      border-bottom: 1.21389px solid #DADCE0 !important;
+      display: flex;
+      gap: 15px;
+      flex-direction: row !important;
+      padding: 15px !important;
+      align-items: center;
+      box-shadow: 0 1px 1px rgb(0 0 0 / 8%);
+      transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+  }
+
+  .clrChangeHeader {
+      color: #464849 !important;
+      cursor: pointer;
+  }
+
+  .myAcText {
+      color: rgba(0, 0, 0, 0.87) !important;
+      font-size: 18px;
+      font-weight: bold;
+  }
+
+  .accountEditText {
+      color: #5F6368;
+      font-size: 13px;
+      margin-top: 5px;
+  }
+
+
+  .customCard {
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, .05) !important;
+      border-radius: 5px;
+      background: #fff;
+      background-clip: padding-box;
+      border: none !important;
+      width: 100%;
+  }
+
+  .emptyOrderImg {
+      height: 25%;
+      width: 25%;
+      object-fit: cover;
+  }
+
+  @media (max-width: 768px) {
+      .emptyOrderImg {
+          height: 100%;
+          width: 100%;
+          object-fit: cover;
+      }
+  }
+
+  .stats-head-card-title {
+      color: #272D37;
+      font-size: 16.07px;
+      font-weight: 600;
+      word-wrap: break-word;
+  }
+
+  .head-title {
+      font-weight: 600;
+  }
+
+  .show_more {
+      cursor: pointer !important;
+      color: #171ffc !important;
+      font-weight: 600 !important;
+      font-size: 12px !important
+  }
+
+  .form-control1 {
+      background: #F6F6F6 !important;
+      height: 45px !important;
+      border: 1px solid #E4E6EF;
+      padding: 10px !important;
+  }
+
+  ::ng-deep .cdk-overlay-pane {
+      margin-top: 10px !important;
+      margin-left: -10px !important;
+  }

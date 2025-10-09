@@ -1,0 +1,433 @@
+.firstname {
+  font-size: 18px;
+  font-weight: 600;
+  color: #2F2F2F;
+  margin: 0 !important;
+}
+
+.welcome-msg {
+  font-size: 14px;
+  font-weight: 400;
+  color: #616161;
+  margin: 0 !important;
+}
+
+.paylink-card {
+  padding: 20px;
+  box-shadow: 0 0 10px rgb(0 0 0 / 5%);
+  border-radius: 5px;
+  background: #fff;
+  background-clip: padding-box;
+  border: none !important;
+}
+
+.welcome-card {
+  margin: 35px 0px 15px 0px;
+  border-radius: 5px;
+  box-shadow: 0px 8px 16.44px -4.11px rgba(22, 34, 51, 0.08) !important;
+}
+.customLoader {
+  position: absolute;
+  top: 50%;
+  left: 45%;
+  width: 50px;
+  z-index: 100;
+  height: 50px;
+}
+
+.payment-method {
+  font-size: 15px;
+  font-weight: 600 !important;
+  color: #2F2F2F;
+}
+
+@media only screen and (max-width: 575px) {
+  .payoption {
+    flex-direction: column-reverse;
+  }
+
+  .display-none {
+    display: none !important;
+  }
+
+  .payment-method {
+    margin: 5px 0px !important;
+  }
+
+  .welcome-card {
+    margin: 0;
+  }
+}
+
+@media only screen and (min-width: 576px) {
+  .display-none-large {
+    display: none !important;
+  }
+}
+
+.payto {
+  padding-right: 0px !important;
+}
+
+.pay-line {
+  // border: .5px solid #F0F0F0
+  color: #F0F0F0;
+}
+
+.user {
+  gap: 15px;
+  border: 1.24514px solid #E3E3E3;
+  border-right: none;
+  border-left: none;
+  padding: 25px 0px;
+}
+
+.location {
+  font-weight: 400 !important;
+}
+
+.amount,
+.amountDue {
+  font-size: 2.18rem;
+  font-weight: 600;
+  color: #000000;
+  margin: 45px 0px;
+}
+
+.pay-option {
+  color: #2095FD;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: normal;
+  margin: 5px 0px;
+}
+
+.pay-btn {
+  width: 100%;
+  border-radius: 5px;
+  background: #33009C;
+  color: #FFFFFF;
+  font-size: 18px;
+}
+
+.pay-to {
+  margin: 15px 0px;
+}
+
+.bill-section .bill-section-content .bill-wrapper {
+  background: #fff;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.bill-section .bill-section-content .bill-wrapper .section-one h3 {
+  font-size: 1rem;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.bill-section .bill-section-content .bill-wrapper .section-one,
+.bill-section .bill-section-content .bill-wrapper .section-two,
+.bill-section .bill-section-content .bill-wrapper .section-three,
+.bill-section .bill-section-content .bill-wrapper .section-four {
+  padding: 15px;
+  border-bottom: 1px solid #dbdbdb;
+}
+
+@media(max-width:575px) {
+  .bill-section .bill-section-content .bill-wrapper .section-one,
+.bill-section .bill-section-content .bill-wrapper .section-two,
+.bill-section .bill-section-content .bill-wrapper .section-three,
+.bill-section .bill-section-content .bill-wrapper .section-four {
+  // padding: 10px !important;
+  border-bottom: 1px solid #dbdbdb;
+}
+}
+
+.bill-section .bill-section-content .bill-wrapper .section-one .details .columns:nth-child(1),
+.bill-section .bill-section-content .bill-wrapper .section-one .details .columns:nth-child(2) {
+  margin-bottom: 10px;
+}
+
+.bill-section .bill-section-content .bill-wrapper .section-three .bill-breakup .list {
+  position: relative;
+  border-bottom: 1px solid #dbdbdb;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+}
+
+.bill-section .bill-section-content .bill-wrapper .section-one .details .columns .title {
+  // font-weight: 600;
+  position: relative;
+  margin-right: 10px;
+}
+
+.bill-section .bill-section-content .bill-wrapper .section-one .details .columns .title:after {
+  position: absolute;
+  content: ":";
+  right: -5px;
+}
+
+.bill-section .bill-section-content .bill-wrapper .section-one .details,
+.title {
+  font-size: .8rem !important;
+}
+
+.bill-section .bill-section-content .bill-wrapper .section-three .bill-breakup .list .list-content .c-row {
+  display: flex;
+  padding: 5px 0;
+  margin-right: 50px;
+}
+
+.bill-section .bill-section-content .bill-wrapper .section-three .bill-breakup .list .list-content .c-row.two .discount-row,
+.bill-section .bill-section-content .bill-wrapper .section-three .bill-breakup .list .list-content .c-row.two .coupon-row {
+  margin-right: 50px;
+  display: flex;
+  padding: 5px 0;
+  // color: #999;
+}
+
+.bill-section .bill-section-content .bill-wrapper .section-three .bill-breakup .list .list-content .c-row.two {
+  display: block;
+  margin-right: 0;
+  padding: 0;
+}
+
+.bill-section .bill-section-content .bill-wrapper .section-one .details {
+  display: flex;
+  flex-wrap: wrap;
+  font-size: .875rem;
+  font-weight: 500;
+  gap: 5px;
+  justify-content: space-between;
+}
+
+.bill-section .bill-section-content .bill-wrapper .section-three .bill-breakup {
+  text-align: right !important;
+  font-size: .875rem !important;
+  font-weight: 500;
+}
+
+.bill-section .bill-section-content .bill-wrapper .section-three .bill-breakup .list .list-content .c-row.two .discount-row .name,
+.bill-section .bill-section-content .bill-wrapper .section-three .bill-breakup .list .list-content .c-row.two .coupon-row .name {
+  flex-grow: 1;
+  // flex-basis: 90%;
+  // padding-right: 15px
+}
+
+.bill-section .bill-section-content .bill-wrapper .section-three .bill-breakup .list .list-content .c-row.one .name {
+  font-weight: 600;
+  flex-basis: 20%;
+  // padding-right: 15px;
+  position: relative;
+  font-size: .875rem;
+  text-align: start;
+}
+
+.bill-section .bill-section-content .bill-wrapper .section-three .bill-breakup .list .list-content .c-row.one .price {
+  flex-basis: 20%;
+  text-align: right;
+}
+
+.finance-inv {
+  flex-basis: 30%;
+}
+
+.bill-section .bill-section-content .bill-wrapper .section-three .bill-breakup .list .list-content .c-row.one .date {
+  flex-basis: 20% !important;
+  text-align: center;
+}
+
+.bill-section .bill-section-content .bill-wrapper .section-three .bill-breakup .list .list-content .c-row.one .Procedure {
+  flex-basis: 40%;
+  text-align: center;
+}
+
+.bill-section .bill-section-content .bill-wrapper .section-three .bill-breakup .list .list-content .c-row.one .quantity {
+  flex-basis: 16%;
+  font-weight: 600;
+  text-align: center;
+}
+.bill-section .bill-section-content .bill-wrapper .section-three .bill-breakup .list .list-content .c-row.one .finance-row {
+  flex-basis: 15%;
+  font-weight: 600;
+  text-align: center;
+}
+
+.discount-per {
+  flex-basis: 25%;
+}
+
+.row-right {
+  text-align: right !important;
+  flex-basis: 15%;
+}
+
+.bill-content .bill-responsive .c-row,
+.bill-content .bill-responsive .discount-row {
+  margin-right: 0 !important;
+}
+
+.bill-section .bill-section-content .bill-wrapper .section-three .bill-breakup .list .list-content .c-row.one {
+  display: flex;
+}
+
+.bill-section-content .list .section-two {
+  border-bottom: none !important;
+}
+
+@media only screen and (max-width: 500px) {
+  .bill-section .bill-section-content .bill-wrapper .section-one .details {
+    flex-direction: column;
+  }
+}
+
+.bill-header h2 {
+  font-weight: 600;
+  margin-bottom: 60px;
+}
+
+// .bill-section-content {
+//   padding: 30px;
+// }
+
+.linkexpired {
+  padding: 50px;
+  font-weight: 700;
+  text-align: center;
+  flex-direction: column;
+  align-items: center;
+}
+@media (max-width: 775px) {
+  .linkExpired-img {
+    width: 100% !important;
+  }
+  .expired-msg {
+    font-size: 1.5rem !important;
+  }
+}
+.linkExpired-img {
+  width: 600px;
+}
+
+.amountDue {
+  font-size: 23px;
+  margin: 0 !important;
+}
+
+.amt-section {
+  align-items: center;
+}
+.terms-card {
+  border-radius: 6px;
+    background: #E9E3F4;
+    color: #33009c;
+    font-size: 14px;
+    font-weight: 400;
+    margin-top: 5px;
+}
+sup {
+  top: -0.5em;
+}
+sup {
+  color: #f53404;
+}
+.header {
+  justify-content: center !important;
+}
+.expired-msg {
+  color: #000;
+  font-size: 2rem;
+}
+.expired {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.logo {
+  border-radius: 30px !important;
+}
+ul {
+  list-style: disc !important;
+}
+.dNote{
+  font-size: 10px;
+  color: #999999;
+  font-weight: 400 !important;
+}
+.payment-success{
+  align-items: center !important;
+}
+
+.success-card{
+  // align-items: center;
+  width: 25%;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+  
+}
+@media (max-width: 775px) {
+  .success-card{
+    width: 100%;
+  }
+}
+.font-title{
+  font-size: small !important;
+  color: rgb(124, 123, 123);
+}
+.success-img{ 
+  margin-top: -30px;
+}.gap{
+  gap: 10px !important;
+}.font-content{
+  font-size: 11px !important;
+  font-weight: bold !important;
+}
+
+
+.scallop-down {
+  margin-bottom: -30px;
+  height: 30px; /* Adjust height if needed */
+  width: 100%;
+  background: radial-gradient(circle at 50% 100%,#f1f1f1 50%, transparent 50%) repeat-x;
+  background-size: 30px 12px; /* Adjust size for gaps between circles */
+  margin-top: 20px; /* Space above the scallop */
+}
+.bg-gray{
+background:  #f8f8f8 ;
+}
+.card-border-style{
+border: 1px solid  rgb(238, 236, 236) !important;
+padding: 10px 10px !important;
+height: 100% !important;
+}
+.hr-style{
+  border: 1px solid  rgb(219, 217, 217) !important;
+}
+
+ .card-border{
+  padding: 0px 10px 0px 0px !important;
+ }
+ .rupee-font{
+  // font-size: 20px !important
+  font-weight: 600;
+ }
+ .mgn-bt-40{
+  margin-bottom: 40px !important;
+ }
+ .card-border-styles{
+  border: 1px solid  rgb(238, 236, 236) !important;
+  padding: 10px 10px !important;
+  }
+  .success-large-device {
+    justify-content: center !important;
+    align-items: center !important;
+    height: 100vh !important;
+   }
+
+   .dynamic {
+    font-weight: 600 !important;
+   }

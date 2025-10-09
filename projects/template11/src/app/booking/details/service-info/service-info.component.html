@@ -1,0 +1,10 @@
+<div class="serviceCstm">
+    <app-service-image [booking]="booking"></app-service-image>
+    <div *ngIf="booking['info'] && booking['info'].service && booking['info'].service.name"
+        class="serviceName">
+        {{booking['info'].service.name | capitalizeFirst}}
+    </div>
+    <div *ngIf="booking['info']?.service?.deptName" class="serviceName">
+        ({{booking['info'].service.deptName | capitalizeFirst}})
+     </div>
+</div>

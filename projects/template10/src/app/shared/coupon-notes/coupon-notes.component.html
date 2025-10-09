@@ -1,0 +1,12 @@
+<h1 class="mat-dialog-title">Coupon - {{couponName}}
+    <button #queue mat-dialog-close class="modal_close" id="btnClose">
+        <i class="fa fa-window-close" aria-hidden="true"></i>
+    </button>
+</h1>
+<div mat-dialog-content>
+    <div style="margin-bottom: 10px; color: red"> Sorry!! This coupon is rejected because it doesn't meet the following
+        requirements: </div>
+    <ul *ngFor="let msg of jCouponMsg">
+        <li *ngIf="msg !== 'COUPON_APPLIED'"> {{coupon_notes[msg]}}</li>
+    </ul>
+</div>

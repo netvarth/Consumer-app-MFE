@@ -1,0 +1,41 @@
+::ng-deep .items .p-accordion p-accordiontab .p-accordion-header .p-accordion-header-link,
+::ng-deep .filter-sidebar .p-accordion p-accordiontab .p-accordion-header .p-accordion-header-link {
+    text-decoration: none !important;
+}
+
+::ng-deep .filter-sidebar .p-accordion .p-accordion-tab {
+    margin-bottom: 5px !important
+}
+
+::ng-deep .items .p-accordion .p-accordion-tab {
+    box-shadow: none !important;
+}
+
+::ng-deep .items .p-accordion .p-accordion-header:not(.p-highlight):not(.p-disabled):hover .p-accordion-header-link {
+    background: transparent !important;
+}
+
+::ng-deep .items .p-accordion .p-accordion-tab:not(.p-accordion-tab-active) .p-accordion-header-link:focus {
+    background: transparent !important;
+}
+
+::ng-deep .items .p-checkbox-label {
+    margin-bottom: 0px !important;
+}
+
+::ng-deep .items .p-accordion .p-accordion-header .p-accordion-header-link {
+    padding: 0.5rem !important;
+}
+
+::ng-deep .p_consumer_items .p-accordion p-accordiontab .p-accordion-tab {
+    margin-bottom: 10px;
+}
+
+::ng-deep .paginator .p-paginator .p-dropdown {
+    height: 35px !important;
+}
+
+::ng-deep .paginator .p-paginator .p-dropdown .p-dropdown-label {
+    padding: 7px 0px 5px 10px !important;
+}
+

@@ -1,0 +1,102 @@
+
+<div id="page" *ngIf="templateJson">
+    <div id="footer-bar" #footerBar class="footer-bar-1" *ngIf="selectedIndex!==-1">
+        <a (click)="menuSelected(templateJson.section1)"
+            [ngClass]="{'active-nav' : selectedIndex === templateJson.section1.title }" *ngIf="templateJson.section1">
+            <i class="fa"
+                [ngClass]="[templateJson.section1.theme?templateJson.section1.theme:'', templateJson.section1.icon]"
+                aria-hidden="true" *ngIf="templateJson.section1.icon"></i>
+            <i class="icon-img-cont" [ngClass]="[templateJson.section1.theme?templateJson.section1.theme:'']"
+                *ngIf="templateJson.section1['icon-image']">
+                <img class="fa iconimage" [src]="templateJson.section1['icon-image']" /></i>
+            <span>{{templateJson.section1.title
+                | translate}}</span></a>
+        <a (click)="menuSelected(templateJson.section2)"
+            [ngClass]="{'active-nav' : selectedIndex === templateJson.section2.title }" *ngIf="templateJson.section2">
+            <i class="fa"
+                [ngClass]="[templateJson.section2.theme?templateJson.section2.theme:'', templateJson.section2.icon]"
+                aria-hidden="true" *ngIf="templateJson.section2.icon"></i>
+            <i class="icon-img-cont" [ngClass]="[templateJson.section2.theme?templateJson.section2.theme:'']"
+                *ngIf="templateJson.section2['icon-image']">
+                <img class="fa iconimage" [src]="templateJson.section2['icon-image']" /></i>
+            <span>{{templateJson.section2.title
+                | translate}}</span></a>
+        <a (click)="menuSelected(templateJson.section3)"
+            [ngClass]="{'active-nav' : selectedIndex === templateJson.section3.title }" *ngIf="templateJson.section3">
+            <i class="fa"
+                [ngClass]="[templateJson.section3.theme?templateJson.section3.theme:'', templateJson.section3.icon]"
+                aria-hidden="true" *ngIf="templateJson.section3.icon"></i>
+            <i class="icon-img-cont" [ngClass]="[templateJson.section3.theme?templateJson.section3.theme:'']"
+                *ngIf="templateJson.section3['icon-image']">
+                <img class="fa iconimage" [src]="templateJson.section3['icon-image']" /></i>
+            <span>{{templateJson.section3.title
+                | translate}}</span></a>
+        <a (click)="menuSelected(templateJson.section4)"
+            [ngClass]="{'active-nav' : selectedIndex === templateJson.section4.title }" *ngIf="templateJson.section4">
+            <i class="fa"
+                [ngClass]="[templateJson.section4.theme?templateJson.section4.theme:'', templateJson.section4.icon]"
+                aria-hidden="true" *ngIf="templateJson.section4.icon"></i>
+            <i class="icon-img-cont" [ngClass]="[templateJson.section4.theme?templateJson.section4.theme:'']"
+                *ngIf="templateJson.section4['icon-image']">
+                <img class="fa iconimage" [src]="templateJson.section4['icon-image']" /></i>
+            <span>{{templateJson.section4.title
+                | translate}}</span></a>
+        <a (click)="menuSelected(templateJson.section5)"
+            [ngClass]="{'active-nav' : selectedIndex === templateJson.section5.title }" *ngIf="templateJson.section5">
+            <i class="fa"
+                [ngClass]="[templateJson.section5.theme?templateJson.section5.theme:'', templateJson.section5.icon]"
+                aria-hidden="true" *ngIf="templateJson.section5.icon"></i>
+            <i class="icon-img-cont" [ngClass]="[templateJson.section5.theme?templateJson.section5.theme:'']"
+                *ngIf="templateJson.section5['icon-image']">
+                <img class="fa iconimage" [src]="templateJson.section5['icon-image']" /></i>
+            <span>{{templateJson.section5.title}}</span></a>
+    </div>
+    <div class="page-content header-clear-small">
+        <section class="pageitem" *ngIf="templateJson.section1 && selectedIndex==templateJson.section1.title">
+            <app-template [section]="templateJson.section1" [terminologiesjson]="terminologiesjson" [itemCategories]="itemCategories"
+                [templateJson]="templateJson" [accountProfile]="accountProfile" [selectedLocation]="selectedLocation"
+                [settings]="settings" [activeUsers]="onlineUsers" [apptSettings]="apptSettings"
+                [galleryJson]="galleryJson" [accountConfig]="accountConfig" [apptServices]="apptServices"
+                [checkinServices]="checkinServices"></app-template>
+        </section>
+        <section class="pageitem col-12 p-0"
+            *ngIf="templateJson.section2 && selectedIndex==templateJson.section2.title">
+            <app-template [section]="templateJson.section2" [terminologiesjson]="terminologiesjson" [itemCategories]="itemCategories"
+                [templateJson]="templateJson" [accountProfile]="accountProfile" [selectedLocation]="selectedLocation"
+                [settings]="settings" [apptSettings]="apptSettings" [galleryJson]="galleryJson"
+                [accountConfig]="accountConfig" [apptServices]="apptServices" [checkinServices]="checkinServices"
+                [activeUsers]="onlineUsers" [allUsers]="allUsers"></app-template>
+        </section>
+        <section class="col-12 p-0 pageitem"
+            *ngIf="templateJson.section3 && selectedIndex==templateJson.section3.title">
+            <app-template [section]="templateJson.section3" [terminologiesjson]="terminologiesjson" [itemCategories]="itemCategories"
+                [templateJson]="templateJson" [accountProfile]="accountProfile" [selectedLocation]="selectedLocation"
+                [settings]="settings" [activeUsers]="onlineUsers" [apptSettings]="apptSettings"
+                [galleryJson]="galleryJson" [accountConfig]="accountConfig" [apptServices]="apptServices"
+                [checkinServices]="checkinServices" > </app-template>
+        </section>
+        <section class="ftco-section bg-light pageitem" id="counselling-section"
+            *ngIf="templateJson.section4 && selectedIndex==templateJson.section4.title">
+            <app-template [section]="templateJson.section4" [terminologiesjson]="terminologiesjson" [itemCategories]="itemCategories"
+                [templateJson]="templateJson" [accountProfile]="accountProfile" [selectedLocation]="selectedLocation"
+                [settings]="settings" [activeUsers]="onlineUsers" [apptSettings]="apptSettings"
+                [galleryJson]="galleryJson" [accountConfig]="accountConfig" [apptServices]="apptServices"
+                [checkinServices]="checkinServices" ></app-template>
+        </section>
+        <section class="ftco-section contact-section pageitem" id="contact-section"
+            *ngIf="templateJson.section5 && selectedIndex==templateJson.section5.title">
+            <app-template [section]="templateJson.section5" [terminologiesjson]="terminologiesjson" [itemCategories]="itemCategories"
+                [templateJson]="templateJson" [accountProfile]="accountProfile" [selectedLocation]="selectedLocation"
+                [settings]="settings" [activeUsers]="onlineUsers" [apptSettings]="apptSettings"
+                [galleryJson]="galleryJson" [accountConfig]="accountConfig" [apptServices]="apptServices"
+                [checkinServices]="checkinServices" ></app-template>
+        </section>
+        <section class="general pageitem" *ngIf="selectedIndex === -1">
+            <app-custom-page [parentIndex]="parentIndex" [action]="pageAction" [apptServices]="apptServices" [itemCategories]="itemCategories"
+                [checkinServices]="checkinServices" [templateJson]="templateJson" [accountProfile]="accountProfile"
+                [selectedLocation]="selectedLocation" [accountConfig]="accountConfig"
+                [terminologiesjson]="terminologiesjson" [departments]="departments">
+            </app-custom-page>
+        </section>
+    </div>
+</div>
