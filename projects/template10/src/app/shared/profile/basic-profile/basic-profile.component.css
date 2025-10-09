@@ -1,0 +1,83 @@
+.fa {
+    color: black!important;
+    background-color: white !important;
+    padding: 2.5px;
+    border-radius: 3px;
+
+}
+h5 {
+    font-style: normal !important;
+    font-weight: 600 !important;
+    font-size: 19.9002px !important;
+    color: white;
+}
+p {
+    font-weight: 300;
+    font-size: 11.9401px;
+    line-height: 148%;
+    text-align: left;
+    color: white; 
+}
+.align-items-center{
+    align-items: center;
+}
+.card-inner-img img{
+    height: 60px !important;
+    width: 60px !important;
+    vertical-align: middle !important;
+    box-shadow: 0 4px 8px rgb(0 0 0 / 20%), 0 6px 20px rgb(0 0 0 / 19%);
+    padding: 5px;
+    border-radius: 50%;
+    float: right;
+}
+.card-inner-img-cont {
+    height: 100%;
+}
+.card-outer-cont img  {
+    height: 75px !important;
+    width: 75px !important;
+    vertical-align: middle;
+    /* box-shadow: 0 4px 8px rgb(0 0 0 / 20%), 0 6px 20px rgb(0 0 0 / 19%);
+    padding: 5px; */
+    background-color: #fff;;
+    border-radius: 50%;
+}
+.bline {
+    border-top:1px solid #fff;
+}
+span {
+   font-weight: 300;
+   font-size:9.16px;
+    line-height: 10.54px;
+    color:#fff;
+}
+.fa {
+    background: #fff !important;
+}
+.cut-text {
+    text-overflow: ellipsis;
+    overflow: hidden; 
+    width: 175px; 
+    white-space: nowrap;
+}
+.nexticon {
+    font-size: 25px;
+cursor: pointer;
+}
+ul {
+    padding-left: 0;
+}
+.actionbtns li a i.fa {
+    font-size: 15px !important;
+    color: #1AA695;
+    padding: 8px !important;
+}
+.actionbtns li {
+    margin-right: 5px;
+    display: inline-block;
+    border-radius: 5px !important;
+  }
+  .bg-basic-profile {
+    background-repeat: no-repeat  !important; 
+    background-size: 100% 100%  !important;
+  }

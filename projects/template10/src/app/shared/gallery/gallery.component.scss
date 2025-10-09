@@ -1,0 +1,118 @@
+.no-dta {
+    padding: 20px!important;
+    text-align: center !important;
+}
+.bt3 {
+    height: auto;
+    background: transparent;
+    border: 1px solid #00aef2;
+    padding: 5px 15px;
+    color: #00aef2;
+    font-size: .75rem;
+    font-weight: 600;
+}
+@media only screen and (max-width: 575px){
+    .pro-pic {
+        margin: 0 auto;
+        width: 120px;
+        height: 120px;
+    }
+    }
+    .img-h img {
+        width: 100%;
+        height: 100%;
+    }
+    .galbx img {
+        background-color: #f8f8f8!important;
+        object-fit: scale-down;
+    }
+    .overlay-y {
+        position: absolute;
+        opacity: 0;
+        transition: all .3s;
+        background: rgba(0,0,0,.8);
+        width: 100%;
+        height: 100%;
+        z-index: 3;
+    }
+    .img-h {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: 2;
+    }
+    img:hover {
+        opacity: unset;
+    }
+    .ph-gal {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      align-content: space-around;
+      margin: 0 0 20px;
+      padding: 0;
+      width: 100%;
+  }
+  li:last-child {
+    margin-right: 0;
+}
+ li:first-child {
+    width: 100%;
+    height: 200px;
+    margin-top: 0;
+    margin-right: 0;
+}
+li {
+    list-style: none;
+    flex-grow: 1;
+    margin-right: 10px;
+    background: #f8f8f8;
+    margin-top: 10px;
+}
+
+.galbx {
+  position: relative;
+  width: 100%;
+  height: 200px;
+}
+.mbt {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 32px;
+  height: 32px;
+  z-index: 4;
+  opacity: 0;
+  color: #fff;
+  transition: all .3s;
+}
+.gallery-li {
+  width: 40%!important;
+  margin-top: 0!important;
+  margin-right: 5px!important;
+}
+.mre {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  background: rgba(0,0,0,.5);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+.galbx {
+  height: 200px;
+}
+.galbx:hover {
+  cursor: pointer !important;
+}
+ .mbt {
+  opacity: 1 !important;
+}

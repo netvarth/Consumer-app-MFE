@@ -1,0 +1,366 @@
+<header *ngIf="config && headerName=='header1'" class="p-0">
+    <div class="header">
+        <div class="d-flex header-section align-items-center justify-content-between">
+            <div class="d-flex align-items-center">
+                <div *ngIf="smallDevice && config?.header?.menu.length > 0">
+                    <button class="nav-menu" [matMenuTriggerFor]="menu" id="btnMenu">
+                        <mat-icon>menu</mat-icon>
+                    </button>
+                    <mat-menu #menu="matMenu" class="full-screen-menu">
+                        <button [id]="'btnMenuItem' + i" [class.active]="activeMenuItem === menuItem.link" mat-menu-item
+                            *ngFor="let menuItem of config?.header?.menu; let i=index" (click)="menuClicked(menuItem)"
+                            [attr.aria-label]="menuItem.title ? menuItem.title : 'Menu item ' + (i + 1)">
+                            {{menuItem.title}}
+                        </button>
+                    </mat-menu>
+                </div>
+                <div *ngIf="logo" class="logo pointer-cursor" (click)="gotoActiveHome()">
+                    <!-- height="50px" -->
+                    <img class="d-flex" [src]="logo" alt="Logo" width="auto">
+                </div>
+            </div>
+            <div *ngIf="!hideItemSearch" class="col-lg-6 display-large">
+                <app-item-search [accountID]="accountID" (selectedItemsEmit)="selectedItemsEmit($event)"
+                    [catalogEncids]="this.selectedCatalogs"></app-item-search>
+            </div>
+            <div class="d-flex cart">
+                <div class="d-flex align-items-center display-small" *ngIf="!hideItemSearch" (click)="showSearch()">
+                    <div class="d-flex justify-content-end align-items-center ">
+                        <i class="fa fa-search me-2 ms-1 search-icon"></i>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center me-2 ms-2">
+                    <span class="lgin cust location me-2" *ngIf="showLocation">
+                        <button mat-icon-button [matMenuTriggerFor]="menu">
+                            <i class="fa fa-map-marker"></i>
+                        </button>
+                        <mat-menu #menu="matMenu">
+                            <button class="header-loc" mat-menu-item *ngFor="let loc of locations"
+                                [ngClass]="{'active': selectedLocation.id === loc.id}" (click)="changeLocation(loc)">
+                                <span>{{loc.place}}</span>
+                            </button>
+                        </mat-menu>
+                    </span>
+                    <div class="d-flex align-items-center cart-section" *ngIf="!isLoggedIn"
+                        (click)="dashboardClicked()">
+                        <div class="d-flex justify-content-end align-items-center">
+                            <i class="fa fa-user-circle-o ms-1"></i>
+                        </div>
+                    </div>
+                    <span class="lgin cust d-block d-flex align-items-center" *ngIf="isLoggedIn">
+                        <button mat-icon-button [matMenuTriggerFor]="menu" id="btnSelectMenu">
+                            <i class="fa fa-user-circle-o"></i>
+                        </button>
+                        <mat-menu #menu="matMenu">
+                            <button mat-menu-item (click)="redirectto('dashboard')" id="btnDashboard">
+                                <i class="fa fa-desktop me-2" aria-hidden="true"></i>
+                                <span>{{dashboard_cap | translate}}</span>
+                            </button>
+                            <button mat-menu-item (click)="redirectto('profile')" id="btnProfile">
+                                <i class="fa fa-address-card-o me-2" aria-hidden="true"></i>
+                                <span>{{user_profile | translate}}</span>
+                            </button>
+                            <button mat-menu-item (click)="doLogout()" id="btnLogout">
+                                <i class="fa fa-sign-out me-2" aria-hidden="true"></i>
+                                <span>{{logout_cap | translate}}</span>
+                            </button>
+                        </mat-menu>
+                    </span>
+                </div>
+                <div class="d-flex align-items-center cart-section pe-1" (click)="goToCart()" *ngIf="isCartVisible">
+                    <div class="d-flex justify-content-end align-items-center cart-container">
+                        <img class="ms-1" src="{{cdnPath}}assets/images/rx-order/Frame.svg" alt="">
+                        <span *ngIf="cartCount > 0" class="cart-count">{{cartCount}}</span>
+                        <span class="ms-1 display-large">Cart</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12 d-flex justify-content-center display-small" *ngIf="searchOption && !hideItemSearch">
+            <div class="col-md-12 col-sm-12 col-12 search">
+                <app-item-search [accountID]="accountID" (selectedItemsEmit)="selectedItemsEmit($event)"
+                    [catalogEncids]="this.selectedCatalogs"></app-item-search>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="!smallDevice && config?.header?.menu.length > 0" class="container p-0">
+        <nav class="navbar">
+            <ul>
+                <li class="navbar-item pointer-cursor" *ngFor="let menuItem of config?.header?.menu"
+                    [class.active]="activeMenuItem == menuItem.link" (click)="menuClicked(menuItem)">
+                    <i *ngIf="menuItem?.icon" [ngClass]="menuItem.icon">&nbsp;</i>{{menuItem.title}}
+                </li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<header *ngIf="config && headerName=='header2'" class="header2"
+    [ngStyle]="{ 'font-family': config.primaryFont }">
+    <div class="header">
+        <div class="header-grid">
+            <div class="left" *ngIf="!smallDevice">
+                <nav class="navbar">
+                    <ul class="d-flex justify-content-center w-100">
+                        <li class="navbar-item" *ngFor="let menuItem of config?.header?.menu"
+                            [class.pointer-cursor]="menuItem.link || (menuItem.submenu && menuItem.submenu.length)"
+                            [class.active]="activeMenuItem == menuItem.link || isSubmenuActive(menuItem)"
+                            [class.has-submenu]="menuItem.submenu?.length"
+                            (mouseenter)="menuItem.submenu?.length && showSubmenu(menuItem)"
+                            (mouseleave)="menuItem.submenu?.length && hideSubmenu(menuItem)">
+                            <span (click)="handleMenuItemClick(menuItem)"
+                                [class.no-link]="(!menuItem.link && menuItem.title!='Home') &&  !menuItem.submenu?.length">
+                                <i *ngIf="menuItem?.icon" [ngClass]="menuItem.icon">&nbsp;</i>
+                                {{menuItem.title}}
+                                <i *ngIf="menuItem.submenu?.length" class="dropdown-icon fa fa-chevron-down"></i>
+                            </span>
+
+                            <!-- Submenu - only show if submenu array has items -->
+                            <ul class="submenu" *ngIf="menuItem.submenu?.length" [class.show]="menuItem.showSubmenu">
+                                <li *ngFor="let subItem of menuItem.submenu" (click)="menuClicked(subItem)"
+                                    [class.active]="activeMenuItem == subItem.link">
+                                    <i *ngIf="subItem?.icon" [ngClass]="subItem.icon">&nbsp;</i>
+                                    {{subItem.title}}
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="middle d-flex justify-content-center">
+                <div *ngIf="smallDevice && config?.header?.menu.length > 0">
+                    <!-- Mobile menu button (shown only on small screens) -->
+                    <button class="nav-menu" [matMenuTriggerFor]="mobileMenu" aria-label="Main menu">
+                        <mat-icon>menu</mat-icon>
+                    </button>
+
+                    <!-- Mobile menu (nested submenu support) -->
+                    <mat-menu #mobileMenu="matMenu" class="mobile-menu">
+                        <ng-template matMenuContent>
+                            <ng-container *ngFor="let menuItem of config?.header?.menu; let i = index">
+                                <!-- For items with submenus -->
+                                <button mat-menu-item [matMenuTriggerFor]="subMenu"
+                                    *ngIf="menuItem.submenu?.length; else singleItem"
+                                    [attr.aria-label]="menuItem.title">
+                                    {{menuItem.title}}
+                                    <mat-icon>chevron_right</mat-icon>
+                                </button>
+
+                                <!-- Submenu template -->
+                                <mat-menu #subMenu="matMenu" class="mobile-submenu">
+                                    <button mat-menu-item *ngFor="let subItem of menuItem.submenu"
+                                        (click)="menuClicked(subItem)" [class.active]="activeMenuItem === subItem.link"
+                                        [attr.aria-label]="subItem.title">
+                                        {{subItem.title}}
+                                    </button>
+                                </mat-menu>
+
+                                <!-- For items without submenus -->
+                                <ng-template #singleItem>
+                                    <button mat-menu-item (click)="menuClicked(menuItem)"
+                                        [class.active]="activeMenuItem === menuItem.link"
+                                        [attr.aria-label]="menuItem.title">
+                                        {{menuItem.title}}
+                                    </button>
+                                </ng-template>
+                            </ng-container>
+                        </ng-template>
+                    </mat-menu>
+                </div>
+                <div *ngIf="config.logo" class="logo text-center" (click)="gotoActiveHome()">
+                    <img [src]="config.logo" alt="Logo" width="auto">
+                </div>
+            </div>
+            <div class="right d-flex cart justify-content-end ">
+                <div class="me-2 ms-2">
+                    <span class="lgin cust location me-2" *ngIf="showLocation">
+                        <button mat-icon-button [matMenuTriggerFor]="menu">
+                            <i class="fa fa-map-marker"></i>
+                        </button>
+                        <mat-menu #menu="matMenu">
+                            <button class="header-loc" mat-menu-item *ngFor="let loc of locations"
+                                [ngClass]="{'active': selectedLocation.id === loc.id}" (click)="changeLocation(loc)">
+                                <span>{{loc.place}}</span>
+                            </button>
+                        </mat-menu>
+                    </span>
+                    <div class="d-flex  cart-section" *ngIf="!isLoggedIn" (click)="dashboardClicked()">
+                        <div class="d-flex justify-content-end align-items-center">
+                            <i class="fa fa-user-circle-o ms-1"></i>
+                        </div>
+                    </div>
+                    <span class="lgin cust d-block d-flex" *ngIf="isLoggedIn">
+                        <button mat-icon-button [matMenuTriggerFor]="menu" id="btnSelectMenu">
+                            <i class="fa fa-user-circle-o"></i>
+                        </button>
+                        <mat-menu #menu="matMenu">
+                            <button mat-menu-item (click)="redirectto('dashboard')" id="btnDashboard">
+                                <i class="fa fa-desktop me-2" aria-hidden="true"></i>
+                                <span>{{dashboard_cap | translate}}</span>
+                            </button>
+                            <button mat-menu-item (click)="redirectto('profile')" id="btnProfile">
+                                <i class="fa fa-address-card-o me-2" aria-hidden="true"></i>
+                                <span>{{user_profile | translate}}</span>
+                            </button>
+                            <button mat-menu-item (click)="doLogout()" id="btnLogout">
+                                <i class="fa fa-sign-out me-2" aria-hidden="true"></i>
+                                <span>{{logout_cap | translate}}</span>
+                            </button>
+                        </mat-menu>
+                    </span>
+                </div>
+                <div class="cart-section pe-1" (click)="goToCart()" *ngIf="isCartVisible">
+                    <div class="d-flex justify-content-end align-items-center cart-container">
+                        <img class="ms-1" src="{{cdnPath}}assets/images/rx-order/Frame.svg" alt="">
+                        <span *ngIf="cartCount > 0" class="cart-count">{{cartCount}}</span>
+                        <!-- <span class="ms-1 display-large">Cart</span> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<header *ngIf="config && headerName=='header3'" class="header3"
+    [ngStyle]="{ 'font-family': config.primaryFont }">
+    <div class="header">
+        <div class="header-grid">
+            <div class="left" *ngIf="!smallDevice">
+                <div *ngIf="!hideItemSearch" class="pt-2">
+                    <app-item-search [accountID]="accountID" (selectedItemsEmit)="selectedItemsEmit($event)"
+                        [catalogEncids]="this.selectedCatalogs"></app-item-search>
+                </div>
+            </div>
+            <div class="middle d-flex justify-content-center">
+                <div *ngIf="smallDevice && config?.header?.menu.length > 0">
+                    <!-- Mobile menu button (shown only on small screens) -->
+                    <button class="nav-menu" [matMenuTriggerFor]="mobileMenu" aria-label="Main menu">
+                        <mat-icon>menu</mat-icon>
+                    </button>
+
+                    <!-- Mobile menu (nested submenu support) -->
+                    <mat-menu #mobileMenu="matMenu" class="mobile-menu">
+                        <ng-template matMenuContent>
+                            <ng-container *ngFor="let menuItem of config?.header?.menu; let i = index">
+                                <!-- For items with submenus -->
+                                <button mat-menu-item [matMenuTriggerFor]="subMenu"
+                                    *ngIf="menuItem.submenu?.length; else singleItem"
+                                    [attr.aria-label]="menuItem.title">
+                                    {{menuItem.title}}
+                                    <mat-icon>chevron_right</mat-icon>
+                                </button>
+
+                                <!-- Submenu template -->
+                                <mat-menu #subMenu="matMenu" class="mobile-submenu">
+                                    <button mat-menu-item *ngFor="let subItem of menuItem.submenu"
+                                        (click)="menuClicked(subItem)" [class.active]="activeMenuItem === subItem.link"
+                                        [attr.aria-label]="subItem.title">
+                                        {{subItem.title}}
+                                    </button>
+                                </mat-menu>
+
+                                <!-- For items without submenus -->
+                                <ng-template #singleItem>
+                                    <button mat-menu-item (click)="menuClicked(menuItem)"
+                                        [class.active]="activeMenuItem === menuItem.link"
+                                        [attr.aria-label]="menuItem.title">
+                                        {{menuItem.title}}
+                                    </button>
+                                </ng-template>
+                            </ng-container>
+                        </ng-template>
+                    </mat-menu>
+                </div>
+                <div *ngIf="config.logo" class="logo text-center" (click)="gotoActiveHome()">
+                    <img [src]="config.logo" alt="Logo" width="auto">
+                </div>
+            </div>
+            <div class="right d-flex cart justify-content-end ">
+                <div class="display-small" *ngIf="!hideItemSearch" (click)="showSearch()">
+                    <div class="d-flex justify-content-end align-items-center ">
+                        <i class="fa fa-search me-2 ms-1 search-icon"></i>
+                    </div>
+                </div>
+
+                <div class="me-2 ms-2">
+                    <span class="lgin cust location me-2" *ngIf="showLocation">
+                        <button mat-icon-button [matMenuTriggerFor]="menu">
+                            <i class="fa fa-map-marker"></i>
+                        </button>
+                        <mat-menu #menu="matMenu">
+                            <button class="header-loc" mat-menu-item *ngFor="let loc of locations"
+                                [ngClass]="{'active': selectedLocation.id === loc.id}" (click)="changeLocation(loc)">
+                                <span>{{loc.place}}</span>
+                            </button>
+                        </mat-menu>
+                    </span>
+                    <div class="d-flex  cart-section" *ngIf="!isLoggedIn" (click)="dashboardClicked()">
+                        <div class="d-flex justify-content-end align-items-center">
+                            <i class="fa fa-user-circle-o ms-1"></i>
+                        </div>
+                    </div>
+                    <span class="lgin cust d-block d-flex" *ngIf="isLoggedIn">
+                        <button mat-icon-button [matMenuTriggerFor]="menu" id="btnSelectMenu">
+                            <i class="fa fa-user-circle-o"></i>
+                        </button>
+                        <mat-menu #menu="matMenu">
+                            <button mat-menu-item (click)="redirectto('dashboard')" id="btnDashboard">
+                                <i class="fa fa-desktop me-2" aria-hidden="true"></i>
+                                <span>{{dashboard_cap | translate}}</span>
+                            </button>
+                            <button mat-menu-item (click)="redirectto('profile')" id="btnProfile">
+                                <i class="fa fa-address-card-o me-2" aria-hidden="true"></i>
+                                <span>{{user_profile | translate}}</span>
+                            </button>
+                            <button mat-menu-item (click)="doLogout()" id="btnLogout">
+                                <i class="fa fa-sign-out me-2" aria-hidden="true"></i>
+                                <span>{{logout_cap | translate}}</span>
+                            </button>
+                        </mat-menu>
+                    </span>
+                </div>
+                <div class="cart-section pe-1" (click)="goToCart()" *ngIf="isCartVisible">
+                    <div class="d-flex justify-content-end align-items-center cart-container">
+                        <img class="ms-1" src="{{cdnPath}}assets/images/rx-order/Frame.svg" alt="">
+                        <span *ngIf="cartCount > 0" class="cart-count">{{cartCount}}</span>
+                        <!-- <span class="ms-1 display-large">Cart</span> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12 d-flex justify-content-center header-inline-menu"
+            *ngIf="!smallDevice && config?.header?.menu.length > 0">
+            <nav class="navbar">
+                <ul class="d-flex justify-content-center w-100">
+                    <li class="navbar-item" *ngFor="let menuItem of config?.header?.menu"
+                        [class.pointer-cursor]="menuItem.link || (menuItem.submenu && menuItem.submenu.length)"
+                        [class.active]="activeMenuItem == menuItem.link || isSubmenuActive(menuItem)"
+                        [class.has-submenu]="menuItem.submenu?.length"
+                        (mouseenter)="menuItem.submenu?.length && showSubmenu(menuItem)"
+                        (mouseleave)="menuItem.submenu?.length && hideSubmenu(menuItem)">
+                        <span (click)="handleMenuItemClick(menuItem)"
+                            [class.no-link]="(!menuItem.link && menuItem.title!='Home') && !menuItem.submenu?.length">
+                            <i *ngIf="menuItem?.icon" [ngClass]="menuItem.icon">&nbsp;</i>
+                            {{menuItem.title}}
+                            <i *ngIf="menuItem.submenu?.length" class="dropdown-icon fa fa-chevron-down"></i>
+                        </span>
+
+                        <!-- Submenu - only show if submenu array has items -->
+                        <ul class="submenu" *ngIf="menuItem.submenu?.length" [class.show]="menuItem.showSubmenu">
+                            <li *ngFor="let subItem of menuItem.submenu" (click)="menuClicked(subItem)"
+                                [class.active]="activeMenuItem == subItem.link">
+                                <i *ngIf="subItem?.icon" [ngClass]="subItem.icon">&nbsp;</i>
+                                {{subItem.title}}
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <div class="col-lg-12 d-flex justify-content-center display-small" *ngIf="searchOption && !hideItemSearch">
+            <div class="col-md-12 col-sm-12 col-12 search">
+                <app-item-search [accountID]="accountID" (selectedItemsEmit)="selectedItemsEmit($event)"
+                    [catalogEncids]="this.selectedCatalogs"></app-item-search>
+            </div>
+        </div>
+    </div>
+</header>

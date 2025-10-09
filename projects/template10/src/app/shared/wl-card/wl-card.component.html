@@ -1,0 +1,785 @@
+<!----new ui start big device-->
+<div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 fit_in p-0 cstmWlCard"
+  *ngIf="booking !==undefined && !smallDevice && history===undefined && type !=='previous'">
+  <div class="providerDeatils">
+    <div class="providerNameLoc" *ngIf="(booking && booking.providerAccount && booking.providerAccount.businessName)">
+      <div class="providerName" *ngIf="booking && booking.providerAccount && booking.providerAccount.businessName"
+        (click)="cardActionPerformed('wl', 'providerDetails', booking, $event)">
+        {{booking.providerAccount.businessName || '' | capitalizeFirst}}</div>
+      <div class="providerLoc" *ngIf="booking && booking.location && booking.location.place">
+        {{booking.location.place
+        | capitalizeFirst}}</div>
+      <div *ngIf="booking.token" class="ribbon">&nbsp;&nbsp;{{'Token' | translate}}
+        {{booking.token}}
+      </div>
+      <div *ngIf="!booking.token" class="ribbon">&nbsp;&nbsp;{{'Check-in' | translate}}</div>
+    </div>
+    <div class="meetingBtnInfo" *ngIf="showJoinJaldeeVideoBtn && videoBtnCaption">
+      <button type="button" class="meetingBtn" *ngIf="videoBtnCaption" id="btn_joinmeeting"
+        (click)="cardActionPerformed('wl', 'joinVideo', booking, $event)">{{videoBtnCaption |
+        translate}}</button>
+    </div>
+    <div class="meetingBtnInfo"
+      *ngIf="showJoinOtherVideoBtn &&(booking &&  booking.service &&  booking.service.virtualCallingModes && booking.service.virtualCallingModes.length && booking.service.virtualCallingModes.length > 0)">
+      <button type="button" class="meetingBtn" id="btn_joinvideo_other"
+        *ngIf="(booking &&  booking.service &&  booking.service.virtualCallingModes && booking.service.virtualCallingModes[0] && booking.service.virtualCallingModes[0].value) && videoBtnCaption"
+        (click)="joinOtherVideoPerform(booking.service.virtualCallingModes[0].value)">{{videoBtnCaption |
+        translate}}</button>
+    </div>
+  </div>
+  <div class="dateOtherStatusInfo">
+    <div class="dateinfotf" *ngIf="type">
+      <div *ngIf="type" class="dateInfo">
+        <div *ngIf="booking && booking.date" class="monthYear">
+          <div class="monthName" *ngIf="booking && booking.date">{{booking.date | date:'MMM'}}</div>
+          <div class="yearName" *ngIf="booking && booking.date">{{booking.date | date:'y'}}</div>
+        </div>
+        <div class="dayDaYName" *ngIf="booking && booking.date">
+          <div class="dayOnly" *ngIf="booking && booking.date">{{booking.date | date:'d'}}
+          </div>
+          <div class="dayNameOnly" *ngIf="booking && booking.date">{{booking.date | date:'EEEE'}}</div>
+        </div>
+      </div>
+      <div class="mt-2 dayNameOnly"
+        *ngIf="booking && booking.queue && (booking.queue.queueStartTime || booking.queue.queueEndTime)">
+        {{booking.queue.queueStartTime}} - {{booking.queue.queueEndTime}} </div>
+    </div>
+    <div class="serviceOtherInfo">
+      <div class="w-100">
+        <div class="serviceMoreOpt">
+          <div class="serviceIconInfo">
+            <div
+              *ngIf="(selectedService.length===0 && booking && booking.service && booking.service.serviceType && booking.service.serviceType === 'virtualService') && (booking && booking.service && booking.service.virtualCallingModes && booking.service.virtualCallingModes.length && booking.service.virtualCallingModes.length > 0)">
+              <i class="fa phon-icon serviceIcon"
+                *ngIf="booking && booking.service && booking.service.virtualCallingModes && booking.service.virtualCallingModes[0] && booking.service.virtualCallingModes[0].callingMode && booking.service.virtualCallingModes[0].callingMode === 'Phone'"></i>
+              <i class="fa meet-icon serviceIcon"
+                *ngIf="booking && booking.service && booking.service.virtualCallingModes && booking.service.virtualCallingModes[0] && booking.service.virtualCallingModes[0].callingMode && booking.service.virtualCallingModes[0].callingMode === 'GoogleMeet'"></i>
+              <i class="fa zoom-icon serviceIcon"
+                *ngIf="booking && booking.service && booking.service.virtualCallingModes && booking.service.virtualCallingModes[0] && booking.service.virtualCallingModes[0].callingMode && booking.service.virtualCallingModes[0].callingMode === 'Zoom'"></i>
+              <i class="fa jvideo-icon jvideo-icon-s serviceIcon"
+                *ngIf="booking && booking.service && booking.service.virtualCallingModes && booking.service.virtualCallingModes[0] && booking.service.virtualCallingModes[0].callingMode && booking.service.virtualCallingModes[0].callingMode === 'VideoCall'"></i>
+              <i class="fa wtsapaud-icon serviceIcon"
+                *ngIf="booking && booking.service && booking.service.virtualCallingModes && booking.service.virtualCallingModes[0] && booking.service.virtualCallingModes[0].callingMode && booking.service.virtualCallingModes[0].callingMode === 'WhatsApp' && booking && booking.service && booking.service.virtualServiceType && booking.service.virtualServiceType ==='audioService'"></i>
+              <i class="fa wtsapvid-icon serviceIcon"
+                *ngIf="booking && booking.service && booking.service.virtualCallingModes && booking.service.virtualCallingModes[0] && booking.service.virtualCallingModes[0].callingMode && booking.service.virtualCallingModes[0].callingMode === 'WhatsApp' && booking && booking.service && booking.service.virtualServiceType && booking.service.virtualServiceType ==='videoService'"></i>
+            </div>
+            <div class="service-icon"
+              *ngIf="booking.service.serviceType === 'physicalService' && selectedService && selectedService[0] && selectedService[0][0] && selectedService[0][0].servicegallery && selectedService[0][0].servicegallery.length>0">
+              <img class="serviceIcon"
+                *ngIf="selectedService && selectedService[0] && selectedService[0][0] &&selectedService[0][0].servicegallery && selectedService[0][0].servicegallery[0] && selectedService[0][0].servicegallery[0].thumbUrl"
+                [src]="selectedService[0][0].servicegallery[0].thumbUrl" />
+            </div>
+            <div
+              *ngIf="selectedService.length===0 && booking.service.serviceType && booking.service.serviceType !== 'virtualService' && booking.service.serviceType === 'physicalService'">
+              <img class="serviceIcon" src="{{cdnPath}}assets/images/meeting_Artboard.png" alt="Physical Service Image">
+            </div>
+            <div class="serviceName" *ngIf="booking && booking.service && booking.service.name">
+              {{booking.service.name | capitalizeFirst}}
+            </div>
+          </div>
+          <div class="more_opt">
+            <button mat-icon-button [matMenuTriggerFor]="appMenu" (click)="stopprop($event)">
+              <mat-icon>more_horiz</mat-icon>
+            </button>
+            <mat-menu #appMenu="matMenu">
+              <button mat-menu-item *ngIf="showRescheduleBtn" id="btn_menureschedule"
+                (click)="cardActionPerformed('wl', 'reschedule', booking, $event)">
+                <i class="consumer-reschedule-icon"></i>{{'Reschedule' | translate}}</button>
+              <button mat-menu-item *ngIf="showCancelBtn" id="btn_menucancel"
+                (click)="cardActionPerformed('wl', 'cancel', booking, $event)">
+                <i class="fa fa-window-close-o"></i>{{'Cancel' | translate}}</button>
+              <button mat-menu-item id="btn_sendmessage"
+                (click)="cardActionPerformed('wl', 'sendMessage', booking, $event)">
+                <i class="fa fa-comment-o"></i>{{send_msg_cap | translate}}</button>
+              <button mat-menu-item id="btn_sendattachment"
+                *ngIf="booking.waitlistStatus!=='cancelled' || booking.waitlistStatus =='checkedIn'"
+                (click)="cardActionPerformed('wl', 'sendAttachment', booking, $event)">
+                <i class="material-icons">attach_file</i>{{'Send Attachments' | translate}}</button>
+              <button mat-menu-item id="btn_viewattachment" *ngIf="showViewAttachBtn"
+                (click)="cardActionPerformed('wl', 'viewAttachment', booking, $event)">
+                <i class="material-icons">attach_file</i>{{'View Attachments' | translate}}</button>
+              <button mat-menu-item *ngIf="showRateBtn" id="btn_rating"
+                (click)="cardActionPerformed('wl', 'rating', booking, $event)">
+                <i class="fa fa-star-o" aria-hidden="true"></i>{{rate_visit | translate}}</button>
+              <button mat-menu-item *ngIf="showMeetingDetailsBtn" id="btn_meetingdetails"
+                (click)="cardActionPerformed('wl', 'meetingDetails', booking, $event)">
+                <i class="fa fa-sticky-note-o" aria-hidden="true"></i>{{'Meeting details' | translate}}</button>
+            </mat-menu>
+          </div>
+        </div>
+        <div class="exhInfoFlex" *ngIf="booking && booking.date">
+          <div class="cstmTxt field-head">{{'Date' | translate}}</div>
+          <div class="cstmTxtInfo">{{booking.date| date:'EEEE'}}, {{booking.date |
+            date:'d'}} {{booking.date |
+            date:'MMM'}} {{booking.date | date:'y'}}&nbsp;
+          </div>
+        </div>
+        <div class="exhInfoFlex" *ngIf="booking && booking.timezone">
+          <div class="cstmTxt field-head">{{ 'Timezone' | translate }} </div>
+          <div class="cstmTxtInfo green">{{booking.timezone}}</div>
+        </div>
+        <div class="exhInfoFlex"
+          *ngIf="booking && booking.waitlistingFor&& booking.waitlistingFor[0] && (booking.waitlistingFor[0].firstName || booking.waitlistingFor[0].lastName
+                                                                                    ||(booking.countryCode && booking.waitlistPhoneNumber) || (booking.waitlistingFor[0].email) )">
+          <div class="cstmTxt field-head">{{ 'Booking for' | translate }} </div>
+          <div class="cstmTxtInfo">
+            <span *ngIf="booking.waitlistingFor[0].title">{{booking.waitlistingFor[0].title}}&nbsp;</span>
+            {{booking.waitlistingFor[0].firstName}}&nbsp;{{booking.waitlistingFor[0].lastName}},
+            {{booking.countryCode}}{{booking.waitlistPhoneNumber}},{{booking.waitlistingFor[0].email}}
+          </div>
+        </div>
+        <div class="exhInfoFlex" *ngIf="booking && booking.checkinEncId">
+          <div class="cstmTxt field-head">{{ 'Booking Id' | translate }} </div>
+          <div class="cstmTxtInfo">{{booking.checkinEncId}}</div>
+        </div>
+        <div class="exhInfoFlex"
+          *ngIf="booking && booking.waitlistStatus && (booking.waitlistStatus == 'arrived' || booking.waitlistStatus == 'checkedIn') && booking.calculationMode !== 'NoCalc'">
+          <div class="cstmTxt field-head" *ngIf="!booking.serviceTime">{{ 'Est wait time' | translate }}</div>
+          <div class="cstmTxtInfo" *ngIf="!booking.serviceTime">
+            {{getTimeToDisplay(booking.appxWaitingTime)}}</div>
+        </div>
+        <div class="exhInfoFlex"
+          *ngIf="booking && booking.waitlistStatus && (booking.waitlistStatus == 'arrived' || booking.waitlistStatus == 'checkedIn') && booking.calculationMode !== 'NoCalc' && booking.serviceTime">
+          <div class="cstmTxt field-head" *ngIf="booking.serviceTime">{{'Starts at' | translate}} </div>
+          <div class="cstmTxtInfo" *ngIf="booking.serviceTime">{{booking.serviceTime}}</div>
+        </div>
+        <div class="exhInfoFlex"
+          *ngIf="booking && booking.provider &&( booking.provider.businessName || booking.provider.firstName || booking.provider.lastName)">
+          <div class="cstmTxt field-head">{{provider_label | capitalizeFirst}} </div>
+          <div class="cstmTxtInfo"
+            *ngIf="booking && booking.provider &&( booking.provider.firstName ||  booking.provider.lastName)">
+            {{booking.provider.firstName}}&nbsp;{{booking.provider.lastName}}</div>
+        </div>
+        <div>
+          <div class="exhInfoFlex"
+            *ngIf="(booking && booking.service && booking.service.serviceType && booking.service.serviceType === 'virtualService')&& 
+                                                                                                (booking && booking.waitlistStatus && (booking.waitlistStatus!=='cancelled' && booking.waitlistStatus!=='done'))">
+            <div class="cstmTxt field-head">{{ 'Status' | translate }}</div>
+            <div class="disableTxt" *ngIf="booking && booking.videoCallButton==='DISABLED' && booking.videoCallMessage">
+              {{booking.videoCallMessage | translate}}</div>
+            <div class="enableTxt" *ngIf="booking && booking.videoCallButton==='ENABLED' && booking.videoCallMessage">
+              {{booking.videoCallMessage | translate}}</div>
+          </div>
+          <div class="exhInfoFlex"
+            *ngIf="!((booking && booking.service && booking.service.serviceType && booking.service.serviceType === 'virtualService')&& 
+            (booking && booking.waitlistStatus && (booking.waitlistStatus!=='cancelled' && booking.waitlistStatus!=='done')))">
+            <div class="cstmTxt field-head">{{ 'Status' | translate }}</div>
+            <div class="book_stats mt-4">
+              <span [class]="getBookingStatusClass(booking.waitlistStatus)"
+                *ngIf="((booking && booking.service && booking.service.serviceType && booking.service.serviceType === 'virtualService') && booking && booking.waitlistStatus && booking.waitlistStatus !== 'arrived')">{{getDisplayName(booking.waitlistStatus)}}</span>
+              <span [class]="getBookingStatusClass(booking.waitlistStatus)"
+                *ngIf="(booking && booking.service && booking.service.serviceType && booking.service.serviceType !== 'virtualService' && booking.waitlistStatus)">{{getDisplayName(booking.waitlistStatus)
+                | translate}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="presPaidFlex prescpBtn">
+    <div *ngIf="showQnrBtn">
+      <button id="btn_moreinfo" class="amountDueBtn" (click)="cardActionPerformed('wl', 'details', booking, $event)">
+        {{ 'More Info' | translate }}
+      </button>
+    </div>
+    <div class="ammountFlex">
+      <div class="serviceCharge ms-1" *ngIf="showReceiptBtn &&  showPaidInfo && !booking.invoiceCreated">
+        <div class="serviceChargeTxt" *ngIf="booking && booking.amountPaid">{{ 'Amount Paid' | translate }}
+        </div>
+        <div class="amountPaid" *ngIf="booking && booking.amountPaid">{{booking.amountPaid |
+          currency:'&#8377;'}}
+        </div>
+      </div>
+      <div *ngIf="showPayBtn && !booking.invoiceCreated">
+        <button class="amountDueBtn" *ngIf="booking && booking.amountDue" id="btn_viewbill"
+          (click)="cardActionPerformed('wl', 'viewBill', booking, $event)">{{'Pay' | translate}}
+        </button>
+      </div>
+      <div *ngIf="showInvoiceBtn && booking.invoiceCreated">
+        <button class="amountDueBtn" id="btn_invoice"
+          (click)="cardActionPerformed('wl', 'viewBill', booking, $event)">{{'Invoice' |
+          translate}}
+
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--new ui end big device-->
+<!-----new ui start small device-->
+<div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 fit_in pad-1 cstmWlCard"
+  *ngIf="booking !==undefined && smallDevice && history===undefined && type !=='previous'">
+  <div class="serviceMoreOpt">
+    <div class="providerNameLocSmall"
+      *ngIf="(booking && booking.providerAccount && booking.providerAccount.businessName) || (booking && booking.location && booking.location.address)">
+      <div class="providerName" *ngIf="booking && booking.providerAccount && booking.providerAccount.businessName"
+        (click)="cardActionPerformed('wl', 'providerDetails', booking, $event)">
+        {{booking.providerAccount.businessName || '' | capitalizeFirst}}</div>
+      <div class="providerLoc" *ngIf="booking && booking.location && booking.location.address">
+        {{booking.location.place
+        | capitalizeFirst}}</div>
+      <div *ngIf="booking.token" class="ribbon">&nbsp;&nbsp;{{'Token' | translate}}
+        {{booking.token}}
+      </div>
+      <div *ngIf="!booking.token" class="ribbon">&nbsp;&nbsp;{{'Check-in' | translate}}</div>
+    </div>
+    <!--more info start-->
+    <div class="more_opt">
+      <button mat-icon-button id="btn_menuselect" [matMenuTriggerFor]="appMenu" (click)="stopprop($event)">
+        <mat-icon>more_horiz</mat-icon>
+      </button>
+      <mat-menu #appMenu="matMenu">
+        <button mat-menu-item *ngIf="showRescheduleBtn" id="btn_menureschedule"
+          (click)="cardActionPerformed('wl', 'reschedule', booking, $event)">
+          <i class="consumer-reschedule-icon"></i>{{'Reschedule' | translate}}</button>
+        <button mat-menu-item *ngIf="showCancelBtn" id="btn_menucancel"
+          (click)="cardActionPerformed('wl', 'cancel', booking, $event)">
+          <i class="fa cross-icon"></i>{{'Cancel' | translate}}</button>
+        <button mat-menu-item id="btn_sendmessage" (click)="cardActionPerformed('wl', 'sendMessage', booking, $event)">
+          <i class="fa chat-icon"></i>{{send_msg_cap | translate}}</button>
+        <button mat-menu-item id="btn_sendattachment"
+          *ngIf="booking.waitlistStatus!=='cancelled' || booking.waitlistStatus =='checkedIn'"
+          (click)="cardActionPerformed('wl', 'sendAttachment', booking, $event)">
+          <i class="material-icons">attach_file</i>{{'Send Attachments' | translate}}</button>
+        <button mat-menu-item *ngIf="showViewAttachBtn" id="btn_viewattachment"
+          (click)="cardActionPerformed('wl', 'viewAttachment', booking, $event)">
+          <i class="material-icons">attach_file</i>{{'View Attachments' | translate}}</button>
+        <button mat-menu-item *ngIf="showRateBtn" id="btn_rating"
+          (click)="cardActionPerformed('wl', 'rating', booking, $event)">
+          <i class="fa fa-star-o" aria-hidden="true"></i>{{rate_visit | translate}}</button>
+        <button mat-menu-item *ngIf="showMeetingDetailsBtn" id="btn_meetingdetails"
+          (click)="cardActionPerformed('wl', 'meetingDetails', booking, $event)">
+          <i class="fa fa-sticky-note-o" aria-hidden="true"></i>{{'Meeting details' | translate}}</button>
+      </mat-menu>
+    </div>
+    <!--more info end-->
+  </div>
+  <!----provider date calendar design start-->
+  <div class="dateinfotfSmall" *ngIf="type">
+    <div *ngIf="type" class="dateInfoSmall">
+      <div *ngIf="booking && booking.date" class="monthYearSmall">
+        <div class="monthName" *ngIf="booking && booking.date">{{booking.date | date:'MMM'}}</div>
+        <div class="yearName" *ngIf="booking && booking.date">{{booking.date |date:'y'}}</div>
+      </div>
+      <div class="dayDaYNameSmall" *ngIf="booking && booking.date">
+        <div class="dayOnlySmall" *ngIf="booking && booking.date">{{booking.date |date:'d'}}
+        </div>
+        <div class="dayNameOnlysmall" *ngIf="booking && booking.date">{{booking.date | date:'EEEE'}}</div>
+      </div>
+    </div>
+    <!--service name and google calendat stert-->
+    <div class="cstmWidth">
+      <!--servbice start-->
+      <div class="serviceIconInfo serviceIconInfoSmall">
+        <div
+          *ngIf="(booking && booking.service && booking.service.serviceType && booking.service.serviceType === 'virtualService') && (booking && booking.service && booking.service.virtualCallingModes && booking.service.virtualCallingModes.length && booking.service.virtualCallingModes.length > 0)">
+          <i class="fa phon-icon serviceIcon"
+            *ngIf="booking && booking.service && booking.service.virtualCallingModes && booking.service.virtualCallingModes[0] && booking.service.virtualCallingModes[0].callingMode && booking.service.virtualCallingModes[0].callingMode === 'Phone'"></i>
+          <i class="fa meet-icon serviceIcon"
+            *ngIf="booking && booking.service && booking.service.virtualCallingModes && booking.service.virtualCallingModes[0] && booking.service.virtualCallingModes[0].callingMode && booking.service.virtualCallingModes[0].callingMode === 'GoogleMeet'"></i>
+          <i class="fa zoom-icon serviceIcon"
+            *ngIf="booking && booking.service && booking.service.virtualCallingModes && booking.service.virtualCallingModes[0] && booking.service.virtualCallingModes[0].callingMode && booking.service.virtualCallingModes[0].callingMode === 'Zoom'"></i>
+          <i class="fa jvideo-icon jvideo-icon-s serviceIcon"
+            *ngIf="booking && booking.service && booking.service.virtualCallingModes && booking.service.virtualCallingModes[0] && booking.service.virtualCallingModes[0].callingMode && booking.service.virtualCallingModes[0].callingMode === 'VideoCall'"></i>
+          <i class="fa wtsapaud-icon serviceIcon"
+            *ngIf="booking && booking.service && booking.service.virtualCallingModes && booking.service.virtualCallingModes[0] && booking.service.virtualCallingModes[0].callingMode && booking.service.virtualCallingModes[0].callingMode === 'WhatsApp' && booking && booking.service && booking.service.virtualServiceType && booking.service.virtualServiceType ==='audioService'"></i>
+          <i class="fa wtsapvid-icon serviceIcon"
+            *ngIf="booking && booking.service && booking.service.virtualCallingModes && booking.service.virtualCallingModes[0] && booking.service.virtualCallingModes[0].callingMode && booking.service.virtualCallingModes[0].callingMode === 'WhatsApp' && booking && booking.service && booking.service.virtualServiceType && booking.service.virtualServiceType ==='videoService'"></i>
+        </div>
+        <div
+          *ngIf="booking.service.serviceType && booking.service.serviceType !== 'virtualService' && booking.service.serviceType === 'physicalService'">
+          <img class="serviceIcon" src="{{cdnPath}}assets/images/meeting_Artboard.png" alt="Physical Service Image">
+        </div>
+        <div class="serviceNameSmall" *ngIf="booking && booking.service && booking.service.name">
+          {{booking.service.name | capitalizeFirst}}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="padcstm">
+    <div *ngIf="booking && booking.service && booking.service.serviceType">
+      <div class="mt-1 exhInfoFlex"
+        *ngIf="(booking && booking.service && booking.service.serviceType && booking.service.serviceType === 'virtualService')&& 
+                                                                                        (booking && booking.waitlistStatus && (booking.waitlistStatus!=='cancelled' && booking.waitlistStatus!=='done'))">
+        <div class="cstmTxt field-head">{{ 'Status' | translate }}</div>
+        <div class="disableTxt" *ngIf="booking && booking.videoCallButton==='DISABLED' && booking.videoCallMessage">
+          {{booking.videoCallMessage | translate}}</div>
+        <div class="enableTxt" *ngIf="booking && booking.videoCallButton==='ENABLED' && booking.videoCallMessage">
+          {{booking.videoCallMessage | translate}}</div>
+      </div>
+      <div class="mt-1 exhInfoFlex"
+        *ngIf="(booking && booking.service && booking.service.serviceType && booking.service.serviceType !== 'virtualService')">
+        <div class="cstmTxt field-head">{{ 'Status' | translate }}</div>
+        <div class="book_stats mt-4">
+          <span [class]="getBookingStatusClass(booking.waitlistStatus)"
+            *ngIf="((booking && booking.service && booking.service.serviceType && booking.service.serviceType === 'virtualService') && booking && booking.waitlistStatus && booking.waitlistStatus !== 'arrived')">{{getDisplayName(booking.waitlistStatus)
+            | translate}}</span>
+          <span [class]="getBookingStatusClass(booking.waitlistStatus)"
+            *ngIf="(booking && booking.service && booking.service.serviceType && booking.service.serviceType !== 'virtualService' && booking.waitlistStatus)">{{getDisplayName(booking.waitlistStatus)
+            | translate}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="mt-1 exhInfoFlex" *ngIf="booking && booking.date">
+      <div class="cstmTxt field-head">{{'Date' | translate}}</div>
+      <div class="cstmTxtInfo">{{booking.date| date:'EEEE'}}, {{booking.date |
+        date:'d'}} {{booking.date |
+        date:'MMM'}} {{booking.date | date:'y'}}&nbsp;
+      </div>
+    </div>
+    <div class="exhInfoFlex" *ngIf="booking && booking.timezone">
+      <div class="cstmTxt field-head">{{ 'Timezone' | translate }} </div>
+      <div class="cstmTxtInfo green">{{booking.timezone}}</div>
+    </div>
+    <div class="exhInfoFlex"
+      *ngIf="booking && booking.waitlistingFor && booking.waitlistingFor[0] && (booking.waitlistingFor[0].firstName || booking.waitlistingFor[0].lastName)">
+      <div class="cstmTxt field-head">{{ 'Booking for' | translate }} </div>
+      <div class="cstmTxtInfo"> <span *ngIf="booking.waitlistingFor[0].title">{{booking.waitlistingFor[0].title}}
+          &nbsp;</span>
+        {{booking.waitlistingFor[0].firstName}}
+        &nbsp;{{booking.waitlistingFor[0].lastName}}</div>
+    </div>
+    <div class="exhInfoFlex"
+      *ngIf="booking && booking.waitlistingFor && booking.waitlistingFor[0] && (booking.countryCode && booking.phoneNumber)">
+      <div class="cstmTxt field-head">{{ 'Phone' | translate }} </div>
+      <div class="cstmTxtInfo">
+        {{booking.countryCode}}{{booking.phoneNumber}} </div>
+    </div>
+    <div class="exhInfoFlex" *ngIf="booking && booking.checkinEncId">
+      <div class="cstmTxt field-head">{{ 'Booking Id' | translate }} </div>
+      <div class="cstmTxtInfo">{{booking.checkinEncId}}</div>
+    </div>
+    <div class="exhInfoFlex"
+      *ngIf="booking && booking.waitlistStatus && (booking.waitlistStatus == 'arrived' || booking.waitlistStatus == 'checkedIn') && booking.calculationMode !== 'NoCalc'">
+      <div class="cstmTxt field-head" *ngIf="!booking.serviceTime">{{ 'Est wait time' | translate }}</div>
+      <div class="cstmTxtInfo" *ngIf="!booking.serviceTime">
+        {{getTimeToDisplay(booking.appxWaitingTime)}}</div>
+    </div>
+    <div class="exhInfoFlex"
+      *ngIf="booking && booking.waitlistStatus && (booking.waitlistStatus == 'arrived' || booking.waitlistStatus == 'checkedIn') && booking.calculationMode !== 'NoCalc' && booking.serviceTime">
+      <div class="cstmTxt field-head" *ngIf="booking.serviceTime">{{'Starts at' | translate}} </div>
+      <div class="cstmTxtInfo" *ngIf="booking.serviceTime"> {{booking.serviceTime}}</div>
+    </div>
+    <div class="exhInfoFlex"
+      *ngIf="booking && booking.provider &&( booking.provider.businessName || booking.provider.firstName || booking.provider.lastName)">
+      <div class="cstmTxt field-head">{{provider_label | capitalizeFirst}}</div>
+      <div class="cstmTxtInfo"
+        *ngIf="booking && booking.provider &&( booking.provider.firstName ||  booking.provider.lastName)">
+        {{booking.provider.firstName}}&nbsp;{{booking.provider.lastName}}</div>
+    </div>
+  </div>
+  <div class="ammountFlex">
+    <div class="serviceCharge ms-1" *ngIf="showReceiptBtn &&  showPaidInfo && !booking.invoiceCreated">
+      <div class="serviceChargeTxt" *ngIf="booking && booking.amountPaid">{{ 'Amount Paid' |
+        translate }}
+      </div>
+      <div class="amountPaid" *ngIf="booking && booking.amountPaid">{{booking.amountPaid |
+        currency:'&#8377;'}}
+      </div>
+    </div>
+    <div *ngIf="showPayBtn &&  !booking.invoiceCreated">
+      <button class="amountDueBtn" *ngIf="booking && booking.amountDue" id="btn_viewbill"
+        (click)="cardActionPerformed('wl', 'viewBill', booking, $event)">{{'Pay' | translate}}
+      </button>
+    </div>
+    <div *ngIf="showInvoiceBtn && booking.invoiceCreated">
+      <button class="amountDueBtn" id="btn_invoice"
+        (click)="cardActionPerformed('wl', 'viewBill', booking, $event)">{{'Invoice' |
+        translate}}
+      </button>
+    </div>
+  </div>
+  <div class="ammountFlex ammountFlexsmall">
+    <div *ngIf="showQnrBtn">
+      <button class="amountDueBtn" id="btn_moreinfo" (click)="cardActionPerformed('wl', 'details', booking, $event)">
+        {{ 'More Info' | translate }}
+      </button>
+    </div>
+    <div class="meetingBtnInfo meetingBtnInfoSmall" *ngIf="showJoinJaldeeVideoBtn && videoBtnCaption">
+      <button type="button" class="meetingBtn meetingBtnsmall" id="btn_joinmeeting" *ngIf="videoBtnCaption"
+        (click)="cardActionPerformed('wl', 'joinVideo', booking, $event)">{{videoBtnCaption |
+        translate}}</button>
+    </div>
+    <div class="meetingBtnInfo meetingBtnInfoSmall"
+      *ngIf="showJoinOtherVideoBtn &&(booking &&  booking.service &&  booking.service.virtualCallingModes && booking.service.virtualCallingModes.length && booking.service.virtualCallingModes.length > 0)">
+      <button type="button" class="meetingBtn meetingBtnsmall" id="btn_joinvideo_other"
+        *ngIf="(booking &&  booking.service &&  booking.service.virtualCallingModes && booking.service.virtualCallingModes[0] && booking.service.virtualCallingModes[0].value) && videoBtnCaption"
+        (click)="joinOtherVideoPerform(booking.service.virtualCallingModes[0].value)">{{videoBtnCaption |
+        translate}}</button>
+    </div>
+  </div>
+</div>
+<div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 fit_in p-0 cstmWlCard"
+  *ngIf="booking===undefined && !smallDevice && history !==undefined && type ==='previous'">
+  <div class="providerDeatils">
+    <div class="providerNameLoc" *ngIf="(history && history.providerAccount && history.providerAccount.businessName)">
+      <div class="providerName" *ngIf="history && history.providerAccount && history.providerAccount.businessName"
+        (click)="cardActionPerformed('wl', 'providerDetails', history, $event)">
+        {{history.providerAccount.businessName || '' | capitalizeFirst}}</div>
+      <div class="providerLoc" *ngIf="history && history.location && history.location.address">
+        {{history.location.address
+        | capitalizeFirst}}</div>
+      <div *ngIf="history.token" class="ribbon">&nbsp;&nbsp;{{'Token' | translate}}
+        {{history.token}}
+      </div>
+      <div *ngIf="!history.token" class="ribbon">&nbsp;&nbsp;{{'Check-in' | translate}}</div>
+    </div>
+
+  </div>
+  <div class="dateOtherStatusInfo">
+    <div class="dateinfotf" *ngIf="type">
+      <div *ngIf="type" class="dateInfo">
+        <div *ngIf="history && history.date" class="monthYear">
+          <div class="monthName" *ngIf="history && history.date">{{history.date | date:'MMM'}}</div>
+          <div class="yearName" *ngIf="history && history.date">{{history.date | date:'y'}}</div>
+        </div>
+        <div class="dayDaYName" *ngIf="history && history.date">
+          <div class="dayOnly" *ngIf="history && history.date">{{history.date | date:'d'}}
+          </div>
+          <div class="dayNameOnly" *ngIf="history && history.date">{{history.date | date:'EEEE'}}</div>
+        </div>
+      </div>
+      <div class="mt-2 dayNameOnly"
+        *ngIf="history && history.queue && (history.queue.queueStartTime || history.queue.queueEndTime)">
+        {{history.queue.queueStartTime}} - {{history.queue.queueEndTime}} </div>
+    </div>
+    <div class="serviceOtherInfo">
+      <div class="w-100">
+        <div class="serviceMoreOpt">
+          <div class="serviceIconInfo">
+            <div
+              *ngIf="(history && history.service && history.service.serviceType && history.service.serviceType === 'virtualService') && (history && history.service && history.service.virtualCallingModes && history.service.virtualCallingModes.length && history.service.virtualCallingModes.length > 0)">
+              <i class="fa phon-icon serviceIcon"
+                *ngIf="history && history.service && history.service.virtualCallingModes && history.service.virtualCallingModes[0] && history.service.virtualCallingModes[0].callingMode && history.service.virtualCallingModes[0].callingMode === 'Phone'"></i>
+              <i class="fa meet-icon serviceIcon"
+                *ngIf="history && history.service && history.service.virtualCallingModes && history.service.virtualCallingModes[0] && history.service.virtualCallingModes[0].callingMode && history.service.virtualCallingModes[0].callingMode === 'GoogleMeet'"></i>
+              <i class="fa zoom-icon serviceIcon"
+                *ngIf="history && history.service && history.service.virtualCallingModes && history.service.virtualCallingModes[0] && history.service.virtualCallingModes[0].callingMode && history.service.virtualCallingModes[0].callingMode === 'Zoom'"></i>
+              <i class="fa jvideo-icon jvideo-icon-s serviceIcon"
+                *ngIf="history && history.service && history.service.virtualCallingModes && history.service.virtualCallingModes[0] && history.service.virtualCallingModes[0].callingMode && history.service.virtualCallingModes[0].callingMode === 'VideoCall'"></i>
+              <i class="fa wtsapaud-icon serviceIcon"
+                *ngIf="history && history.service && history.service.virtualCallingModes && history.service.virtualCallingModes[0] && history.service.virtualCallingModes[0].callingMode && history.service.virtualCallingModes[0].callingMode === 'WhatsApp' && history && history.service && history.service.virtualServiceType && history.service.virtualServiceType ==='audioService'"></i>
+              <i class="fa wtsapvid-icon serviceIcon"
+                *ngIf="history && history.service && history.service.virtualCallingModes && history.service.virtualCallingModes[0] && history.service.virtualCallingModes[0].callingMode && history.service.virtualCallingModes[0].callingMode === 'WhatsApp' && history && history.service && history.service.virtualServiceType && history.service.virtualServiceType ==='videoService'"></i>
+            </div>
+            <div class="service-icon"
+              *ngIf="history && history.service && history.service.serviceType && history.service.serviceType === 'physicalService'">
+              <img
+                *ngIf="history && history.service && history.service.servicegallery && history.service.servicegallery[0] && history.service.servicegallery[0].thumbUrl"
+                class="serviceIcon" [src]="history.service.servicegallery[0].thumbUrl" alt=" Service Image">
+            </div>
+            <div
+              *ngIf="history && history.service && history.service.serviceType && (history.service.serviceType !== 'virtualService' && history.service.serviceType === 'physicalService')">
+              <img class="serviceIcon" src="{{cdnPath}}assets/images/meeting_Artboard.png" alt="Physical Service Image">
+            </div>
+            <div class="serviceName" *ngIf="history && history.service && history.service.name">
+              {{history.service.name | capitalizeFirst}}
+            </div>
+          </div>
+          <div class="more_opt">
+            <button mat-icon-button id="btn_menuselect" matMenuTriggerFor]="appMenu" (click)="stopprop($event)">
+              <mat-icon>more_horiz</mat-icon>
+            </button>
+            <mat-menu #appMenu="matMenu">
+              <button mat-menu-item *ngIf="showRescheduleBtn" id="btn_menureschedule"
+                (click)="cardActionPerformed('wl', 'reschedule', history, $event)">
+                <i class="consumer-reschedule-icon"></i>{{'Reschedule' | translate}}</button>
+              <button mat-menu-item *ngIf="showCancelBtn" id="btn_menureschedule"
+                (click)="cardActionPerformed('wl', 'cancel', history, $event)">
+                <i class="fa cross-icon"></i>{{'Cancel' | translate}}</button>
+              <button mat-menu-item id="btn_sendmessage"
+                (click)="cardActionPerformed('wl', 'sendMessage', history, $event)">
+                <i class="fa chat-icon"></i>{{send_msg_cap | translate}}</button>
+              <button mat-menu-item id="btn_sendattachment"
+                (click)="cardActionPerformed('wl', 'sendAttachment', history, $event)">
+                <i class="material-icons">attach_file</i>{{'Send Attachments' | translate}}</button>
+              <button mat-menu-item id="btn_viewattachment" *ngIf="showViewAttachBtn"
+                (click)="cardActionPerformed('wl', 'viewAttachment', history, $event)">
+                <i class="material-icons">attach_file</i>{{'View Attachments' | translate}}</button>
+              <button mat-menu-item id="btn_rating" *ngIf="showRateBtn"
+                (click)="cardActionPerformed('wl', 'rating', history, $event)">
+                <i class="fa fa-star-o" aria-hidden="true"></i>{{rate_visit | translate}}</button>
+              <button mat-menu-item *ngIf="showMeetingDetailsBtn" id="btn_meetingdetails"
+                (click)="cardActionPerformed('wl', 'meetingDetails', history, $event)">
+                <i class="fa fa-sticky-note-o" aria-hidden="true"></i>{{'Meeting details' | translate}}</button>
+              <button class="custId-cursor" mat-menu-item *ngIf="showViewPrescritionBtn" id="btn_viewprescription"
+                (click)="cardActionPerformed('wl', 'viewPrescription', history, $event)">
+                <i class="mr-rx-icon-customer"></i>{{'View Prescription' | translate}}</button>
+            </mat-menu>
+          </div>
+        </div>
+        <div class="exhInfoFlex" *ngIf="history && history.date">
+          <div class="cstmTxt field-head">{{'Date ' | translate}}</div>
+          <div class="cstmTxtInfo">{{history.date| date:'EEEE'}}, {{history.date | date:'d'}} {{history.date |
+            date:'MMM'}} {{history.date | date:'y'}}&nbsp;
+          </div>
+        </div>
+        <div class="exhInfoFlex" *ngIf="history && history.timezone">
+          <div class="cstmTxt field-head">{{ 'Timezone' | translate }} </div>
+          <div class="cstmTxtInfo green">{{history.timezone}}</div>
+        </div>
+        <div class="exhInfoFlex"
+          *ngIf="history && history.waitlistingFor&& history.waitlistingFor[0] && (history.waitlistingFor[0].firstName || history.waitlistingFor[0].lastName
+                                                                                    ||(history.countryCode && history.waitlistPhoneNumber) || (history.waitlistingFor[0].email) )">
+          <div class="cstmTxt field-head">{{ 'Booking for' | translate }} </div>
+          <div class="cstmTxtInfo">
+            <span *ngIf="history.waitlistingFor[0].title">{{history.waitlistingFor[0].title}} &nbsp;</span>
+            {{history.waitlistingFor[0].firstName}}&nbsp;{{history.waitlistingFor[0].lastName}},
+            {{history.countryCode}} {{history.waitlistPhoneNumber}}, {{history.waitlistingFor[0].email}}
+          </div>
+        </div>
+        <div class="exhInfoFlex" *ngIf="history && history.checkinEncId">
+          <div class="cstmTxt field-head">{{ 'Booking Id' | translate }} </div>
+          <div class="cstmTxtInfo">{{history.checkinEncId}}</div>
+        </div>
+        <div class="exhInfoFlex"
+          *ngIf="history && history.waitlistStatus && (history.waitlistStatus == 'arrived' || history.waitlistStatus == 'checkedIn') && history.calculationMode !== 'NoCalc'">
+          <div class="cstmTxt field-head" *ngIf="!history.serviceTime">{{ 'Est wait time' | translate }}</div>
+          <div class="cstmTxtInfo" *ngIf="!history.serviceTime">
+            {{getTimeToDisplay(history.appxWaitingTime)}}</div>
+        </div>
+        <div class="exhInfoFlex"
+          *ngIf="history && history.waitlistStatus && (history.waitlistStatus == 'arrived' || history.waitlistStatus == 'checkedIn') && history.calculationMode !== 'NoCalc' && history.serviceTime">
+          <div class="cstmTxt field-head" *ngIf="history.serviceTime">{{'Starts at' | translate}} </div>
+          <div class="cstmTxtInfo" *ngIf="history.serviceTime"> {{history.serviceTime}}</div>
+        </div>
+        <div class="exhInfoFlex"
+          *ngIf="history && history.provider &&( history.provider.businessName || history.provider.firstName || history.provider.lastName)">
+          <div class="cstmTxt field-head">{{provider_label | capitalizeFirst}}</div>
+          <div class="cstmTxtInfo"
+            *ngIf="history && history.provider &&( history.provider.firstName ||  history.provider.lastName)">
+            {{history.provider.firstName}}&nbsp;{{history.provider.lastName}}</div>
+        </div>
+        <div>
+          <div class="exhInfoFlex">
+            <div class="cstmTxt field-head">{{ 'Status' | translate }}</div>
+            <div class="book_stats mt-4">
+              <span [class]="getBookingStatusClass(history.waitlistStatus)">
+                {{getDisplayName(history.waitlistStatus)}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="presPaidFlex">
+    <div *ngIf="showQnrBtn">
+      <button class="amountDueBtn" id="btn_moreinfo" (click)="cardActionPerformed('wl', 'details', history, $event)">
+        {{ 'More Info' | translate }}
+      </button>
+    </div>
+    <div class="ammountFlex">
+      <div class="serviceCharge ms-1" *ngIf="showReceiptBtn &&  showPaidInfo">
+        <div class="serviceChargeTxt" *ngIf="history && history.amountPaid">{{ 'Amount Paid' | translate }}
+        </div>
+        <div class="amountPaid" *ngIf="history && history.amountPaid">{{history.amountPaid |
+          currency:'&#8377;'}}
+        </div>
+      </div>
+      <div *ngIf="showPayBtn && !history.invoiceCreated">
+        <button class="amountDueBtn" *ngIf="history && history.amountDue" id="btn_viewbill"
+          (click)="cardActionPerformed('wl', 'viewBill', history, $event)">{{'Pay' | translate}}
+        </button>
+      </div>
+      <div *ngIf="showInvoiceBtn && history.invoiceCreated">
+        <button class="amountDueBtn" id="btn_invoice"
+          (click)="cardActionPerformed('wl', 'viewBill', history, $event)">{{'Invoice' |
+          translate}}
+
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 fit_in pad-1 cstmWlCard"
+  *ngIf="booking ===undefined && smallDevice && history !==undefined && type ==='previous'">
+  <div class="serviceMoreOpt">
+    <div class="providerNameLocSmall"
+      *ngIf="(history && history.providerAccount && history.providerAccount.businessName) || (history && history.location && history.location.address)">
+      <div class="providerName" *ngIf="history && history.providerAccount && history.providerAccount.businessName"
+        (click)="cardActionPerformed('wl', 'providerDetails', history, $event)">
+        {{history.providerAccount.businessName || '' | capitalizeFirst}}</div>
+      <div class="providerLoc" *ngIf="history && history.location && history.location.address">
+        {{history.location.place
+        | capitalizeFirst}}</div>
+      <div *ngIf="history.token" class="ribbon">&nbsp;&nbsp;{{'Token' | translate}}
+        {{history.token}}
+      </div>
+      <div *ngIf="!history.token" class="ribbon">&nbsp;&nbsp;{{'Check-in' | translate}}</div>
+    </div>
+    <!--more info start-->
+    <div class="more_opt">
+      <button mat-icon-button [matMenuTriggerFor]="appMenu" (click)="stopprop($event)">
+        <mat-icon>more_horiz</mat-icon>
+      </button>
+      <mat-menu #appMenu="matMenu">
+        <button mat-menu-item *ngIf="showRescheduleBtn" id="btn_menureschedule"
+          (click)="cardActionPerformed('wl', 'reschedule', history, $event)">
+          <i class="consumer-reschedule-icon"></i>{{'Reschedule' | translate}}</button>
+        <button mat-menu-item *ngIf="showCancelBtn" id="btn_menucancel"
+          (click)="cardActionPerformed('wl', 'cancel', history, $event)">
+          <i class="fa cross-icon"></i>{{'Cancel' | translate}}</button>
+        <button mat-menu-item id="btn_sendmessage" (click)="cardActionPerformed('wl', 'sendMessage', history, $event)">
+          <i class="fa chat-icon"></i>{{send_msg_cap | translate}}</button>
+        <button mat-menu-item id="btn_sendattachment"
+          (click)="cardActionPerformed('wl', 'sendAttachment', history, $event)">
+          <i class="material-icons">attach_file</i>{{'Send Attachments' | translate}}</button>
+        <button mat-menu-item id="btn_viewattachment" *ngIf="showViewAttachBtn"
+          (click)="cardActionPerformed('wl', 'viewAttachment', history, $event)">
+          <i class="material-icons">attach_file</i>{{'View Attachments' | translate}}</button>
+        <button mat-menu-item id="btn_rating" *ngIf="showRateBtn"
+          (click)="cardActionPerformed('wl', 'rating', history, $event)">
+          <i class="fa fa-star-o" aria-hidden="true"></i>{{rate_visit | translate}}</button>
+        <button mat-menu-item *ngIf="showMeetingDetailsBtn" id="btn_meetingdetails"
+          (click)="cardActionPerformed('wl', 'meetingDetails', history, $event)">
+          <i class="fa fa-sticky-note-o" aria-hidden="true"></i>{{'Meeting details' | translate}}</button>
+      </mat-menu>
+    </div>
+    <!--more info end-->
+  </div>
+  <!----provider date calendar design start-->
+  <div class="dateinfotfSmall" *ngIf="type">
+    <div *ngIf="type" class="dateInfoSmall">
+      <div *ngIf="history && history.date" class="monthYearSmall">
+        <div class="monthName" *ngIf="history && history.date">{{history.date | date:'MMM'}}</div>
+        <div class="yearName" *ngIf="history && history.date">{{history.date |date:'y'}}</div>
+      </div>
+      <div class="dayDaYNameSmall" *ngIf="history && history.date">
+        <div class="dayOnlySmall" *ngIf="history && history.date">{{history.date |date:'d'}}
+        </div>
+        <div class="dayNameOnlysmall" *ngIf="history && history.date">{{history.date | date:'EEEE'}}</div>
+      </div>
+    </div>
+    <!--service name and google calendat stert-->
+    <div class="cstmWidth">
+      <!--servbice start-->
+      <div class="serviceIconInfo serviceIconInfoSmall">
+        <div
+          *ngIf="(history && history.service && history.service.serviceType && history.service.serviceType === 'virtualService') && (history && history.service && history.service.virtualCallingModes && history.service.virtualCallingModes.length && history.service.virtualCallingModes.length > 0)">
+          <i class="fa phon-icon serviceIcon"
+            *ngIf="history && history.service && history.service.virtualCallingModes && history.service.virtualCallingModes[0] && history.service.virtualCallingModes[0].callingMode && history.service.virtualCallingModes[0].callingMode === 'Phone'"></i>
+          <i class="fa meet-icon serviceIcon"
+            *ngIf="history && history.service && history.service.virtualCallingModes && history.service.virtualCallingModes[0] && history.service.virtualCallingModes[0].callingMode && history.service.virtualCallingModes[0].callingMode === 'GoogleMeet'"></i>
+          <i class="fa zoom-icon serviceIcon"
+            *ngIf="history && history.service && history.service.virtualCallingModes && history.service.virtualCallingModes[0] && history.service.virtualCallingModes[0].callingMode && history.service.virtualCallingModes[0].callingMode === 'Zoom'"></i>
+          <i class="fa jvideo-icon jvideo-icon-s serviceIcon"
+            *ngIf="history && history.service && history.service.virtualCallingModes && history.service.virtualCallingModes[0] && history.service.virtualCallingModes[0].callingMode && history.service.virtualCallingModes[0].callingMode === 'VideoCall'"></i>
+          <i class="fa wtsapaud-icon serviceIcon"
+            *ngIf="history && history.service && history.service.virtualCallingModes && history.service.virtualCallingModes[0] && history.service.virtualCallingModes[0].callingMode && history.service.virtualCallingModes[0].callingMode === 'WhatsApp' && history && history.service && history.service.virtualServiceType && history.service.virtualServiceType ==='audioService'"></i>
+          <i class="fa wtsapvid-icon serviceIcon"
+            *ngIf="history && history.service && history.service.virtualCallingModes && history.service.virtualCallingModes[0] && history.service.virtualCallingModes[0].callingMode && history.service.virtualCallingModes[0].callingMode === 'WhatsApp' && history && history.service && history.service.virtualServiceType && history.service.virtualServiceType ==='videoService'"></i>
+        </div>
+        <div
+          *ngIf="history.service.serviceType && history.service.serviceType !== 'virtualService' && history.service.serviceType === 'physicalService'">
+          <img class="serviceIcon" src="{{cdnPath}}assets/images/meeting_Artboard.png" alt="Physical Service Image">
+        </div>
+        <div class="serviceNameSmall" *ngIf="history && history.service && history.service.name">
+          {{history.service.name | capitalizeFirst}}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="padcstm">
+    <div>
+      <div class="exhInfoFlex">
+        <div class="cstmTxt field-head">{{ 'Status' | translate }}</div>
+        <div class="book_stats mt-4">
+          <span [class]="getBookingStatusClass(history.waitlistStatus)">
+            {{getDisplayName(history.waitlistStatus)}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="mt-1 exhInfoFlex" *ngIf="history && history.date">
+      <div class="cstmTxt field-head">{{'Date' | translate}}</div>
+      <div class="cstmTxtInfo">{{history.date| date:'EEEE'}}, {{history.date
+        |
+        date:'d'}} {{history.date |
+        date:'MMM'}} {{history.date | date:'y'}}&nbsp;
+      </div>
+    </div>
+    <div class="exhInfoFlex" *ngIf="history && history.timezone">
+      <div class="cstmTxt field-head">{{ 'Timezone' | translate }} </div>
+      <div class="cstmTxtInfo green">{{history.timezone}}</div>
+    </div>
+    <div class="exhInfoFlex"
+      *ngIf="history && history.waitlistingFor && history.waitlistingFor[0] && (history.waitlistingFor[0].firstName || history.waitlistingFor[0].lastName)">
+      <div class="cstmTxt field-head">{{ 'Booking for' | translate }} </div>
+      <div class="cstmTxtInfo">
+        <span *ngIf="history.waitlistingFor[0].title">{{history.waitlistingFor[0].title}} &nbsp;</span>
+        {{history.waitlistingFor[0].firstName}}
+        &nbsp;{{history.waitlistingFor[0].lastName}}
+      </div>
+    </div>
+    <div class="exhInfoFlex"
+      *ngIf="history && history.waitlistingFor && history.waitlistingFor[0] && (history.countryCode && history.phoneNumber)">
+      <div class="cstmTxt field-head">{{ 'Phone' | translate }} </div>
+      <div class="cstmTxtInfo">
+        {{history.countryCode}}{{history.phoneNumber}} </div>
+    </div>
+    <div class="exhInfoFlex" *ngIf="history && history.checkinEncId">
+      <div class="cstmTxt field-head">{{ 'Booking Id' | translate }} </div>
+      <div class="cstmTxtInfo">{{history.checkinEncId}}</div>
+    </div>
+    <div class="exhInfoFlex"
+      *ngIf="history && history.waitlistStatus && (history.waitlistStatus == 'arrived' || history.waitlistStatus == 'checkedIn') && history.calculationMode !== 'NoCalc'">
+      <div class="cstmTxt field-head" *ngIf="!history.serviceTime">{{ 'Est wait time' | translate }}</div>
+      <div class="cstmTxtInfo" *ngIf="!history.serviceTime">
+        {{getTimeToDisplay(history.appxWaitingTime)}}</div>
+    </div>
+    <div class="exhInfoFlex"
+      *ngIf="history && history.waitlistStatus && (history.waitlistStatus == 'arrived' || history.waitlistStatus == 'checkedIn') && history.calculationMode !== 'NoCalc' && history.serviceTime">
+      <div class="cstmTxt field-head" *ngIf="history.serviceTime">{{'Starts at' | translate}} </div>
+      <div class="cstmTxtInfo" *ngIf="history.serviceTime"> {{history.serviceTime}}</div>
+    </div>
+    <div class="exhInfoFlex"
+      *ngIf="history && history.provider &&( history.provider.businessName || history.provider.firstName || history.provider.lastName)">
+      <div class="cstmTxt field-head">{{provider_label | capitalizeFirst}}</div>
+      <div class="cstmTxtInfo"
+        *ngIf="history && history.provider &&( history.provider.firstName ||  history.provider.lastName)">
+        {{history.provider.firstName}}&nbsp;{{history.provider.lastName}}</div>
+    </div>
+  </div>
+  <div class="ammountFlex">
+    <div class="serviceCharge ms-1" *ngIf="showReceiptBtn &&  showPaidInfo">
+      <div class="serviceChargeTxt" *ngIf="history && history.amountPaid">{{ 'Amount Paid' |
+        translate }}
+      </div>
+      <div class="amountPaid" *ngIf="history && history.amountPaid">{{history.amountPaid |
+        currency:'&#8377;'}}
+      </div>
+    </div>
+    <div *ngIf="showPayBtn && !history.invoiceCreated">
+      <button class="amountDueBtn" *ngIf="history && history.amountDue" id="btn_viewbill"
+        (click)="cardActionPerformed('wl', 'viewBill', history, $event)">{{'Pay' | translate}}
+        <!-- {{history.amountDue | currency:'&#8377;'}} -->
+      </button>
+    </div>
+    <div *ngIf="showInvoiceBtn && history.invoiceCreated">
+      <button class="amountDueBtn" id="btn_invoice"
+        (click)="cardActionPerformed('wl', 'viewBill', history, $event)">{{'Invoice' |
+        translate}}
+
+      </button>
+    </div>
+  </div>
+  <div class="ammountFlex ammountFlexsmall">
+    <div *ngIf="showQnrBtn">
+      <button class="amountDueBtn" id="btn_moreinfo" (click)="cardActionPerformed('wl', 'details', history, $event)">
+        {{ 'More Info' | translate }}
+      </button>
+    </div>
+    <div class="meetingBtnInfo meetingBtnInfoSmall" *ngIf="showJoinJaldeeVideoBtn && videoBtnCaption">
+      <button type="button" id="btn_joinmeeting" class="meetingBtn meetingBtnsmall" *ngIf="videoBtnCaption"
+        (click)="cardActionPerformed('wl', 'joinVideo', history, $event)">{{videoBtnCaption |
+        translate}}</button>
+    </div>
+    <div class="meetingBtnInfo meetingBtnInfoSmall"
+      *ngIf="showJoinOtherVideoBtn &&(history &&  history.service &&  history.service.virtualCallingModes && history.service.virtualCallingModes.length && history.service.virtualCallingModes.length > 0)">
+      <button type="button" class="meetingBtn meetingBtnsmall" id="btn_joinvideo_other"
+        *ngIf="(history &&  history.service &&  history.service.virtualCallingModes && history.service.virtualCallingModes[0] && history.service.virtualCallingModes[0].value) && videoBtnCaption"
+        (click)="joinOtherVideoPerform(history.service.virtualCallingModes[0].value)">{{videoBtnCaption |
+        translate}}</button>
+    </div>
+  </div>
+</div>

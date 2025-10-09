@@ -1,0 +1,683 @@
+<div class="card shadow d-flex flex-row header">
+    <div class="my-auto">
+        <a class="" (click)="goBack('back')"><i class="fa fa-arrow-left"></i>&emsp;</a>
+    </div>
+    <div class="text-center mx-auto">
+        <app-booking-accountinfo [businessInfo]="businessInfo" [smallDevice]="smallDevice" *ngIf="smallDevice">
+        </app-booking-accountinfo>
+    </div>
+</div>
+<section #consumer_checkin class="consumerCheckin p-0"
+    [ngClass]="[smallDevice?'container':'container-fluid', theme?theme:'']">
+    <div [ngClass]="{'loadingpaytm': loadingPaytm}"></div>
+    <div class="customLoader" *ngIf="loadingPaytm">
+        <app-common-innerloading-spinner></app-common-innerloading-spinner>
+    </div>
+    <div class="my-1 login-form_custom" *ngIf="!loggedIn">
+        <div class="card card-custom no-margin hgt-adjust">
+            <div class="card-body p-0">
+                <app-authentication [accountConfig]="accountConfig" (actionPerformed)="actionPerformed($event)"
+                    [accountId]="accountId"></app-authentication>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="col-12 d-flex p-0 " *ngIf="loggedIn">
+        <div class="col-md-4 col-lg-4 col-sm-12 col-12 d-flex align-items-stretch desktop-only p-1"
+            *ngIf="!smallDevice">
+            <div class="card shadow">
+                <app-booking-accountinfo [businessInfo]="businessInfo" [smallDevice]="smallDevice" *ngIf="!smallDevice">
+                </app-booking-accountinfo>
+                <div class="booking-img"></div>
+            </div>
+        </div>
+        <div class="col-md-8 col-lg-8 col-sm-12 col-12 d-flex align-items-stretch p-1">
+            <div class="card shadow hgt-adjust p-3">
+                <div class="wizard wizard-1" id="kt_wizard_v1" data-wizard-state="step-first"
+                    data-wizard-clickable="false"
+                    *ngIf="bookStep === 1 && serviceOptionApptt && type !== 'waitlistreschedule'">
+                    <!-- Service Info -->
+                    <div class="col-12" *ngIf="selectedService">
+                        <app-service-display [virtualModes]="callingModesDisplayName" [service]="selectedService"
+                            [showVirtualInfo]="type !== 'waitlistreschedule'"></app-service-display>
+                    </div>
+                    <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 p-1">
+                        <div *ngIf="serviceOptionApptt">
+                            <span class="form-level-settings">You can add the item and customize
+                                your services</span><br><br>
+                            <app-questionnaire [questionnaireList]="serviceOptionQuestionnaireList"
+                                [accountId]="accountId" [questionAnswers]="serviceOPtionInfo" [service]="selectedService"
+                                [source]="'serviceOptionAppt'"
+                                (returnAnswers)="getserviceOptionQuestionAnswers($event)">
+                            </app-questionnaire>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <hr />
+                    <div class="col-sm-12 col-md-12 col-lg-12 col-12 col-sm-12 d-flex justify-content-between" *ngIf="serviceOPtionInfo">
+                        <button type="button"
+                            class="mx-auto text-center next-button btn btn-primary font-weight-bold text-capitalize px-12"
+                            (click)="goToStep('next');actionCompleted()" [class.disabled]="!serviceOPtionInfo"
+                            [disabled]="!serviceOPtionInfo">
+                            Next
+                        </button>
+                    </div>
+                </div>
+                <div class="" data-wizard-type="step-content" data-wizard-state="current"
+                    *ngIf="bookStep === 2 && showSlot">
+                    <!-- Service Info -->
+                    <div class="col-12  mgn-bt-20" *ngIf="selectedService">
+                        <app-service-info-display [selectedService]="selectedService" [userInfo]="selectedUser">
+                        </app-service-info-display>
+                    </div>
+                    <div class="col-12" *ngIf="selectedService">
+                        <app-date-pagination (date_change_event)="checkinDateChanged($event)"
+                            [selected_date]="checkinDate" [availableDates]="availableDates">
+                        </app-date-pagination>
+                    </div>
+                    <div class="col-12" *ngIf="queuejson && queuejson.length > 0">
+                        <app-slot-picker (slotSelected)="slotSelected($event)" [slots]="queuejson"
+                            [selectedSlot]="queuejson[0]">
+                        </app-slot-picker>
+                    </div>
+                    <div class="col-md-12 col-12 col-sm-12 slotdiv red mt-3 text-center"
+                        *ngIf="queuejson && queuejson.length <= 0 && queuesLoaded">
+                        <b>No slots available on selected date.Please choose other date.</b>
+                    </div>
+                    <div class="clearfix"></div>
+                    <hr />
+                    <div class="col-md-12 col-12 col-sm-12">
+                        <div *ngIf="wt_personaahead && personsAhead>=0 && queuejson && queuejson.length > 0"
+                            class="text-primary col-md-12 col-12 col-sm-12 p-0 lnk">
+                            <h5><b>Waiting in Line</b></h5>
+                        </div>
+                        <div class="col-md-12 col-12 col-sm-12 p-0"
+                            *ngIf="wt_personaahead && queuejson && queuejson.length > 0">
+                            <h6 class="card-title serv-time">
+                                <span *ngIf="personsAhead <= 0">0
+                                    People</span>
+                                <span *ngIf="personsAhead == 1">1<span>
+                                        Person</span></span>
+                                <span *ngIf="personsAhead > 1">{{personsAhead}}<span>
+                                        People</span></span>
+                                <span *ngIf="calc_mode=='NoCalc'">
+                                    <span *ngIf="!isFutureDate">
+                                    </span>
+                                </span>
+                                <span *ngIf="serviceTime=='' && calc_mode!='NoCalc'">
+                                    <span class="color-grey">\</span>
+                                    <span>{{waitingTime}}</span>
+                                </span>
+                                <span *ngIf="serviceTime!='' && calc_mode!='NoCalc'">
+                                    <ng-container *ngIf="isFutureDate">
+                                    </ng-container>
+                                    <ng-container *ngIf="!isFutureDate">
+                                        <span><span class="color-grey"> \
+                                            </span>{{serviceTime}}</span>
+                                    </ng-container>
+                                </span>
+                            </h6>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-12 col-sm-12">
+                        <div *ngIf="type === 'waitlistreschedule'"
+                            class="col-sm-12 col-12 chk-btns-div col-md-12 p-0">
+                            <a #modal data-bs-toggle="modal" data-bs-target="#exampleModalCenter"></a>
+                            <div>
+                                <label class="question-header">Add notes/upload files you
+                                    may have</label>
+                            </div>
+                            <mat-chip-list class="btns">
+                                <mat-chip
+                                    [class.mandatoryChip]="selectedService.consumerNoteMandatory && type != 'waitlistreschedule'"
+                                    (click)="handleSideScreen('note');modal.click();">
+                                    <a class="lnk action pointer-cursor"><i class="fa fa-file-text-o mgn-rt-5"
+                                            aria-hidden="true"></i>{{selectedService.consumerNoteTitle}}
+                                        <span
+                                            *ngIf="selectedService.consumerNoteMandatory && type != 'waitlistreschedule'">*</span></a>
+                                </mat-chip>
+                                <span>
+                                    <mat-chip
+                                        [ngClass]="{'br-top-right-0 br-bottom-right-0 margin-right-0': getAttachLength() > 0}">
+                                        <a class="lnk action pointer-cursor" (click)="imagefile1.click();"><input
+                                                #imagefile1 type="file" accept="/*;capture=camera" style="display:none;"
+                                                multiple (change)="filesSelected($event, 'close')"><i
+                                                class="fa fa-paperclip mgn-rt-5" aria-hidden="true"></i>Upload File
+                                        </a>
+                                    </mat-chip>
+                                    <mat-chip *ngIf="getAttachLength() > 0"
+                                        class="br-top-left-0 br-bottom-left-0 margin-left-0">
+                                        <a class="lnk action pointer-cursor" (click)="viewAttachments()">
+                                            View (<span>{{getAttachLength()}}</span>)
+                                        </a>
+                                    </mat-chip>
+                                </span>
+                            </mat-chip-list>
+                        </div>
+                    </div><br>
+                    <div class="clearfix"></div>
+                    <div class="action-buttons">
+                        <div *ngIf="type != 'waitlistreschedule' && selectedService && !selectedService.isPrePayment"
+                            class="text-center col-sm-12 col-md-12 col-lg-12 col-12 mx-auto">
+                            <button type="button"
+                                class="mx-auto text-center next-button btn btn-primary font-weight-bold text-capitalize px-12"
+                                (click)="goToStep('next');actionCompleted()"
+                                [class.disabled]="(queuejson && queuejson.length == 0 && !api_loading1)">
+                                Next
+                            </button>
+                        </div>
+                        <div *ngIf="type != 'waitlistreschedule' && selectedService && selectedService.isPrePayment && questionnaireList.labels && questionnaireList.labels.length > 0"
+                            class="text-center col-sm-12 col-md-12 col-lg-12 col-12 col-sm-12 mx-auto">
+                            <button type="button"
+                                class="mx-auto text-center next-button btn btn-primary font-weight-bold text-capitalize px-12"
+                                (click)="goToStep('next');actionCompleted()"
+                                [class.disabled]="(queuejson && queuejson.length == 0 && !api_loading1)">
+                                Next
+                            </button>
+                        </div>
+                        <div *ngIf="type != 'waitlistreschedule' && selectedService && selectedService.isPrePayment && !questionnaireList.labels"
+                            class="text-center col-sm-12 col-md-12 col-lg-12 col-12 col-sm-12 mx-auto">
+                            <button type="button"
+                                class="mx-auto text-center next-button btn btn-primary font-weight-bold text-capitalize px-12"
+                                (click)="confirmClicked((queuejson && queuejson.length == 0));"
+                                [class.disabled]="(queuejson && queuejson.length == 0)">
+                                Next
+                            </button>
+                        </div>
+                        <div class="text-center col-md-12 col-12 col-sm-12" *ngIf="queuesLoaded">
+                            <button type="button"
+                                class="next-button btn btn-primary font-weight-bold text-capitalize px-9 py-4"
+                                *ngIf="type === 'waitlistreschedule'"
+                                [class.disableActn]="(queuejson && queuejson.length == 0 && !api_loading1) || callingModes === '' || disableButn()"
+                                (click)="rescheduleWaitlist()">
+                                Reschedule
+                                <i class="fa fa-long-arrow-right mgn-lt-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="" data-wizard-type="step-content" data-wizard-state="current" *ngIf="bookStep === 3">
+                    <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 p-1">
+                        <div class="pad-20 quest-head">
+                            Fill the following one time information
+                        </div>
+                        <app-questionnaire [questionnaireList]="onetimeQuestionnaireList"
+                            [questionAnswers]="oneTimeInfo" [source]="'onetime'"
+                            (returnAnswers)="getOneTimeQuestionAnswers($event)">
+                        </app-questionnaire>
+                    </div>
+                    <div class="clearfix"></div>
+                    <hr>
+                    <div
+                        class="text-center col-sm-12 col-md-12 col-lg-12 col-12 col-sm-12 d-flex justify-content-between width-100 mgn-lt-10 hf-single-btn-container">
+                        <button type="button"
+                            class="mx-auto next-button btn btn-primary font-weight-bold text-capitalize px-5 py-2"
+                            (click)="goToStep('next')">
+                            Next
+                        </button> &nbsp;
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 col-sm-12 p-0 right-part"
+                    data-wizard-type="step-content" data-wizard-state="current" *ngIf="bookStep === 4">
+                    <div class="pad-20 quest-head">
+                        We need some more information
+                    </div>
+                    <app-questionnaire [questionnaireList]="questionnaireList" [questionAnswers]="questionAnswers" [service]="selectedService"
+                        [source]="'consCheckin'" [accountId]="accountId" (returnAnswers)="getQuestionAnswers($event)">
+                    </app-questionnaire>
+                    <div class="d-flex flex-column-fluid width-100">
+                        <div class="col-12 force_center note-pad">
+                            <div class="form-group card mgn-0">
+                                <label class="col-12 quest">Add any other notes to the provider or
+                                    upload any files for provider view
+                                </label>
+                                <div class="col-sm-12 col-12 chk-btns-div col-md-12">
+                                    <a #modal data-bs-toggle="modal" data-bs-target="#exampleModalCenter">
+                                    </a>
+                                    <mat-chip-list class="btns">
+                                        <mat-chip
+                                            [class.mandatoryChip]="selectedService.consumerNoteMandatory && type != 'waitlistreschedule'"
+                                            (click)="handleSideScreen('note');modal.click();">
+                                            <a class="lnk action pointer-cursor"><i class="fa fa-file-text-o mgn-rt-5"
+                                                    aria-hidden="true"></i>
+                                                {{selectedService.consumerNoteTitle}}
+                                                <span *ngIf="selectedService.consumerNoteMandatory">*</span></a>
+                                        </mat-chip>
+                                        <span>
+                                            <mat-chip
+                                                [ngClass]="{'br-top-right-0 br-bottom-right-0 margin-right-0': getAttachLength() > 0}">
+                                                <a class="lnk action pointer-cursor"
+                                                    (click)="imagefile1.click();"><input #imagefile1 type="file"
+                                                        accept="/*;capture=camera" style="display:none;" multiple
+                                                        (change)="filesSelected($event, 'close')"><i
+                                                        class="fa fa-paperclip mgn-rt-5" aria-hidden="true"></i>Upload
+                                                    File
+                                                </a>
+                                            </mat-chip>
+                                            <mat-chip *ngIf="getAttachLength() > 0"
+                                                class="br-top-left-0 br-bottom-left-0 margin-left-0">
+                                                <a class="lnk action pointer-cursor" (click)="viewAttachments()">
+                                                    View (<span>{{getAttachLength()}}</span>)
+                                                </a>
+                                            </mat-chip>
+                                        </span>
+                                    </mat-chip-list>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class=" text-center col-sm-12 col-md-12 col-lg-12 col-12 d-flex justify-content-between pt-10 width-100 hf-double-btn-container">
+                        <div class="mr-2">
+                            <button type="button"
+                                class="next-button btn btn-light-primary font-weight-bold text-capitalize px-9 py-4"
+                                (click)="goToStep('prev')">
+                                Go Back
+                            </button>
+                        </div>
+                        <div *ngIf="selectedService && !selectedService.isPrePayment">
+                            <button type="button"
+                                class="next-button btn btn-primary font-weight-bold text-capitalize px-9 py-4"
+                                (click)="goToStep('next');actionCompleted()">
+                                Next
+                            </button>
+                        </div>
+                        <div *ngIf="selectedService && selectedService.isPrePayment">
+                            <button type="button"
+                                class="next-button btn btn-primary font-weight-bold text-capitalize px-9 py-4"
+                                (click)="goToStep('next');actionCompleted()">
+                                Proceed to Payment
+                                <!-- Continue -->
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 p-0"
+                    data-wizard-type="step-content" data-wizard-state="current" *ngIf="bookStep === 5">
+                    <div *ngIf="api_loading_video" class="incomplete-msg">
+                        <div style="padding: 0 30px;">
+                            Files are Uploading...
+                        </div>
+                    </div>
+                    <app-common-innerloading-spinner *ngIf="api_loading_video">
+                    </app-common-innerloading-spinner>
+                    <div class="col-md-12 col-12 col-sm-12 mgn-bt-10 p-0">
+                        <div class="col-md-12 col-lg-12 col-12 col-sm-12 check-new-group p-0"
+                            *ngIf="selectedService">
+                            <label class="question-header">Service Details</label>
+                            <app-service-info-display [selectedService]="selectedService" [userInfo]="selectedUser"
+                                [appmtDate]="checkinDate" [selectedApptsTime]="selectedQTime"
+                                [isFutureDate]="isFutureDate" [datePresent]="datePresent">
+                            </app-service-info-display>
+                            <div class="clearfix"></div>
+                            <hr>
+                            <div class="mgn-lt-10" *ngIf="!serviceOptionApptt">
+                
+                                <div class="m-auto" *ngIf="selectedService.preInfoEnabled">
+                                  <label class="question-header"><b>{{selectedService.preInfoTitle}} :</b></label>
+                                <!-- 
+                                    <div class="contact-section text-primary" [innerHTML] = "selectedService.preInfoText">
+                                </div> -->
+              
+                              <div class="contact-section text-primary pointer-cursor" >
+                                <div class="col-md-12 col-sm-12 col-12-padding  module-nomargin line-clamp-ln2" *ngIf="!showmoreSpec"
+                                    (click)="showSpec()" [innerHTML] = "selectedService.preInfoText">
+                              </div>
+                                <div class="" *ngIf="showmoreSpec" (click)="showSpec()" [innerHTML] = "selectedService.preInfoText">
+                                   
+                                </div>
+                              </div>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                            <div *ngIf="selectedService.preInfoEnabled">
+                                <hr />
+                            </div>
+                            <label class="question-header">Booking For</label>
+                            <br />
+                            <div class="booking-for-section">
+                                <div class="">
+                                    <div class="col-sm-12 col-12 col-md-12 p-0">
+                                        <div class="p-0">
+                                            <div class="col-sm-12 col-12 col-md-12 p-0">
+                                                <app-booking-for [apptDetails_firstName]="wtlst_for_fname"
+                                                    [apptDetails_lastName]="wtlst_for_lname"
+                                                    [commObj]="commObj" (editEvent)="handleSideScreen('members')">
+                                                </app-booking-for>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                            <hr *ngIf="!questionnaireList.labels" />
+                            <div *ngIf="!questionnaireList.labels"
+                                class="col-sm-12 col-12 chk-btns-div col-md-12 p-0">
+                                <a #modal data-bs-toggle="modal" data-bs-target="#exampleModalCenter"></a>
+                                <div>
+                                    <label class="question-header">Add notes/upload files you
+                                        may have</label>
+                                </div>
+                                <mat-chip-list class="btns">
+                                    <mat-chip
+                                        [class.mandatoryChip]="selectedService.consumerNoteMandatory && type != 'waitlistreschedule'"
+                                        (click)="handleSideScreen('note');modal.click();">
+                                        <a class="lnk action pointer-cursor"><i class="fa fa-file-text-o mgn-rt-5"
+                                                aria-hidden="true"></i>{{selectedService.consumerNoteTitle}}
+                                            <span
+                                                *ngIf="selectedService.consumerNoteMandatory && type != 'waitlistreschedule'">*</span></a>
+                                    </mat-chip>
+                                    <span>
+                                        <mat-chip
+                                            [ngClass]="{'br-top-right-0 br-bottom-right-0 margin-right-0': getAttachLength() > 0}">
+                                            <a class="lnk action pointer-cursor" (click)="imagefile1.click();"><input
+                                                    #imagefile1 type="file" accept="/*;capture=camera"
+                                                    style="display:none;" multiple
+                                                    (change)="filesSelected($event, 'close')"><i
+                                                    class="fa fa-paperclip mgn-rt-5" aria-hidden="true"></i>Upload File
+                                            </a>
+                                        </mat-chip>
+                                        <mat-chip *ngIf="getAttachLength() > 0"
+                                            class="br-top-left-0 br-bottom-left-0 margin-left-0">
+                                            <a class="lnk action pointer-cursor" (click)="viewAttachments()">
+                                                View (<span>{{getAttachLength()}}</span>)
+                                            </a>
+                                        </mat-chip>
+                                    </span>
+                                </mat-chip-list>
+                            </div>
+                            <div class="clearfix"></div>
+                            <hr />
+                            <div class="coupon-section col-md-12 col-12 col-sm-12 " *ngIf="isCouponsAvailable">
+                                <app-apply-coupon [s3CouponsList]="s3CouponsList"
+                                    (actionPerformed)="couponActionPerformed($event)"></app-apply-coupon>
+                                <app-coupon-status [paymentDetails]="paymentDetails"></app-coupon-status>
+                            </div>
+                            <div class="clearfix"></div>
+                            <div class="col-md-12 col-12 col-sm-12 p-0" *ngIf="type!=='waitlistreschedule'">
+                                <app-payment-summary [paymentDetails]="paymentDetails" [paymentMode]="paymentMode" 
+                                    [serviceOptions]="serviceOptionApptt" [service]="selectedService"
+                                    [gatewayFee]="gatewayFee" [convenientFee]="convenientFee"></app-payment-summary>
+                            </div>
+                            <div class="jaldeecredit" *ngIf="jCashInHand > 0">
+                                <mat-checkbox [(ngModel)]="isJCashSelected" (change)="changeJcashUse($event)">
+                                </mat-checkbox>
+                                {{'Use Jaldee cash balance' | translate}} : <span class="rupee-font">{{jCashInHand |
+                                    currency:'&#8377; '}}</span>
+                            </div>
+                            <div class="creditleft dateError"
+                                *ngIf="jCashInHand > 0 && (isJCashSelected && jCashInHand < paymentDetails.amountRequiredNow)">
+                                {{'Balance amount can be paid by other payment methods' | translate}}
+                            </div>
+                            <ng-container *ngIf="bookingPolicy">
+                                <div class="privacy-loc">
+                                    <div class="t-and-c">
+                                        <div class="checkbox">
+                                            <label>
+                                                <input type="checkbox" [checked]="checkPolicy"
+                                                    (change)="privacyCheck($event)">
+                                                <span>I accept the&nbsp;
+                                                    <a class="Policy-link" (click)="privacyClicked($event)">{{'Terms and
+                                                        Conditions'}}</a></span>
+                                            </label>
+                                        </div>
+                                        <div class="sts-msg error" *ngIf="!checkPolicy">"Agreement to Terms
+                                            and Conditions is required"</div>
+                                    </div>
+                                    <div *ngIf="privacy" class="mgn-up-10">
+                                        <app-privacy [path]="bookingPolicyPath" [content]="bookingPolicyContent"></app-privacy>
+                                    </div>
+                                </div>
+                            </ng-container>
+                            <div class="clearfix"></div>
+                            <div  *ngIf="type!=='waitlistreschedule'">
+                                <div class="mx-auto p-0" *ngIf="paymentDetails.amountRequiredNow > 0">
+                                    <label class="custom resPaymrntDetails mgn-up-20">{{'Select Payment Mode' |
+                                        translate}}</label><br />
+                                    <ng-container *ngIf="!shownonIndianModes && loadedConvenientfee"
+                                        class="text-center mx-auto">
+                                        <app-payment-modes [paymentModes]="indian_payment_modes"
+                                            [selectedMode]="paymentMode"
+                                            (modeSelected)="indian_payment_mode_onchange($event)">
+                                        </app-payment-modes>
+                                    </ng-container>
+                                    <ng-container *ngIf="shownonIndianModes && loadedConvenientfee"
+                                        class="text-center mx-auto">
+                                        <app-payment-modes [paymentModes]="non_indian_modes"
+                                            [selectedMode]="paymentMode"
+                                            (modeSelected)="non_indian_modes_onchange($event)">
+                                        </app-payment-modes>
+                                    </ng-container>
+                                </div>
+                                <div class="clearfix"></div>
+                                <div class="mgn-up-20 col-md-12 col-12 p-0"
+                                    *ngIf="paymentDetails['amountToPay']">
+                                    <div class="col-md-12 txt-align-center pad_link question-header"
+                                        *ngIf="paymentmodes && paymentmodes.internationalPay">
+                                        <span (click)="togglepaymentMode()" class="pointer-cursor">
+                                            <a class="refund_policy">
+                                                <span
+                                                    *ngIf="!shownonIndianModes && paymentmodes && paymentmodes.internationalPay">
+                                                    {{'Non Indian Payment' | translate}} ? {{'Click here'|
+                                                    translate}}</span>
+                                                <span
+                                                    *ngIf="shownonIndianModes && paymentmodes && paymentmodes.indiaPay">{{'Indian'
+                                                    |
+                                                    translate}}
+                                                    {{'Payment' | translate}} ? {{'Click here' | translate}}</span>
+                                            </a>
+                                        </span>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                    <div class="col-md-12 cancelpolicy mgn-rt-5" *ngIf="showCancellationPolicy">
+                                        <div class="pad_policy">
+                                            <a data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                                class="refund_policy">{{'Cancellation Policy'
+                                                | translate}}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- modalbox -->
+                                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+                                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <app-refundpolicy></app-refundpolicy>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="text-center">
+                        <button type="button" [class.disabled]="confirmButton['disabled']"
+                            [disabled]="confirmButton['disabled']" (click)="!isClickedOnce && confirmBooking()"
+                            class="next-button btn btn-primary font-weight-bold px-12">
+                            {{confirmButton['caption'] | translate}}</button>
+                    </div>
+                </div>
+                <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <ng-container *ngIf="action=='members'">
+                                <div class="modal-body">
+                                    <div class="col-md-12 col-12 col-sm-12 lnk mgn-bt-10 mgn-up-20">
+                                        <div class="pull-left"> {{'Booking For' | translate}}
+                                        </div>
+                                        <a class="lnk pointer-cursoraction mgn-lt-20" (click)="addMember()"><i
+                                                class="fa fa-user-plus"></i>
+                                            {{add_member_cap}}</a>
+                                    </div>
+                                    <app-members (memberSelected)="memberSelected($event)" [maxSelection]="maxsize"
+                                        [selectedMember]="waitlist_for" [familyMembers]="familyMembers"
+                                        [multiple]="multipleMembers_allowed" [allowSelection]="true"
+                                        [parentCustomer]="parentCustomer"></app-members>
+
+                                    <app-communications (setCommunications)="setCommunications" [commObj]="commObj"
+                                        [selectedService]="selectedService" [mode]="'write'">
+                                    </app-communications>
+                                </div>
+                            </ng-container>
+                            <ng-container *ngIf="action=='attachment'">
+                                <div class="modal-body">
+                                    <div class="col-sm-12 col-12 chk-btns-div col-md-12">
+                                        <mat-chip-list class="btns">
+                                            <mat-chip><a class="lnk action pointer-cursor"
+                                                    (click)="imagefile.click()"><input #imagefile type="file"
+                                                        accept="/*;capture=camera" style="display:none;" multiple
+                                                        (change)="filesSelected($event)"><i
+                                                        class="fa fa-paperclip mgn-rt-5" aria-hidden="true"></i>Upload
+                                                    File</a></mat-chip>
+                                        </mat-chip-list>
+                                    </div>
+                                    <div class="col-md-12 col-lg-12 col-12 col-sm-12 bold pad-top-10 mgn-up-10 mgn-bt-10"
+                                        *ngIf="(selectedMessage.files && selectedMessage.files.length > 0) || (type=='waitlistreschedule' && scheduledWaitlist.attachments && scheduledWaitlist.attachments.length > 0)">
+                                        Uploaded Files
+                                    </div>
+                                    <div class="img-section mgn-up-20"
+                                        *ngIf="(selectedMessage.files && selectedMessage.files.length > 0) || (type=='waitlistreschedule' && scheduledWaitlist.attachments && scheduledWaitlist.attachments.length > 0)">
+                                        <ul class="galul">
+                                            <ng-container
+                                                *ngIf="type=='waitlistreschedule' && scheduledWaitlist.attachments && scheduledWaitlist.attachments.length > 0">
+                                                <li *ngFor="let file of scheduledWaitlist.attachments;let i = index ">
+                                                    <div class="galimg_outer" *ngIf="getThumbUrl(file)">
+                                                        <div class="gal_img">
+                                                            <img [src]="getThumbUrl(file)" alt="">
+                                                        </div>
+                                                        <div class="gal-input">
+                                                            <input type="text" readonly value="{{file.caption}}">
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ng-container>
+                                            <ng-container
+                                                *ngIf="selectedMessage.files && selectedMessage.files.length > 0">
+                                                <li *ngFor="let file of selectedMessage.files;let i = index ">
+                                                    <div class="galimg_outer">
+                                                        <div class="gal_img">
+                                                            <img [src]="getImage(selectedMessage.base64[i], file)"
+                                                                *ngIf="selectedMessage.base64[i]" alt="">
+                                                        </div>
+                                                        <div class="gal-input">
+                                                            <input type="text" placeholder="Caption"
+                                                                [(ngModel)]="imgCaptions[i]"
+                                                                [ngModelOptions]="{standalone: true}">
+                                                        </div>
+                                                        <div class="gal_action" (click)="deleteTempImage(i)">
+                                                            <i class="fa fa-times-circle" aria-hidden="true"></i>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ng-container>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </ng-container>
+                            <ng-container *ngIf="action=='coupons'">
+                                <div class="modal-body">
+                                    <div class="col-md-12 col-12 col-sm-12 lnk mgn-up-20">
+                                        Apply
+                                        Coupon Code
+                                    </div>
+                                    <div class="col-12 col-sm-12 col-md-12 col-lg-12 mgn-up-20">
+                                        <div class="col-md-12 col-sm-12 col-lg-12 col-12 p-0"
+                                            *ngIf="showCouponWB">
+                                            <div
+                                                class="col-md-12 col-sm-12 col-lg-12 col-12 form-level-settings applybill p-0">
+                                                <i class="icon-bell"></i>{{applied_inbilltime}}
+                                            </div>
+                                            <div class="width-60">
+                                                <div class="input-group">
+                                                    <input [ngClass]="{'invalid':!couponvalid}"
+                                                        (keydown)="clearCouponErrors()" placeholder="Enter coupon code"
+                                                        type="text" class="form-control" [(ngModel)]="selected_coupon"
+                                                        [ngModelOptions]="{standalone: true}">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12 col-sm-12 col-lg-12 col-12 p-0"
+                                                style="color: red;" *ngIf="api_cp_error !== null">
+                                                {{api_cp_error}}</div>
+                                            <div
+                                                class="col-md-12 col-12 col-sm-12 col-lg-12 p-0 mgn-up-10 mgn-bt-20">
+
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 col-sm-12 col-lg-12 col-12 mgn-up-20 mgn-bt-30 pad-up-10"
+                                            *ngIf="couponsList && couponsList.length>0">
+                                            <div class="col-md-12 col-sm-12 col-lg-12 col-12 p-0"
+                                                *ngFor="let coupon of couponsList let i=index">
+                                                <div
+                                                    class="col-md-12 col-sm-12 col-lg-12 col-12 p-0 coupon-add-msg">
+                                                    <div class="col-md-5 col-sm-7 col-7 col-lg-4 p-0">
+                                                        {{coupon.couponCode}} </div>
+                                                    <div class="col-md-12 col-sm-5 col-5 col-lg-8 delteTC">
+                                                        <span><a *ngIf="coupon.instructions" (click)="toggleterms(i)"
+                                                                class="pointer-cursor lnk read-more-checkin">Read
+                                                                T & C </a></span>
+                                                        <span><a class="pointer-cursor lnk"><i
+                                                                    class="pointer-cursor icon-delete lnk"
+                                                                    (click)="removeJCoupon(i)"
+                                                                    [matTooltipClass]="tooltipcls"
+                                                                    [matTooltip]="'Remove Coupon'"></i></a></span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 col-sm-12 col-lg-12 col-12 mgn-up-10 pre-instr p-0"
+                                                    *ngIf="coupon.showme">
+                                                    {{coupon.instructions}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-sm-12 col-md-12 col-lg-12 coupon-outer"
+                                        *ngIf="coupon_status">
+                                        <div class="form-group">
+                                            <span *ngIf="coupon_status=='success'" class="coupon_success">Coupon
+                                                Code(s)
+                                                applied
+                                                successfully</span>
+                                            <span *ngIf="coupon_status=='error'" class="coupon-error">Coupon
+                                                Code(s) not
+                                                valid</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </ng-container>
+                            <ng-container *ngIf="action=='note'">
+                                <app-booking-note (noteChanged)="handleConsumerNote($event)"
+                                    [selectedService]="selectedService" [businessProfile]="businessjson"
+                                    [placeHolder]="note_placeholder" [note]="consumerNote">
+                                </app-booking-note>
+                            </ng-container>
+                            <ng-container *ngIf="action=='addmember'">
+                                <div class="modal-body">
+                                    <div class="col-md-12 col-12 col-sm-12 lnk mgn-bt-10">
+                                        <i class="fa fa-arrow-left pointer-cursor pt-3" (click)="goBack()"></i>
+                                        {{add_member_cap}}
+                                    </div>
+                                    <div class="col-md-12 col-12 col-sm-12 lnk mgn-up-20 mb-3">
+                                        <app-checkin-consumer-add-member [calledFrom]="'checkin'"
+                                            (returnDetails)="handleReturnDetails($event)">
+                                        </app-checkin-consumer-add-member>
+                                    </div>
+                                </div>
+                            </ng-container>
+                            <div class="modal-footer">
+                                <button type="button" class="disp-none cancel  btn btn-light-primary font-weight-bold"
+                                    data-bs-dismiss="modal" #closebutton>Cancel</button>
+                                <button type="button" class="btn btn-primary font-weight-bold hf-btn"
+                                    (click)="actionCompleted()">Ok</button>
+                            </div>
+                            <div class="error-section" *ngIf="apiError !== ''">
+                                {{apiError}}
+                            </div>
+                            <div class="error-section success-section" *ngIf="apiSuccess !== ''">
+                                {{apiSuccess}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

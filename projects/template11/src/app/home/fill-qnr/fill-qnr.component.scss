@@ -1,0 +1,26 @@
+.btn.btn-primary {
+    color: #fff;
+    background-color: #33019B !important;
+    border-color: #33009C !important;
+    font-weight: bold !important;
+    opacity: none !important;
+}
+
+::ng-deep .fill-questionaire app-questionnaire .section-shadow {
+    padding: 0 !important;
+}
+
+::ng-deep .fill-questionaire app-questionnaire .section-shadow .form-group.card {
+    padding: 20px !important;
+}
+
+.quest-head {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+@media screen and (max-width:550px) {
+    ::ng-deep .fill-questionaire.card {
+        padding: 5px !important;
+    }
+}

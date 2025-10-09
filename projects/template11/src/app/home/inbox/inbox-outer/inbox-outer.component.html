@@ -1,0 +1,210 @@
+<section class="container cons-inbox no-padding-small">
+  <div class="content comn-cls m0 p0">
+    <div class="c-outer m0 p0">
+      <div class="c-body">
+        <div class="card title-gb">
+          <h5 class="mt-2 bold">Messages <a class="pull-left me-4 back-btn" (click)="goBack()"><i
+                class="fa fa-arrow-left me-2"></i></a></h5>
+        </div>
+        <div class="card p0">
+          <app-common-innerloading-spinner *ngIf="loading"></app-common-innerloading-spinner>
+          <div class="d-flex flex-column flex-column-fluid" id="kt_content" *ngIf="!loading">
+            <div class="d-flex flex-row minhgt-80" *ngIf="messages.length==0">
+              <div class="no-msg-section">
+                <div class="nomsg-img mb-4"></div>
+                No messages till now
+              </div>
+            </div>
+            <div class="d-flex flex-column-fluid">
+              <div class="d-flex flex-row" *ngIf="messages.length>0">
+                <div class="flex-row-auto card-width w-xl-400px" id="kt_chat_aside" *ngIf="!showChat">
+                  <div class="card card-custom">
+                    <div class="card-body">
+                      <div class="scroll scroll-pull over-scroll" [ngStyle]="{'height.vh': 75}">
+                        {{groupedMsgs | json}}
+                        <div *ngFor="let user of groupedMsgs | keyvalue: valueOrder" (click)="providerSelection(user)"
+                          class="d-flex align-items-center justify-content-between pointer-cursor p-1"
+                          [class.selected-user]="selectedProvider==user.key">
+                          <div class="d-flex align-items-center">
+                            <div class="symbol symbol-circle symbol-50 mr-3">
+                              <div class="user-name">
+                                {{getUserName(user.value)}}
+                              </div>
+                            </div>
+                            <div class="d-flex flex-column">
+                              <a class="text-dark-75 text-hover-primary font-weight-bold font-size-lg">
+                                {{user.value[(user.value.length-1)].accountName}}</a>
+                              <span class="text-muted font-weight-bold font-size-sm">
+                                {{formatDateDisplayTZ(user.value[user.value.length-1])}}
+                                <!-- {{formatDateDisplay(user.value[user.value.length-1].timeStamp)}} -->
+                              </span>
+                            </div>
+                          </div>
+                          <div class="d-flex flex-column align-items-end">
+                            <span class="label label-sm label-success"
+                              *ngIf="getUnreadCount(user.value) > 0">{{getUnreadCount(user.value)}}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex-row-fluid ml-lg-8 null-img" id="kt_chat_content"
+                  *ngIf="selectedProvider == '' && !small_device_display">
+                  <div class="inbox-nullimg" [ngStyle]="{'height.vh': 40}"></div>
+                  <div class="null-text">Select a chat to start messaging</div>
+                </div>
+                <div class="flex-row-fluid ml-lg-8" id="kt_chat_content"
+                  *ngIf="(selectedProvider != '' && !small_device_display) || (small_device_display && showChat)">
+                  <div class="card card-custom">
+                    <div class="card-header align-items-center px-4 py-3" *ngIf="!customId">
+                      <div class="text-center flex-grow-1">
+                        <div class="text-dark-75 font-weight-bold font-size-h5">
+                          {{selectedProviderName}}</div>
+                      </div>
+                    </div>
+                    <div class="card-body no-padding-small">
+                      <div class="scroll scroll-pull over-scroll" #scrollMe [ngStyle]="{'height.vh': 65}">
+                        <div class="messages" *ngFor="let msg of selectedUserMessages">
+                          <div *ngIf="msg.owner.id!==userDet.id" class="d-flex flex-column mb-5 align-items-start">
+                            <div class="d-flex align-items-center">
+                              <div>
+                                <span class="text-muted font-size-sm">
+                                  <!-- {{formatDateDisplay(msg.timeStamp)}} -->
+                                  {{formatDateDisplayTZ(msg)}}
+                                </span>
+                                <span class="greenc font-size-sm ms-1">{{getMsgType(msg)}}</span>
+                              </div>
+                            </div>
+                            <div
+                              class="rounded p-2 bg-light-success font-weight-bold font-size-lg text-left msg-width">
+                              <div class="reply-text">
+                                <a (click)="replytoMsg(msg)">Reply</a>
+                              </div>
+                              <div class="reply-msg text-left" *ngIf="msg.replyMessageId"
+                                (click)="gotoReplyMsgSection(msg.replyMessageId)">
+                                <div class="username">
+                                  {{(getReplyMsgbyId(msg.replyMessageId).owner.id===userDet.id) ? 'You' :
+                                  getReplyMsgbyId(msg.replyMessageId).accountName}}</div>
+                                <div class="text-dark-50 replymsg"
+                                  [innerHTML]="getReplyMsgbyId(msg.replyMessageId).msg | nl2br | autolink"></div>
+                              </div>
+                              <div *ngIf="msg.msg" [innerHTML]="msg.msg | nl2br | autolink" #outmsgId class="selmsg text-dark-75">
+                              </div>
+                              <div class="thumbnails mt10 mb10" *ngIf="msg.attachmentList && msg.attachmentList.length > 0">
+                                <ng-container *ngFor="let attachment of msg.attachmentList;let i=index">
+                                  <a (click)="openImage(msg.attachmentList, i)"
+                                    *ngIf="attachment.s3path && checkImgType(attachment.s3path) === 'img'"><img
+                                      [src]="getThumbUrl(attachment)" alt=""/></a>
+                                  <a [href]="attachment.s3path"
+                                    *ngIf="attachment.s3path && checkImgType(attachment.s3path) === 'pdf'"><img
+                                      [src]="getThumbUrl(attachment)" alt=""/></a>
+                                </ng-container>
+                              </div>
+                            </div>
+                          </div>
+                          <div *ngIf="msg.owner.id==userDet.id" class="d-flex flex-column mb-5 align-items-end">
+                            <div class="d-flex align-items-center">
+                              <div>
+                                <span class="greenc font-size-sm me-1">{{getMsgType(msg)}}</span>
+                                <span class="text-muted font-size-sm">
+                                  {{formatDateDisplayTZ(msg)}}
+                                </span>
+                              </div>
+                            </div>
+                            <div class="rounded p-2 bg-light-primary font-weight-bold font-size-lg msg-width">
+                              <div class="reply-text">
+                                <a (click)="replytoMsg(msg)">Reply</a>
+                              </div>
+                              <div class="reply-msg text-left" *ngIf="msg.replyMessageId"
+                                (click)="gotoReplyMsgSection(msg.replyMessageId)">
+                                <div class="username">
+                                  {{(getReplyMsgbyId(msg.replyMessageId).owner.id===userDet.id) ? 'You' :
+                                  getReplyMsgbyId(msg.replyMessageId).accountName}}</div>
+                                <div class="text-dark-50 replymsg"
+                                  [innerHTML]="getReplyMsgbyId(msg.replyMessageId).msg | nl2br | autolink"></div>
+                              </div>
+                              <div *ngIf="msg.msg" [innerHTML]="msg.msg | nl2br | autolink" #inmsgId
+                                class="selmsg text-left text-dark-75">
+                              </div>
+                              <div class="thumbnails my-2" *ngIf="msg.attachmentList && msg.attachmentList.length > 0">
+                                <ng-container *ngFor="let attachment of msg.attachmentList;let i=index">
+                                  <a (click)="openImage(msg.attachmentList, i)"
+                                    *ngIf="attachment.s3path && checkImgType(attachment.s3path) === 'img'"><img
+                                      [src]="getThumbUrl(attachment)" alt=""/></a>
+                                  <a [href]="attachment.s3path"
+                                    *ngIf="attachment.s3path && checkImgType(attachment.s3path) === 'pdf'"><img
+                                      [src]="getThumbUrl(attachment)" alt=""/></a>
+                                </ng-container>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="loading" *ngIf="!scrollDone">
+                          <app-common-innerloading-spinner></app-common-innerloading-spinner>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card-footer align-items-center p-0">
+                      <div class="reply-section" *ngIf="replyMsg">
+                        <div class="main-sec">
+                          <div class="username">{{(replyMsg.owner.id===userDet.id) ? 'You' :
+                            selectedProviderName}}</div>
+                          <div class="replymsg">{{replyMsg.msg}}</div>
+                        </div>
+                        <div class="close">
+                          <svg (click)="closeReply()" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
+                            height="24">
+                            <path fill="currentColor"
+                              d="M19.1 17.2l-5.3-5.3 5.3-5.3-1.8-1.8-5.3 5.4-5.3-5.3-1.8 1.7 5.3 5.3-5.3 5.3L6.7 19l5.3-5.3 5.3 5.3 1.8-1.8z">
+                            </path>
+                          </svg>
+                        </div>
+                      </div>
+                      <div class="d-flex align-items-center justify-content-between p-4">
+                        <textarea cdkTextareaAutosize cdkAutosizeMinRows="1" cdkAutosizeMaxRows="4"
+                          class="form-control border-0 p-0" placeholder="Type a message *"
+                          [(ngModel)]="message"></textarea>
+                        <div class="">
+                          <input #logofile type="file" accept="/*;capture=camera" style="display:none;" multiple
+                            (change)="filesSelected($event,'photo')">
+                          <a class="btn btn-clean btn-icon btn-md" (click)="logofile.click()"><i
+                              class="material-icons">attach_file</i></a>
+                        </div>
+                        <div>
+                          <button type="button" (click)="sendMessageCompleted && sendMessage()" id="btnSendMessage"
+                            *ngIf="!small_device_display" [class.disabled]="!sendMessageCompleted || message==''"
+                            class="btn btn-primary btn-md text-uppercase font-weight-bold chat-send py-2 px-6 d-flex">Send
+                          </button>
+                          <i *ngIf="small_device_display" (click)="sendMessageCompleted && sendMessage()"
+                            class="fa fa-paper-plane" aria-hidden="true"
+                            [class.grey]="!sendMessageCompleted || message==''"></i>
+                        </div>
+                      </div>
+                      <div class="img-section mt-4"
+                        *ngIf="selectedFiles.files && selectedFiles.files.length > 0">
+                        <ul class="galul">
+                          <li *ngFor="let file of selectedFiles.files;let i = index ">
+                            <div class="galimg_outer">
+                              <div class="gal_img">
+                                <img [src]="getImage(selectedFiles.base64[i], file)"
+                                  *ngIf="selectedFiles.base64[i]" alt="">
+                              </div>
+                              <div class="gal_action" (click)="deleteTempImage(i)">
+                                <i class="fa fa-times-circle" aria-hidden="true"></i>
+                              </div>
+                            </div>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

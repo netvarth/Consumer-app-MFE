@@ -1,0 +1,143 @@
+<div class="container items mt-1 p_consumer_items" [ngClass]="theme" id="itemsContainer">
+    <div class="mt-5" *ngIf="loading">
+        <app-skeleton-loading></app-skeleton-loading>
+    </div>
+    <div class="my-1 login-form_custom" *ngIf="!loading && !loggedIn">
+        <div class="card card-custom no-margin hgt-adjust">
+            <div class="card-body p-0">
+                <app-authentication (actionPerformed)="actionPerformed($event)"
+                    [accountId]="accountId"></app-authentication>
+            </div>
+        </div>
+    </div>
+    <div class="row" *ngIf="!loading && loggedIn">
+        <div class="customCard headerBorder">
+            <div (click)="goBack()"><i class="fa fa-arrow-left clrChangeHeader pointer-cursor"></i>
+                <span class="clrChangeHeader  pointer-cursor ms-1">Back</span>
+            </div>
+           
+        </div>
+        <div class="items-main-container" [ngClass]="{'single-column': !showFilter}">
+            <div class="card for-large-screen"  *ngIf="showFilter">
+                <div class="">
+                    <h3 class="fw-bold mb-4">Filters</h3>
+                    <p-accordion [multiple]="true" [activeIndex]="[0]">
+                        <p-accordionTab header="Store" *ngIf="showStores">
+                            <div class="stocks">
+                                <p-dropdown class="text-capitalize" [options]="stores" 
+                                    [(ngModel)]="storeEncId" placeholder="Select" ropdownIcon="fa fa-caret-down"
+                                    optionLabel="name" optionValue="encId">
+                                    <ng-template let-store pTemplate="storeName">
+                                        {{store.name}}
+                                    </ng-template>
+                                </p-dropdown>
+                            </div>
+                        </p-accordionTab>
+                        <p-accordionTab header="Category">
+                            <div class="mb-1" *ngFor="let category of itemCategories" class="field-checkbox">                                
+                                <mat-checkbox [checked]="selectedCategories && selectedCategories.indexOf(category.id)!==-1" (change)="categorySelected(category, $event)"
+                                  class="text-capitalize">
+                                  {{category.categoryName}}</mat-checkbox>
+                              </div>
+                        </p-accordionTab> 
+                    </p-accordion>
+                </div>
+            </div>
+            <div class="p-0" >
+                <div class="card p-0 p-2" *ngIf="itemsLoading">
+                    <app-skeleton-loading></app-skeleton-loading>
+                </div>
+                <div class="card itemGrid p-0 p-2" *ngIf="!itemsLoading">
+                    <div class="p-2 for-small-screen" *ngIf="categoryNames && categoryNames.length > 0">
+                        <span>{{ categoryNames.length > 1 ? 'Categories:' : 'Category:' }}</span>                        <span class="fw-bold">
+                            <span *ngFor="let cat of categoryNames; let last = last">
+                                &nbsp;{{ cat }}<span *ngIf="!last">,</span>
+                            </span>
+                        </span>
+                    </div> 
+                    <div class="items-header p-2">
+                        <div>                                                       
+                            <h3 class="fw-bold">Items</h3>
+                            <div *ngIf="itemsCount == 0" class="item-count">Showing 0 - {{itemsCount}} of {{itemsCount}} products</div>
+                            <div *ngIf="itemsCount > 0" class="item-count">Showing {{(startIndex)+1}} - {{startIndex + items.length}} of {{itemsCount}} products</div>
+                        </div>
+                        <div class="for-small-screen" *ngIf="showFilter">
+                            <button pButton pRipple type="button" id="btnFilter" class="btn-filter p-button-primary btn-primary"
+                                (click)="viewFilter()">Filter</button>
+                        </div>
+                        <div  *ngIf="queryString">
+                            <button pButton pRipple id="btnViewAllItems" type="button" class="btn-filter p-button-primary btn-primary"
+                                (click)="viewAllItems()">All Items</button>
+                        </div>
+                    </div>
+                    <div class="items-container" *ngIf="items && items.length > 0">
+                        <div (click)="viewItems(item , item.encId)" *ngFor="let item of items">
+                            <div class="items-card pointer-cursor" [id]="item.encId">
+                                <div class="text-center">
+                                    <img *ngIf="item && item.spItemDto && item.spItemDto.attachments[0] && item.spItemDto.attachments[0].s3path"
+                                        [src]="item.spItemDto.attachments[0].s3path" [alt]="item.alt">
+                                    <img *ngIf="item && item.spItemDto && (!item.spItemDto.attachments || !item.spItemDto.attachments.length)"
+                                        src="{{cdnPath}}assets/images/rx-order/items/Items.svg" [alt]="item.alt">
+                                </div>
+                                <div>
+                                    <div class="item-name">
+                                        {{item.spItemDto.name}}
+                                    </div>
+                                    <div>
+                                        <!-- <div class="price-label">
+                                            {{(item && item.itemNature =='VIRTUAL_ITEM')? '*Starting at': ' '}}
+                                        </div> -->
+                                        <div class="price-label" [innerHTML]="(item && item.itemNature == 'VIRTUAL_ITEM') ? '*Starting at' : '&nbsp;'"></div>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <span class="item-rate">₹{{item.price}}</span>&nbsp;&nbsp;<span *ngIf="item.showMrp && item.mrp" class="item-mrp">₹{{item.mrp}}</span>
+                                        </div>
+                                        <div>
+                                            <button pRipple type="button" class="btn-buy btn-primary" id="btnAdd" (click)="addToCart($event,item)">Add</button>
+                                            <!-- <button *ngIf="item && item.itemNature =='VIRTUAL_ITEM'" pRipple type="button" class="btn-buy btn-primary" id="btnAdd" (click)="addToCart($event,item)">View Options</button> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>                    
+                    <div class="card paginator p-0 flex justify-content-center paginatior-section" *ngIf="itemsCount>0">
+                        <p-paginator [rows]="rows" [totalRecords]="itemsCount" [first]="currentPage * rows"
+                            (onPageChange)="onPageChange($event)" [rowsPerPageOptions]="[10, 20, 30]">
+                        </p-paginator>
+                    </div>
+            </div>
+        </div>
+    </div>
+    <div class="filter-sidebar">
+        <p-sidebar [(visible)]="sidebarVisible" position="right">
+            <div>
+                <h3 class="fw-bold mb-4">Filters</h3>
+            </div>
+            <hr/>
+            <div>
+                <p-accordion [multiple]="true" [activeIndex]="[0]">
+                    <p-accordionTab header="Store" *ngIf="showStores">
+                        <div class="stocks">
+                            <p-dropdown class="text-capitalize" [options]="stores" 
+                                [(ngModel)]="storeEncId" placeholder="Select" ropdownIcon="fa fa-caret-down"
+                                optionLabel="name" optionValue="encId">
+                                <ng-template let-store pTemplate="storeName">
+                                    {{store.name}}
+                                </ng-template>
+                            </p-dropdown>
+                        </div>
+                    </p-accordionTab>
+                    <p-accordionTab header="Category">
+                        <div class="mb-1" *ngFor="let category of itemCategories" class="field-checkbox">                                
+                            <mat-checkbox [checked]="selectedCategories && selectedCategories.indexOf(category.id)!==-1" (change)="categorySelected(category, $event)"
+                              class="text-capitalize">
+                              {{category.categoryName}}</mat-checkbox>
+                          </div>
+                    </p-accordionTab> 
+                </p-accordion>
+            </div>
+        </p-sidebar>
+    </div>

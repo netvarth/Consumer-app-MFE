@@ -1,0 +1,19 @@
+$serviceIconBGwidth:60px !important;
+$serviceIconBGborder:0.825833px solid #D7E7F9 !important;
+$serviceIconBGfilter:drop-shadow(0px 3.30333px 3.30333px rgba(0, 0, 0, 0.25)) !important;
+$serviceIconBGborderRadius:50% !important;
+$serviceIconBGboxShadow:0 4px 8px rgb(0 0 0 / 20%), 0 6px 20px rgb(0 0 0 / 19%) !important;
+$serviceIconBGheight:60px !important;
+
+.cstmServiceIcon{
+  width: $serviceIconBGwidth;
+  border:$serviceIconBGborder;
+  filter:$serviceIconBGfilter;
+  border-radius:$serviceIconBGborderRadius;
+  box-shadow: $serviceIconBGboxShadow;
+  height:$serviceIconBGheight;
+}
+.serviceName{
+    color: rgba(0, 0, 0, 0.87);
+    font-weight: 600;
+  }

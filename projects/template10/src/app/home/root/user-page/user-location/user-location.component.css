@@ -1,0 +1,16 @@
+.nexticon {
+  font-size: 25px;
+  cursor: pointer;
+  float: right;
+}
+.user-locations {
+  background: #FFFFFF;
+  box-shadow: 0 2px 1px -1px #0003, 0 1px 1px #00000024, 0 1px 3px #0000001f !important;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+.place {
+  font-weight: 600 !important;
+}

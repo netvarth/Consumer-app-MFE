@@ -1,0 +1,11 @@
+.addmem-head {
+    font-size: 12px!important;
+
+}
+::ng-deep .field-ht .p-dropdown .p-inputtext{
+    padding: 6.5px !important;
+}
+
+::ng-deep .p-dropdown-item {
+    padding: 10px;
+}

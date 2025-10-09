@@ -1,0 +1,65 @@
+
+.more_btn {
+  border: none;
+  font-weight: 600;
+  font-size: 15px;
+  padding: 8px !important;
+  text-align: center;
+  background: #E5E8E8;
+  border-radius: 3.25709px;
+  color: #000000 !important;
+  outline: none;
+
+}
+
+.matChipList, .freeslots .internal-scroll {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+
+@media (min-width:1200px) {
+    .freeslots mat-chip {
+        width: 23% !important;
+    }
+}
+
+.timeSlotCstm {
+  color: #000000;
+  font-weight: 600;
+  font-size: 16px;
+  padding: 5px;
+}
+
+.showMoreAvailableSlots {
+  height: 460px;
+  overflow: auto;
+}
+
+.timeSlotCstm {
+  display: none !important;
+}
+
+@media only screen and (max-width: 764px) {
+  .timeSlotCstm {
+    display: block !important;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 0.3em;
+  height: 0.3em
+}
+
+::-webkit-scrollbar-button {
+  background: #ccc
+}
+
+::-webkit-scrollbar-track-piece {
+  background: #eee
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888
+}
