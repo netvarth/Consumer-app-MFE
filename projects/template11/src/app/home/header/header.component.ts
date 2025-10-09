@@ -140,7 +140,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
       this.logo = accountProfile.logo?.url;
     }
 
-
     this.initSubscriptions();
     this.initHeader('refresh');
     if (this.accountService.getAccountLocations()) {
