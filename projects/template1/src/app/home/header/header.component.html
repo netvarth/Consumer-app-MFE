@@ -36,7 +36,7 @@
                         </button>
                         <mat-menu #menu="matMenu">
                             <button class="header-loc" mat-menu-item *ngFor="let loc of locations"
-                                [ngClass]="{'active': selectedLocation.id === loc.id}" (click)="changeLocation(loc)">
+                                [ngClass]="{'active': selectedLocation?.id === loc.id}" (click)="changeLocation(loc)">
                                 <span>{{loc.place}}</span>
                             </button>
                         </mat-menu>
@@ -179,7 +179,7 @@
                         </button>
                         <mat-menu #menu="matMenu">
                             <button class="header-loc" mat-menu-item *ngFor="let loc of locations"
-                                [ngClass]="{'active': selectedLocation.id === loc.id}" (click)="changeLocation(loc)">
+                                [ngClass]="{'active': selectedLocation?.id === loc.id}" (click)="changeLocation(loc)">
                                 <span>{{loc.place}}</span>
                             </button>
                         </mat-menu>

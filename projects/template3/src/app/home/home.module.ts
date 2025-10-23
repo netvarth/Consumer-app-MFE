@@ -28,6 +28,7 @@ const routes: Routes = [
       { path: 'donation', loadChildren: () => import('../donation/donation.module').then(m=>m.DonationModule)},
       { path: 'about', loadChildren: () => import('./aboutus/aboutus.module').then(m => m.AboutusModule) },
       { path: 'faq', loadChildren: () => import('./faq/faq.module').then(m => m.FaqModule) },
+      { path: 'support', loadChildren: () => import('./support/support.module').then(m => m.SupportModule) },
       { path: 'service/:serid', loadChildren: () => import('./service-page/service-page.module').then(m => m.ServicePageModule) },
     ]
   }

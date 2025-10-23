@@ -31,6 +31,7 @@ const routes: Routes = [
       { path: 'booking', loadChildren: () => import('../booking/booking.module').then(m => m.BookingModule) },
       { path: 'about', loadChildren: () => import('./aboutus/aboutus.module').then(m => m.AboutusModule) },
       { path: 'faq', loadChildren: () => import('./faq/faq.module').then(m => m.FaqModule) },
+      { path: 'support', loadChildren: () => import('./support/support.module').then(m => m.SupportModule) },
       { path: 'service/:serid', loadChildren: () => import('./service-page/service-page.module').then(m => m.ServicePageModule) },
       { path: ':userEncId', loadChildren: () => import('./root/user-page/user-page.module').then(m => m.UserPageModule) }
     ]
