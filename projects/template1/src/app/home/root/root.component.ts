@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -179,7 +179,9 @@ export class RootComponent implements OnInit, OnDestroy {
       this.lStorageService.setitemonLocalStorage('tabIndex', this.selectedIndex);
     } else {
       console.log(section.link);
-      let url = section.link;
+      let url = this.sharedService.getRouteID() + '/'  + section.link;
+      console.log("Url:", url);
+      
       this.router.navigateByUrl(url);
     }
   }
@@ -199,7 +201,9 @@ export class RootComponent implements OnInit, OnDestroy {
     if (action.link && action.link.startsWith('http')) {
       window.open(action.link, "_system");
     } else if (action.link) {
-      this.router.navigateByUrl(action.link);
+      let url = this.sharedService.getRouteID() + '/'  + action.link;
+      console.log("Url:", url);
+      this.router.navigateByUrl(url);
     } else if (action.type === 'menu') {
       this.actionPerformed(action);
     }
@@ -667,7 +671,7 @@ export class RootComponent implements OnInit, OnDestroy {
     console.log("Image List:", imagelist);
     
     this.image_list_popup = [];
-    if (imagelist.length > 0) {
+    if (imagelist?.length > 0) {
       for (let i = 0; i < imagelist.length; i++) {
         let imgobj = {
           source: imagelist[i].url,

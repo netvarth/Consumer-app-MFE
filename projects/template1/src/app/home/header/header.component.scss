@@ -1,7 +1,10 @@
 .header {
-    padding: 15px 0 5px 0;
+    padding: 5px 0 5px 0;
 }
+header {
+    background: #FD7029 0% 0% no-repeat padding-box !important
 
+}
 ::ng-deep .header .p-inputtext,
 ::ng-deep .header .p-dropdown,
 ::ng-deep .header .p-dropdown .p-dropdown-trigger {
@@ -68,7 +71,7 @@
 }
 
 .logo img {
-    max-height: 70px !important;
+    max-height: 50px !important;
 }
 
 ::ng-deep {

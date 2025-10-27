@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { RootComponent } from './root.component';
-import { I8nModule, JGalleryModule, SafeHtmlModule, ToastService } from 'jconsumer-shared';
+import { DateFormatPipeModule, I8nModule, JGalleryModule, SafeHtmlModule, ToastService } from 'jconsumer-shared';
 import { AddInboxMessagesModule } from '../../shared/add-inbox-messages/add-inbox-messages.module';
 import { BasicProfileNewModule } from '../../shared/profile/basic-profile-new/basic-profile-new.module';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -30,6 +30,7 @@ const routes: Routes = [
     I8nModule,
     SafeHtmlModule,
     CardModule,
+    DateFormatPipeModule,
     ServiceInfoDisplayModule,
     ConsDepartmentsModule,
     OnlineUsersModule,

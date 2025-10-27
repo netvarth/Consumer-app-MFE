@@ -1,10 +1,7 @@
 export const projectConstants = {
     "ROOTUIPATH": "http://localhost:4300",
-    "TEMPLATE": "https://d38qirwztuxwob.cloudfront.net/template",
-    "HOME": "https://d38qirwztuxwob.cloudfront.net/home",
-    // "template1": "https://d38qirwztuxwob.cloudfront.net/template1",
-    // "TEMPLATE": "http://localhost:4201",
-    // "HOME": "http://localhost:4204",
+    "TEMPLATE": "http://localhost:4201",
+    "HOME": "http://localhost:4204",
     "template1": "http://localhost:4501",
     "template2": "http://localhost:4502",
     "template3": "http://localhost:4503",

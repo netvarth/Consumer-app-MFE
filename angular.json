@@ -552,6 +552,7 @@
 							}
 						],
 						"styles": [
+							"node_modules/font-awesome/css/font-awesome.min.css",
 							"projects/template1/src/styles.scss"
 						],
 						"scripts": []
@@ -567,7 +568,7 @@
 								{
 									"type": "anyComponentStyle",
 									"maximumWarning": "2kB",
-									"maximumError": "4kB"
+									"maximumError": "1MB"
 								}
 							],
 							"outputHashing": "all"

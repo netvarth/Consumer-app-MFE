@@ -19,16 +19,16 @@
                     <img class="d-flex" [src]="config.logo" alt="Logo" width="auto">
                 </div>
             </div>
-            <div *ngIf="!hideItemSearch" class="col-lg-6 display-large">
+            <!-- <div *ngIf="!hideItemSearch" class="col-lg-6 display-large">
                 <app-item-search [accountID]="accountID" (selectedItemsEmit)="selectedItemsEmit($event)"
                     [catalogEncids]="this.selectedCatalogs"></app-item-search>
-            </div>
+            </div> -->
             <div class="d-flex cart">
-                <div class="d-flex align-items-center display-small" *ngIf="!hideItemSearch" (click)="showSearch()">
+                <!-- <div class="d-flex align-items-center display-small" *ngIf="!hideItemSearch" (click)="showSearch()">
                     <div class="d-flex justify-content-end align-items-center ">
                         <i class="fa fa-search me-2 ms-1"></i>
                     </div>
-                </div>
+                </div> -->
                 <div class="d-flex align-items-center me-2 ms-2">
                     <span class="lgin cust location me-2" *ngIf="showLocation">
                         <button mat-icon-button [matMenuTriggerFor]="menu">
@@ -44,7 +44,7 @@
                     <div class="d-flex align-items-center cart-section" *ngIf="!isLoggedIn"
                         (click)="dashboardClicked()">
                         <div class="d-flex justify-content-end align-items-center">
-                            <i class="fa fa-user-circle-o ms-1"></i>
+                            <!-- <i class="fa fa-user-circle-o ms-1"></i> -->My Bookings
                         </div>
                     </div>
                     <span class="lgin cust d-block d-flex align-items-center" *ngIf="isLoggedIn">
@@ -224,12 +224,12 @@
     [ngStyle]="{ 'font-family': config.primaryFont }">
     <div class="header">
         <div class="header-grid">
-            <div class="left" *ngIf="!smallDevice">
+            <!-- <div class="left" *ngIf="!smallDevice">
                 <div *ngIf="!hideItemSearch" class="pt-2">
                     <app-item-search [accountID]="accountID" (selectedItemsEmit)="selectedItemsEmit($event)"
                         [catalogEncids]="this.selectedCatalogs"></app-item-search>
                 </div>
-            </div>
+            </div> -->
             <div class="middle d-flex justify-content-center">
                 <div *ngIf="smallDevice && config?.header?.menu.length > 0">
                     <!-- Mobile menu button (shown only on small screens) -->
@@ -275,11 +275,11 @@
                 </div>
             </div>
             <div class="right d-flex cart justify-content-end ">
-                <div class="display-small" *ngIf="!hideItemSearch" (click)="showSearch()">
+                <!-- <div class="display-small" *ngIf="!hideItemSearch" (click)="showSearch()">
                     <div class="d-flex justify-content-end align-items-center ">
                         <i class="fa fa-search me-2 ms-1"></i>
                     </div>
-                </div>
+                </div> -->
 
                 <div class="me-2 ms-2">
                     <span class="lgin cust location me-2" *ngIf="showLocation">
@@ -356,11 +356,11 @@
                 </ul>
             </nav>
         </div>
-        <div class="col-lg-12 d-flex justify-content-center display-small" *ngIf="searchOption && !hideItemSearch">
+        <!-- <div class="col-lg-12 d-flex justify-content-center display-small" *ngIf="searchOption && !hideItemSearch">
             <div class="col-md-12 col-sm-12 col-12 search">
                 <app-item-search [accountID]="accountID" (selectedItemsEmit)="selectedItemsEmit($event)"
                     [catalogEncids]="this.selectedCatalogs"></app-item-search>
             </div>
-        </div>
+        </div> -->
     </div>
 </header>

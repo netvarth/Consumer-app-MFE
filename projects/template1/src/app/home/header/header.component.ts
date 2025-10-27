@@ -130,9 +130,13 @@ export class HeaderComponent implements OnInit {
     this.locations = this.sharedService.getJson(account['location']);
     this.initSubscriptions();
     this.initHeader(null);
-    if (this.accountService.getAccountLocations()) {
-      this.selectedLocation = this.accountService.getActiveLocation();
+    const activeLoc = this.accountService.getActiveLocation();
+    if (activeLoc) {
+      this.selectedLocation = activeLoc;
       this.showLocation = true;
+      if (!this.accountService.getAccountLocations()) {
+        this.accountService.setAccountLocations(this.locations);
+      }
     } else {
       this.setAccountLocations(this.locations);
       this.showLocation = true;

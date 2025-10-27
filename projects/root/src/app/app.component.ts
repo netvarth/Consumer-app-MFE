@@ -133,7 +133,7 @@ export class AppComponent {
 
       // Attempt to fetch the version, with timeout
       const cVersion = await Promise.race([this.versionService.getUIVersion(), timeoutPromise]);
-      const pVersion = this.localStorageService.getitemfromLocalStorage('c_sversion');
+      const pVersion = this.localStorageService.getitemfromLocalStorage('c_version');
       this.initApp(pVersion, cVersion as string);
 
       this.versionCheckTimeout = setTimeout(() => this.checkVersionPeriodically(), 5 * 60 * 1000); // 5 minutes
