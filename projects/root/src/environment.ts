@@ -6,6 +6,7 @@ export const projectConstants = {
     // "TEMPLATE": "http://localhost:4201",
     // "HOME": "http://localhost:4204",
     "template1": "http://localhost:4501",
+    // "template1": "https://d38qirwztuxwob.cloudfront.net/template1",
     "template2": "http://localhost:4502",
     "template3": "http://localhost:4503",
     "template4": "http://localhost:4504",
