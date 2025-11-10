@@ -6,7 +6,7 @@ export const routes: Routes = [
   { path: 'not-found', loadChildren: () => import('./not-found/not-found.module').then(m => m.NotFoundModule) },
   { path: 'maintenance', loadChildren: () => import('./maintenance/maintenance.module').then(m => m.MaintenanceModule) },
   {
-    path: 'customapp/:id',
+    path: 'capp/:id',
     canLoad: [AccountGuard],  // Guard to prevent navigation if condition fails
     loadChildren: () =>
       new Promise<any>((resolve, reject) => {

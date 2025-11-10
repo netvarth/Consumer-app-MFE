@@ -1,0 +1,324 @@
+.modal-open {
+    overflow: hidden;
+}
+
+.modal-open .modal {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1050;
+    display: none;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    outline: 0;
+}
+
+.modal-dialog {
+    position: relative;
+    width: auto;
+    margin: 0.5rem;
+    pointer-events: none;
+}
+
+.modal.fade .modal-dialog {
+    -webkit-transition: -webkit-transform 0.3s ease-out;
+    transition: -webkit-transform 0.3s ease-out;
+    transition: transform 0.3s ease-out;
+    transition: transform 0.3s ease-out, -webkit-transform 0.3s ease-out;
+    -webkit-transform: translate(0, -50px);
+    transform: translate(0, -50px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .modal.fade .modal-dialog {
+        -webkit-transition: none;
+        transition: none;
+    }
+}
+
+.modal.show .modal-dialog {
+    -webkit-transform: none;
+    transform: none;
+}
+
+.modal.modal-static .modal-dialog {
+    -webkit-transform: scale(1.02);
+    transform: scale(1.02);
+}
+
+.modal-dialog-scrollable {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    max-height: calc(100% - 1rem);
+}
+
+.modal-dialog-scrollable .modal-content {
+    max-height: calc(100vh - 1rem);
+    overflow: hidden;
+}
+
+.modal-dialog-scrollable .modal-header,
+.modal-dialog-scrollable .modal-footer {
+    -ms-flex-negative: 0;
+    flex-shrink: 0;
+}
+
+.modal-dialog-scrollable .modal-body {
+    overflow-y: auto;
+}
+
+.modal-dialog-centered {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    min-height: calc(100% - 1rem);
+}
+
+.modal-dialog-centered::before {
+    display: block;
+    height: calc(100vh - 1rem);
+    height: -webkit-min-content;
+    height: -moz-min-content;
+    height: min-content;
+    content: "";
+}
+
+.modal-dialog-centered.modal-dialog-scrollable {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.modal-dialog-centered.modal-dialog-scrollable .modal-content {
+    max-height: none;
+}
+
+.modal-dialog-centered.modal-dialog-scrollable::before {
+    content: none;
+}
+
+.modal-content {
+    position: relative;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    width: 100%;
+    pointer-events: auto;
+    background-color: #ffffff;
+    background-clip: padding-box;
+    border: 0 solid rgba(0, 0, 0, 0.2);
+    border-radius: 0.42rem;
+    -webkit-box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+    outline: 0;
+}
+
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #000000;
+    z-index: 0 !important;
+}
+
+.modal-backdrop.fade {
+    opacity: 0;
+    display: none !important;
+}
+
+.modal {
+    background: rgba(0, 0, 0, .3);
+}
+
+.modal-header {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: start;
+    -ms-flex-align: start;
+    align-items: flex-start;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    padding: 1.5rem 1.75rem;
+    border-bottom: 1px solid #EBEDF3;
+    border-top-left-radius: 0.42rem;
+    border-top-right-radius: 0.42rem;
+}
+
+.modal-title {
+    margin-bottom: 0 !important;
+    line-height: 1.5;
+}
+
+.modal-open .modal {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.modal-body {
+    position: relative;
+    -webkit-box-flex: 1;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    padding: 15px;
+}
+
+.modal-footer {
+    padding: 15px;
+    text-align: right;
+    border-top: 1px solid #e5e5e5;
+}
+
+.modal-footer>* {
+    margin: 0.25rem;
+}
+
+.modal-scrollbar-measure {
+    position: absolute;
+    top: -9999px;
+    width: 50px;
+    height: 50px;
+    overflow: scroll;
+}
+
+@media (min-width: 576px) {
+    .modal-dialog {
+        max-width: 500px;
+        margin: 1.75rem auto;
+    }
+
+    .modal-dialog-scrollable {
+        max-height: calc(100% - 3.5rem);
+    }
+
+    .modal-dialog-scrollable .modal-content {
+        max-height: calc(100vh - 3.5rem);
+    }
+
+    .modal-dialog-centered {
+        min-height: calc(100% - 3.5rem);
+    }
+
+    .modal-dialog-centered::before {
+        height: calc(100vh - 3.5rem);
+        height: -webkit-min-content;
+        height: -moz-min-content;
+        height: min-content;
+    }
+
+    .modal-content {
+        -webkit-box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+    }
+
+    .modal-sm {
+        max-width: 300px;
+    }
+}
+
+@media (min-width: 992px) {
+
+    .modal-lg,
+    .modal-xl {
+        max-width: 800px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .modal-xl {
+        max-width: 1140px;
+    }
+}
+
+.mat-mdc-dialog-content .galul li .galimg_outer .gal_img img {
+    width: 100%;
+    height: 130px;
+  }
+  
+  .mat-mdc-dialog-content .galul li .galimg_outer {
+    position: relative;
+    padding: 5px;
+  }
+  
+  .mat-mdc-dialog-content .galul li {
+    list-style: none;
+    width: 33.3333%;
+  }
+  
+  .mat-mdc-dialog-content .galul {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-flow: wrap;
+  }
+  
+  .mat-mdc-dialog-content .galul li .galimg_outer .gal_action button {
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, .5);
+    color: #fff;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+  }
+  
+  .mat-mdc-dialog-content .galul li .galimg_outer .gal_action {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 5;
+  }
+  .cancel-btn-color.mdc-button {
+    background-color: #ddd !important;
+  }
+  
+  ::ng-deep .mdc-button {
+    background-color: #FBFBFB !important;
+    color: #000000 !important;
+    font-weight: 500;
+    background-color: #0D2348 !important;
+    color: #ffffff !important;
+    font-size: 14px !important;
+  }
+  
+  ::ng-deep .mdc-button:hover {
+    background-color: #1873f2 !important;
+    box-shadow: 0px 4px 4px rgb(0 0 0 / 10%) !important;
+    color: #000000 !important;
+    font-weight: 500;
+  }
+  
+  .mat-mdc-icon-button {
+    padding: 0 !important;
+  }
+  
+  .mat-icon-button {
+    color: inherit;
+    background: transparent;
+  }
+  
+  .mat-focus-indicator {
+    position: relative;
+  }

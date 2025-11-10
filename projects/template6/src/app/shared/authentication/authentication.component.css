@@ -86,6 +86,38 @@ label {
   width: 100%!important;
   height: 38px!important;
 }
+.cust-logpg-submt,
+.signup-button,
+.continue-button {
+  position: relative;
+  overflow: hidden;
+}
+/* Absolutely center the inline spinner so it doesn't affect layout */
+.cust-logpg-submt app-common-innerloading-spinner,
+.signup-button app-common-innerloading-spinner,
+.continue-button app-common-innerloading-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+/* Keep button heights consistent even when text toggles */
+.signup-button {
+  height: 38px !important;
+}
+/* Prevent layout shift for section-level spinners */
+.authentication .form-group {
+  position: relative;
+}
+.authentication .form-group app-common-innerloading-spinner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
 .mt-4 {
   margin-top: 20px!important;
 }

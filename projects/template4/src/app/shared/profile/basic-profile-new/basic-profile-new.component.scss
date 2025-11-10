@@ -1,0 +1,103 @@
+.profile-img {
+    width: 100%;
+    height: 205px;
+}
+
+.no-cover {
+    height: 55px;
+    background: #f5f5f5;
+}
+
+.profile-card {
+    position: relative;
+    background: #FFFFFF;
+    box-shadow: none !important;
+    border-radius: 0px 40px 0px 0px !important;
+    margin-top: -50px;
+}
+
+a {
+    font-size: 14px;
+    color: #676767;
+}
+
+.actionbtns li {
+    margin-right: 10px;
+    margin-bottom: 5px;
+    display: inline-block;
+    border-radius: 5px !important;
+}
+
+.actionbtns li a i.fa {
+    font-size: 15px !important;
+    color: #000000;
+    padding: 5px !important;
+}
+
+.fa-commenting-o {
+    color: #fff !important;
+    background-color: #1e4079;
+    padding: 7px;
+    border-radius: 40px;
+    font-size: 22px;
+    margin-top: 10px;
+    padding: 10px !important;
+    box-shadow: 0px 2.74286px 11.6571px 2.05714px rgba(29, 64, 120, 0.38);
+}
+
+.head-area {
+    display: flex;
+}
+
+.follow-card {
+    background: #FFFFFF;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.09);
+    border-radius: 5px;
+}
+
+.bus-actions {
+    padding: 15px 10px 10px 10px;
+}
+
+.nexticon {
+    font-size: 25px;
+    cursor: pointer;
+    float: right;
+    margin-top: -5px;
+}
+
+.icon {
+    width: 30px;
+    height: 30px;
+}
+
+@media (max-width: 500px) {
+    .donationbtn {
+        padding: 8px !important;
+    }
+}
+
+@media (min-width: 500px) {
+    .profile-img {
+        height: 334px !important;
+    }
+}
+
+.businessLogo {
+    height: 4rem;
+    width: 4rem;
+    border-radius: 5px;
+}
+
+.business_name {
+    letter-spacing: -0.105383px;
+    color: #272D37;
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.business_name_2 {
+    color: #5F6D7E;
+    font-size: 14px;
+    font-weight: 800;
+}

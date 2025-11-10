@@ -1,7 +1,8 @@
 <div class="authentication" [ngClass]="theme">
     <div class="p-4">
         <div class="check-mobile-exist text-center" *ngIf="step===1">
-            <h1>Let's Start</h1>
+            <h1 class="main-head">{{heading | translate}}</h1>
+            <h2 class="sub-head" *ngIf="subHeading">{{subHeading | translate}}</h2>
             <div class="form-group mobile-no mgn-up-50 ">
                 <label for="phone">Enter your Mobile Number</label>
                 <div class="mb-3">
@@ -109,7 +110,7 @@
                 </p>
             </div>
         </div>
-        <div *ngIf="step===4">
+        <div *ngIf="step===4" >
             <h1>Hi {{firstName}} {{lastName}}</h1>
             <label for="phone">Set your password for your future logins or you can skip for now.</label>
             <div class="form-group otp">
