@@ -1,132 +1,89 @@
-.bus-page-header {
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.25) !important;
-    position: fixed;
-    top: 0;
-    z-index: 100;
-    background: #fff;
-    width: 100%;
+/* === robust viewport height utility (from previous step) === */
+.h-viewport { min-height: 100vh; }
+@supports (min-height: 100svh) { .h-viewport { min-height: 100svh; } }
+@supports (min-height: 100dvh) { .h-viewport { min-height: 100dvh; } }
+
+/* the main column fills the viewport */
+.login.wizard {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0; /* allow children to scroll */
 }
 
-.content {
-  padding-top: calc(var(--header-height, 0px));
+/* --- TOP HALF --- */
+.hero {
+  /* half the visible viewport */
+  height: 50vh;
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+}
+@supports (height: 50svh) { .hero { height: 50svh; } }
+@supports (height: 50dvh) { .hero { height: 50dvh; } }
+
+/* optional inner hero content (center mascot/logo if used) */
+.hero-content {
+  height: 100%;
+  display: flex;
+  align-items: flex-end; /* push mascot towards bottom if you like */
+  justify-content: center;
+  padding: 16px;
+}
+
+/* --- BOTTOM HALF --- */
+.form-area {
+  /* fill the remaining half */
+  flex: 1 1 auto;
+  min-height: 0;   /* critical so card can scroll */
+  display: flex;
+  align-items: flex-start;  /* card sticks to top of the bottom section */
+  justify-content: center;
+  padding: 16px 16px max(env(safe-area-inset-bottom, 0px), 16px);
+  background: #fff; /* keep background white like your mock */
+}
+
+/* white rounded card for the form */
+.form-card {
   width: 100%;
-  // background-color: #f5f5f5;
+  max-width: 420px;                 /* adjust as needed */
+  background: #fff;
+  border-radius: 24px;              /* softer on mobile */
+  box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+  padding: 20px 16px 24px;
+  max-height: 100%;                 /* never exceed form-area */
+  overflow: auto;                   /* scroll inside if content is tall */
+  -webkit-overflow-scrolling: touch;
 }
 
-.shopping-cart-footer {
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    background-color: #fff;
-    color: #436B50;
-    font-weight: 700;
-    text-align: center;
-    padding: 15px;
-    z-index: 1;
-    box-shadow: 0 -3px 20px rgb(0 0 0 / 12%);
-}
+/* keep your existing helpers if you still use them elsewhere */
+.bottomFlexAlign { align-items: flex-end !important; }
 
-
-.cart-footer {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-}
-
-.btn-viewCart {
-    border-radius: 5px;
-    border: 2.643px solid rgba(255, 187, 17, 0.13);
-    background: #436B50;
-    color: #fff;
-    font-size: 16px;
-    font-weight: 600;
-    padding: 8px 15px !important;
-}
-
-.Item-count {
-    color: #436B50;
-    font-size: 16px;
-}
-
-h1,
-.h1 {
-  font-size: 2em;
-}
-
-h2,
-.h2 {
-  font-size: 1.5em;
-}
-
-h3,
-.h3 {
-  font-size: 1.17em;
-}
-
-h4,
-.h4 {
-  font-size: 1em;
-}
-
-h5,
-.h5 {
-  font-size: .83em;
-}
-
-h6,
-.h6 {
-  font-size: .67em;
-}
-
-
-.navbar {
-  display: flex;
-  padding: 1rem;
-}
-
-.navbar ul {
-  list-style: none;
-  display: flex;
-  margin: 0;
-  padding: 0;
-}
-
-.navbar a.active {
-  font-weight: 600;
-  color: #d1793e !important;
-}
-
-.navbar a {
-  text-decoration: none;
-  color: #333;
-  cursor: pointer;
-  padding: 10px 5px!important;
-}
-
-.navbar li {
-  margin-right: 35px;
-}
-
-.bottomFlexAlign {
-    align-items: end !important;
-}
-
+/* if you still have a different .login-form somewhere */
 .login-form {
-    background: white;
-    border-top-left-radius: 0px !important;
-    border-top-right-radius: 0px !important;
-    width: 100% !important;
-    // padding-top: 40px !important;
+  background: white;
+  border-top-left-radius: 50px !important;
+  border-top-right-radius: 50px !important;
+  padding-top: 40px !important;
 }
 
-.bg-cover-app {
-    background-size: 100% !important;
+/* **Important**: this replaces the old 100% background stretch */
+.bg-cover-app { background-size: cover !important; }
+
+/* questionnaire uses safe viewport too */
+.qnr-form { min-height: 100vh !important; }
+@supports (min-height: 100svh) { .qnr-form { min-height: 100svh !important; } }
+@supports (min-height: 100dvh) { .qnr-form { min-height: 100dvh !important; } }
+
+/* Tablet+ can give a bit more hero room if you want */
+@media (min-width: 768px) {
+  .hero {
+    height: 45vh;
+  }
+  @supports (height: 45svh) { .hero { height: 45svh; } }
+  @supports (height: 45dvh) { .hero { height: 45dvh; } }
 }
-
-.qnr-form {
-    height: 100vh !important;
+.loginpg{
+  width: 100%;
+  height: 100vh;
 }
-
-
-

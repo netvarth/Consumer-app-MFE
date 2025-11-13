@@ -26,9 +26,11 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
   rePassword;
   isLogin = true;
   btnClicked = false;
+  @ViewChild('googleBtnNew', { static: false }) googleBtnNew!: ElementRef<HTMLDivElement>;
+  private googleBtnNewResizeUnlisten?: () => void;
   @Input() accountId;
   @Input() accountConfig;
-
+  private googleBtnNewResizeDebounce?: number;
   accountConfiguration: any;
 
   @Output() actionPerformed = new EventEmitter<any>();
@@ -73,6 +75,14 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
     invalidNumberError: 'Number is not valid',
     requiredError: 'This field is required'
   }
+  private readonly googleButtonNewOpts = {
+    theme: 'outline',
+    size: 'large',
+    shape: 'pill',
+    logo_alignment: 'center' as const,
+    text: 'signin_with'
+  };
+  gisLoaded: boolean;
   constructor(
     private authService: AuthService,
     private lStorageService: LocalStorageService,
@@ -123,16 +133,20 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
         if (this.accountConfiguration['login']['align']) {
           this.alignClass = this.accountConfiguration['login']['align'];
         }
-        if (this.accountConfiguration && this.accountConfiguration['googleIntegration'] === false) {
-          this.googleIntegration = false;
-        } else {
-          this.googleIntegration = true;
-          this.initGoogleButton();
-        }
+
       }
     }
+      initGoogleButtonNew() {
+      this.loadGoogleOnce().then(() => {
+        google.accounts.id.initialize({
+          client_id: "906354236471-jdan9m82qtls09iahte8egdffvvhl5pv.apps.googleusercontent.com",
+          callback: (token: any) => this.handleCredentialResponse(token),
+          itp_support: true
+        });
+        this.setupResponsiveGoogleButton();
+      });
+      }
 
-  
   ngOnInit(): void {
     this.accountId = this.sharedService.getAccountID();
     this.storageService.getSalutations().then((data: any) => {
@@ -147,9 +161,19 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
 
     this.accountConfiguration = this.sharedService.getAccountConfig();
     this.setLoginProperties();
-    
-    // console.log("Account Configuration:", this.accountConfiguration);
 
+    // console.log("Account Configuration:", this.accountConfiguration);
+     if (this.accountConfig && this.accountConfig['googleIntegration'] === false) {
+      this.googleIntegration = false;
+    } else {
+      this.googleIntegration = true;
+       if (this.googleIntegration ) {
+    // Render after Angular finishes the first pass; handles *ngIf async DOM
+    setTimeout(() => {
+        this.initGoogleButtonNew();
+    });
+  }
+    }
     this.loading = false;
     this.resetCounter(this.refreshTime);
     this.cronHandle = observableInterval(1000).subscribe(() => {
@@ -265,10 +289,15 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
   }
   onOtpSubmit(otp) {
   }
-  goBack() {
-    this.initGoogleButton();
-    this.step = 1;
-  }
+   goBack() {
+  this.step = 1;
+  setTimeout(() => {
+    if (this.googleIntegration) {
+
+        this.initGoogleButtonNew();
+    }
+  });
+}
   signUpConsumer() {
     const _this = this;
     _this.phoneError = '';
@@ -582,4 +611,55 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
   onPhoneNumberChanged(updatedPhoneNumber: any) {
     this.phoneNumber = updatedPhoneNumber;
   }
+  private loadGoogleOnce(): Promise<void> {
+  return new Promise((resolve) => {
+    if (window['google']?.accounts?.id) { this.gisLoaded = true; return resolve(); }
+    const url = 'https://accounts.google.com/gsi/client';
+    const script = this.renderer.createElement('script');
+    script.src = url; script.async = true; script.defer = true;
+    script.onload = () => { this.gisLoaded = true; resolve(); };
+    this.renderer.appendChild(document.body, script);
+  });
+}
+private setupResponsiveGoogleButton() {
+  if (!this.googleBtnNew?.nativeElement) {
+    return;
+  }
+  const renderResponsive = () => {
+    if (!this.googleBtnNew?.nativeElement) {
+      return;
+    }
+    const width = this.calculateResponsiveGoogleWidth(this.googleBtnNew.nativeElement);
+    const options = { ...this.googleButtonNewOpts, width };
+    this.renderGisButton(this.googleBtnNew, options);
+  };
+  renderResponsive();
+  setTimeout(renderResponsive, 0);
+  setTimeout(renderResponsive, 0);
+  if (!this.googleBtnNewResizeUnlisten) {
+    this.googleBtnNewResizeUnlisten = this.renderer.listen('window', 'resize', () => {
+      if (this.googleBtnNewResizeDebounce) {
+        window.clearTimeout(this.googleBtnNewResizeDebounce);
+      }
+      this.googleBtnNewResizeDebounce = window.setTimeout(() => renderResponsive(), 0);
+    });
+  }
+}
+      private calculateResponsiveGoogleWidth(element: HTMLElement): number {
+        const container = element.parentElement || element;
+        const availableWidth = container?.getBoundingClientRect().width || element.getBoundingClientRect().width;
+        const fallbackWidth = 240;
+        if (!availableWidth || Number.isNaN(availableWidth)) {
+          return fallbackWidth;
+        }
+        const minWidth = 120;
+        const maxWidth = 400;
+        return Math.round(Math.min(Math.max(availableWidth, minWidth), maxWidth));
+      }
+      private renderGisButton(target: ElementRef<HTMLElement>, opts: any) {
+        if (!target?.nativeElement) return;
+        target.nativeElement.innerHTML = '';
+        google.accounts.id.renderButton(target.nativeElement, opts);
+      }
+      
 }
