@@ -7,7 +7,7 @@
     </app-booking-accountinfo>
   </div>
 </div>
-<section #consumer_appointment class="consumerAppt p-0"
+<section #consumer_appointment class="consumerAppt no-padding"
   [ngClass]="[smallDevice?'container':'container-fluid', theme?theme:'']">
   <div [ngClass]="{'loadingpaytm': loadingPaytm}"></div>
   <!-- <div class="customLoader" *ngIf="loadingPaytm">
@@ -24,7 +24,7 @@
     </div>
   </div>
   <div class="clearfix"></div>
-  <div class="col-12 d-flex p-0" *ngIf="loggedIn">
+  <div class="col-12 d-flex no-padding" *ngIf="loggedIn">
     <div class="col-md-4 col-lg-4 col-sm-12 col-12s-stretch desktop-only p-1" *ngIf="!smallDevice">
       <div class="card shadow">
         <app-booking-accountinfo [businessInfo]="businessInfo" [smallDevice]="smallDevice">
@@ -34,7 +34,7 @@
     </div>
 
     <div class="col-md-8 col-lg-8 col-sm-12 col-12 d-flex align-items-stretch p-1" *ngIf="!loading">
-      <div class="card shadow hgt-adjust p-3">
+      <div class="card1 shadow hgt-adjust">
         <!-- Wizard Started -->
         <div class="wizard wizard-1" id="kt_wizard_v1" data-wizard-state="step-first" data-wizard-clickable="false"
           *ngIf="bookStep === 1 && serviceOptionApptt && appointmentType !== 'reschedule'">
@@ -65,9 +65,59 @@
           <div class="clearfix"></div>
           <hr />
         </div>
-        <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 p-0" data-wizard-type="step-content"
+        <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 no-padding" data-wizard-type="step-content"
           data-wizard-state="current" *ngIf="bookStep === 2 && showSlot">
-          <div class="col-md-12 col-12 col-sm-12 p-0"
+          <ng-container *ngIf="smallDevice; else consumerApptDesktopSlots">
+            <div class="appt-mobile">
+              <div class="appt-mobile__card appt-mobile__card--service" *ngIf="selectedService">
+                <app-service-info-display [selectedService]="selectedService"
+                  [userInfo]="selectedUser" [theme]="theme"></app-service-info-display>
+              </div>
+
+              <div class="appt-mobile__card appt-mobile__card--calendar"
+                *ngIf="selectedService && selectedService.serviceBookingType === 'request' && selectedService.date">
+                <mat-card class="demo-inline-calendar-card matCard">
+                  <mat-calendar [dateClass]="dateClass.bind(this)" [(selected)]="selectedDate"
+                    (selectedChange)="apptDateChanged($event)"></mat-calendar>
+                </mat-card>
+              </div>
+
+              <div class="appt-mobile__card appt-mobile__card--date"
+                *ngIf="selectedService && !selectedService.date && !selectedService.noDateTime">
+                <app-date-pagination (date_change_event)="appointmentDateChanged($event)" [selected_date]="appmtDate"
+                  [availableDates]="availableDates" variant="compact" [theme]="theme">
+                </app-date-pagination>
+              </div>
+
+              <div class="appt-mobile__card appt-mobile__card--slots">
+                <div class="appt-mobile__section-title appt-mobile__section-title--slots">
+                  {{'Available Time Slots' | translate}}
+                </div>
+                <ng-container *ngIf="selectedService && !selectedService.date && !selectedService.noDateTime">
+                  <div *ngIf="allSlots && allSlots.length > 0 && multipleSelection">
+                    <app-slot-picker (slotSelected)="slotSelected($event)" [selectedSlot]="selectedSlots"
+                      [slots]="allSlots" [mode]="'appt'" [multiple]="multipleSelection"
+                      [criteria]="selectedService.showOnlyAvailableSlots" variant="pill" [theme]="theme">
+                    </app-slot-picker>
+                  </div>
+                </ng-container>
+                <div class="appt-mobile__empty"
+                  *ngIf="allSlots && allSlots.length <= 0 && slotLoaded">
+                  {{'No slots available on selected date. Please choose other date' | translate}}.
+                </div>
+              </div>
+
+              <button type="button" class="appt-mobile__cta"
+                (click)="confirmClicked(allSlots && allSlots.length === 0)"
+                [class.disabled]="allSlots && allSlots.length === 0"
+                [disabled]="allSlots && allSlots.length === 0">
+                {{'Book an Appointment' | translate}}
+              </button>
+            </div>
+          </ng-container>
+        </div>
+        <ng-template #consumerApptDesktopSlots>
+          <div class="col-md-12 col-12 col-sm-12 no-padding"
             *ngIf="selectedService && selectedService.serviceBookingType === 'request' && selectedService.date">
             <h6 class="custom text-dark">
               <b>{{'Choose Date' | translate}}
@@ -81,20 +131,20 @@
             </div>
 
           </div>
-          <div class="col-12 mgn-bt-20 p-0" *ngIf="selectedService">
+          <div class="col-12 mgn-bt-20 no-padding" *ngIf="selectedService">
             <app-service-info-display [selectedService]="selectedService"
-              [userInfo]="selectedUser"></app-service-info-display>
+              [userInfo]="selectedUser" [theme]="theme"></app-service-info-display>
           </div>
-          <div class="col-12 p-0"
+          <div class="col-12 no-padding"
             *ngIf="selectedService && !selectedService.date && !selectedService.noDateTime">
             <app-date-pagination (date_change_event)="appointmentDateChanged($event)" [selected_date]="appmtDate"
-              [availableDates]="availableDates">
+              [availableDates]="availableDates" [theme]="theme">
             </app-date-pagination>
           </div>
           <ng-container *ngIf="selectedService && !selectedService.date && !selectedService.noDateTime">
-            <div class="col-12 p-0" *ngIf="allSlots && allSlots.length > 0 && multipleSelection">
+            <div class="col-12 no-padding" *ngIf="allSlots && allSlots.length > 0 && multipleSelection">
               <app-slot-picker (slotSelected)="slotSelected($event)" [selectedSlot]="selectedSlots" [slots]="allSlots"
-                [mode]="'appt'" [multiple]="multipleSelection" [criteria]="selectedService.showOnlyAvailableSlots">
+                [mode]="'appt'" [multiple]="multipleSelection" [criteria]="selectedService.showOnlyAvailableSlots" [theme]="theme">
               </app-slot-picker>
             </div>
           </ng-container>
@@ -111,9 +161,9 @@
               {{'Next' | translate}}
             </button>
           </div>
-        </div>
+        </ng-template>
         <!-- Step 1 One Time Info Collection if any -->
-        <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 p-0" data-wizard-type="step-content"
+        <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 no-padding" data-wizard-type="step-content"
           data-wizard-state="current" *ngIf="bookStep === 3">
           <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 p-1">
             <div class="">
@@ -140,7 +190,7 @@
 
         <!-- Normal Questionaire-->
 
-        <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 col-sm-12 p-0 right-part"
+        <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 col-sm-12 no-padding right-part"
           data-wizard-type="step-content" data-wizard-state="current" *ngIf="bookStep === 4">
           <div class="pad-20 quest-head">
             {{'We need some more information' | translate}}
@@ -211,185 +261,221 @@
         </div>
         <div class="clearfix"></div>
         <!-- Review & Confirm Real Appointment happening here -->
-        <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 col-sm-12 p-0" data-wizard-type="step-content"
-          data-wizard-state="current" *ngIf="bookStep === 5" [ngClass]="{'highlight': api_loading_video}">
-          <div *ngIf="api_loading_video" class="incomplete-msg">
-            <div style="padding: 0 30px;">
-              {{'Files are Uploading' | translate}}...
-            </div>
-          </div>
-          <!-- <app-common-innerloading-spinner *ngIf="api_loading_video">
-          </app-common-innerloading-spinner> -->
-          <div class="col-md-12 col-12 col-sm-12 mgn-bt-10 p-0">
-            <div class="col-md-12 col-lg-12 col-12 col-sm-12 check-new-group p-0" *ngIf="selectedService">
-              <label class="question-header">{{'Service Details'| translate}}</label>
-              <app-service-info-display [selectedService]="selectedService" [appmtDate]="appmtDate"
-                [userInfo]="selectedUser" [selectedApptsTime]="selectedApptsTime" [isFutureDate]="isFutureDate"
-                [datePresent]="datePresent">
-              </app-service-info-display>
-              <div class="clearfix"></div>
-              <hr />
-              <div class="mgn-lt-10" *ngIf="!serviceOptionApptt">
-                
-                <div class="m-auto" *ngIf="selectedService.preInfoEnabled">
-                  <label class="question-header"><b>{{selectedService.preInfoTitle}} :</b></label>
-                <!-- 
-                    <div class="contact-section text-primary" [innerHTML] = "selectedService.preInfoText">
-                </div> -->
 
-              <div class="contact-section text-primary pointer-cursor" >
-                <div class="col-md-12 col-sm-12 col-12-padding  module-nomargin line-clamp-ln2" *ngIf="!showmoreSpec"
-                    (click)="showSpec()" [innerHTML] = "selectedService.preInfoText">
-              </div>
-                <div class="" *ngIf="showmoreSpec" (click)="showSpec()" [innerHTML] = "selectedService.preInfoText">
-                   
+        <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 col-sm-12 no-padding" data-wizard-type="step-content"
+          data-wizard-state="current" *ngIf="bookStep === 5" [ngClass]="{'highlight': api_loading_video}">
+          <div *ngIf="api_loading_video" class="booking-review__loading">
+            <div>{{'Files are Uploading' | translate}}...</div>
+          </div>
+          <div class="booking-review__grid">
+            <section class="booking-card booking-card--summary" *ngIf="selectedService">
+              <header class="booking-card__header">
+                <div class="booking-card__icon">
+                  <i class="fa fa-calendar-check-o" aria-hidden="true"></i>
                 </div>
-              </div>
-                </div>
-            </div>
-              <div class="clearfix"></div>
-              <div *ngIf="selectedService.preInfoEnabled">
-                <hr />
-              </div>
-              <label class="question-header">{{'Booking For' | translate}}</label>
-              <br />
-              <div class="booking-for-section ">
-                <div class="">
-                  <div class="col-sm-12 col-12 col-md-12 p-0">
-                    <div class="p-0">
-                      <div class="col-sm-12 col-12 col-md-12 p-0">
-                        <app-booking-for [bookingType]="appointmentType" [apptDetails_firstName]="apptDetails_firstName"
-                          [apptDetails_lastName]="apptDetails_lastName"  [apptDetails_title]="apptDetails_title" [commObj]="commObj"
-                          (editEvent)="handleSideScreen('members')"></app-booking-for>
+                <div class="booking-card__title">{{'Booking Summary' | translate}}</div>
+              </header>
+              <div class="booking-card__body">
+                <div class="booking-block booking-block--for">
+                  <app-booking-for [bookingType]="appointmentType" [apptDetails_firstName]="apptDetails_firstName"
+                    [apptDetails_lastName]="apptDetails_lastName" [apptDetails_title]="apptDetails_title"
+                    [commObj]="commObj" (editEvent)="handleSideScreen('members')"></app-booking-for>
+
+                  <div class="detail-list booking-summary-details"
+                       *ngIf="selectedService?.name || appmtDate || selectedApptsTime">
+
+
+                    <div class="detail-row" *ngIf="appmtDate">
+
+                      <div class="detail-content">
+                        <p class="detail-label">{{'Date' | translate}}</p>
+                        <p class="detail-value">{{appmtDate | date: newDateFormat}}</p>
+                      </div>
+                      <div class="detail-icon">
+                        <i class="fa fa-calendar"></i>
+                      </div>
+                    </div>
+
+                    <div class="detail-row" *ngIf="selectedApptsTime">
+
+                      <div class="detail-content">
+                        <p class="detail-label">{{'Time' | translate}}</p>
+                        <p class="detail-value">{{selectedApptsTime}}</p>
+                      </div>
+                      <div class="detail-icon">
+                        <i class="fa fa-clock-o"></i>
+                      </div>
+                    </div>
+                     <div class="detail-row" *ngIf="selectedService?.name">
+
+                      <div class="detail-content">
+                        <p class="detail-label">{{'Service' | translate}}</p>
+                        <p class="detail-value">{{selectedService?.name}}</p>
+                      </div>
+                      <div class="detail-icon">
+                        <i class="fa fa-video-camera" *ngIf="selectedService?.serviceType === 'virtual'"></i>
+                        <i class="fa fa-briefcase" *ngIf="selectedService?.serviceType !== 'virtual'"></i>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div class="clearfix"></div>
-              <hr *ngIf="!questionnaireList.labels" />
-              <div *ngIf="!questionnaireList.labels" class="col-sm-12 col-12 chk-btns-div col-md-12 p-0">
-                <a #modal data-bs-toggle="modal" data-bs-target="#exampleModalCenter"></a>
-                <div>
-                  <label class="question-header">
-                    {{'Add notes/upload files you may have' | translate}}</label>
+               <!--  <div class="booking-block booking-block--service">
+                  <app-service-info-display [selectedService]="selectedService" [appmtDate]="appmtDate"
+                    [userInfo]="selectedUser" [selectedApptsTime]="selectedApptsTime"
+                    [isFutureDate]="isFutureDate" [datePresent]="datePresent">
+                  </app-service-info-display>
+                </div> -->
+                <div class="booking-block booking-block--preinfo" *ngIf="selectedService.preInfoEnabled">
+                  <div class="booking-section-title">
+                    {{selectedService.preInfoTitle}}:
+                  </div>
+                  <div class="booking-preinfo" (click)="showSpec()">
+                    <div class="booking-preinfo__limited" *ngIf="!showmoreSpec"
+                      [innerHTML]="selectedService.preInfoText"></div>
+                    <div class="booking-preinfo__full" *ngIf="showmoreSpec"
+                      [innerHTML]="selectedService.preInfoText"></div>
+                  </div>
                 </div>
-                <mat-chip-list class="btns">
-                  <mat-chip
-                    [class.mandatoryChip]="selectedService.consumerNoteMandatory && appointmentType != 'reschedule'"
-                    (click)="handleSideScreen('note');modal.click();">
-                    <a class="lnk action pointer-cursor"><i class="fa fa-file-text-o mgn-rt-5"
-                        aria-hidden="true"></i>{{selectedService.consumerNoteTitle}}
-                      <span
-                        *ngIf="selectedService.consumerNoteMandatory && appointmentType != 'reschedule'">*</span></a>
-                  </mat-chip>
-                  <span>
-                    <mat-chip [ngClass]="{'br-top-right-0 br-bottom-right-0 margin-right-0': getAttachLength() > 0}">
-                      <a class="lnk action pointer-cursor" (click)="imagefile1.click();"><input #imagefile1 type="file"
-                          accept="/*;capture=camera" style="display:none;" multiple
-                          (change)="filesSelected($event, 'close')"><i class="fa fa-paperclip mgn-rt-5"
-                          aria-hidden="true"></i>{{'Upload File' | translate}}
-                      </a>
-                    </mat-chip>
-                    <mat-chip *ngIf="getAttachLength() > 0" class="br-top-left-0 br-bottom-left-0 margin-left-0">
-                      <a class="lnk action pointer-cursor" (click)="viewAttachments()">
-                        {{'View' | translate}} (<span>{{getAttachLength()}}</span>)
-                      </a>
-                    </mat-chip>
-                  </span>
-                </mat-chip-list>
+                <div class="booking-block booking-block--notes" *ngIf="!questionnaireList.labels">
+                  <div class="booking-section-title">{{'Special Notes for Vet' | translate}}</div>
+                  <a #modal data-bs-toggle="modal" data-bs-target="#exampleModalCenter"></a>
+                  <div class="booking-note" (click)="handleSideScreen('note');modal.click();">
+                    <span *ngIf="consumerNote; else notePlaceholder">{{consumerNote}}</span>
+                    <span class="booking-note__required"
+                      *ngIf="!consumerNote && selectedService.consumerNoteMandatory && appointmentType != 'reschedule'">*</span>
+                  </div>
+                  <ng-template #notePlaceholder>
+                    <span class="booking-note__placeholder">{{'Any specific concerns or symptoms...' | translate}}</span>
+                  </ng-template>
+                  <div class="booking-upload">
+                    <button type="button" class="booking-upload__trigger" (click)="imagefile1.click()">
+                      <i class="fa fa-cloud-upload" aria-hidden="true"></i>
+                      <span>{{'Upload Documents' | translate}}</span>
+                    </button>
+                    <input #imagefile1 type="file" accept="/*;capture=camera" style="display:none;" multiple
+                      (change)="filesSelected($event, 'close')">
+                    <button type="button" class="booking-upload__view" *ngIf="getAttachLength() > 0"
+                      (click)="viewAttachments()">
+                      {{'View' | translate}} ({{getAttachLength()}})
+                    </button>
+                  </div>
+                </div>
               </div>
-              <div class="clearfix"></div>
-              <hr />
-              <div class="coupon-section col-md-12 col-12 col-sm-12 " *ngIf="isCouponsAvailable">
-                <app-apply-coupon [s3CouponsList]="s3CouponsList"
-                  (actionPerformed)="couponActionPerformed($event)"></app-apply-coupon>
+            </section>
+
+            <section class="" *ngIf="isCouponsAvailable">
+              <!-- <header class="booking-card__header booking-card__header--subtle">
+                <div class="booking-card__icon booking-card__icon--coupon">
+                  <i class="fa fa-gift" aria-hidden="true"></i>
+                </div>
+                <div class="booking-card__title">{{'Use Coupon Code' | translate}}</div>
+                <div class="booking-card__subtitle">{{'Unlock offers with coupon code' | translate}}</div>
+              </header> -->
+              <div class="booking-card__body">
+                <app-apply-coupon [s3CouponsList]="s3CouponsList" [theme]="theme"
+                  (actionPerformed)="couponActionPerformed($event)">
+                </app-apply-coupon>
                 <app-coupon-status [paymentDetails]="paymentDetails"></app-coupon-status>
               </div>
-              <div class="clearfix"></div>
-              <div class="col-md-12 col-12 col-sm-12 p-0"  *ngIf="appointmentType !=='reschedule'">
-                <app-payment-summary [paymentDetails]="paymentDetails" [paymentMode]="paymentMode"
-                  [serviceOptions]="serviceOptionApptt" [service]="selectedService" [gatewayFee]="gatewayFee"
-                  [convenientFee]="convenientFee"></app-payment-summary>
-              </div>
-              <div class="jaldeecredit" *ngIf="jCashInHand > 0">
-                <mat-checkbox [(ngModel)]="isJCashSelected" (change)="changeJcashUse($event)">
-                </mat-checkbox>
-                {{'Use Jaldee cash balance' | translate}} : <span class="rupee-font">{{jCashInHand |
-                  currency:'&#8377; '}}</span>
-              </div>
-              <div class="creditleft dateError"
-                *ngIf="jCashInHand > 0 && (isJCashSelected && jCashInHand < paymentDetails.amountRequiredNow)">
-                {{'Balance amount can be paid by other payment methods' | translate}}
-              </div>
-              <ng-container *ngIf="bookingPolicy">
-                <div class="privacy-loc">
-                  <div class="t-and-c">
-                    <div class="checkbox">
-                        <label>
-                            <input type="checkbox" [checked]="checkPolicy" (change)="privacyCheck($event)">
-                            <span>I accept the&nbsp;
-                                <a class="Policy-link" (click)="privacyClicked($event)">{{'Terms and Conditions'}}</a></span>
-                        </label>
-                    </div>
-                    <div class="sts-msg error" *ngIf="!checkPolicy">"Agreement to Terms
-                        and Conditions is required"</div>
-                </div>
-                  <div *ngIf="privacy" class="mgn-up-10">
+            </section>
+
+            <section class="booking-card booking-card--policy" *ngIf="bookingPolicy">
+              <div class="booking-card__body">
+                <div class="booking-policy">
+                  <div class="booking-policy__checkbox">
+                    <label>
+                      <input type="checkbox" [checked]="checkPolicy" (change)="privacyCheck($event)">
+                      <span>{{'I accept the' | translate}}&nbsp;
+                        <a class="Policy-link" (click)="privacyClicked($event)">{{'Terms and Conditions'}}</a>
+                      </span>
+                    </label>
+                  </div>
+                  <div class="booking-policy__error sts-msg error" *ngIf="!checkPolicy">
+                    {{'Agreement to Terms and Conditions is required' | translate}}
+                  </div>
+                  <div *ngIf="privacy" class="booking-policy__content">
                     <app-privacy [path]="bookingPolicyPath" [content]="bookingPolicyContent"></app-privacy>
                   </div>
                 </div>
-              </ng-container>
-              <div class="clearfix"></div>
-              <div *ngIf="appointmentType !=='reschedule'">
-                <div class="mx-auto p-0" *ngIf="paymentDetails.amountRequiredNow > 0">
-                  <label class="custom resPaymrntDetails mgn-up-10">{{'Select Payment Mode' | translate}}</label><br />
-                  <ng-container *ngIf="!shownonIndianModes && loadedConvenientfee" class="text-center mx-auto">
+              </div>
+            </section>
+
+            <section class="booking-card booking-card--payment" *ngIf="appointmentType !=='reschedule' && selectedService.isPrePayment">
+              <header class="booking-card__header">
+                <div class="booking-card__icon booking-card__icon--payment">
+                  <i class="fa fa-credit-card" aria-hidden="true"></i>
+                </div>
+                <div class="booking-card__title">{{'Payment Summary' | translate}}</div>
+              </header>
+              <div class="booking-card__body">
+                <div class="booking-jcash" *ngIf="jCashInHand > 0">
+                  <mat-checkbox [(ngModel)]="isJCashSelected" (change)="changeJcashUse($event)">
+                  </mat-checkbox>
+                  <div class="booking-jcash__label">
+                    {{'Use Jaldee cash balance' | translate}} :
+                    <span class="rupee-font">{{jCashInHand | currency:'&#8377; '}}</span>
+                  </div>
+                </div>
+                <div class="booking-jcash__hint creditleft dateError"
+                  *ngIf="jCashInHand > 0 && (isJCashSelected && jCashInHand < paymentDetails.amountRequiredNow)">
+                  {{'Balance amount can be paid by other payment methods' | translate}}
+                </div>
+                <app-payment-summary [paymentDetails]="paymentDetails" [paymentMode]="paymentMode"
+                  [serviceOptions]="serviceOptionApptt" [service]="selectedService" [gatewayFee]="gatewayFee"
+                  [convenientFee]="convenientFee"></app-payment-summary>
+
+                <div #paymentModeSection id="booking-payment-mode-section" class="booking-payment-modes"
+                  *ngIf="paymentDetails.amountRequiredNow > 0">
+                  <div class="booking-section-title booking-section-title--compact">{{'Select Payment Mode' | translate}}</div>
+                  <ng-container *ngIf="!shownonIndianModes && loadedConvenientfee">
                     <app-payment-modes [paymentModes]="indian_payment_modes" [selectedMode]="paymentMode"
                       (modeSelected)="indian_payment_mode_onchange($event)">
                     </app-payment-modes>
                   </ng-container>
-                  <ng-container *ngIf="shownonIndianModes && loadedConvenientfee" class="text-center mx-auto">
+                  <ng-container *ngIf="shownonIndianModes && loadedConvenientfee">
                     <app-payment-modes [paymentModes]="non_indian_modes" [selectedMode]="paymentMode"
                       (modeSelected)="non_indian_modes_onchange($event)">
                     </app-payment-modes>
                   </ng-container>
-                </div>
-                <div class="clearfix"></div>
-                <div class="mgn-up-20 col-md-12 col-12 p-0" *ngIf="paymentDetails['amountToPay']">
-                  <div class="col-md-12 txt-align-center question-header"
-                    *ngIf="paymentmodes && paymentmodes.internationalPay">
+                  <div class="booking-payment-toggle"
+                    *ngIf="paymentDetails['amountToPay'] && paymentmodes && paymentmodes.internationalPay">
                     <span (click)="togglepaymentMode()" class="pointer-cursor">
                       <a class="refund_policy">
                         <span *ngIf="!shownonIndianModes && paymentmodes && paymentmodes.internationalPay">
                           {{'Non Indian Payment' | translate}} ? {{'Click here'| translate}}</span>
-                        <span *ngIf="shownonIndianModes && paymentmodes && paymentmodes.indiaPay">{{'Indian' |
-                          translate}}
+                        <span *ngIf="shownonIndianModes && paymentmodes && paymentmodes.indiaPay">{{'Indian' | translate}}
                           {{'Payment' | translate}} ? {{'Click here' | translate}}</span>
                       </a>
                     </span>
                   </div>
-                  <div class="clearfix"></div>
-                  <div class="col-md-12 cancelpolicy mgn-rt-5" *ngIf="showCancellationPolicy">
-                    <div class="pad_policy">
-                      <a data-bs-toggle="modal" data-bs-target="#exampleModal" class="refund_policy">{{'Cancellation Policy'
-                        | translate}}</a>
-                    </div>
-                  </div>
                 </div>
-                <!-- modalbox -->
-                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
-                  aria-labelledby="exampleModalLabel" aria-hidden="true">
-                  <app-refundpolicy></app-refundpolicy>
+
+                <div class="booking-cancellation" *ngIf="showCancellationPolicy">
+                  <a data-bs-toggle="modal" data-bs-target="#exampleModal" class="refund_policy">
+                    {{'Cancellation Policy' | translate}}
+                  </a>
                 </div>
               </div>
-            </div>
+              <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <app-refundpolicy></app-refundpolicy>
+              </div>
+            </section>
           </div>
-          <div class="clearfix"></div>
-          <div class="text-center">
-            <button type="button" [class.disabled]="confirmButton['disabled']" [disabled]="confirmButton['disabled']"
-              (click)="!isClickedOnce && confirmBooking()" class="next-button btn btn-primary font-weight-bold px-12">
-              {{confirmButton['caption'] | translate}}</button>
+          <div class="booking-review__footer booking-review__footer--sticky">
+            <div class="booking-review__sticky-content">
+              <button type="button" class="booking-review__sticky-mode"
+                *ngIf="selectedService?.isPrePayment && paymentDetails?.amountRequiredNow > 0"
+                (click)="scrollToPaymentModeSection()" tabindex="0">
+                <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+                <span class="booking-review__sticky-mode-value">{{ getSelectedPaymentModeLabel() }}</span>
+                <i class="fa fa-chevron-down" aria-hidden="true"></i>
+              </button>
+              <button type="button" [class.disabled]="confirmButton['disabled']" [disabled]="confirmButton['disabled']"
+                (click)="!isClickedOnce && confirmBooking()"
+                class="next-button btn btn-primary font-weight-bold px-12 booking-review__cta">
+                {{confirmButton['caption'] | translate}}</button>
+            </div>
           </div>
         </div>
         <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"

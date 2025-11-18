@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { MatCalendarCellCssClasses } from '@angular/material/datepicker';
 import { TranslateService } from '@ngx-translate/core';
 import { DateTimeProcessor } from 'jconsumer-shared';
@@ -13,16 +13,23 @@ import {
   differenceInDays
 } from 'date-fns';
 
+type DisplayDate = {
+  iso: string;
+  dayShort: string;
+  dayNumber: number;
+  disabled: boolean;
+};
+
 @Component({
   selector: 'app-date-pagination',
   templateUrl: './date-pagination.component.html',
-  styleUrls: ['./date-pagination.component.scss']
+  styleUrls: ['./date-pagination.component.css']
 })
-export class DatePaginationComponent implements OnInit {
+export class DatePaginationComponent implements OnInit, OnChanges {
   @Output() date_change_event = new EventEmitter<any>();
   @Input() selected_date: string;
   @Input() availableDates: string[];
-
+  @Input() theme: string | null = null;
   minDate: string;
   maxDate: Date;
   default_value: string;
@@ -34,6 +41,8 @@ export class DatePaginationComponent implements OnInit {
   prev_date_value_2: string;
   previous_date_handling_btn: boolean;
   timezone: string;
+  displayDates: DisplayDate[] = [];
+  compactMonthLabel = '';
 
   month = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
   week = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
@@ -52,8 +61,13 @@ export class DatePaginationComponent implements OnInit {
     this.minDate = format(nowZoned, 'yyyy-MM-dd');
     this.maxDate = new Date(nowZoned.getFullYear() + 4, 11, 31);
 
-    const selectedZoned = toZonedTime(new Date(this.selected_date), this.timezone);
+    if (!this.selected_date) {
+      this.selected_date = this.dateTimeProcessor.getStringFromDate_YYYYMMDD(nowZoned);
+    }
+
+    const selectedZoned = this.getSelectedZonedDate();
     this.setDateLabels(selectedZoned);
+    this.updateDisplayDates(selectedZoned);
 
     if (this.selected_date) {
       this.date_change_event.emit(this.selected_date);
@@ -62,20 +76,34 @@ export class DatePaginationComponent implements OnInit {
     this.date_handling_btn();
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['selected_date'] && this.selected_date) {
+      const selectedZoned = this.getSelectedZonedDate();
+      this.setDateLabels(selectedZoned);
+      this.updateDisplayDates(selectedZoned);
+    }
+
+    if (changes['availableDates'] && this.displayDates.length > 0) {
+      this.updateDisplayDates(this.getSelectedZonedDate());
+    }
+  }
+
   next_date(n: number): void {
-    const baseDate = toZonedTime(new Date(this.selected_date), this.timezone);
+    const baseDate = this.getSelectedZonedDate();
     const newDate = addDays(baseDate, n);
     this.selected_date = this.dateTimeProcessor.getStringFromDate_YYYYMMDD(newDate);
     this.setDateLabels(newDate);
+    this.updateDisplayDates(newDate);
     this.date_change_event.emit(this.selected_date);
     this.date_handling_btn();
   }
 
   prev_date(n: number): void {
-    const baseDate = toZonedTime(new Date(this.selected_date), this.timezone);
+    const baseDate = this.getSelectedZonedDate();
     const newDate = subDays(baseDate, n);
     this.selected_date = this.dateTimeProcessor.getStringFromDate_YYYYMMDD(newDate);
     this.setDateLabels(newDate);
+    this.updateDisplayDates(newDate);
     this.date_change_event.emit(this.selected_date);
     this.date_handling_btn();
   }
@@ -109,8 +137,47 @@ export class DatePaginationComponent implements OnInit {
   }
 
   dateClass(date: Date): MatCalendarCellCssClasses {
+    if (!this.availableDates || this.availableDates.length === 0) {
+      return '';
+    }
     const formatted = format(date, 'yyyy-MM-dd');
     return this.availableDates.includes(formatted) ? 'example-custom-date-class' : '';
+  }
+
+  selectCompactDate(isoDate: string): void {
+    const zoned = toZonedTime(new Date(isoDate), this.timezone);
+    this.selected_date = this.dateTimeProcessor.getStringFromDate_YYYYMMDD(zoned);
+    this.setDateLabels(zoned);
+    this.updateDisplayDates(zoned);
+    this.date_change_event.emit(this.selected_date);
+    this.date_handling_btn();
+  }
+
+  private updateDisplayDates(baseDate: Date): void {
+    this.compactMonthLabel = format(baseDate, 'MMM yyyy');
+
+    this.displayDates = Array.from({ length: 7 }).map((_, index) => {
+      const current = addDays(baseDate, index);
+      const iso = format(current, 'yyyy-MM-dd');
+      return {
+        iso,
+        dayShort: format(current, 'EEE'),
+        dayNumber: current.getDate(),
+        disabled: this.isDateDisabled(iso)
+      };
+    });
+  }
+
+  private isDateDisabled(isoDate: string): boolean {
+    if (!this.availableDates || this.availableDates.length === 0) {
+      return false;
+    }
+    return !this.availableDates.includes(isoDate);
+  }
+
+  private getSelectedZonedDate(): Date {
+    const base = this.selected_date ? new Date(this.selected_date) : new Date();
+    return toZonedTime(base, this.timezone);
   }
 
   private setDateLabels(baseDate: Date): void {

@@ -1,65 +1,159 @@
-
-.more_btn {
-  border: none;
-  font-weight: 600;
-  font-size: 15px;
-  padding: 8px !important;
-  text-align: center;
-  background: #E5E8E8;
-  border-radius: 3.25709px;
-  color: #000000 !important;
-  outline: none;
-
+.freeslots mat-chip {
+  border: none !important;
+  border-radius: 5px !important;
+  cursor: pointer;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
-.matChipList, .freeslots .internal-scroll {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
+.freeslots mat-chip.mat-chip-selected, .freeslots mat-chip.selected {
+  background-color: #1e4079;
+  color: white !important;
+  font-weight: 900 !important;
 }
 
+@media (min-width:320px) {
+  .freeslots.appt mat-chip {
+    width: 30% !important;
+    margin: 3px 5px 10px 3px !important;
+    padding: 5px;
+  }
 
-@media (min-width:1200px) {
-    .freeslots mat-chip {
-        width: 23% !important;
-    }
-}
+  .freeslots.token mat-chip {
+    font-size: 0.79rem !important;
+    margin: 3px !important;
+    min-width: 130px;
+  }
 
-.timeSlotCstm {
-  color: #000000;
-  font-weight: 600;
-  font-size: 16px;
-  padding: 5px;
-}
-
-.showMoreAvailableSlots {
-  height: 460px;
-  overflow: auto;
-}
-
-.timeSlotCstm {
-  display: none !important;
-}
-
-@media only screen and (max-width: 764px) {
-  .timeSlotCstm {
-    display: block !important;
+  .freeslots.token mat-chip>span {
+    margin-left: 4px;
   }
 }
 
-::-webkit-scrollbar {
-  width: 0.3em;
-  height: 0.3em
+@media (min-width:1025px) {
+  .freeslots.appt mat-chip {
+    width: 14% !important;
+  }
 }
 
-::-webkit-scrollbar-button {
-  background: #ccc
+@media (min-width:1281px) {
+  .freeslots mat-chip {
+    margin: 4px !important;
+  }
+
+  .freeslots.appt mat-chip {
+    width: 14% !important;
+  }
 }
 
-::-webkit-scrollbar-track-piece {
-  background: #eee
+.mat-chip.mat-standard-chip.mat-primary {
+  color: #1E4079;
+  background-color: white;
+  border: 1px solid #1E4079;
 }
 
-::-webkit-scrollbar-thumb {
-  background: #888
+.mat-chip-disabled {
+  background-color: #ddd;
+}
+
+.more_btn {
+  background-color: #1e4079;
+  color: #fff !important;
+  border: none;
+}
+
+.my-3 {
+  margin-bottom: 1rem !important;
+  margin-top: 1rem !important;
+}
+
+.m-1 {
+  margin: 0.25rem !important;
+}
+
+.mb-2 {
+  margin-bottom: 0.5rem !important;
+}
+
+.px-2 {
+  padding-left: 0.5rem !important;
+  padding-right: 0.5rem !important;
+}
+
+.py-1 {
+  padding-bottom: 0.25rem !important;
+  padding-top: 0.25rem !important;
+}
+
+.slot-picker-pill mat-chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.slot-picker-pill mat-chip {
+  border-radius: 14px !important;
+  border: 1px solid #e5e7eb !important;
+  background: #f8fafc !important;
+  color: #111827 !important;
+  box-shadow: none !important;
+  min-width: 70px;
+  height: 40px;
+  font-weight: 600;
+  flex: 1 1 calc(33.333% - 12px);
+  max-width: calc(33.333% - 12px);
+}
+
+.slot-picker-pill mat-chip .mx-auto {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+ .slot-picker-pill mat-chip.selected,
+ .slot-picker-pill mat-chip.mat-chip-selected {
+  background: rgb(253 112 41 / 14%) !important;
+  border-color: #fd7029 !important;
+
+}
+:host ::ng-deep {
+  .slot-picker-pill mat-chip.selected .mdc-evolution-chip__text-label,
+  .slot-picker-pill mat-chip.mat-chip-selected .mdc-evolution-chip__text-label
+  {
+      color: #fd7029 !important;
+  }
+}
+
+.slot-picker-pill mat-chip[disabled] {
+  opacity: 0.4;
+}
+
+.slot-picker-pill .more_btn {
+  background: transparent !important;
+  border: none;
+  color: var(--slot-accent) !important;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: none;
+  padding: 0;
+  text-transform: none !important;
+  font-size: 13px;
+}
+
+@media (max-width: 400px) {
+  .slot-picker-pill mat-chip {
+    min-width: 60px;
+    max-width: calc(33.333% - 10px);
+    height: 36px;
+    font-size: 12px;
+  }
+
+  .slot-picker-pill mat-chip .mx-auto {
+    font-size: 12px;
+  }
+}
+
+.text-start {
+  text-align: left !important;
 }

@@ -12,9 +12,10 @@ export class BookingForComponent implements OnInit {
   @Input() commObj;
   @Input() apptDetails_firstName;
   @Input() apptDetails_lastName;
+  @Input() apptDetails_title;
   @Output() editEvent = new EventEmitter<string>();
-  
- 
+
+
   constructor(
     public translate: TranslateService
     ) { }

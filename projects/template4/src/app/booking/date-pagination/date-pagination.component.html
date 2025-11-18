@@ -1,62 +1,25 @@
-<div class="col-md-12 col-12 col-sm-12 p-0">
-  <div class="col-md-12 col-12 col-sm-12">
-    <h6 class="custom text-dark">
-      <b class="d-flex align-items-center">{{'Choose Date' | translate}}
-        <mat-datepicker-toggle matSuffix [for]="picker" id="dtDatePicker_BK_APPT_DP">
-        </mat-datepicker-toggle>
-        <mat-datepicker #picker >
-        </mat-datepicker>
-        <input id="txtSelectedate_BK_APPT_DP" class="" style="visibility: hidden; width:1px" type="text" [matDatepicker]="picker" [min]="minDate"
-          [max]="maxDate" [value]="selected_date" (dateChange)="date_value_changed();" [(ngModel)]="selected_date">
-      </b>
-    </h6>
-  </div>
 
-  <div class="date-carousel container-fluid col-lg-12 col-md-12 mb-5 mt-3 p-0 text-center align-items-center justify-content-between">
-    <div class="my-auto mr-1">
-      <button id="btnPrev_BK_APPT_DP" (click)="previous_date_handling_btn ? prev_date(1):false;date_handling_btn()"
-        class="date-carousel-prev my-auto" [class.not-allowed]="!previous_date_handling_btn">&lt;</button>
-    </div>
-    <div class="shadow text-center p-2 m-2 desktop-only" [class.shadow-not-allowed]="!previous_date_handling_btn" id="divPrev2_BK_APPT_DP"
-      (click)="previous_date_handling_btn && navigateToDays(-3);chekingDates()">
-      <div>
-        <b>{{prev_date_value_2.slice(0,3)}}</b><br><b>{{prev_date_value_2.slice(3,6)}}</b>&nbsp;<b>{{prev_date_value_2.slice(6)}}</b>
-      </div>
-    </div>
-    <div class="shadow text-center p-2 m-2 desktop-only" [class.shadow-not-allowed]="!previous_date_handling_btn" id="divPrev2_BK_APPT_DP"
-      (click)="previous_date_handling_btn && navigateToDays(-2);chekingDates()">
-      <div>
-        <b>{{prev_date_value_1.slice(0,3)}}</b><br><b>{{prev_date_value_1.slice(3,6)}}</b>&nbsp;<b>{{prev_date_value_1.slice(6)}}</b>
-      </div>
-    </div>
-    <div class="shadow text-center p-2 m-2" [class.shadow-not-allowed]="!previous_date_handling_btn" id="divPrev_BK_APPT_DP"
-      (click)="previous_date_handling_btn && navigateToDays(-1);chekingDates()">
-      <div>
-        <b>{{prev_date_value.slice(0,3)}}</b><br><b>{{prev_date_value.slice(3,6)}}</b>&nbsp;<b>{{prev_date_value.slice(6)}}</b>
-      </div>
-    </div>
-    <div class="shadow text-center default-value p-2 m-2 my-auto">
-      <div>
-        <b>{{default_value.slice(0,3)}}</b><br><b>{{default_value.slice(3,6)}}</b>&nbsp;<b>{{default_value.slice(6)}}</b>
-      </div>
-    </div>
-    <div class="shadow text-center p-2 m-2" (click)="navigateToDays(1)" id="divNext1_BK_APPT_DP">
-      <div>
-        <b>{{next_date_value.slice(0,3)}}</b><br><b>{{next_date_value.slice(3,6)}}</b>&nbsp;<b>{{next_date_value.slice(6)}}</b>
-      </div>
-    </div>
-    <div class="shadow text-center desktop-only p-2 m-2" (click)="navigateToDays(2)" id="divNext2_BK_APPT_DP">
-      <div>
-        <b>{{next_date_value_1.slice(0,3)}}</b><br><b>{{next_date_value_1.slice(3,6)}}</b>&nbsp;<b>{{next_date_value_1.slice(6)}}</b>
-      </div>
-    </div>
-    <div class="shadow text-center desktop-only p-2 m-2" (click)="navigateToDays(3)" id="divNext3_BK_APPT_DP">
-      <div>
-        <b>{{next_date_value_2.slice(0,3)}}</b><br><b>{{next_date_value_2.slice(3,6)}}</b>&nbsp;<b>{{next_date_value_2.slice(6)}}</b>
-      </div>
-    </div>
-    <div class="my-auto ml-1">
-      <input type="button" id="btnNext1_BK_APPT_DP" (click)="next_date(1);date_handling_btn()" class="date-carousel-next my-auto" value="&gt;">
-    </div>
+<div class="date-compact-card" [ngClass]="theme ? [theme] : []">
+  <div class="date-compact-card__header">
+    <span class="date-compact-card__icon">
+      <i class="fa fa-calendar" aria-hidden="true"></i>
+    </span>
+    <button type="button" class="date-compact-card__month" (click)="picker.open()">
+      {{ compactMonthLabel }}
+      <i class="fa fa-chevron-down" aria-hidden="true"></i>
+    </button>
+    <mat-datepicker #picker [dateClass]="dateClass.bind(this)"></mat-datepicker>
+    <input class="d-none" type="text" [matDatepicker]="picker" [min]="minDate"
+      [max]="maxDate" [value]="selected_date" (dateChange)="date_value_changed();" [(ngModel)]="selected_date">
+  </div>
+  <div class="date-compact-card__days">
+    <button type="button"
+      *ngFor="let day of displayDates"
+      [disabled]="day.disabled"
+      [class.is-selected]="day.iso === selected_date"
+      (click)="!day.disabled && selectCompactDate(day.iso)">
+      <span class="day">{{ day.dayShort }}</span>
+      <span class="date">{{ day.dayNumber }}</span>
+    </button>
   </div>
 </div>

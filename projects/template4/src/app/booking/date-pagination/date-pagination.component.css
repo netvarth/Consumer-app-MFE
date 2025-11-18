@@ -81,6 +81,110 @@
   margin-top: 1rem !important;
 }
 
+.p-0 {
+  padding: 0 !important;
+}
+
 ::ng-deep .mat-calendar-content {
   background: #fff !important;
+}
+
+.date-compact-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 14px 18px;
+  box-shadow: 0 18px 36px rgba(15, 35, 95, 0.08);
+  width: 100%;
+}
+
+.date-compact-card__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.date-compact-card__icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  background: #fff6f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #f97316;
+  font-size: 18px;
+}
+
+.date-compact-card__month {
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.date-compact-card__month .fa {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.date-compact-card__days {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+
+.date-compact-card__days::-webkit-scrollbar {
+  display: none;
+}
+
+.date-compact-card__days button {
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  background: #f8fafc;
+  padding: 8px 0;
+  text-align: center;
+  font-weight: 600;
+  color: #111827;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+  min-width: 80px;
+  flex: 0 0 auto;
+  cursor: pointer;
+}
+
+.date-compact-card__days button .day {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #6b7280;
+}
+
+.date-compact-card__days button .date {
+  font-size: 14px;
+}
+
+.date-compact-card__days button.is-selected {
+  border-color: #f97316;
+  background: #ffefe5;
+  color: #f97316;
+}
+
+.date-compact-card__days button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.d-none {
+  display: none !important;
 }

@@ -1,22 +1,35 @@
-<div class="booking-for-parent">
-    <div class="booking-for-child card col-12  p-0"> 
-        <span *ngIf="bookingType ==='reschedule'">&nbsp;</span>    
-        <div class="begin"*ngIf="bookingType!='reschedule'">            
-            <a  class="link edit" (click)="edit('member')"  data-bs-toggle="modal"
-            data-bs-target="#exampleModalCenter">{{'Edit' | translate}}</a>
-        </div>            
-        <div class="user-head">            
-            <span class="symbol symbol-lg-35 symbol-25 ">
-                <span class="symbol-label font-size-h5 font-weight-bold">{{getUserFirstLetter()}}</span>
-            </span>
-            <div class="user">
-                <h5 class="user-name">{{apptDetails_firstName | capitalizeFirst}} {{apptDetails_lastName | capitalizeFirst}}</h5>                
-            </div>
-        </div>        
-        <div class="user-detail">         
-                <p class="phone">{{commObj['comWhatsappCountryCode']}}
-                    {{commObj['comWhatsappNo']}}</p>
-                <p class="email">{{commObj['communicationEmail']}}</p>                            
-        </div>        
+<section class="booking-card booking-for-card" [class.booking-for-card--reschedule]="bookingType === 'reschedule'">
+  <div class="booking-for-card__avatar">
+    <span *ngIf="getUserFirstLetter(); else bookingAvatarIcon">{{getUserFirstLetter()}}</span>
+    <ng-template #bookingAvatarIcon>
+      <i class="fa fa-user" aria-hidden="true"></i>
+    </ng-template>
+  </div>
+  <div class="booking-for-card__body">
+    <div class="booking-for-card__header">
+      <div class="booking-for-card__identity">
+        <span class="booking-for-card__label">{{'Booking for' | translate}}</span>
+        <span class="booking-for-card__name">
+          <ng-container *ngIf="apptDetails_title">{{apptDetails_title}}&nbsp;</ng-container>
+          {{apptDetails_firstName | capitalizeFirst}} {{apptDetails_lastName | capitalizeFirst}}
+        </span>
+      </div>
+      <button type="button"
+              class="booking-for-card__action"
+              *ngIf="bookingType !== 'reschedule'"
+              (click)="edit('member')"
+              data-bs-toggle="modal"
+              data-bs-target="#exampleModalCenter">
+        {{'Change' | translate}}
+      </button>
     </div>
-</div>
+    <div class="booking-for-card__contact" *ngIf="commObj?.comWhatsappNo || commObj?.communicationEmail">
+      <span class="booking-for-card__contact-item" *ngIf="commObj?.comWhatsappNo">
+        {{commObj?.comWhatsappCountryCode}} {{commObj?.comWhatsappNo}}
+      </span>
+      <span class="booking-for-card__contact-item booking-for-card__contact-item--email" *ngIf="commObj?.communicationEmail">
+        {{commObj?.communicationEmail}}
+      </span>
+    </div>
+  </div>
+</section>
