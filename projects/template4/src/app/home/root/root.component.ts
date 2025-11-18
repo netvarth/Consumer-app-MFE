@@ -28,6 +28,11 @@ export class RootComponent implements OnInit, OnDestroy {
   donationServicesJson: any;
   apptServices: any = [];
   checkinServices: any = [];
+  comingSoonCards: any[] = [];
+  blogFilters: Array<{ key: string; label: string }> = [];
+  blogPosts: any[] = [];
+  filteredBlogs: any[] = [];
+  activeBlogFilter = 'all';
   s3CouponList: any = {
     JC: [], OWN: []
   };
@@ -59,6 +64,8 @@ export class RootComponent implements OnInit, OnDestroy {
   videos: any = [];
   image_list_popup: any = [];
   private subscriptions: Subscription = new Subscription();
+  heroSection: any;
+  blogConfig: any;
   constructor(
     private accountService: AccountService,
     private consumerService: ConsumerService,
@@ -118,6 +125,7 @@ export class RootComponent implements OnInit, OnDestroy {
     }
     this.selectedLocation = this.accountService.getActiveLocation();
     this.templateJson = this.sharedService.getTemplateJSON();
+    this.hydrateTemplateContent();
     this.galleryJson = this.accountService.getJson(this.account['gallery']);
     this.loadImages(this.galleryJson);
     this.subscriptionService.sendMessage({ ttype: 'showLocation' });
@@ -180,7 +188,7 @@ export class RootComponent implements OnInit, OnDestroy {
       console.log(section.link);
       let url = this.sharedService.getRouteID() + '/'  + section.link;
       console.log("Url:", url);
-      
+
       this.router.navigateByUrl(url);
     }
   }
@@ -668,7 +676,7 @@ export class RootComponent implements OnInit, OnDestroy {
   }
   loadImages(imagelist) {
     console.log("Image List:", imagelist);
-    
+
     this.image_list_popup = [];
     if (imagelist?.length > 0) {
       for (let i = 0; i < imagelist.length; i++) {
@@ -688,5 +696,104 @@ export class RootComponent implements OnInit, OnDestroy {
       openGallery(image): void {
         let imageIndex = this.getCurrentIndexCustomLayout(image, this.image_list_popup);
         this.jGalleryService.open(this.image_list_popup, imageIndex);
+  }
+  createappoinment() {
+    if (!this.selectedLocation) {
+      return;
     }
+
+    const service = this.getFirstApptService();
+    if (service) {
+      this.appointmentClicked(this.selectedLocation, service);
+      return;
+    }
+
+    // Fallback: fetch services and navigate once data arrives
+    this.bookingService.getAppointmentServices(this.selectedLocation.id).then((services: any) => {
+      const apptServicesList = Array.isArray(services) ? services.filter(svc => !svc.provider) : [];
+      this.apptServices = apptServicesList.map(item => ({ type: 'appt', item }));
+      const firstService = apptServicesList[0];
+      if (firstService) {
+        this.appointmentClicked(this.selectedLocation, firstService);
+      }
+    });
+  }
+  onComingSoonCard(card: any) {
+    if (card?.link) {
+      if (card?.external && typeof window !== 'undefined') {
+        window.open(card.link, '_blank');
+      } else {
+        this.router.navigateByUrl(card.link);
+      }
+    }
+  }
+
+  private getFirstApptService(): any | null {
+    if (!Array.isArray(this.apptServices) || !this.apptServices.length) {
+      return null;
+    }
+    const firstEntry = this.apptServices[0];
+    return firstEntry?.item || firstEntry;
+  }
+
+  // ——— HERO / CARDS / BLOG DATA ———
+  private hydrateTemplateContent() {
+    this.heroSection = this.templateJson?.heroSection || null;
+
+    const comingSoon = this.templateJson?.section1?.comingSoon;
+    this.comingSoonCards = Array.isArray(comingSoon?.cards) ? comingSoon.cards : [];
+
+    this.blogConfig = this.templateJson?.section1?.blogs || null;
+    if (this.blogConfig) {
+      const filters = Array.isArray(this.blogConfig.filters) && this.blogConfig.filters.length
+        ? this.blogConfig.filters
+        : [{ key: 'all', label: 'All' }];
+      this.blogFilters = filters;
+      this.blogPosts = Array.isArray(this.blogConfig.blog) ? this.blogConfig.blog : [];
+      this.applyBlogFilter(this.blogFilters[0]?.key || 'all');
+    } else {
+      this.blogFilters = [];
+      this.blogPosts = [];
+      this.filteredBlogs = [];
+    }
+  }
+  private applyBlogFilter(filterKey: string) {
+    this.activeBlogFilter = filterKey;
+    if (!filterKey || filterKey === 'all') {
+      this.filteredBlogs = [...this.blogPosts];
+      return;
+    }
+    const normalized = filterKey.toLowerCase();
+    this.filteredBlogs = this.blogPosts.filter((post) => {
+      const cats = this.extractBlogCategories(post);
+      return cats.some(cat => cat.toLowerCase() === normalized);
+    });
+  }
+   private extractBlogCategories(blog: any): string[] {
+    if (!blog) {
+      return [];
+    }
+    if (Array.isArray(blog.categories)) {
+      return blog.categories.filter(Boolean).map(item => item.toString());
+    }
+    if (blog.category) {
+      return [blog.category.toString()];
+    }
+    return [];
+  }
+  openBlog(blog: any) {
+    if (blog?.link) {
+      if (typeof window !== 'undefined') {
+        window.open(blog.link, '_blank');
+      }
+    }
+  }
+  moreblogs(){
+    window.open("https://chotaboss.com/our-blog/")
+  }
+  selectBlogFilter(filterKey: string) {
+    this.applyBlogFilter(filterKey);
+  }
+  
+
 }

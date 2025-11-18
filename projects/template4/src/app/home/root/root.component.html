@@ -1,1098 +1,145 @@
 <div id="page" *ngIf="templateJson">
     <div id="footer-bar" class="footer-bar-1">
-        <a (click)="menuSelected(templateJson.section1)"
-            [ngClass]="{'active-nav' : selectedIndex === templateJson.section1.title }" *ngIf="templateJson.section1"><i
-                class="fa"
-                [ngClass]="[templateJson.section1.theme?templateJson.section1.theme:'',templateJson.section1.icon?templateJson.section1.icon:'fa-home']"></i><span>{{templateJson.section1.title
-                | translate}}</span></a>
-        <a (click)="menuSelected(templateJson.section2)"
-            [ngClass]="{'active-nav' : selectedIndex === templateJson.section2.title }" *ngIf="templateJson.section2"><i
-                class="fa fa-medkit"
-                [ngClass]="[templateJson.section2.theme?templateJson.section.theme:'',templateJson.section2.icon?templateJson.section2.icon:'fa-medkit']"></i><span>{{templateJson.section2.title
-                | translate}}</span></a>
-        <a (click)="menuSelected(templateJson.section3)"
-            [ngClass]="{'active-nav' : selectedIndex === templateJson.section3.title }" *ngIf="templateJson.section3"><i
-                class="fa fa-users"
-                [ngClass]="[templateJson.section1.theme?templateJson.section1.theme:'',templateJson.section3.icon?templateJson.section3.icon:'fa-users']"></i><span>{{templateJson.section3.title
-                | translate}}</span></a>
-        <a (click)="menuSelected(templateJson.section4)"
-            [ngClass]="{'active-nav' : selectedIndex === templateJson.section4.title }" *ngIf="templateJson.section4"><i
-                class="fa fa-gear"
-                [ngClass]="[templateJson.section1.theme?templateJson.section1.theme:'',templateJson.section4.icon?templateJson.section4.icon:'fa-gear']"></i><span>{{templateJson.section4.title
-                | translate}}</span></a>
-        <a (click)="menuSelected(templateJson.section5)"
-            [ngClass]="{'active-nav' : selectedIndex === templateJson.section5.title }" *ngIf="templateJson.section5"><i
-                class="fa fa-address-book"
-                [ngClass]="templateJson.section5.theme?templateJson.section5.theme:'fa-address-book'"></i><span>{{templateJson.section5.title}}</span></a>
-    </div>
-    <div class="page-content header-clear-small mgn-bt-50">
-        <section class="pageitem" *ngIf="templateJson.section1 && selectedIndex==templateJson.section1.title">
-            <div class="col-12 p-0"
-                *ngIf="templateJson.section1.profile && templateJson.section1.profileType==='basic'">
-                <app-basic-profile-new (actionPerformed)="profileActionPerformed($event)" [profile]="basicProfile"
-                    [selectedLocation]="selectedLocation" [extras]="extras"></app-basic-profile-new>
-            </div>
-            <div class="p-3 mgn-up-10"
-                *ngIf="templateJson.section1.profile && templateJson.section1.profileType==='advanced'">
-                <app-advanced-profile [accountProfile]="accountProfile" [selectedLocation]="selectedLocation"
-                    [templateJson]="templateJson"></app-advanced-profile>
-            </div>
-            <div class="p-3 mgn-up-10"
-                *ngIf="templateJson.section1.profile && templateJson.section1.profileType==='static'">
-                <app-basic-profile-new-static [accountProfile]="accountProfile" [templateJson]="templateJson">
-                </app-basic-profile-new-static>
-            </div>
-            <div class="col-12 p-0" *ngIf="templateJson.section1.generalDescription !=''"
-                [innerHtml]="templateJson.section1.generalDescription | safeHtml">
-            </div>
-            <div class="p-3 mgn-up-10" *ngIf="templateJson.section1.quickActions">
-                <div class="col-12 p-0 mgn-up-10 ">
-                    <h5 class="mgn-bt-10"><i class="i-actions fa fa-calendar-plus-o"
-                            aria-hidden="true"></i>&nbsp;<span>Quick Actions</span></h5>
-                </div>
-                <app-quick-actions [actionList]="templateJson.section1.quickActions"
-                    (actionPerformed)="quickActionPerformed($event)"></app-quick-actions>
-            </div>
-            <ng-container *ngIf="templateJson.section1.actions && templateJson.section1.actions.length > 0">
-                <div *ngFor="let actionList of templateJson.section1.actions">
-                    <div class="p-3 mgn-up-10">
-                        <div class="col-12 p-0 mgn-up-10 ">
-                            <h5 class="mgn-bt-10" [id]="actionList.groupId"><i class="i-actions fa fa-calendar-plus-o"
-                                    aria-hidden="true"></i>&nbsp;<span>{{actionList.caption}}</span></h5>
-                        </div>
-                        <div class="col-12 blogs mgn-bt-10 p-0" *ngIf="actionList.layout==='two_column'">
-                            <app-quick-actions [actionList]="actionList.action"
-                                (actionPerformed)="quickActionPerformed($event)"></app-quick-actions>
-                        </div>
-                        <div class="col-12 mgn-bt-10 p-0" [ngClass]="actionList['layout_style']"
-                            *ngIf="actionList.layout==='one_column'">
-                            <div class="col-12 blog mgn-up-10 mgn-bt-10 p-0" (click)="blogReadMore(blog)"
-                                *ngFor="let blog of actionList.action">
-                                <div class="card mgn-bt-10">
-                                    <div class="blog-detail">
-                                        <img class="blog-img" [src]="blog.image" alt="">
-                                        <div class="details">
-                                            <p class="date pop-box-cont">
-                                                <i class="fa fa-calendar"></i>
-                                                {{blog.date}}
-                                            </p>
-                                            <h3 class="blog-head hed">{{blog.title}} </h3>
-                                            <p class="blog-description">{{blog.description}} </p>
-                                            <p class="read-more"><span>Read More...</span></p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12 p-0 mgn-bt-20 text-center"
-                                *ngIf="templateJson.section1.blogs.showMoreBlogs">
-                                <button mat-button
-                                    (click)="showMoreVideo(templateJson.section1.blogs.moreBlogsLink)">{{templateJson.section1.blogs.moreBlogsCaption}}</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
-            </ng-container>
-            <div class="p-3">
-                <div class="col-12 mgn-up-10 p-0" *ngIf="showDepartments && templateJson.section1.departments">
-                    <div class="col-12 p-0" *ngIf="templateJson.section1.departmentsDescription"
-                        [innerHtml]="templateJson.section1.departmentsDescription | safeHtml">
-                    </div>
-                    <div class="col-12 p-0">
-                        <app-cons-departments [terminologiesjson]="terminologiesjson" [templateJson]="templateJson"
-                            [accountProfile]="accountProfile" [selectedLocation]="selectedLocation"
-                            (actionPerformed)="actionPerformed($event)" [departments]="departments"
-                            [cardType]="templateJson.section1.departmentCard">
-                        </app-cons-departments>
-                    </div>
-                </div>
-                <div class="col-12 mgn-up-10 p-0"
-                    *ngIf="templateJson.section1.blogs && templateJson.section1.blogs.showBlogs">
-                    <div class="col-12 p-0">
-                        <h5 class="mgn-bt-10"><i class="i-actions fa fa-calendar-plus-o"
-                                aria-hidden="true"></i>&nbsp;<span>{{templateJson.section1.blogs.blogsCaption}}</span>
-                        </h5>
-                    </div>
-                    <div class="col-12 blogs mgn-bt-10 p-0">
-                        <div class="col-12 blog mgn-up-10 mgn-bt-10 p-0" (click)="blogReadMore(blog)"
-                            *ngFor="let blog of templateJson.section1.blogs.blog">
-                            <div class="card col-12 mgn-bt-10">
-                                <div class="blog-detail">
-                                    <img class="blog-img" [src]="blog.image" alt="">
-                                    <div class="details">
-                                        <p class="date pop-box-cont">
-                                            <i class="fa fa-calendar"></i>
-                                            {{blog.date}}
-                                        </p>
-                                        <h3 class="blog-head hed">{{blog.title}} </h3>
-                                        <p class="blog-description">{{blog.description}} </p>
-                                        <p class="read-more"><span>Read More...</span></p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 p-0 mgn-bt-20 text-center"
-                            *ngIf="templateJson.section1.blogs && templateJson.section1.blogs.showMoreBlogs">
-                            <button mat-button
-                                (click)="showMoreVideo(templateJson.section1.blogs.moreBlogsLink)">{{templateJson.section1.blogs.moreBlogsCaption}}</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 mgn-up-10 p-0"
-                    *ngIf="templateJson.section1.latestVideos && templateJson.section1.latestVideos.showVideos">
-                    <div class="col-12 p-0">
-                        <h5 class="mgn-bt-10"><i class="i-actions fa fa-calendar-plus-o"
-                                aria-hidden="true"></i>&nbsp;<span>{{templateJson.section1.latestVideos.videoCaption}}</span>
-                        </h5>
-                    </div>
-                    <div class="col-12 blogs mgn-bt-10 p-0">
-                        <div class="col-12 video mgn-bt-10 p-0" (click)="videoClicked(video)"
-                            *ngFor="let video of templateJson.section1.latestVideos.videos">
-                            <div class="card">
-                                <img class="video-img" [src]="video.image" alt="">
-                                <h3 class="blog-head hed">{{video.title}} </h3>
-                                <h4 class="blog-description">{{video.description}} </h4>
-                            </div>
-                        </div>
-                        <div class="col-12 p-0 mgn-bt-20 text-center"
-                            *ngIf="templateJson.section1.latestVideos && templateJson.section1.latestVideos.showMoreVideo">
-                            <button mat-button
-                                (click)="showMoreVideo(templateJson.section1.latestVideos.moreVideosLink)">{{templateJson.section1.latestVideos.moreVideosCaption}}</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 mgn-up-10 p-0"
-                    *ngIf="templateJson.section1.latestArticles && templateJson.section1.latestArticles.showArticles">
-                    <div class="col-12 p-0">
-                        <h5 class="mgn-bt-10"><i class="i-actions fa fa-calendar-plus-o"
-                                aria-hidden="true"></i>&nbsp;<span>{{templateJson.section1.latestArticles.articleCaption}}</span>
-                        </h5>
-                    </div>
-                    <div class="col-12 blogs mgn-bt-10 p-0">
-                        <div class="col-12 video mgn-bt-10 p-0" (click)="videoClicked(article)"
-                            *ngFor="let article of templateJson.section1.latestArticles.articles">
-                            <div class="card">
-                                <img class="video-img" [src]="article.image" alt="">
-                                <h3 class="blog-head hed">{{article.title}} </h3>
-                                <h4 class="blog-description">{{article.description}} </h4>
-                            </div>
-                        </div>
-                        <div class="col-12 p-0 mgn-bt-20 text-center"
-                            *ngIf="templateJson.section1.latestArticles && templateJson.section1.latestArticles.showMoreArticles">
-                            <button mat-button
-                                (click)="showMoreVideo(templateJson.section1.latestArticles.moreArticlesLink)">{{templateJson.section1.latestArticles.moreArticlesCaption}}</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 mgn-up-10 p-0" *ngIf="templateJson.section1.users">
-                    <div class="col-12 p-0  mgn-bt-20" *ngIf="templateJson.section1.usersDescription"
-                        [innerHtml]="templateJson.section1.usersDescription | safeHtml">
-                    </div>
-                    <div class="col-12 p-0" *ngIf="onlineUsers">
-                        <app-online-users [terminologiesjson]="terminologiesjson" [templateJson]="templateJson"
-                            [accountProfile]="accountProfile" [selectedLocation]="selectedLocation"
-                            (actionPerformed)="actionPerformed($event)" [users]="onlineUsers"
-                            [cardType]="templateJson.section1.userCard"></app-online-users>
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
-                <div class="col-12 mgn-up-10  p-0" *ngIf="templateJson.section1.appointments">
-                    <div class="col-12 mgn-bt-10 p-0" *ngIf="templateJson.section1.appointmentsDescription">
-                        <h5 class="mgn-bt-10"><i class="i-actions fa fa-calendar-plus-o" aria-hidden="true"></i>&nbsp;
-                            <span [innerHtml]="templateJson.section1.appointmentsDescription | safeHtml"></span>
-                        </h5>
-                    </div>
-                    <div class="col-12 p-0" *ngIf="loaded_appointments">
-                        <app-appointment-services [terminologiesjson]="terminologiesjson" [templateJson]="templateJson"
-                            [apptSettings]="apptSettings" [accountProfile]="accountProfile" [config]="accountConfig"
-                            (actionPerformed)="actionPerformed($event)" [filteredServices]="apptServices"
-                            [selectedLocation]="selectedLocation" cardName="card1">
-                        </app-appointment-services>
-                    </div>
-                </div>
-                <div class="col-12 mgn-up-10 p-0" *ngIf="templateJson.section1.checkins">
-                    <div class="col-12 p-0" *ngIf="templateJson.section1.checkinsDescription"
-                        [innerHtml]="templateJson.section1.checkinsDescription | safeHtml">
-                    </div>
-                    <div class="col-12 p-0" *ngIf="loaded_checkins">
-                        <app-checkin-services [terminologiesjson]="terminologiesjson" [templateJson]="templateJson"
-                            [apptSettings]="apptSettings" [accountProfile]="accountProfile"
-                            (actionPerformed)="actionPerformed($event)" [filteredServices]="checkinServices"
-                            [selectedLocation]="selectedLocation" cardName="card1">
-                        </app-checkin-services>
-                    </div>
-                </div>
-                <div class="col-12 mgn-up-10 p-0" *ngIf="templateJson.section1.donations">
-                    <div class="col-12 p-0" *ngIf="templateJson.section1.donationsDescription"
-                        [innerHtml]="templateJson.section1.donationsDescription | safeHtml">
-                    </div>
-                    <div class="col-12 p-0" *ngIf="loaded_donations">
-                        <app-donation-services [terminologiesjson]="terminologiesjson" [templateJson]="templateJson"
-                            [accountProfile]="accountProfile" [donationServices]="donationServices"
-                            (actionPerformed)="actionPerformed($event)" [selectedLocation]="selectedLocation"
-                            [cardType]="templateJson.section1.donationCard">
-                        </app-donation-services>
-                    </div>
-                </div>
-                <div class="col-12 mgn-up-10 p-0" *ngIf="templateJson.section1.orders">
-                    <div class="col-12 p-0" *ngIf="templateJson.section1.ordersDescripton"
-                        [innerHtml]="templateJson.section1.ordersDescripton | safeHtml">
-                    </div>
-                    <div class="col-12 p-0">
-                        <app-orders [terminologiesjson]="terminologiesjson" [templateJson]="templateJson"
-                            [accountProfile]="accountProfile" [selectedLocation]="selectedLocation">
-                        </app-orders>
-                    </div>
-                </div>
-                <div class="col-12 mgn-up-10 p-0" *ngIf="templateJson.section1.gallery">
-                    <div class="col-12 p-0  mgn-bt-20" *ngIf="templateJson.section1.galleryDescription"
-                        [innerHtml]="templateJson.section1.galleryDescription | safeHtml">
-                    </div>
-                    <div class="col-12 p-0" *ngIf="galleryJson && galleryJson.length > 0">
-                        <div class="gallery-container">
-                            <div class="gallery-grid">
-                                <div class="gallery-item" *ngFor="let img of image_list_popup" (click)="openGallery(img)">
-                                    <img [src]="img.source" alt="Gallery image" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
-            </div>
-        </section>
-        <section class="pageitem mgn-bt-70 p-3"
-            *ngIf="templateJson.section2 && selectedIndex==templateJson.section2.title">
-            <div class="col-12 p-0">
-                <div class="mgn-up-10"
-                    *ngIf="templateJson.section2.profile && templateJson.section2.profileType==='basic'">
-                    <app-basic-profile-new (actionPerformed)="actionPerformed($event)" [profile]="basicProfile"
-                        [selectedLocation]="selectedLocation" [templateJson]="templateJson"></app-basic-profile-new>
-                </div>
-                <div class="mgn-up-10"
-                    *ngIf="templateJson.section2.profile && templateJson.section2.profileType==='advanced'">
-                    <app-advanced-profile [accountProfile]="accountProfile" [selectedLocation]="selectedLocation"
-                        [templateJson]="templateJson"></app-advanced-profile>
-                </div>
-                <div class="col-12 p-0" *ngIf="templateJson.section2.generalDescription !=''"
-                    [innerHtml]="templateJson.section2.generalDescription | safeHtml">
-                </div>
-                <div class="p-3 mgn-up-10" *ngIf="templateJson.section2.quickActions">
-                    <div class="col-12 p-0 mgn-up-10 ">
-                        <h5 class="mgn-bt-10"><i class="i-actions fa fa-calendar-plus-o"
-                                aria-hidden="true"></i>&nbsp;<span>Quick Actions</span></h5>
-                    </div>
-                    <app-quick-actions [actionList]="templateJson.section2.quickActions"
-                        (actionPerformed)="quickActionPerformed($event)"></app-quick-actions>
-                </div>
-                <ng-container *ngIf="templateJson.section2.actions && templateJson.section2.actions.length > 0">
-                    <div *ngFor="let actionList of templateJson.section2.actions">
+    <a (click)="menuSelected(templateJson.section1)"
+       [ngClass]="{'active-nav' : selectedIndex === templateJson.section1?.title }"
+       *ngIf="templateJson.section1">
+      <i class="fa"
+         [ngClass]="[templateJson.section1.theme?templateJson.section1.theme:'', templateJson.section1.icon?templateJson.section1.icon:'fa-home']"></i>
+      <span>{{templateJson.section1.title | translate}}</span>
+    </a>
 
-                        <div class="p-3 mgn-up-10">
-                            <div class="col-12 p-0 mgn-up-10 ">
-                                <h5 class="mgn-bt-10" [id]="actionList.groupId"><i
-                                        class="i-actions fa fa-calendar-plus-o"
-                                        aria-hidden="true"></i>&nbsp;<span>{{actionList.caption}}</span></h5>
-                            </div>
-                            <div class="col-12 blogs mgn-bt-10 p-0"
-                                [ngStyle]="{'max-height':actionList.layout_height + 'px', 'overflow':'auto'}"
-                                *ngIf="actionList.layout==='two_column'">
-                                <app-quick-actions [actionList]="actionList.action"
-                                    (actionPerformed)="quickActionPerformed($event)"></app-quick-actions>
-                            </div>
-                            <div class="col-12 mgn-bt-10 p-0" [ngClass]="actionList['layout_style']"
-                                *ngIf="actionList.layout==='one_column'">
-                                <div class="col-12 blog mgn-up-10 mgn-bt-10 p-0" (click)="blogReadMore(blog)"
-                                    *ngFor="let blog of actionList.action">
-                                    <div class="card mgn-bt-10">
-                                        <div class="blog-detail">
-                                            <img class="blog-img" [src]="blog.image" alt="">
-                                            <div class="details">
-                                                <p class="date pop-box-cont">
-                                                    <i class="fa fa-calendar"></i>
-                                                    {{blog.date}}
-                                                </p>
-                                                <h3 class="blog-head hed">{{blog.title}} </h3>
-                                                <p class="blog-description">{{blog.description}} </p>
-                                                <p class="read-more"><span>Read More...</span></p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+    <a (click)="menuSelected(templateJson.section2)"
+       [ngClass]="{'active-nav' : selectedIndex === templateJson.section2?.title }"
+       *ngIf="templateJson.section2">
+      <i class="fa"
+         [ngClass]="[templateJson.section2.theme?templateJson.section2.theme:'', templateJson.section2.icon?templateJson.section2.icon:'fa-medkit']"></i>
+      <span>{{templateJson.section2.title | translate}}</span>
+    </a>
 
-                                <div class="col-12 p-0 mgn-bt-20 text-center"
-                                    *ngIf="templateJson.section2.blogs && templateJson.section2.blogs.showMoreBlogs">
-                                    <button mat-button
-                                        (click)="showMoreVideo(templateJson.section2.blogs.moreBlogsLink)">{{templateJson.section2.blogs.moreBlogsCaption}}</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="clearfix"></div>
-                    </div>
-                </ng-container>
-                <div class="col-12 mgn-up-10 p-0" *ngIf="showDepartments && templateJson.section2.departments">
-                    <div class="col-12 p-0" *ngIf="templateJson.section2.departmentsDescription"
-                        [innerHtml]="templateJson.section2.departmentsDescription | safeHtml">
-                    </div>
-                    <div class="col-12 p-0">
-                        <app-cons-departments [terminologiesjson]="terminologiesjson" [templateJson]="templateJson"
-                            [accountProfile]="accountProfile" [selectedLocation]="selectedLocation"
-                            (actionPerformed)="actionPerformed($event)" [departments]="departments"
-                            [cardType]="templateJson.section2.departmentCard">
-                        </app-cons-departments>
-                    </div>
-                </div>
-                <div class="col-12 mgn-up-10 p-0"
-                    *ngIf="templateJson.section2.blogs && templateJson.section2.blogs.showBlogs">
-                    <div class="col-12 p-0">
-                        <h5 class="mgn-bt-10"><i class="i-actions fa fa-calendar-plus-o"
-                                aria-hidden="true"></i>&nbsp;<span>{{templateJson.section2.blogs.blogsCaption}}</span>
-                        </h5>
-                    </div>
-                    <div class="col-12 blogs mgn-bt-10 p-0">
-                        <div class="col-12 blog mgn-up-10 mgn-bt-10 p-0" (click)="blogReadMore(blog)"
-                            *ngFor="let blog of templateJson.section2.blogs.blog">
-                            <div class="card mgn-bt-10">
-                                <div class="blog-detail">
-                                    <img class="blog-img" [src]="blog.image" alt="">
-                                    <div class="details">
-                                        <p class="date pop-box-cont">
-                                            <i class="fa fa-calendar"></i>
-                                            {{blog.date}}
-                                        </p>
-                                        <h3 class="blog-head hed">{{blog.title}} </h3>
-                                        <p class="blog-description">{{blog.description}} </p>
-                                        <p class="read-more"><span>Read More...</span></p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 p-0 mgn-bt-20 text-center"
-                            *ngIf="templateJson.section2.blogs && templateJson.section2.blogs.showMoreBlogs">
-                            <button mat-button
-                                (click)="showMoreVideo(templateJson.section2.blogs.moreBlogsLink)">{{templateJson.section2.blogs.moreBlogsCaption}}</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 mgn-up-10 p-0"
-                    *ngIf="templateJson.section2.latestVideos && templateJson.section2.latestVideos.showVideos">
-                    <div class="col-12 p-0">
-                        <h5 class="mgn-bt-10"><i class="i-actions fa fa-calendar-plus-o"
-                                aria-hidden="true"></i>&nbsp;<span>{{templateJson.section2.latestVideos.videoCaption}}</span>
-                        </h5>
-                    </div>
-                    <div class="col-12 blogs mgn-bt-10 p-0">
-                        <div class="col-12 video mgn-bt-10 p-0" (click)="videoClicked(video)"
-                            *ngFor="let video of templateJson.section2.latestVideos.videos">
-                            <div class="card">
-                                <img class="video-img" [src]="video.image" alt="">
-                                <h3 class="blog-head hed">{{video.title}} </h3>
-                                <h4 class="blog-description">{{video.description}} </h4>
-                            </div>
-                        </div>
-                        <div class="col-12 p-0 mgn-bt-20 text-center"
-                            *ngIf="templateJson.section2.latestVideos.showMoreVideo">
-                            <button mat-button
-                                (click)="showMoreVideo(templateJson.section2.latestVideos.moreVideosLink)">{{templateJson.section2.latestVideos.moreVideosCaption}}</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 mgn-up-10 p-0"
-                    *ngIf="templateJson.section2.latestArticles && templateJson.section2.latestArticles.showArticles">
-                    <div class="col-12 p-0">
-                        <h5 class="mgn-bt-10"><i class="i-actions fa fa-calendar-plus-o"
-                                aria-hidden="true"></i>&nbsp;<span>{{templateJson.section2.latestArticles.articleCaption}}</span>
-                        </h5>
-                    </div>
-                    <div class="col-12 blogs mgn-bt-10 p-0">
-                        <div class="col-12 video mgn-bt-10 p-0" (click)="videoClicked(article)"
-                            *ngFor="let article of templateJson.section2.latestArticles.articles">
-                            <div class="card">
-                                <img class="video-img" [src]="article.image" alt="">
-                                <h3 class="blog-head hed">{{article.title}} </h3>
-                                <h4 class="blog-description">{{article.description}} </h4>
-                            </div>
-                        </div>
-                        <div class="col-12 p-0 mgn-bt-20 text-center"
-                            *ngIf="templateJson.section2.latestArticles.showMoreArticles">
-                            <button mat-button
-                                (click)="showMoreVideo(templateJson.section2.latestArticles.moreArticlesLink)">{{templateJson.section2.latestArticles.moreArticlesCaption}}</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 mgn-up-10 p-0" *ngIf="templateJson.section2.users">
-                    <div class="col-12 p-0  mgn-bt-20" *ngIf="templateJson.section2.usersDescription"
-                        [innerHtml]="templateJson.section2.usersDescription | safeHtml">
-                    </div>
-                    <div class="col-12 p-0" *ngIf="users_loaded && onlineUsers">
-                        <app-online-users [terminologiesjson]="terminologiesjson" [templateJson]="templateJson"
-                            [accountProfile]="accountProfile" [selectedLocation]="selectedLocation"
-                            (actionPerformed)="actionPerformed($event)" [users]="onlineUsers"
-                            [cardType]="templateJson.section2.userCard"></app-online-users>
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
-                <div class="col-12 mgn-up-10  p-0" *ngIf="templateJson.section2.appointments">
-                    <div class="col-12 p-0" *ngIf="templateJson.section2.appointmentsDescription"
-                        [innerHtml]="templateJson.section2.appointmentsDescription | safeHtml">
-                    </div>
-                    <div class="col-12 p-0" *ngIf="loaded_appointments">
-                        <app-appointment-services [terminologiesjson]="terminologiesjson" [templateJson]="templateJson"
-                            [apptSettings]="apptSettings" [accountProfile]="accountProfile" [config]="accountConfig"
-                            (actionPerformed)="actionPerformed($event)" [filteredServices]="apptServices"
-                            [selectedLocation]="selectedLocation" cardName="card1">
-                        </app-appointment-services>
-                    </div>
-                </div>
-                <div class="col-12 mgn-up-10 p-0" *ngIf="templateJson.section2.checkins">
-                    <div class="col-12 p-0" *ngIf="templateJson.section2.checkinsDescription"
-                        [innerHtml]="templateJson.section2.checkinsDescription | safeHtml">
-                    </div>
-                    <div class="col-12 p-0" *ngIf="loaded_checkins">
-                        <app-checkin-services [terminologiesjson]="terminologiesjson" [templateJson]="templateJson"
-                            [apptSettings]="apptSettings" [accountProfile]="accountProfile"
-                            (actionPerformed)="actionPerformed($event)" [filteredServices]="checkinServices"
-                            [selectedLocation]="selectedLocation" cardName="card1">
-                        </app-checkin-services>
-                    </div>
-                </div>
-                <div class="col-12 mgn-up-10 p-0" *ngIf="templateJson.section2.donations">
-                    <div class="col-12 p-0" *ngIf="templateJson.section2.donationsDescription"
-                        [innerHtml]="templateJson.section2.donationsDescription | safeHtml">
-                    </div>
-                    <div class="col-12 p-0" *ngIf="loaded_donations">
-                        <app-donation-services [terminologiesjson]="terminologiesjson" [templateJson]="templateJson"
-                            [accountProfile]="accountProfile" [donationServices]="donationServices"
-                            (actionPerformed)="actionPerformed($event)" [selectedLocation]="selectedLocation"
-                            [cardType]="templateJson.section2.donationCard">
-                        </app-donation-services>
-                    </div>
-                </div>
-                <div class="col-12 mgn-up-10 p-0" *ngIf="templateJson.section2.orders">
-                    <div class="col-12 p-0" *ngIf="templateJson.section2.ordersDescripton"
-                        [innerHtml]="templateJson.section2.ordersDescripton | safeHtml">
-                    </div>
-                    <div class="col-12 p-0">
-                        <app-orders [terminologiesjson]="terminologiesjson" [templateJson]="templateJson"
-                            [accountProfile]="accountProfile" [selectedLocation]="selectedLocation">
-                        </app-orders>
-                    </div>
-                </div>
-                <div class="col-12 mgn-up-10 p-0" *ngIf="templateJson.section2.gallery">
-                    <div class="col-12 p-0  mgn-bt-20" *ngIf="templateJson.section2.galleryDescription"
-                        [innerHtml]="templateJson.section2.galleryDescription | safeHtml">
-                    </div>
-                    <div class="col-12 p-0" *ngIf="galleryJson && galleryJson.length > 0">
-                        <div class="gallery-container">
-                            <div class="gallery-grid">
-                                <div class="gallery-item" *ngFor="let img of image_list_popup" (click)="openGallery(img)">
-                                    <img [src]="img.source" alt="Gallery image" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
-            </div>
-        </section>
-        <section class="col-12 p-0" *ngIf="templateJson.section3 && selectedIndex==templateJson.section3.title">
-            <div class="mgn-up-10" *ngIf="templateJson.section3.profile && templateJson.section3.profileType==='basic'">
-                <app-basic-profile-new (actionPerformed)="actionPerformed($event)" [profile]="basicProfile"
-                    [selectedLocation]="selectedLocation" [templateJson]="templateJson"></app-basic-profile-new>
-            </div>
-            <div class="mgn-up-10"
-                *ngIf="templateJson.section3.profile && templateJson.section3.profileType==='advanced'">
-                <app-advanced-profile [accountProfile]="accountProfile" [selectedLocation]="selectedLocation"
-                    [templateJson]="templateJson"></app-advanced-profile>
-            </div>
-            <div class="col-12 p-0" *ngIf="templateJson.section3.generalDescription !=''"
-                [innerHtml]="templateJson.section3.generalDescription | safeHtml">
-            </div>
-            <div class="p-3 mgn-up-10" *ngIf="templateJson.section3.quickActions">
-                <div class="col-12 p-0 mgn-up-10 ">
-                    <h5 class="mgn-bt-10"><i class="i-actions fa fa-calendar-plus-o"
-                            aria-hidden="true"></i>&nbsp;<span>Quick Actions</span></h5>
-                </div>
-                <app-quick-actions [actionList]="templateJson.section3.quickActions"
-                    (actionPerformed)="quickActionPerformed($event)"></app-quick-actions>
-            </div>
-            <ng-container *ngIf="templateJson.section3.actions && templateJson.section3.actions.length > 0">
-                <div *ngFor="let actionList of templateJson.section3.actions">
-                    <div class="p-3 mgn-up-10">
-                        <div class="col-12 p-0 mgn-up-10 ">
-                            <h5 class="mgn-bt-10" [id]="actionList.groupId"><i class="i-actions fa fa-calendar-plus-o"
-                                    aria-hidden="true"></i>&nbsp;<span>{{actionList.caption}}</span></h5>
-                        </div>
-                        <div class="col-12 blogs mgn-bt-10 p-0" *ngIf="actionList.layout==='two_column'">
-                            <app-quick-actions [actionList]="actionList.action"
-                                (actionPerformed)="quickActionPerformed($event)"></app-quick-actions>
-                        </div>
-                        <div class="col-12 mgn-bt-10 p-0" [ngClass]="actionList['layout_style']"
-                            *ngIf="actionList.layout==='one_column'">
-                            <div class="col-12 blog mgn-up-10 mgn-bt-10 p-0" (click)="blogReadMore(blog)"
-                                *ngFor="let blog of actionList.action">
-                                <div class="card mgn-bt-10">
-                                    <div class="blog-detail">
-                                        <img class="blog-img" [src]="blog.image" alt="">
-                                        <div class="details">
-                                            <p class="date pop-box-cont">
-                                                <i class="fa fa-calendar"></i>
-                                                {{blog.date}}
-                                            </p>
-                                            <h3 class="blog-head hed">{{blog.title}} </h3>
-                                            <p class="blog-description">{{blog.description}} </p>
-                                            <p class="read-more"><span>Read More...</span></p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12 p-0 mgn-bt-20 text-center"
-                                *ngIf="templateJson.section3.blogs && templateJson.section3.blogs.showMoreBlogs">
-                                <button mat-button
-                                    (click)="showMoreVideo(templateJson.section3.blogs.moreBlogsLink)">{{templateJson.section3.blogs.moreBlogsCaption}}</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
-            </ng-container>
-            <div class="col-12 mgn-up-30 p-0" *ngIf="showDepartments && templateJson.section3.departments">
-                <div class="col-12 p-0" *ngIf="templateJson.section3.departmentsDescription"
-                    [innerHtml]="templateJson.section3.departmentsDescription | safeHtml">
-                </div>
-                <div class="col-12 p-0">
-                    <app-cons-departments [terminologiesjson]="terminologiesjson" [templateJson]="templateJson"
-                        [accountProfile]="accountProfile" [selectedLocation]="selectedLocation"
-                        (actionPerformed)="actionPerformed($event)" [departments]="departments"
-                        [cardType]="templateJson.section3.departmentCard">
-                    </app-cons-departments>
-                </div>
-            </div>
-            <div class="col-12 mgn-up-10 p-0"
-                *ngIf="templateJson.section3.blogs && templateJson.section3.blogs.showBlogs">
-                <div class="col-12 p-0">
-                    <h5 class="mgn-bt-10"><i class="i-actions fa fa-calendar-plus-o"
-                            aria-hidden="true"></i>&nbsp;<span>{{templateJson.section3.blogs.blogsCaption}}</span></h5>
-                </div>
-                <div class="col-12 blogs mgn-bt-10 p-0">
-                    <div class="col-12 blog mgn-up-10 mgn-bt-10 p-0" (click)="blogReadMore(blog)"
-                        *ngFor="let blog of templateJson.section3.blogs.blog">
-                        <div class="card mgn-bt-10">
-                            <div class="blog-detail">
-                                <img class="blog-img" [src]="blog.image" alt="">
-                                <div class="details">
-                                    <p class="date pop-box-cont">
-                                        <i class="fa fa-calendar"></i>
-                                        {{blog.date}}
-                                    </p>
-                                    <h3 class="blog-head hed">{{blog.title}} </h3>
-                                    <p class="blog-description">{{blog.description}} </p>
-                                    <p class="read-more"><span>Read More...</span></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 p-0 mgn-bt-20 text-center"
-                        *ngIf="templateJson.section3.blogs && templateJson.section3.blogs.showMoreBlogs">
-                        <button mat-button
-                            (click)="showMoreVideo(templateJson.section3.blogs.moreBlogsLink)">{{templateJson.section3.blogs.moreBlogsCaption}}</button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 mgn-up-10 p-0"
-                *ngIf="templateJson.section3.latestVideos && templateJson.section3.latestVideos.showVideos">
-                <div class="col-12 p-0">
-                    <h5 class="mgn-bt-10"><i class="i-actions fa fa-calendar-plus-o"
-                            aria-hidden="true"></i>&nbsp;<span>{{templateJson.section3.latestVideos.videoCaption}}</span>
-                    </h5>
-                </div>
-                <div class="col-12 blogs mgn-bt-10 p-0">
-                    <div class="col-12 video mgn-bt-10 p-0" (click)="videoClicked(video)"
-                        *ngFor="let video of templateJson.section3.latestVideos.videos">
-                        <div class="card">
-                            <img class="video-img" [src]="video.image" alt="">
-                            <h3 class="blog-head hed">{{video.title}} </h3>
-                            <h4 class="blog-description">{{video.description}} </h4>
-                        </div>
-                    </div>
-                    <div class="col-12 p-0 mgn-bt-20 text-center"
-                        *ngIf="templateJson.section3.latestVideos.showMoreVideo">
-                        <button mat-button
-                            (click)="showMoreVideo(templateJson.section3.latestVideos.moreVideosLink)">{{templateJson.section3.latestVideos.moreVideosCaption}}</button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 mgn-up-10 p-0"
-                *ngIf="templateJson.section3.latestArticles && templateJson.section3.latestArticles.showArticles">
-                <div class="col-12 p-0">
-                    <h5 class="mgn-bt-10"><i class="i-actions fa fa-calendar-plus-o"
-                            aria-hidden="true"></i>&nbsp;<span>{{templateJson.section3.latestArticles.articleCaption}}</span>
-                    </h5>
-                </div>
-                <div class="col-12 blogs mgn-bt-10 p-0">
-                    <div class="col-12 video mgn-bt-10 p-0" (click)="videoClicked(article)"
-                        *ngFor="let article of templateJson.section3.latestArticles.articles">
-                        <div class="card">
-                            <img class="video-img" [src]="article.image" alt="">
-                            <h3 class="blog-head hed">{{article.title}} </h3>
-                            <h4 class="blog-description">{{article.description}} </h4>
-                        </div>
-                    </div>
-                    <div class="col-12 p-0 mgn-bt-20 text-center"
-                        *ngIf="templateJson.section3.latestArticles.showMoreArticles">
-                        <button mat-button
-                            (click)="showMoreVideo(templateJson.section3.latestArticles.moreArticlesLink)">{{templateJson.section3.latestArticles.moreArticlesCaption}}</button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 mgn-up-10 p-0" *ngIf="templateJson.section3.users">
-                <div class="col-12 p-0  mgn-bt-20" *ngIf="templateJson.section3.usersDescription"
-                    [innerHtml]="templateJson.section3.usersDescription | safeHtml">
-                </div>
-                <div class="col-12 p-0" *ngIf="onlineUsers">
-                    <app-online-users [terminologiesjson]="terminologiesjson" [templateJson]="templateJson"
-                        [accountProfile]="accountProfile" [selectedLocation]="selectedLocation" [users]="onlineUsers"
-                        [cardType]="templateJson.section3.userCard" (actionPerformed)="actionPerformed($event)">
-                    </app-online-users>
-                </div>
-                <div class="clearfix"></div>
-            </div>
-            <div class="col-12 mgn-up-10  p-0" *ngIf="templateJson.section3.appointments">
-                <div class="col-12 p-0" *ngIf="templateJson.section3.appointmentsDescription"
-                    [innerHtml]="templateJson.section3.appointmentsDescription | safeHtml">
-                </div>
-                <div class="col-12 p-0" *ngIf="loaded_appointments">
-                    <app-appointment-services [terminologiesjson]="terminologiesjson" [templateJson]="templateJson"
-                        [apptSettings]="apptSettings" [accountProfile]="accountProfile" [config]="accountConfig"
-                        (actionPerformed)="actionPerformed($event)" [filteredServices]="apptServices"
-                        [selectedLocation]="selectedLocation" cardName="card1"
-                        (actionPerformed)="actionPerformed($event)">
-                    </app-appointment-services>
-                </div>
-            </div>
-            <div class="col-12 mgn-up-10 p-0" *ngIf="templateJson.section3.checkins">
-                <div class="col-12 p-0" *ngIf="templateJson.section3.checkinsDescription"
-                    [innerHtml]="templateJson.section3.checkinsDescription | safeHtml">
-                </div>
-                <div class="col-12 p-0" *ngIf="loaded_checkins">
-                    <app-checkin-services [terminologiesjson]="terminologiesjson" [templateJson]="templateJson"
-                        [apptSettings]="apptSettings" [accountProfile]="accountProfile"
-                        (actionPerformed)="actionPerformed($event)" [filteredServices]="checkinServices"
-                        [selectedLocation]="selectedLocation" cardName="card1"
-                        (actionPerformed)="actionPerformed($event)">
-                    </app-checkin-services>
-                </div>
-            </div>
-            <div class="col-12 mgn-up-10 p-0" *ngIf="templateJson.section3.donations">
-                <div class="col-12 p-0" *ngIf="templateJson.section3.donationsDescription"
-                    [innerHtml]="templateJson.section3.donationsDescription | safeHtml">
-                </div>
-                <div class="col-12 p-0" *ngIf="loaded_donations">
-                    <app-donation-services [terminologiesjson]="terminologiesjson" [templateJson]="templateJson"
-                        [accountProfile]="accountProfile" [donationServices]="donationServices"
-                        (actionPerformed)="actionPerformed($event)" [selectedLocation]="selectedLocation"
-                        [cardType]="templateJson.section3.donationCard">
-                    </app-donation-services>
-                </div>
-            </div>
-            <div class="col-12 mgn-up-10 p-0" *ngIf="templateJson.section3.orders">
-                <div class="col-12 p-0" *ngIf="templateJson.section3.ordersDescripton"
-                    [innerHtml]="templateJson.section3.ordersDescripton | safeHtml">
-                </div>
-                <div class="col-12 p-0">
-                    <app-orders [terminologiesjson]="terminologiesjson" [templateJson]="templateJson"
-                        [accountProfile]="accountProfile" [selectedLocation]="selectedLocation">
-                    </app-orders>
-                </div>
-            </div>
-            <div class="col-12 mgn-up-10 p-0" *ngIf="templateJson.section3.gallery">
-                <div class="col-12 p-0  mgn-bt-20" *ngIf="templateJson.section3.galleryDescription"
-                    [innerHtml]="templateJson.section3.galleryDescription | safeHtml">
-                </div>
-                <div class="col-12 p-0" *ngIf="galleryJson && galleryJson.length > 0">
-                    <div class="gallery-container">
-                        <div class="gallery-grid">
-                            <div class="gallery-item" *ngFor="let img of image_list_popup" (click)="openGallery(img)">
-                                <img [src]="img.source" alt="Gallery image" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="clearfix"></div>
-            </div>
-        </section>
-        <section class="ftco-section bg-light" id="counselling-section"
-            *ngIf="templateJson.section4 && selectedIndex==templateJson.section4.title">
-            <div class="mgn-up-10" *ngIf="templateJson.section4.profile && templateJson.section4.profileType==='basic'">
-                <app-basic-profile-new (actionPerformed)="actionPerformed($event)" [profile]="basicProfile"
-                    [selectedLocation]="selectedLocation" [templateJson]="templateJson"></app-basic-profile-new>
-            </div>
-            <div class="mgn-up-10"
-                *ngIf="templateJson.section4.profile && templateJson.section4.profileType==='advanced'">
-                <app-advanced-profile [accountProfile]="accountProfile" [selectedLocation]="selectedLocation"
-                    [templateJson]="templateJson"></app-advanced-profile>
-            </div>
-            <div class="col-12 p-0" *ngIf="templateJson.section4.generalDescription !=''"
-                [innerHtml]="templateJson.section4.generalDescription | safeHtml">
-            </div>
-            <div class="p-3 mgn-up-10" *ngIf="templateJson.section4.quickActions">
-                <div class="col-12 p-0 mgn-up-10 ">
-                    <h5 class="mgn-bt-10"><i class="i-actions fa fa-calendar-plus-o"
-                            aria-hidden="true"></i>&nbsp;<span>Quick Actions</span></h5>
-                </div>
-                <app-quick-actions [actionList]="templateJson.section4.quickActions"
-                    (actionPerformed)="quickActionPerformed($event)"></app-quick-actions>
-            </div>
-            <ng-container *ngIf="templateJson.section4.actions && templateJson.section4.actions.length > 0">
-                <div *ngFor="let actionList of templateJson.section4.actions">
-                    <div class="p-3 mgn-up-10">
-                        <div class="col-12 p-0 mgn-up-10 ">
-                            <h5 class="mgn-bt-10" [id]="actionList.groupId"><i class="i-actions fa fa-calendar-plus-o"
-                                    aria-hidden="true"></i>&nbsp;<span>{{actionList.caption}}</span></h5>
-                        </div>
-                        <div class="col-12 blogs mgn-bt-10 p-0" *ngIf="actionList.layout==='two_column'">
-                            <app-quick-actions [actionList]="actionList.action"
-                                (actionPerformed)="quickActionPerformed($event)"></app-quick-actions>
-                        </div>
-                        <div class="col-12 mgn-bt-10 p-0" [ngClass]="actionList['layout_style']"
-                            *ngIf="actionList.layout==='one_column'">
-                            <div class="col-12 blog mgn-up-10 mgn-bt-10 p-0" (click)="blogReadMore(blog)"
-                                *ngFor="let blog of actionList.action">
-                                <div class="card mgn-bt-10">
-                                    <div class="blog-detail">
-                                        <img class="blog-img" [src]="blog.image" alt="">
-                                        <div class="details">
-                                            <p class="date pop-box-cont">
-                                                <i class="fa fa-calendar"></i>
-                                                {{blog.date}}
-                                            </p>
-                                            <h3 class="blog-head hed">{{blog.title}} </h3>
-                                            <p class="blog-description">{{blog.description}} </p>
-                                            <p class="read-more"><span>Read More...</span></p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12 p-0 mgn-bt-20 text-center"
-                                *ngIf="templateJson.section4.blogs && templateJson.section4.blogs.showMoreBlogs">
-                                <button mat-button
-                                    (click)="showMoreVideo(templateJson.section4.blogs.moreBlogsLink)">{{templateJson.section4.blogs.moreBlogsCaption}}</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
-            </ng-container>
-            <div class="col-12 mgn-up-10 p-0" *ngIf="showDepartments && templateJson.section4.departments">
-                <div class="col-12 p-0" *ngIf="templateJson.section4.departmentsDescription"
-                    [innerHtml]="templateJson.section4.departmentsDescription | safeHtml">
-                </div>
-                <div class="col-12 p-0">
-                    <app-cons-departments [terminologiesjson]="terminologiesjson" [templateJson]="templateJson"
-                        [accountProfile]="accountProfile" [selectedLocation]="selectedLocation"
-                        (actionPerformed)="actionPerformed($event)" [departments]="departments"
-                        [cardType]="templateJson.section4.departmentCard">
-                    </app-cons-departments>
-                </div>
-            </div>
-            <div class="col-12 mgn-up-10 p-0"
-                *ngIf="templateJson.section4.blogs && templateJson.section4.blogs.showBlogs">
-                <div class="col-12 p-0">
-                    <h5 class="mgn-bt-10"><i class="i-actions fa fa-calendar-plus-o"
-                            aria-hidden="true"></i>&nbsp;<span>{{templateJson.section4.blogs.blogsCaption}}</span></h5>
-                </div>
-                <div class="col-12 blogs mgn-bt-10 p-0">
-                    <div class="col-12 blog mgn-up-10 mgn-bt-10 p-0" (click)="blogReadMore(blog)"
-                        *ngFor="let blog of templateJson.section4.blogs.blog">
-                        <div class="card mgn-bt-10">
-                            <div class="blog-detail">
-                                <img class="blog-img" [src]="blog.image" alt="">
-                                <div class="details">
-                                    <p class="date pop-box-cont">
-                                        <i class="fa fa-calendar"></i>
-                                        {{blog.date}}
-                                    </p>
-                                    <h3 class="blog-head hed">{{blog.title}} </h3>
-                                    <p class="blog-description">{{blog.description}} </p>
-                                    <p class="read-more"><span>Read More...</span></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 p-0 mgn-bt-20 text-center"
-                        *ngIf="templateJson.section4.blogs.showMoreBlogs">
-                        <button mat-button
-                            (click)="showMoreVideo(templateJson.section4.blogs.moreBlogsLink)">{{templateJson.section4.blogs.moreBlogsCaption}}</button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 mgn-up-10 p-0"
-                *ngIf="templateJson.section4.latestVideos && templateJson.section4.latestVideos.showVideos">
-                <div class="col-12 p-0">
-                    <h5 class="mgn-bt-10"><i class="i-actions fa fa-calendar-plus-o"
-                            aria-hidden="true"></i>&nbsp;<span>{{templateJson.section4.latestVideos.videoCaption}}</span>
-                    </h5>
-                </div>
-                <div class="col-12 blogs mgn-bt-10 p-0">
-                    <div class="col-12 video mgn-bt-10 p-0" (click)="videoClicked(video)"
-                        *ngFor="let video of templateJson.section4.latestVideos.videos">
-                        <div class="card">
-                            <img class="video-img" [src]="video.image" alt="">
-                            <h3 class="blog-head hed">{{video.title}} </h3>
-                            <h4 class="blog-description">{{video.description}} </h4>
-                        </div>
-                    </div>
-                    <div class="col-12 p-0 mgn-bt-20 text-center"
-                        *ngIf="templateJson.section4.latestVideos.showMoreVideo">
-                        <button mat-button
-                            (click)="showMoreVideo(templateJson.section4.latestVideos.moreVideosLink)">{{templateJson.section4.latestVideos.moreVideosCaption}}</button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 mgn-up-10 p-0"
-                *ngIf="templateJson.section4.latestArticles && templateJson.section4.latestArticles.showArticles">
-                <div class="col-12 p-0">
-                    <h5 class="mgn-bt-10"><i class="i-actions fa fa-calendar-plus-o"
-                            aria-hidden="true"></i>&nbsp;<span>{{templateJson.section4.latestArticles.articleCaption}}</span>
-                    </h5>
-                </div>
-                <div class="col-12 blogs mgn-bt-10 p-0">
-                    <div class="col-12 video mgn-bt-10 p-0" (click)="videoClicked(article)"
-                        *ngFor="let article of templateJson.section4.latestArticles.articles">
-                        <div class="card ">
-                            <img class="video-img" [src]="article.image" alt="">
-                            <h3 class="blog-head hed">{{article.title}} </h3>
-                            <h4 class="blog-description">{{article.description}} </h4>
-                        </div>
-                    </div>
-                    <div class="col-12 p-0 mgn-bt-20 text-center"
-                        *ngIf="templateJson.section4.latestArticles.showMoreArticles">
-                        <button mat-button
-                            (click)="showMoreVideo(templateJson.section4.latestArticles.moreArticlesLink)">{{templateJson.section4.latestArticles.moreArticlesCaption}}</button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 mgn-up-10 p-0" *ngIf="templateJson.section4.users">
-                <div class="col-12 p-0  mgn-bt-20" *ngIf="templateJson.section4.usersDescription"
-                    [innerHtml]="templateJson.section4.usersDescription | safeHtml">
-                </div>
-                <div class="col-12 p-0" *ngIf="onlineUsers">
-                    <app-online-users [terminologiesjson]="terminologiesjson" [templateJson]="templateJson"
-                        (actionPerformed)="actionPerformed($event)" [accountProfile]="accountProfile"
-                        [selectedLocation]="selectedLocation" [users]="onlineUsers"
-                        [cardType]="templateJson.section4.userCard"></app-online-users>
-                </div>
-                <div class="clearfix"></div>
-            </div>
-            <div class="col-12 mgn-up-10  p-0" *ngIf="templateJson.section4.appointments">
-                <div class="col-12 p-0" *ngIf="templateJson.section4.appointmentsDescription"
-                    [innerHtml]="templateJson.section4.appointmentsDescription | safeHtml">
-                </div>
-                <div class="col-12 p-0" *ngIf="loaded_appointments">
-                    <app-appointment-services [terminologiesjson]="terminologiesjson" [templateJson]="templateJson"
-                        [apptSettings]="apptSettings" [accountProfile]="accountProfile" [config]="accountConfig"
-                        (actionPerformed)="actionPerformed($event)" [filteredServices]="apptServices"
-                        [selectedLocation]="selectedLocation" cardName="card1">
-                    </app-appointment-services>
-                </div>
-            </div>
-            <div class="col-12 mgn-up-10 p-0" *ngIf="templateJson.section4.checkins">
-                <div class="col-12 p-0" *ngIf="templateJson.section4.checkinsDescription"
-                    [innerHtml]="templateJson.section4.checkinsDescription | safeHtml">
-                </div>
-                <div class="col-12 p-0" *ngIf="loaded_checkins">
-                    <app-checkin-services [terminologiesjson]="terminologiesjson" [templateJson]="templateJson"
-                        [apptSettings]="apptSettings" [accountProfile]="accountProfile"
-                        (actionPerformed)="actionPerformed($event)" [filteredServices]="checkinServices"
-                        [selectedLocation]="selectedLocation" cardName="card1">
-                    </app-checkin-services>
-                </div>
-            </div>
-            <div class="col-12 mgn-up-10 p-0" *ngIf="templateJson.section4.donations">
-                <div class="col-12 p-0" *ngIf="templateJson.section4.donationsDescription"
-                    [innerHtml]="templateJson.section4.donationsDescription | safeHtml">
-                </div>
-                <div class="col-12 p-0" *ngIf="loaded_donations">
-                    <app-donation-services [terminologiesjson]="terminologiesjson" [templateJson]="templateJson"
-                        [accountProfile]="accountProfile" [donationServices]="donationServices"
-                        (actionPerformed)="actionPerformed($event)" [selectedLocation]="selectedLocation"
-                        [cardType]="templateJson.section4.donationCard">
-                    </app-donation-services>
-                </div>
-            </div>
-            <div class="col-12 mgn-up-10 p-0" *ngIf="templateJson.section4.orders">
-                <div class="col-12 p-0" *ngIf="templateJson.section4.ordersDescripton"
-                    [innerHtml]="templateJson.section4.ordersDescripton | safeHtml">
-                </div>
-                <div class="col-12 p-0">
-                    <app-orders [terminologiesjson]="terminologiesjson" [templateJson]="templateJson"
-                        [accountProfile]="accountProfile" [selectedLocation]="selectedLocation">
-                    </app-orders>
-                </div>
-            </div>
-            <div class="col-12 mgn-up-10 p-0" *ngIf="templateJson.section4.gallery">
-                <div class="col-12 p-0  mgn-bt-20" *ngIf="templateJson.section4.galleryDescription"
-                    [innerHtml]="templateJson.section4.galleryDescription | safeHtml">
-                </div>
-                <div class="col-12 p-0" *ngIf="galleryJson && galleryJson.length > 0">
-                    <div class="gallery-container">
-                        <div class="gallery-grid">
-                            <div class="gallery-item" *ngFor="let img of image_list_popup" (click)="openGallery(img)">
-                                <img [src]="img.source" alt="Gallery image" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="clearfix"></div>
-            </div>
-        </section>
-        <section class="ftco-section contact-section" id="contact-section"
-            *ngIf="templateJson.section5 && selectedIndex==templateJson.section5.title">
-            <div class="mgn-up-10" *ngIf="templateJson.section5.profile && templateJson.section5.profileType==='basic'">
-                <app-basic-profile-new (actionPerformed)="actionPerformed($event)" [profile]="basicProfile"
-                    [selectedLocation]="selectedLocation" [templateJson]="templateJson"></app-basic-profile-new>
-            </div>
-            <div class="mgn-up-10"
-                *ngIf="templateJson.section5.profile && templateJson.section5.profileType==='advanced'">
-                <app-advanced-profile [accountProfile]="accountProfile" [selectedLocation]="selectedLocation"
-                    [templateJson]="templateJson"></app-advanced-profile>
-            </div>
-            <div class="col-12 p-0" *ngIf="templateJson.section5.generalDescription !=''"
-                [innerHtml]="templateJson.section5.generalDescription | safeHtml">
-            </div>
-            <div class="p-3 mgn-up-10" *ngIf="templateJson.section5.quickActions">
-                <div class="col-12 p-0 mgn-up-10 ">
-                    <h5 class="mgn-bt-10"><i class="i-actions fa fa-calendar-plus-o"
-                            aria-hidden="true"></i>&nbsp;<span>Quick Actions</span></h5>
-                </div>
-                <app-quick-actions [actionList]="templateJson.section5.quickActions"
-                    (actionPerformed)="quickActionPerformed($event)"></app-quick-actions>
-            </div>
-            <ng-container *ngIf="templateJson.section5.actions && templateJson.section5.actions.length > 0">
-                <div *ngFor="let actionList of templateJson.section5.actions">
-                    <div class="p-3 mgn-up-10">
-                        <div class="col-12 p-0 mgn-up-10 ">
-                            <h5 class="mgn-bt-10" [id]="actionList.groupId"><i class="i-actions fa fa-calendar-plus-o"
-                                    aria-hidden="true"></i>&nbsp;<span>{{actionList.caption}}</span></h5>
-                        </div>
-                        <div class="col-12 blogs mgn-bt-10 p-0" *ngIf="actionList.layout==='two_column'">
-                            <app-quick-actions [actionList]="actionList.action"
-                                (actionPerformed)="quickActionPerformed($event)"></app-quick-actions>
-                        </div>
-                        <div class="col-12 mgn-bt-10 p-0" [ngClass]="actionList['layout_style']"
-                            *ngIf="actionList.layout==='one_column'">
-                            <div class="col-12 blog mgn-up-10 mgn-bt-10 p-0" (click)="blogReadMore(blog)"
-                                *ngFor="let blog of actionList.action">
-                                <div class="card mgn-bt-10">
-                                    <div class="blog-detail">
-                                        <img class="blog-img" [src]="blog.image" alt="">
-                                        <div class="details">
-                                            <p class="date pop-box-cont">
-                                                <i class="fa fa-calendar"></i>
-                                                {{blog.date}}
-                                            </p>
-                                            <h3 class="blog-head hed">{{blog.title}} </h3>
-                                            <p class="blog-description">{{blog.description}} </p>
-                                            <p class="read-more"><span>Read More...</span></p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12 p-0 mgn-bt-20 text-center"
-                                *ngIf="templateJson.section5.blogs.showMoreBlogs">
-                                <button mat-button
-                                    (click)="showMoreVideo(templateJson.section5.blogs.moreBlogsLink)">{{templateJson.section5.blogs.moreBlogsCaption}}</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
-            </ng-container>
-            <div class="col-12 mgn-up-10 p-0" *ngIf="showDepartments && templateJson.section5.departments">
-                <div class="col-12 p-0" *ngIf="templateJson.section5.departmentsDescription"
-                    [innerHtml]="templateJson.section5.departmentsDescription | safeHtml">
-                </div>
-                <div class="col-12 p-0">
-                    <app-cons-departments [terminologiesjson]="terminologiesjson" [templateJson]="templateJson"
-                        [accountProfile]="accountProfile" [selectedLocation]="selectedLocation"
-                        (actionPerformed)="actionPerformed($event)" [departments]="departments"
-                        [cardType]="templateJson.section5.departmentCard">
-                    </app-cons-departments>
-                </div>
-            </div>
-            <div class="col-12 mgn-up-10 p-0" *ngIf="templateJson.section5.users">
-                <div class="col-12 p-0  mgn-bt-20" *ngIf="templateJson.section5.usersDescription"
-                    [innerHtml]="templateJson.section5.usersDescription | safeHtml">
-                </div>
-                <div class="col-12 p-0" *ngIf="onlineUsers">
-                    <app-online-users [terminologiesjson]="terminologiesjson" [templateJson]="templateJson"
-                        (actionPerformed)="actionPerformed($event)" [accountProfile]="accountProfile"
-                        [selectedLocation]="selectedLocation" [users]="onlineUsers"
-                        [cardType]="templateJson.section5.userCard"></app-online-users>
-                </div>
-                <div class="clearfix"></div>
-            </div>
-            <div class="col-12 mgn-up-10  p-0" *ngIf="templateJson.section5.appointments">
-                <div class="col-12 p-0" *ngIf="templateJson.section5.appointmentsDescription"
-                    [innerHtml]="templateJson.section5.appointmentsDescription | safeHtml">
-                </div>
-                <div class="col-12 p-0" *ngIf="loaded_appointments">
-                    <app-appointment-services [terminologiesjson]="terminologiesjson" [templateJson]="templateJson"
-                        [apptSettings]="apptSettings" [accountProfile]="accountProfile" [config]="accountConfig"
-                        (actionPerformed)="actionPerformed($event)" [filteredServices]="apptServices"
-                        [selectedLocation]="selectedLocation" cardName="card1">
-                    </app-appointment-services>
-                </div>
-            </div>
-            <div class="col-12 mgn-up-10 p-0" *ngIf="templateJson.section5.checkins">
-                <div class="col-12 p-0" *ngIf="templateJson.section5.checkinsDescription"
-                    [innerHtml]="templateJson.section5.checkinsDescription | safeHtml">
-                </div>
-                <div class="col-12 p-0" *ngIf="loaded_checkins">
-                    <app-checkin-services [terminologiesjson]="terminologiesjson" [templateJson]="templateJson"
-                        [apptSettings]="apptSettings" [accountProfile]="accountProfile"
-                        (actionPerformed)="actionPerformed($event)" [filteredServices]="checkinServices"
-                        [selectedLocation]="selectedLocation" cardName="card1">
-                    </app-checkin-services>
-                </div>
-            </div>
-            <div class="col-12 mgn-up-10 p-0" *ngIf="templateJson.section5.donations">
-                <div class="col-12 p-0" *ngIf="templateJson.section5.donationsDescription"
-                    [innerHtml]="templateJson.section5.donationsDescription | safeHtml">
-                </div>
-                <div class="col-12 p-0" *ngIf="loaded_donations">
-                    <app-donation-services [terminologiesjson]="terminologiesjson" [templateJson]="templateJson"
-                        [accountProfile]="accountProfile" [donationServices]="donationServices"
-                        (actionPerformed)="actionPerformed($event)" [selectedLocation]="selectedLocation"
-                        [cardType]="templateJson.section5.donationCard">
-                    </app-donation-services>
-                </div>
-            </div>
-            <div class="col-12 mgn-up-10 p-0" *ngIf="templateJson.section5.orders">
-                <div class="col-12 p-0" *ngIf="templateJson.section5.ordersDescripton"
-                    [innerHtml]="templateJson.section5.ordersDescripton | safeHtml">
-                </div>
-                <div class="col-12 p-0">
-                    <app-orders [terminologiesjson]="terminologiesjson" [templateJson]="templateJson"
-                        [accountProfile]="accountProfile" [selectedLocation]="selectedLocation">
-                    </app-orders>
-                </div>
-            </div>
-            <div class="col-12 mgn-up-10 p-0" *ngIf="templateJson.section5.gallery">
-                <div class="col-12 p-0  mgn-bt-20" *ngIf="templateJson.section5.galleryDescription"
-                    [innerHtml]="templateJson.section5.galleryDescription | safeHtml">
-                </div>
-                <div class="col-12 p-0" *ngIf="galleryJson && galleryJson.length > 0">
-                    <div class="gallery-container">
-                        <div class="gallery-grid">
-                            <div class="gallery-item" *ngFor="let img of image_list_popup" (click)="openGallery(img)">
-                                <img [src]="img.source" alt="Gallery image" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="clearfix"></div>
-            </div>
-        </section>
+    <a (click)="menuSelected(templateJson.section3)"
+       [ngClass]="{'active-nav' : selectedIndex === templateJson.section3?.title }"
+       *ngIf="templateJson.section3">
+      <i class="fa"
+         [ngClass]="[templateJson.section3.theme?templateJson.section3.theme:'', templateJson.section3.icon?templateJson.section3.icon:'fa-users']"></i>
+      <span>{{templateJson.section3.title | translate}}</span>
+    </a>
+
+    <a (click)="menuSelected(templateJson.section4)"
+       [ngClass]="{'active-nav' : selectedIndex === templateJson.section4?.title }"
+       *ngIf="templateJson.section4">
+      <i class="fa"
+         [ngClass]="[templateJson.section4.theme?templateJson.section4.theme:'', templateJson.section4.icon?templateJson.section4.icon:'fa-gear']"></i>
+      <span>{{templateJson.section4.title | translate}}</span>
+    </a>
+
+    <a (click)="menuSelected(templateJson.section5)"
+       [ngClass]="{'active-nav' : selectedIndex === templateJson.section5?.title }"
+       *ngIf="templateJson.section5">
+      <i class="fa"
+         [ngClass]="[templateJson.section5.theme?templateJson.section5.theme:'', templateJson.section5.icon?templateJson.section5.icon:'fa-address-book']"></i>
+      <span>{{templateJson.section5.title}}</span>
+    </a>
+  </div>
+     <!-- Optional cover -->
+  <div class="home-cover-wrap" *ngIf="templateJson?.homepagecover">
+    <img class="home-cover"
+         [src]="templateJson.homepagecover"
+         alt="Homepage cover"
+         loading="lazy"
+         decoding="async"
+         (click)="createappoinment()"/>
+  </div>
+  <!-- Section header: Upcoming Bookings -->
+  <!-- <div class="section-bar bookings-bar" *ngIf="today_totalbookings.length !== 0">
+    <div class="section-left">
+      <span class="icon-bg"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+      <span class="title">Upcoming Bookings</span>
     </div>
+    <button type="button" class="view-all" (click)="onViewAllBookings()">View all</button>
+  </div> -->
+<!--    <div id="page" class="page-pad-bottom" *ngIf="templateJson && today_totalbookings.length > 0">
+ -->  <!-- ... header/cover ... -->
+
+ <!--  <div class="cards-wrap">
+    <div class="card-cell" *ngFor="let booking of todayBookings" (click)="showBookingDetails(booking, 'today')">
+      <div class="omg-card">
+        <ng-container *ngIf="booking.apptStatus">
+          <app-appt-card [booking]="booking" type="today" [extras]="extras"
+                         (actionPerformed)="cardClicked($event)"></app-appt-card>
+        </ng-container>
+        <ng-container *ngIf="booking.waitlistStatus">
+          <app-wl-card [booking]="booking" type="today" [extras]="extras"
+                       (actionPerformed)="cardClicked($event)"></app-wl-card>
+        </ng-container>
+      </div>
+    </div>
+  </div> -->
+
+  <!-- Repeat the same pattern for future lists -->
+<!-- </div> -->
+
+  <!-- Coming soon section -->
+  <section class="section-block coming-soon-section" >
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">{{ templateJson?.section1?.comingSoon?.title || 'Coming Soon' }}</p>
+      </div>
+    </div>
+    <div class="coming-grid">
+      <article class="coming-card"
+               *ngFor="let card of comingSoonCards"
+               [style.--accent]="card.accent || '#FFE0CC'"
+               (click)="onComingSoonCard(card)">
+        <img *ngIf="card.image" class="coming-image" [src]="card.image" [alt]="card.title" loading="lazy" decoding="async">
+        <div class="coming-visual" *ngIf="!card.image">
+          <i class="fa" [ngClass]="card.icon || 'fa-paw'"></i>
+        </div>
+      </article>
+    </div>
+  </section>
+  <!-- Blogs section -->
+  <section class="section-block blog-section"
+           *ngIf="blogConfig?.showBlogs && filteredBlogs.length">
+    <div class="section-head blog-head">
+      <div>
+        <p class="eyebrow">{{ blogConfig?.blogsCaption || 'Our Blogs' }}</p>
+      </div>
+      <button type="button"
+              class="view-all"
+              *ngIf="blogConfig?.showMoreBlogs && blogConfig?.moreBlogsLink"
+              (click)="openBlog({ link: blogConfig.moreBlogsLink })">
+        {{ blogConfig?.moreBlogsCaption || 'View All' }}
+      </button>
+    </div>
+
+    <div class="blog-filters" *ngIf="blogFilters.length">
+      <button type="button"
+              class="filter-chip"
+              *ngFor="let filter of blogFilters"
+              [class.active]="activeBlogFilter === filter.key"
+              (click)="selectBlogFilter(filter.key)">
+        {{ filter.label }}
+      </button>
+    </div>
+
+    <div class="blog-list">
+      <article class="blog-row" *ngFor="let blog of filteredBlogs" (click)="openBlog(blog)">
+        <img [src]="blog.image"
+             [alt]="blog.title"
+             loading="lazy"
+             decoding="async">
+        <div class="blog-body">
+          <div class="blog-meta">
+            <span class="blog-date"><i class="fa fa-calendar"></i>{{ blog.date }}</span>
+          </div>
+          <h3>{{ blog.title.slice(0,35) }}...</h3>
+          <h2>{{ blog.description.slice(0,50) }}...</h2>
+        </div>
+      </article>
+    </div>
+    <div>
+    <span class="more_blogs" (click)="moreblogs()">View More Blogs</span>
+  </div>
+  </section>
+
 </div>
