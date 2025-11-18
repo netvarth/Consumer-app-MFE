@@ -19,7 +19,7 @@ export class PaymentSummaryComponent implements OnInit {
     public translate: TranslateService) { }
 
   ngOnInit(): void {
-    
+
   }
 
 }

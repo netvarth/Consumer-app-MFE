@@ -9,6 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
 export class ApplyCouponComponent implements OnInit {
 
   @Input() s3CouponsList;
+  @Input() theme: string | null = null;
   @Output() actionPerformed = new EventEmitter<any>();
   selectedCoupon: any;
   couponValid = true;
@@ -103,6 +104,5 @@ export class ApplyCouponComponent implements OnInit {
         this.couponError = 'Coupon invalid';
       }
     }
-    return true;
   }
 }

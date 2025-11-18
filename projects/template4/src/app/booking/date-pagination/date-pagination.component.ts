@@ -30,6 +30,7 @@ export class DatePaginationComponent implements OnInit, OnChanges {
   @Input() selected_date: string;
   @Input() availableDates: string[];
   @Input() theme: string | null = null;
+  @Input() variant: 'default' | 'compact' = 'default';
   minDate: string;
   maxDate: Date;
   default_value: string;
@@ -84,6 +85,10 @@ export class DatePaginationComponent implements OnInit, OnChanges {
     }
 
     if (changes['availableDates'] && this.displayDates.length > 0) {
+      this.updateDisplayDates(this.getSelectedZonedDate());
+    }
+
+    if (changes['variant'] && this.variant === 'compact') {
       this.updateDisplayDates(this.getSelectedZonedDate());
     }
   }
@@ -145,6 +150,9 @@ export class DatePaginationComponent implements OnInit, OnChanges {
   }
 
   selectCompactDate(isoDate: string): void {
+    if (isoDate === this.selected_date) {
+      return;
+    }
     const zoned = toZonedTime(new Date(isoDate), this.timezone);
     this.selected_date = this.dateTimeProcessor.getStringFromDate_YYYYMMDD(zoned);
     this.setDateLabels(zoned);
@@ -154,25 +162,46 @@ export class DatePaginationComponent implements OnInit, OnChanges {
   }
 
   private updateDisplayDates(baseDate: Date): void {
-    this.compactMonthLabel = format(baseDate, 'MMM yyyy');
+    if (this.variant !== 'compact') {
+      this.displayDates = [];
+      this.compactMonthLabel = '';
+      return;
+    }
 
-    this.displayDates = Array.from({ length: 7 }).map((_, index) => {
-      const current = addDays(baseDate, index);
+    this.compactMonthLabel = format(baseDate, 'MMMM yyyy');
+    const min = this.minDate ? parseISO(this.minDate) : null;
+    if (min) {
+      min.setHours(0, 0, 0, 0);
+    }
+
+    this.displayDates = [];
+    for (let offset = -2; offset <= 2; offset++) {
+      const current = addDays(baseDate, offset);
       const iso = format(current, 'yyyy-MM-dd');
-      return {
+
+      const currentStart = new Date(current);
+      currentStart.setHours(0, 0, 0, 0);
+
+      let disabled = false;
+      if (min && currentStart < min) {
+        disabled = true;
+      }
+
+      if (this.availableDates && this.availableDates.length) {
+        disabled = disabled || !this.availableDates.includes(iso);
+      }
+
+      if (iso === this.selected_date) {
+        disabled = false;
+      }
+
+      this.displayDates.push({
         iso,
         dayShort: format(current, 'EEE'),
         dayNumber: current.getDate(),
-        disabled: this.isDateDisabled(iso)
-      };
-    });
-  }
-
-  private isDateDisabled(isoDate: string): boolean {
-    if (!this.availableDates || this.availableDates.length === 0) {
-      return false;
+        disabled
+      });
     }
-    return !this.availableDates.includes(isoDate);
   }
 
   private getSelectedZonedDate(): Date {

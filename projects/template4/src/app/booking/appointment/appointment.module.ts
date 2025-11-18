@@ -9,7 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { AppointmentComponent } from './appointment.component';
 import { CheckinAddMemberModule } from '../../shared/checkin-add-member/checkin-add-member.module';
-import { CapitalizeFirstPipeModule, DateFormatPipeModule, DateTimeProcessor, FileService, I8nModule, PaymentModesModule, PaytmService, QuestionnaireModule, RazorpayService } from 'jconsumer-shared';
+import { CapitalizeFirstPipeModule, DateFormatPipeModule, DateTimeProcessor, FileService, I8nModule, PaytmService, QuestionnaireModule, RazorpayService } from 'jconsumer-shared';
 import { ConsumerEmailModule } from '../../shared/consumer-email/consumer-email.module';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -28,6 +28,8 @@ import { PaymentSummaryModule } from '../../shared/payment-summary/payment-summa
 import { PrivacyModule } from '../../shared/privacy/privacy.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { DatePaginationModule } from '../date-pagination/date-pagination.module';
+import { PaymentModesModule } from '../../shared/payment-modes/payment-modes.module';
+
 const routes: Routes = [
     { path: '', component: AppointmentComponent},
 ];
@@ -37,7 +39,7 @@ const routes: Routes = [
 
     ],
     imports: [
-        CommonModule,  
+        CommonModule,
         CheckinAddMemberModule,
         CapitalizeFirstPipeModule,
         ConsumerEmailModule,
@@ -56,7 +58,6 @@ const routes: Routes = [
         FormsModule,
         QuestionnaireModule,
         ReactiveFormsModule,
-        PaymentModesModule,
         DatePaginationModule,
         TranslateModule,
         SlotPickerModule,
@@ -68,6 +69,7 @@ const routes: Routes = [
         ServiceInfoDisplayModule,
         I8nModule,
         CouponStatusModule,
+        PaymentModesModule,
         ApplyCouponModule,
         PaymentSummaryModule,
         RouterModule.forChild(routes)

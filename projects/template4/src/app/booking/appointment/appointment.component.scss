@@ -96,6 +96,9 @@
     font-size: 12px !important;
      margin-top: 3px;
 }
+.fa-arrow-left{
+  color: #000 !important  ;
+}
 
 
 .consumerAppt {
@@ -1009,7 +1012,7 @@ mat-chip {
 
 @media (max-width: 575px) {
     .booking-card--summary .booking-card__header {
-        margin: -20px -18px 18px;
+        margin: -11px -18px 18px;
 
     }
 }
@@ -1376,7 +1379,7 @@ mat-chip {
     margin-top: 24px;
 } */
 .card1 {
-  padding: 10px;
+  /* padding: 10px; */
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.05) !important;
   border-radius: 5px;
   background: #fff;

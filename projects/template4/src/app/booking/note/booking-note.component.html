@@ -1,5 +1,5 @@
 <div class="modal-body">
-    <div class="col-md-12 col-12 col-sm-12 lnk mt-4">
+    <div class="col-md-12 col-12 col-sm-12 lnk mgn-up-20">
         {{selectedService.consumerNoteTitle}}
         <div class="form-level-settings">
             Add any other notes to the 
@@ -7,7 +7,7 @@
         </div>
     </div>
     <div class="col-md-12 col-sm-12 col-12">
-        <textarea class="form-control my-4"
+        <textarea class="form-control mgn-bt-20 mgn-up-20"
             [(ngModel)]="note" #consumernote
             [ngModelOptions]="{standalone: true}"
             (change)="handleConsumerNote(consumernote.value)"

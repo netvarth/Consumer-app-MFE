@@ -117,6 +117,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     }; // storing message to be uploaded
     @ViewChild('modal') modal; // referring modal object
     @ViewChild('closebutton') closebutton;
+    @ViewChild('paymentModeSection') paymentModeSection: ElementRef;
     action = ''; // To navigate between different actions like note/upload/add familymember/members etc
     loadedConvenientfee;
     checkPolicy = true;
@@ -232,7 +233,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                 }
                 if (params['ctime']) {
                     this.selectedTime = params['ctime']
-                }                
+                }
                 this.dateChanged = params['cur'];
                 if (params['sel_date']) {
                     this.appmtDate = params['sel_date'];
@@ -1144,8 +1145,8 @@ export class AppointmentComponent implements OnInit, OnDestroy {
             this.action = '';
         }, 500);
         return true;
-    }      
-    
+    }
+
 
     getOneTimeInfo(providerConsumerID, accountId) {
         const _this = this;
@@ -1223,7 +1224,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                     _this.appmtFor.push({ id: spConsumer.id, firstName: spConsumer.firstName, lastName: spConsumer.lastName });
                     _this.prepaymentAmount = _this.appmtFor.length * _this.selectedService.minPrePaymentAmount || 0;
                     _this.serviceCost = _this.selectedService.price;
-                    _this.setConsumerFamilyMembers(spConsumer.id).then(); // Load Family Members                    
+                    _this.setConsumerFamilyMembers(spConsumer.id).then(); // Load Family Members
                             if (!_this.questionnaireLoaded) {
                                 _this.getConsumerQuestionnaire().then(
                                     () => {
@@ -1233,7 +1234,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                                 );
                             } else {
                                 resolve(true);
-                            }                   
+                            }
                 } else {
                     resolve(true);
                 }
@@ -1291,7 +1292,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
         const _this = this;
         return new Promise(function (resolve, reject) {
             _this.familyMembers = [];
-            _this.consumerService.getMembers(_this.providerConsumerId).subscribe(            
+            _this.consumerService.getMembers(_this.providerConsumerId).subscribe(
                 (members: any) => {
                     for (const member of members) {
                         if (member.id !== parentId) {
@@ -1313,7 +1314,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
         const _this = this;
         if (spConsumer.email) {
             _this.commObj['communicationEmail'] = spConsumer.email;
-        } 
+        }
         _this.commObj['communicationPhNo'] = spConsumer.phoneNo;
         _this.commObj['communicationPhCountryCode'] = spConsumer.countryCode;
         if (spConsumer.whatsAppNum && spConsumer.whatsAppNum.number && spConsumer.whatsAppNum.number.trim() != '') {
@@ -1372,7 +1373,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                     }
                     _this.locationId = _this.scheduledAppointment.location.id;
                     _this.selectedServiceId = _this.scheduledAppointment.service.id;
-                    _this.appmtDate = _this.scheduledAppointment.appmtDate;                    
+                    _this.appmtDate = _this.scheduledAppointment.appmtDate;
                     console.log('ApptDate:', _this.appmtDate);
                     console.log("Server Date:", _this.serverDate);
                     _this.isFutureDate = _this.dateTimeProcessor.isFutureDate(_this.serverDate, _this.appmtDate);
@@ -1443,7 +1444,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     }
 
     filesSelected(event, type) {
-    
+
         let loggedUser = this.groupService.getitemFromGroupStorage('ynw-user');
         const input = event.target.files;
         let fileUploadtoS3 = [];
@@ -1483,7 +1484,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                            this.api_loading = false;
                            this.confirmButton['disabled'] = false;
                            _this.subscriptionService.sendMessage({ ttype: 'loading_stop' });
-                                                 
+
                         }
                       }
                     );
@@ -1506,7 +1507,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
         }
         console.log('addWaitlistAttachment',this.filesToUpload)
       }
-    
+
       uploadAudioVideo(data) {
         const _this = this;
         let count = 0;
@@ -1563,7 +1564,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
         console.log("This.action:", action);
         this.action = action;
     }
-    
+
     checkCouponvalidity() {
         const post_Data = this.generateInputForAppointment();
         post_Data['appmtFor'][0]['apptTime'] = this.selectedSlots[0]['time'];
@@ -1628,7 +1629,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
             }
         })
     }
-    confirmAppointment(type?) {
+        confirmAppointment(type?) {
         console.log("this.selectedService",this.selectedService);
         console.log("this.commObj",this.commObj)
         if (this.selectedService && this.selectedService.isPrePayment && (!this.commObj['communicationEmail'] || this.commObj['communicationEmail'] === '')) {
@@ -1657,7 +1658,6 @@ export class AppointmentComponent implements OnInit, OnDestroy {
             }
             this.addApptAdvancePayment(this.selectedSlots[0]);
         }
-        return true;
     }
     setConvenientFee() {
         const _this = this;
@@ -1794,7 +1794,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                 'coupons': this.selectedCoupons,
             };
             console.log(this.selectedMessage)
-            
+
             if (!this.selectedService.noDateTime) {
                 post_Data['appmtDate'] = this.appmtDate
             }
@@ -1827,7 +1827,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                     return false;
                 }
             }
-          
+
             post_Data['srvAnswers'] = this.getServiceQuestionaireAnswers();
             console.log("Posting Data request:", post_Data);
             return post_Data;
@@ -1891,24 +1891,19 @@ export class AppointmentComponent implements OnInit, OnDestroy {
             return false;
         }
         let count = 0;
+        let hasError = false;
         for (let i = 0; i < _this.selectedSlots.length; i++) {
-            console.log(i);
-            console.log(_this.selectedSlots[i]);
-            await _this.takeAppointment(_this.selectedSlots[i]).then(
-                () => {
-                    count++;
-                    if (count === _this.selectedSlots.length) {
-                        _this.paymentOperation(_this.paymentMode);
-                    }
-                    console.log("Hi I am hree");
+            const status = await _this.takeAppointment(_this.selectedSlots[i]);
+            if (status) {
+                count++;
+                if (count === _this.selectedSlots.length) {
+                    _this.paymentOperation(_this.paymentMode);
                 }
-            ).then(
-                (error) => {
-
-                }
-            );
+            } else {
+                hasError = true;
+            }
         }
-        return true;
+        return !hasError;
     }
     showSpec() {
         if (this.showmoreSpec) {
@@ -1927,7 +1922,12 @@ export class AppointmentComponent implements OnInit, OnDestroy {
             } else {
                 let post_Data = _this.generateInputForAppointment();
                 if (!_this.selectedService.date && !_this.selectedService.noDateTime) {
-                    post_Data['appmtFor'][0]['apptTime'] = appmtSlot['time'];
+                    // apply selected slot time to every attendee entry
+                    post_Data['appmtFor'] = (post_Data['appmtFor'] || []).map((person: any, idx: number) => {
+                        const cloned = { ...person };
+                        cloned['apptTime'] = appmtSlot['time'];
+                        return cloned;
+                    });
                 }
                 post_Data['schedule'] = { 'id': appmtSlot['scheduleId'] };
                 console.log("Post data:", post_Data);
@@ -1966,7 +1966,9 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                             _this.isClickedOnce = false;
                             _this.confirmButton['disabled'] = false;
                             let errorObj = _this.errorService.getApiError(error);
-                            // _this.snackbarService.openSnackBar(_this.wordProcessor.getProjectErrorMesssages(errorObj, _this.accountService.getTerminologies()), { 'panelClass': 'snackbarerror' });
+                            _this.apiError = _this.wordProcessor.getProjectErrorMesssages(errorObj, _this.sharedService.getTerminologies());
+                            _this.wordProcessor.apiErrorAutoHide(_this, error);
+                            resolve(false);
 
                         }));
                 } else {
@@ -1986,7 +1988,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                                     }
                                 }
                                 parentUid = retData['parent_uuid'];
-                            });                          
+                            });
                             _this.submitQuestionnaire(parentUid).then(
                                 () => {
                                     resolve(true);
@@ -2003,7 +2005,9 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                             _this.isClickedOnce = false;
                             _this.confirmButton['disabled'] = false;
                             let errorObj = _this.errorService.getApiError(error);
-                            // _this.snackbarService.openSnackBar(_this.wordProcessor.getProjectErrorMesssages(errorObj, _this.accountService.getTerminologies()), { 'panelClass': 'snackbarerror' });
+                            _this.apiError = _this.wordProcessor.getProjectErrorMesssages(errorObj, _this.sharedService.getTerminologies());
+                            _this.wordProcessor.apiErrorAutoHide(_this, error);
+                            resolve(false);
                         }));
                 }
             }
@@ -2022,7 +2026,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
             attachments: this.filesToUpload,
           };
         return new Promise(function (resolve, reject) {
-           
+
             _this.subs.add(_this.consumerService.addAppointmentAttachment(_this.accountId, uuid, dataToSend)
                 .subscribe(
                     () => {
@@ -2031,7 +2035,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                                 () => {
                                     resolve(true);
                                 }
-                            ); 
+                            );
                         } else {
                             let queryParams = {
                                 account_id: _this.accountId,
@@ -2435,7 +2439,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
             post_Data['attachments'] = this.filesToUpload;
           } else if (this.selectedMessage.files.length > 0 && !this.currentAttachment ) {
             post_Data['attachments'] = this.filesToUpload;
-  
+
           }
         this.subs.add(this.consumerService.rescheduleConsumerApptmnt(this.accountId, post_Data)
             .subscribe(
@@ -2616,5 +2620,32 @@ export class AppointmentComponent implements OnInit, OnDestroy {
         } else {
             this.confirmButton['disabled'] = false;
         }
+    }
+     scrollToPaymentModeSection(): void {
+        if (this.paymentModeSection && this.paymentModeSection.nativeElement) {
+            this.paymentModeSection.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }
+     getSelectedPaymentModeLabel(): string {
+        if (!this.selectedService?.isPrePayment || !this.paymentMode) {
+            return '';
+        }
+        const matchedConvenientMode = (this.convenientPaymentModes || []).find((mode: any) => {
+            return mode.mode === this.paymentMode && (mode.isInternational === undefined || mode.isInternational === this.shownonIndianModes);
+        });
+        if (matchedConvenientMode) {
+            return matchedConvenientMode.modeDisplayName || matchedConvenientMode.displayName || matchedConvenientMode.mode;
+        }
+        if (this.paymentmodes) {
+            const combinedModes = [
+                ...(this.paymentmodes.indiaPay || []),
+                ...(this.paymentmodes.internationalPay || [])
+            ];
+            const fallbackMode = combinedModes.find((mode: any) => mode.mode === this.paymentMode);
+            if (fallbackMode) {
+                return fallbackMode.modeDisplayName || fallbackMode.displayName || fallbackMode.mode;
+            }
+        }
+        return this.paymentMode;
     }
 }

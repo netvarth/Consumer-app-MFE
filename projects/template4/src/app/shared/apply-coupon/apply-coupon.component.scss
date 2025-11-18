@@ -1,39 +1,270 @@
 [class*=" icon-"]:before {
-    font-family: custom-ynw!important;
-    font-style: normal!important;
-    font-weight: 400!important;
-    font-feature-settings: normal!important;
-    font-variant: normal!important;
-    text-transform: none!important;
+    font-family: custom-ynw !important;
+    font-style: normal !important;
+    font-weight: 400 !important;
+    font-feature-settings: normal !important;
+    font-variant: normal !important;
+    text-transform: none !important;
     speak-as: none;
     line-height: 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
-.coupon-area {
-    display: flex;
-    justify-content: space-between !important;
-}
-.applybill {
-    margin-bottom: 5px!important;
-    margin-top: 15px;
-}
-.ckbx{
-    height: 20px;
-}
-.fa-tags:before {
-    content: "\f02c";
-}
-.input-group-append {
-    display: inline-flex;
-    margin-bottom: 8px;
-}
-.delteTC {
-    display: flex;
-}
-.icon-delete {
-    padding-left: 2px;
-}
+
 .icon-delete:before {
     content: "\4b";
+}
+
+.coupon-card {
+    background: #ffffff;
+    border: 1px dashed var(--coupon-card-border, rgba(255, 138, 52, 0.8));
+    border-radius: 20px;
+    padding: 20px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    box-shadow: var(--coupon-card-shadow, 0 18px 40px rgba(255, 122, 0, 0.12));
+}
+
+.coupon-card__header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.coupon-card__badge {
+    width: 48px;
+    height: 48px;
+    border-radius: 16px;
+    background: var(--coupon-card-badge-bg, rgba(255, 138, 52, 0.12));
+    color: var(--coupon-card-badge-color, #ff7a00);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+}
+
+.coupon-card__text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.coupon-card__title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.coupon-card__subtitle {
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.coupon-card__switch {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    color: var(--coupon-card-switch-color, #ff7a00);
+    cursor: pointer;
+}
+
+.coupon-card__switch input {
+    width: 18px;
+    height: 18px;
+}
+
+.coupon-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.coupon-card__input-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.coupon-card__input {
+    flex: 1;
+    background: var(--coupon-card-input-bg, #fff6ef);
+    border: 1px solid transparent;
+    border-radius: 14px;
+    padding: 12px 16px;
+    font-size: 15px;
+    transition: border 0.2s ease;
+}
+
+.coupon-card__input:focus {
+    outline: none;
+    border-color: var(--coupon-card-input-border, #ff7a00);
+    background: var(--coupon-card-input-focus-bg, #fff2e6);
+}
+
+.coupon-card__input.invalid {
+    border-color: #ef4444;
+}
+
+.coupon-card__apply {
+    background: var(--coupon-card-apply-gradient, linear-gradient(135deg, #ff7a00, #ff4d0f));
+    border: none;
+    border-radius: 12px;
+    color: #ffffff;
+    font-weight: 600;
+    padding: 12px 22px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: var(--coupon-card-apply-shadow, 0 14px 28px rgba(255, 102, 0, 0.28));
+}
+
+.coupon-card__apply:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--coupon-card-apply-shadow-hover, 0 14px 28px rgba(255, 102, 0, 0.34));
+}
+
+.coupon-card__error {
+    color: #ef4444;
+    font-size: 13px;
+}
+
+.coupon-card__footer {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--coupon-card-footer-color, #ff7a00);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.coupon-card__footer i {
+    font-size: 14px;
+}
+
+.coupon-card__list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.coupon-card__item {
+    background: var(--coupon-card-item-bg, #fff3e6);
+    border-radius: 16px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.coupon-card__item-code {
+    font-weight: 700;
+    color: var(--coupon-card-item-color, #d97706);
+    letter-spacing: 0.08em;
+}
+
+.coupon-card__item-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.coupon-card__link {
+    background: none;
+    border: none;
+    padding: 0;
+    color: #1f2937;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.coupon-card__remove {
+    background: none;
+    border: none;
+    color: #ef4444;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.coupon-card__item-instructions {
+    font-size: 13px;
+    color: #4b5563;
+    line-height: 1.4;
+}
+
+@media (max-width: 575px) {
+    .coupon-card {
+        padding: 18px 16px;
+    }
+
+    .coupon-card__input-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .coupon-card__apply {
+        width: 100%;
+    }
+}
+
+:host-context(.consumerAppt) .coupon-card {
+    padding: 16px 18px;
+    gap: 14px;
+}
+
+:host-context(.consumerAppt) .coupon-card__badge {
+    width: 42px;
+    height: 42px;
+    font-size: 18px;
+}
+
+:host-context(.consumerAppt) .coupon-card__title {
+    font-size: 17px;
+}
+
+:host-context(.consumerAppt) .coupon-card__subtitle {
+    font-size: 12px;
+}
+
+:host-context(.consumerAppt) .coupon-card__switch {
+    font-size: 12px;
+}
+
+:host-context(.consumerAppt) .coupon-card__input-group {
+    gap: 10px;
+}
+
+:host-context(.consumerAppt) .coupon-card__input {
+    padding: 10px 14px;
+    font-size: 14px;
+}
+
+:host-context(.consumerAppt) .coupon-card__apply {
+    padding: 10px 18px;
+    font-size: 14px;
+}
+
+:host-context(.consumerAppt) .coupon-card__footer {
+    font-size: 12px;
+}
+
+:host-context(.consumerAppt) .coupon-card__item {
+    padding: 12px 14px;
+    gap: 8px;
+}
+
+:host-context(.consumerAppt) .coupon-card__item-code {
+    font-size: 14px;
+}
+
+.coupons-list {
+    height: 200px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.popup-fixed {
+    position: fixed;
 }
