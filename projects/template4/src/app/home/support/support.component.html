@@ -1,57 +1,51 @@
-<section [ngClass]="theme" class="support_page">
-    <div class="card shadow d-flex flex-row p-2">
-        <div class="my-auto">
-            <a class="" (click)="goBack()"><i class="fa fa-arrow-left"></i>&emsp;</a>
-        </div>
+<section class="support-page" [ngClass]="theme">
+  <div class="support-container">
+    <button type="button" class="back-link" (click)="goBack()">
+      <i class="fa fa-arrow-left" aria-hidden="true"></i>
+      <span>Back</span>
+    </button>
+
+    <div class="support-heading">
+      <h1>Get Support</h1>
+      <p>Need help? Get in touch with us</p>
     </div>
-    <div class="clearfix"></div>
-    <div class="px-3 mgn-up-10">
-        <div class="mgn-up-20">
-            <h2 class="mgn-bt-10">Get Support</h2>
-            <p>Need help? Get in touch with us</p>
-        </div>
-        <div class="card">
-            <div class="row m-0 mgn-up-10" *ngIf="accountProfile.phoneNumbers && accountProfile.phoneNumbers.length>0">
-                <div class="col-9 no-padding">
-                    <h3>Call our support team</h3>
-                    <p class="bold mgn-up-10">
-                        <span *ngFor="let phoneNo of accountProfile.phoneNumbers"><a href="tel:{{phoneNo.instance}}"
+
+    <div class="support-card phone" *ngIf="accountProfile.phoneNumbers && accountProfile.phoneNumbers.length>0">
+      <div class="support-card__icon">
+        <i class="fa fa-phone" aria-hidden="true"></i>
+      </div>
+      <div class="support-card__content">
+        <h3>Call Our Support Team</h3>
+         <span *ngFor="let phoneNo of accountProfile.phoneNumbers"><a class="support-card__link" href="tel:{{phoneNo.instance}}"
                                 target="_blank">
                                 {{accountProfile.countryCode}} {{phoneNo.instance}}
                             </a></span>
-                    </p>
-                </div>
-                <div class="col-3"
-                    *ngIf="accountProfile&&accountProfile.phoneNumbers&&accountProfile.phoneNumbers[0]&&accountProfile.phoneNumbers[0].instance">
-                    <a href="tel:{{accountProfile.phoneNumbers[0].instance}}" target="_blank">
-                        <i class="fa fa-2x fa-phone icon-big"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-        <div class="card">
-            <div class="row m-0 mgn-up-10" *ngIf="accountProfile.emails && accountProfile.emails.length>0">
-                <div class="col-9 no-padding">
-                    <h3>Mail us your concerns</h3>
-                    <p class="mgn-up-10">We will respond within 24 hours</p>
-                </div>
-                <div class="col-3"
+        <ng-template #phoneText>
+          <span class="support-card__link">{{ phoneDisplay }}</span>
+        </ng-template>
+      </div>
+    </div>
+
+    <div class="support-card email" *ngIf="accountProfile.emails && accountProfile.emails.length>0">
+      <div class="support-card__icon">
+        <i class="fa fa-envelope-o" aria-hidden="true"></i>
+      </div>
+      <div class="support-card__content">
+        <h3>Mail Us Your Concerns</h3>
+        <p class="support-card__subtitle">We will respond within 24 hours</p>
+                 <div
                     *ngIf="accountProfile&&accountProfile.emails&&accountProfile.emails[0]&&accountProfile.emails[0].instance">
                     <a href="mailto:{{accountProfile.emails[0].instance}}" target="_blank">
-                        <i class="fa fa-2x fa-envelope-o icon-big"></i>
                     </a>
                 </div>
-                <div class="col-3"></div>
-                <div class="col-12 no-padding">
-                    <p class="smalltext bold">
-                        <span *ngFor="let email of accountProfile.emails">
-                            <a class="cut-text" href="mailto:{{email.instance}}" target="_blank">
+        <span *ngIf="supportEmailLink" class="support-card__link">{{ email.instance }}</span>
+        <span *ngFor="let email of accountProfile.emails">
+                            <a class="support-card__link" href="mailto:{{email.instance}}" target="_blank">
                                 {{email.instance}}
                             </a>
                         </span>
-                    </p>
-                </div>
-            </div>
-        </div>
+      </div>
+
     </div>
+  </div>
 </section>

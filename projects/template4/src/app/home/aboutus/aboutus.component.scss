@@ -1,146 +1,122 @@
-.cover-back {
-    padding: 0px !important;
-    height: 133px !important;
-    background-color: #1e4079;
-    box-shadow: 0px 3.98005px 3.98005px rgba(0, 0, 0, 0.05) !important;
+.aboutus--new {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #fff4eb 0%, #f7fbff 60%, #ffffff 100%);
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 32px;
 }
 
-.cover-back {
-    position: relative;
-    background-repeat: no-repeat !important;
-    background-size: 100% 100% !important;
+.aboutus__header {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
 }
 
-.cover-back::before {
-    content: "";
-    position: absolute;
-    top: 0px;
-    right: 0px;
-    bottom: 0px;
-    left: 0px;
-    background-color: rgba(0, 0, 0, 0.35);
+.aboutus__back {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: 0;
+  color: #0f172a;
+  font-size: 14px;
+  font-weight: 600;
 }
 
-h5 {
-    font-weight: 600 !important;
-    font-size: 20px;
-    padding-top: 3rem !important;
+.aboutus__back i {
+  font-size: 18px;
 }
 
-.img-responsive {
-    height: 133px !important;
+.aboutus__content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 0 16px 32px;
 }
 
-.pro-pic-img {
-    position: absolute;
-    left: 25px;
-    top: -40px;
-    z-index: 1;
+.aboutus__profile {
+  display: block;
 }
 
-h4 {
-    color: #153B5F;
-    font-weight: 600 !important;
-    font-size: 20px;
+.aboutus__card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 20px 18px;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
 }
 
-.head-text {
-    color: #fff;
-    text-align: center;
+.aboutus__card-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #101828;
+  margin-bottom: 12px;
 }
 
-.mgn-up-60 {
-    margin-top: 60px;
+.aboutus__description {
+  font-size: 14px;
+  line-height: 160%;
+  color: #475467;
+  margin: 0;
 }
 
-p {
-    font-size: 12px !important;
-    text-align: justify;
+.aboutus__contact-grid {
+  display: grid;
+  margin-bottom: 16px;
+  gap: 5px;
 }
 
-.img-thumbnail {
-    background: #f5f5f5 !important;
-    box-shadow: 0px 3.85185px 3.85185px rgba(0, 0, 0, 0.25) !important;
-    border: 6px solid #ffffff !important;
-    border-radius: 32px !important;
-    width: 104px !important;
-    height: 104px !important;
+.aboutus__contact-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: #f9fafb;
+  color: #1f2937;
+  font-size: 13px;
+  font-weight: 500;
 }
 
-.question-header {
-    color: #393938;
-    font-weight: 500;
-    font-size: 16px;
-    padding-top: 16px !important;
-    padding-right: 29px !important;
+.aboutus__contact-icon {
+  color: #ff6900;
 }
 
-.question-outer .question-value1 {
-    color: #525252 !important;
-    font-weight: 300 !important;
-    font-size: 13px !important;
+.aboutus__social {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.about {
-    color: #525252 !important;
-    font-weight: 300 !important;
-    font-size: 13px !important;
+.aboutus__social-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #101828;
 }
 
-ul {
-    padding-left: 0;
+.aboutus__social-icons {
+  display: flex;
+  gap: 12px;
 }
 
-.socialmedia li a i.fa {
-    font-size: 20px !important;
+.aboutus__social-link {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #eef2ff;
+  color: #4f46e5;
+  font-size: 16px;
 }
 
-.socialmedia li {
-    margin-right: 5px;
-}
+@media (min-width: 768px) {
+  .aboutus__content {
+    padding: 0 32px 48px;
+  }
 
-.fa {
-    color: black;
-    padding: 5px;
-    border-radius: 4.65319px !important;
-}
-
-.smalltext {
-    color: black;
-    font-size: 10.77px !important;
-}
-
-.specialities-header {
-    font-weight: 400;
-    font-size: 18.3405px;
-    color: #393938;
-}
-
-.cut-text {
-    text-overflow: ellipsis;
-    overflow: hidden;
-    width: 175px;
-    white-space: nowrap;
-}
-
-.pop-box-cont {
-    font-weight: 400;
-    font-size: 12px;
-    line-height: 18px;
-    color: #393938;
-    background: #ECF4FC;
-    border-radius: 7.93126px;
-    width: fit-content;
-    margin: 4px 4px 4px 0 !important;
-    padding: 4px !important;
-}
-
-.details {
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.my-auto {
-    margin-top: auto;
-    margin-bottom: auto;
+  .aboutus__card {
+    padding: 24px 24px;
+    border-radius: 24px;
+  }
 }
