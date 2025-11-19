@@ -1,7 +1,8 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { CalendarOptions, GoogleCalendar } from 'datebook'
 import { BookingService, DateTimeProcessor, Messages, projectConstantsLocal, SharedService, WordProcessor } from 'jconsumer-shared';
+import { MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
   selector: 'app-appt-card',
@@ -16,6 +17,7 @@ export class ApptCardComponent implements OnInit, OnChanges {
   @Output() actionPerformed = new EventEmitter<any>();
   @Input() smallDevice;
   @Input() history;
+  @ViewChild(MatMenuTrigger) menuTrigger: MatMenuTrigger;
 
   send_msg_cap = Messages.SEND_MSG_CAP;
   rate_visit = Messages.RATE_VISIT;
@@ -83,16 +85,20 @@ export class ApptCardComponent implements OnInit, OnChanges {
     return this.statusDisplay[status];
   }
   historyDetails(history){
-    if (history.releasedQnr && history.releasedQnr.length > 0 && history.waitlistStatus !== 'cancelled') {
+    const waitlistStatus = (history?.waitlistStatus || '').toLowerCase();
+    const billStatus = (history?.billStatus || '').toLowerCase();
+    const paymentStatus = (history?.paymentStatus || '').toLowerCase();
+
+    if (history.releasedQnr && history.releasedQnr.length > 0 && waitlistStatus !== 'cancelled') {
       const releasedQnrs = history.releasedQnr.filter(qnr => qnr.status === 'released');
       if (releasedQnrs.length > 0) {
         this.showQnrBtn = true;
       }
     }
-    if ((history.waitlistStatus == 'checkedIn' || history.waitlistStatus === 'arrived') && this.type!=='previous') {
+    if ((waitlistStatus === 'checkedin' || waitlistStatus === 'arrived') && this.type!=='previous') {
       this.showRescheduleBtn = true;
     }
-    if ((history.waitlistStatus == 'checkedIn' || history.waitlistStatus == 'arrived' || history.waitlistStatus == 'prepaymentPending') && this.type!=='previous') {
+    if ((waitlistStatus === 'checkedin' || waitlistStatus === 'arrived' || waitlistStatus === 'prepaymentpending') && this.type!=='previous') {
       this.showCancelBtn = true;
     }
     if (history.questionnaire && history.questionnaire.questionAnswers && history.questionnaire.questionAnswers.length > 0) {
@@ -101,18 +107,18 @@ export class ApptCardComponent implements OnInit, OnChanges {
     if (history.prescShared) {
       this.showViewPrescritionBtn = true;
     }
-    if (((history.waitlistStatus == 'checkedIn' || 'prepaymentPending') && (history.jaldeeWaitlistDistanceTime &&
-      history.service.livetrack && history.waitlistStatus === 'checkedIn')) && this.type!=='previous') {
+    if (((waitlistStatus === 'checkedin' || waitlistStatus === 'prepaymentpending') && (history.jaldeeWaitlistDistanceTime &&
+      history.service.livetrack && waitlistStatus === 'checkedin')) && this.type!=='previous') {
       this.showLiveTrackBtn = true;
     }
-    if ((!history.jaldeeWaitlistDistanceTime && history.service.livetrack && history.waitlistStatus === 'checkedIn') && this.type!=='previous') {
+    if ((!history.jaldeeWaitlistDistanceTime && history.service.livetrack && waitlistStatus === 'checkedin') && this.type!=='previous') {
       this.showLiveTrackIdBtn = true;
     }
-    if ((history.service.serviceType === 'virtualService' && history.waitlistStatus !== 'done'
-      && history.waitlistStatus !== 'cancelled')  && this.type!=='previous') {
+    if ((history.service.serviceType === 'virtualService' && waitlistStatus !== 'done'
+      && waitlistStatus !== 'cancelled')  && this.type!=='previous') {
       this.showMeetingDetailsBtn = true;
     }
-    if (history.waitlistStatus == 'done') {
+    if (waitlistStatus === 'done') {
       this.showRateBtn = true;
     }
     if (history.hasAttachment) {
@@ -142,13 +148,13 @@ export class ApptCardComponent implements OnInit, OnChanges {
         this.videoBtnCaption = 'Re-join Video Consultation';
       }
     }
-    if (history.amountDue > 0 && (history.billViewStatus == 'Show') && history.waitlistStatus != 'cancelled' && history.billStatus != 'Settled') {
+    if (history.amountDue > 0 && (history.billViewStatus == 'Show') && waitlistStatus != 'cancelled' && billStatus != 'settled') {
       this.showPayBtn = true;
     }
-    if ((history.apptStatus != 'cancelled' && history.billStatus != 'Settled')) {
+    if ((waitlistStatus != 'cancelled' && billStatus != 'settled')) {
       this.showInvoiceBtn = true;
     }
-    if (history.billViewStatus == 'Show' && ((!(history.amountDue > 0) && history.waitlistStatus != 'cancelled') || (history.waitlistStatus === 'cancelled' && history.paymentStatus !== 'NotPaid'))) {
+    if (history.billViewStatus == 'Show' && ((!(history.amountDue > 0) && waitlistStatus != 'cancelled') || (waitlistStatus === 'cancelled' && paymentStatus !== 'notpaid'))) {
       this.showReceiptBtn = true;
     }
     if (history.amountPaid) {
@@ -157,26 +163,30 @@ export class ApptCardComponent implements OnInit, OnChanges {
     // this.getServiceGallery(this.history)
   }
   bookingDetails(){
-    if (this.booking && this.booking.releasedQnr && this.booking.releasedQnr.length > 0 && this.booking.apptStatus !== 'Cancelled') {
+    const apptStatus = (this.booking?.apptStatus || '').toLowerCase();
+    const billStatus = (this.booking?.billStatus || '').toLowerCase();
+    const paymentStatus = (this.booking?.paymentStatus || '').toLowerCase();
+
+    if (this.booking && this.booking.releasedQnr && this.booking.releasedQnr.length > 0 && apptStatus !== 'cancelled') {
       const releasedQnrs = this.booking.releasedQnr.filter(qnr => qnr.status === 'released');
       if (releasedQnrs.length > 0) {
         this.showQnrBtn = true;
       }
     }
-    if (this.booking && (this.booking.apptStatus == 'Confirmed' || this.booking.apptStatus == 'Arrived')) {
+    if (apptStatus === 'confirmed' || apptStatus === 'arrived') {
       this.showRescheduleBtn = true;
     }
-    if (this.booking && (this.booking.apptStatus == 'Confirmed' || this.booking.apptStatus == 'Arrived' || this.booking.apptStatus == 'prepaymentPending')) {
+    if (apptStatus === 'confirmed' || apptStatus === 'arrived' || apptStatus === 'prepaymentpending') {
       this.showCancelBtn = true;
     }
     if (this.booking.hasAttachment) {
       this.showViewAttachBtn = true;
     }
-    if (this.booking && this.booking.apptStatus == 'Completed') {
+    if (apptStatus === 'completed') {
       this.showRateBtn = true;
     }
-    if (this.booking && this.booking.service.serviceType === 'virtualService' && this.booking.apptStatus !== 'Completed'
-      && this.booking.apptStatus !== 'Cancelled') {
+    if (this.booking && this.booking.service.serviceType === 'virtualService' && apptStatus !== 'completed'
+      && apptStatus !== 'cancelled') {
       this.showMeetingDetailsBtn = true;
     }
     if (this.booking.questionnaire && this.booking.questionnaire.questionAnswers &&
@@ -186,16 +196,16 @@ export class ApptCardComponent implements OnInit, OnChanges {
     if (this.type !== 'future' && this.booking.prescShared) {
       this.showViewPrescritionBtn = true;
     }
-    if (this.type !== 'future' && !this.booking.jaldeeApptDistanceTime && this.booking && this.booking.service.livetrack && this.booking.apptStatus === 'Confirmed') {
+    if (this.type !== 'future' && !this.booking.jaldeeApptDistanceTime && this.booking && this.booking.service.livetrack && apptStatus === 'confirmed') {
       this.showLiveTrackIdBtn = true;
     }
-    if (this.type !== 'future' && (this.booking.apptStatus == 'Confirmed' || 'prepaymentPending')
-      && (this.booking.jaldeeApptDistanceTime && this.booking && this.booking.service.livetrack && this.booking.apptStatus === 'Confirmed')) {
+    if (this.type !== 'future' && (apptStatus === 'confirmed' || apptStatus === 'prepaymentpending')
+      && (this.booking.jaldeeApptDistanceTime && this.booking && this.booking.service.livetrack && apptStatus === 'confirmed')) {
       this.showLiveTrackBtn = true;
     }
     if (this.type !== 'future' && (this.booking.videoCallButton && this.booking.videoCallButton==='ENABLED') && this.booking && this.booking.service.serviceType === 'virtualService' && this.booking.service.virtualCallingModes.length > 0 &&
       this.booking.service.virtualCallingModes[0].callingMode === 'VideoCall' &&
-      (this.booking.apptStatus === 'Started' || this.booking.apptStatus === 'Arrived' || this.booking.apptStatus === 'Confirmed')) {
+      (apptStatus === 'started' || apptStatus === 'arrived' || apptStatus === 'confirmed')) {
       this.showJoinJaldeeVideoBtn = true;
       this.showJoinOtherVideoBtn = false;
       this.videoBtnCaption = 'Join Video Consultation';
@@ -205,7 +215,7 @@ export class ApptCardComponent implements OnInit, OnChanges {
     }
     if (this.type !== 'future' && this.booking.videoCallButton && this.booking.videoCallButton==='ENABLED' && this.booking.service.serviceType === 'virtualService' && this.booking.service.virtualCallingModes.length > 0 &&
       (this.booking && this.booking.service.virtualCallingModes[0].callingMode === 'Zoom' || this.booking.service.virtualCallingModes[0].callingMode === 'GoogleMeet')
-      && (this.booking.apptStatus === 'Started' || this.booking.apptStatus === 'Arrived' || this.booking.apptStatus === 'Confirmed')) {
+      && (apptStatus === 'started' || apptStatus === 'arrived' || apptStatus === 'confirmed')) {
         this.showJoinJaldeeVideoBtn = false;
       this.showJoinOtherVideoBtn = true;
       this.videoBtnCaption = 'Join Video Consultation';
@@ -213,16 +223,16 @@ export class ApptCardComponent implements OnInit, OnChanges {
         this.videoBtnCaption = 'Re-join Video Consultation';
       }
     }
-    if(this.booking.amountDue>0 && (this.booking.billViewStatus=='Show') && this.booking.apptStatus != 'Cancelled' 
-    && this.booking.apptStatus != 'Rejected' && this.booking.billStatus!='Settled'){
-      this.showPayBtn = true
+    if(this.booking.amountDue>0 && (this.booking.billViewStatus=='Show') && apptStatus !== 'cancelled' 
+    && apptStatus !== 'rejected' && billStatus!=='settled'){
+      this.showPayBtn = true;
     }
-    if ((this.booking.apptStatus != 'cancelled' && this.booking.billStatus != 'Settled')) {
+    if (apptStatus !== 'cancelled' && billStatus !== 'settled') {
       this.showInvoiceBtn = true;
     }
     if (this.booking.billViewStatus == 'Show' && 
-    ((!(this.booking.amountDue>0) && this.booking.apptStatus != 'Cancelled' && this.booking.apptStatus != 'Rejected')
-     || (this.booking.apptStatus === 'Cancelled' || this.booking.apptStatus === 'Rejected' && this.booking.paymentStatus !== 'NotPaid'))){
+    ((!(this.booking.amountDue>0) && apptStatus !== 'cancelled' && apptStatus !== 'rejected')
+     || (apptStatus === 'cancelled' || apptStatus === 'rejected' && paymentStatus !== 'notpaid'))){
       this.showReceiptBtn = true;
     }
     if(this.booking.amountPaid){
@@ -253,6 +263,7 @@ export class ApptCardComponent implements OnInit, OnChanges {
   }
   cardActionPerformed(type, action, booking, event) {
     event.stopPropagation();
+    this.menuTrigger?.closeMenu(); // keep menu from staying open when triggering actions
     const actionObj = {};
     actionObj['type'] = type;
     actionObj['action'] = action;

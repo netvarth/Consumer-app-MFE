@@ -321,12 +321,12 @@ export class MyBookingsComponent implements OnInit, OnDestroy {
 
   bookingDetails(booking) {
     console.log("booking" + booking);
-    
-    let bookingID = booking.apptStatus ? booking.uid : booking.ynwUuid;
+
+    let bookingID = booking.apptStatus ? booking.uid : booking.uid;
     this.router.navigate([this.sharedService.getRouteID(), 'booking', bookingID]);
   }
   rescheduleBooking(booking) {
-    let bookingID = booking.apptStatus ? booking.uid : booking.ynwUuid;
+    let bookingID = booking.apptStatus ? booking.uid : booking.uid;
     let queryParams = {
       uuid: bookingID,
       type: 'reschedule',
@@ -338,7 +338,7 @@ export class MyBookingsComponent implements OnInit, OnDestroy {
     this.router.navigate([this.sharedService.getRouteID(), 'booking'], navigationExtras);
   }
   addWaitlistMessage(booking, type?) {
-    let bookingID = booking.apptStatus ? booking.uid : booking.ynwUuid;
+    let bookingID = booking.apptStatus ? booking.uid : booking.uid;
     const pass_ob = {};
     pass_ob['source'] = 'consumer-waitlist';
     pass_ob['user_id'] = booking.providerAccount.id;
@@ -431,7 +431,7 @@ export class MyBookingsComponent implements OnInit, OnDestroy {
     });
   }
   gotoQuestionnaire(booking) {
-    let bookingID = booking.apptStatus ? booking.uid : booking.ynwUuid;
+    let bookingID = booking.apptStatus ? booking.uid : booking.uid;
     let bookingType = booking.apptStatus ? 'consAppt' : 'consCheckin';
     const navigationExtras: NavigationExtras = {
       queryParams: {
@@ -443,7 +443,7 @@ export class MyBookingsComponent implements OnInit, OnDestroy {
     this.router.navigate([this.sharedService.getRouteID(), 'questionnaire'], navigationExtras);
   }
   sendAttachment(booking, bookingType) {
-    let bookingID = booking.apptStatus ? booking.uid : booking.ynwUuid;
+    let bookingID = booking.apptStatus ? booking.uid : booking.uid;
     this.galleryDialog = this.dialog.open(GalleryImportComponent, {
       width: '50%',
       panelClass: ['popup-class', 'commonpopupmainclass'],
@@ -468,7 +468,7 @@ export class MyBookingsComponent implements OnInit, OnDestroy {
             resolve(attachments);
           }, (error) => { reject(error) });
       } else {
-        _this.bookingService.getWaitlistAttachmentsByUuid(booking.ynwUuid, booking.providerAccount.id).subscribe(
+        _this.bookingService.getWaitlistAttachmentsByUuid(booking.uid, booking.providerAccount.id).subscribe(
           (attachments: any) => {
             resolve(attachments);
           }, (error) => { reject(error) });
@@ -529,7 +529,7 @@ export class MyBookingsComponent implements OnInit, OnDestroy {
   }
   viewBill(booking, event) {
     event.stopPropagation();
-    let bookingID = booking.apptStatus ? booking.uid : booking.ynwUuid;
+    let bookingID = booking.apptStatus ? booking.uid : booking.uid;
     let qParams = {
       paidInfo: false
     }

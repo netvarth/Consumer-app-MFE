@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -55,11 +55,17 @@ export class RootComponent implements OnInit, OnDestroy {
     'icons': true,
     'more': true
   };
+  today_totalbookings: any[] = [];
+  todayBookings: any[] = [];
+  private todaysAppointments: any[] = [];
+  private todaysWaitlists: any[] = [];
   bgCover: any;
   serverDate: any;
   callback: any;
   accountId: any;
   users_loaded: boolean;
+  smallDevice: boolean;
+  bookingsLimit = 2;
   blogs: any = [];
   videos: any = [];
   image_list_popup: any = [];
@@ -97,6 +103,14 @@ export class RootComponent implements OnInit, OnDestroy {
         }));
     }));
   }
+   @HostListener('window:resize', ['$event'])
+    onResize() {
+      if (window.innerWidth <= 767) {
+        this.smallDevice = true;
+      } else {
+        this.smallDevice = false;
+      }
+    }
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
   }
@@ -140,9 +154,64 @@ export class RootComponent implements OnInit, OnDestroy {
     }
     this.selectedIndex = this.templateJson.section1.title;
     this.changeLocation(this.accountService.getActiveLocation());
+    this.loadTodayBookings();
     if (this.callback === 'communicate') {
       this.communicateHandler();
     }
+  }
+  private resetTodayBookings() {
+    this.todaysAppointments = [];
+    this.todaysWaitlists = [];
+    this.today_totalbookings = [];
+    this.todayBookings = [];
+  }
+  private loadTodayBookings() {
+    this.authService.goThroughLogin().then((status) => {
+      if (status) {
+        this.fetchTodayAppointments();
+      } else {
+        this.resetTodayBookings();
+      }
+    }).catch(() => {
+      this.resetTodayBookings();
+    });
+  }
+  private fetchTodayAppointments() {
+    const params: any = { 'apptStatus-neq': 'failed,prepaymentPending,Cancelled,Rejected' };
+    if (this.accountId) {
+      params['account-eq'] = this.accountId;
+    }
+    const sub = this.consumerService.getAppointmentToday(params).subscribe((appointments) => {
+      this.todaysAppointments = Array.isArray(appointments) ? appointments : [];
+      this.fetchTodayWaitlists();
+    }, () => {
+      this.todaysAppointments = [];
+      this.fetchTodayWaitlists();
+    });
+    this.subscriptions.add(sub);
+  }
+  private fetchTodayWaitlists() {
+    const today = this.serverDate ? new Date(this.serverDate.split(' ')[0]) : new Date();
+    const params: any = {
+      'waitlistStatus-neq': 'failed,prepaymentPending,cancelled',
+      'date-eq': this.dateTimeProcessor.transformToYMDFormat(today)
+    };
+    if (this.accountId) {
+      params['account-eq'] = this.accountId;
+    }
+    const sub = this.consumerService.getWaitlist(params).subscribe((waitlists) => {
+      this.todaysWaitlists = Array.isArray(waitlists) ? waitlists : [];
+      this.mergeTodayBookings();
+    }, () => {
+      this.todaysWaitlists = [];
+      this.mergeTodayBookings();
+    });
+    this.subscriptions.add(sub);
+  }
+  private mergeTodayBookings() {
+    const combined = [...(this.todaysAppointments || []), ...(this.todaysWaitlists || [])];
+    this.today_totalbookings = combined;
+    this.todayBookings = combined.slice(0, 3);
   }
 
   setDepartments(depts) {
@@ -214,6 +283,19 @@ export class RootComponent implements OnInit, OnDestroy {
     } else if (action.type === 'menu') {
       this.actionPerformed(action);
     }
+  }
+
+  onViewAllBookings() {
+    this.router.navigate([this.sharedService.getRouteID(), 'dashboard', 'bookings']);
+  }
+
+  showBookingDetails(_booking, _source) {
+    this.onViewAllBookings();
+  }
+
+  cardClicked(actionObj) {
+    actionObj?.event?.stopPropagation?.();
+    this.onViewAllBookings();
   }
   setBasicProfile() {
     this.basicProfile['theme'] = this.theme;
@@ -794,6 +876,6 @@ export class RootComponent implements OnInit, OnDestroy {
   selectBlogFilter(filterKey: string) {
     this.applyBlogFilter(filterKey);
   }
-  
+
 
 }

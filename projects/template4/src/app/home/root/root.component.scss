@@ -57,6 +57,38 @@
   gap:12px;
 }
 
+.booking-cards{
+  padding:0 16px;
+}
+
+.booking-cards .section-bar{
+  margin-bottom:12px;
+}
+
+.booking-cards__grid{
+  width:100%;
+  padding:0;
+  box-sizing:border-box;
+}
+
+/* .booking-cards__grid .card-cell{
+  width:100%;
+  max-width:480px;
+  margin:0 auto;
+} */
+
+/* .booking-cards__grid .card-cell > div{
+  width:100%;
+  min-width:0;
+} */
+
+.booking-card-shell{
+  width:100%;
+  max-width:360px;
+  margin:0 auto;
+  box-sizing:border-box;
+}
+
 /* Each “cell” stretches full width */
 .card-cell{
   display:flex; align-items:stretch;
@@ -140,8 +172,17 @@
     padding:16px !important;
     color:var(--foreground, var(--_fg)) !important;
     width:100% !important;
-
+    max-width:100% !important;
+   /*  box-sizing:border-box !important; */
   }
+ /*  .booking-cards__grid .omg-card{
+    margin:0 auto !important;
+  }
+  .booking-card-shell .omg-card{
+    margin:0 !important;
+    width:100% !important;
+    max-width:100% !important;
+  } */
 
   .omg-top{ display:flex !important; align-items:flex-start !important; gap:8px !important; }
   .omg-top .omg-notice{
@@ -209,6 +250,7 @@
     background:transparent !important; border:1px solid #FF5C1A !important; color:#FF5C1A !important;
     height:33px !important; padding:0 16px !important; border-radius:10px !important; font-weight:700 !important;
   }
+
 
   .omg-foot{ display:flex !important; justify-content:space-between !important; align-items:center !important; gap:12px !important; }
   .paid{ font-size:13px !important; color:var(--_fg) !important; }
@@ -544,4 +586,8 @@
   color:#FF5C1A;
   text-decoration: underline;
   padding-left: 10px;
+}
+.bookcard{
+  padding-left: 10px;
+  padding-right: 10px;
 }

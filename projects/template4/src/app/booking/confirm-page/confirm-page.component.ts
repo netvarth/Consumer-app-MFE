@@ -7,6 +7,7 @@ import {
   LocalStorageService,
   projectConstantsLocal,
   SharedService,
+  SubscriptionService,
   WordProcessor
 } from 'jconsumer-shared';
 import { Subscription } from 'rxjs';
@@ -37,6 +38,7 @@ export class ConfirmPageComponent implements OnInit, OnDestroy {
   selectedService: any = [];
   apptServices: any;
   subscriptions: Subscription = new Subscription();
+  infoParams: any = {};
 
   booking = {
     status: null,
@@ -62,6 +64,8 @@ export class ConfirmPageComponent implements OnInit, OnDestroy {
   }
   accountID: any;
   cdnPath: string = '';
+  storeEncId: any;
+  isSessionCart: any;
   constructor(
     public route: ActivatedRoute,
     public router: Router,
@@ -69,7 +73,8 @@ export class ConfirmPageComponent implements OnInit, OnDestroy {
     private lStorageService: LocalStorageService,
     private dateTimeProcessor: DateTimeProcessor,
     private consumerService: ConsumerService,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    private subscriptionService: SubscriptionService,
   ) {
     this.cdnPath = this.sharedService.getCDNPath();
     const subs = this.route.queryParams.subscribe(qparams => {
@@ -82,6 +87,7 @@ export class ConfirmPageComponent implements OnInit, OnDestroy {
       }
       if (qparams['type']) {
         this.booking['rescheduleBooking'] = true;
+        this.type = qparams['type'];
       }
       if (qparams['uuid']) {
         this.initBookingAttributes(qparams['uuid']);
@@ -94,6 +100,8 @@ export class ConfirmPageComponent implements OnInit, OnDestroy {
     this.getBookingInfo().then((booking: any) => {
       _this.booking['info'] = booking;
       _this.booking['service'] = booking['service'];
+      _this.appointment = booking;
+      _this.infoParams = booking || {};
       _this.setServiceGallery();
       if (_this.booking['isAppointment']) {
         _this.booking['status'] = booking['apptStatus'];
@@ -287,7 +295,7 @@ export class ConfirmPageComponent implements OnInit, OnDestroy {
     console.log(document.getElementById('scriptContainer'))
     document.getElementById('scriptContainer').appendChild(script_tag);
   }
-  ngOnInit() {    
+  ngOnInit() {
     this.accountConfig = this.sharedService.getAccountConfig();
     if (this.accountConfig && this.accountConfig['theme']) {
       this.theme = this.accountConfig['theme'];
@@ -297,7 +305,7 @@ export class ConfirmPageComponent implements OnInit, OnDestroy {
     this.accountID = this.sharedService.getAccountID();
     if (this.accountID) {
       this.loadBookingInfo();
-    }    
+    }
   }
 
   ngOnDestroy(): void {
@@ -305,22 +313,23 @@ export class ConfirmPageComponent implements OnInit, OnDestroy {
       this.subscriptions.unsubscribe();
     }
   }
-  gotoActiveHome() {
-    // Custom Website ****************************************
+   gotoActiveHome(isLoggedOut?: boolean) {
     const source = this.lStorageService.getitemfromLocalStorage('source');
-    let isDirectBooking = this.lStorageService.getitemfromLocalStorage('direct_booking');
-    let isAccountRedirect = false;
-    if (this.accountConfig && this.accountConfig['customWebsite']['bookingRedirect']) {
-      isAccountRedirect = true;
-    }
     console.log("Source:", source);
-    if (source && isDirectBooking && isAccountRedirect) {
+    if (source) {
       this.lStorageService.removeitemfromLocalStorage('source');
       this.lStorageService.removeitemfromLocalStorage('reqFrom');
-      this.lStorageService.removeitemfromLocalStorage('direct_booking');
       window.location.href = source;
     } else {
-      this.router.navigate([this.sharedService.getRouteID(), 'dashboard']);
+      // if (!this.restrictNavigation) {
+      this.lStorageService.setitemonLocalStorage('storeEncId', this.storeEncId);
+      this.lStorageService.setitemonLocalStorage('isSessionCart', this.isSessionCart);
+      this.router.navigate([this.sharedService.getRouteID()]);
+      // Inform Home to refresh state after navigating home
+      // this.subscriptionService.sendMessage({ ttype: 'refresh', value: 'refresh' });
+      if (isLoggedOut) {
+        this.subscriptionService.sendMessage({ ttype: 'logout', value: 0 });
+      }
     }
   }
   getSingleTime(slot) {
@@ -336,7 +345,7 @@ export class ConfirmPageComponent implements OnInit, OnDestroy {
     if(this.booking['isAppointment']) {
       services = this.sharedService.getJson(account['apptServices']);
     } else {
-      services = this.sharedService.getJson(account['services']);      
+      services = this.sharedService.getJson(account['services']);
     }
     let activeService = services.filter(service => ((service.id == this.booking['service']['id'])));
     if (activeService && activeService[0] && activeService[0].servicegallery && activeService[0].servicegallery.length > 0) {
@@ -345,5 +354,8 @@ export class ConfirmPageComponent implements OnInit, OnDestroy {
   }
   okClicked() {
     this.gotoActiveHome();
+  }
+  okClick() {
+    this.router.navigate([this.sharedService.getRouteID(), 'dashboard', 'bookings']);
   }
 }

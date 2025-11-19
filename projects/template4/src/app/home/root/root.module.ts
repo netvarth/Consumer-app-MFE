@@ -18,6 +18,7 @@ import { CheckinServicesModule } from './services/checkin/checkin-services.modul
 import { BasicProfileModule } from './basic-profile/basic-profile.module';
 import { QuickActionsModule } from './quick-actions/quick-actions.module';
 import { AdvancedProfileModule } from '../../shared/profile/advanced-profile/advanced-profile.module';
+import { ApptCardModule } from '../../shared/appt-card/appt-card.module';
 
 const routes: Routes = [
   { path: '', component: RootComponent }
@@ -45,6 +46,7 @@ const routes: Routes = [
     BasicProfileNewModule,
     QuickActionsModule,
     AdvancedProfileModule,
+    ApptCardModule,
     RouterModule.forChild(routes)
   ],
   exports: [RootComponent],
