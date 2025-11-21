@@ -195,7 +195,7 @@ export class TeleBookingService {
     //     const url = 'consumer/orders/enc/' + encId;
     //     return this.servicemeta.httpGet(url);
     // }
-    
+
     getTeleCheckinById(encId, source, accountId?) {
         let params = '';
         if (source === 'consumer') {
@@ -356,6 +356,10 @@ export class TeleBookingService {
         }
         console.log("Input Phone:", phNo);
 
+    }
+     getInvoiceDetailsByuuid(accId, uuid) {
+        const url = 'consumer/booking/invoice/' + accId + '/booking/' + uuid;
+        return this.servicemeta.httpGet(url);
     }
 }
 

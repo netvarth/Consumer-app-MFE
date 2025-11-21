@@ -149,7 +149,7 @@ export class BillComponent implements OnInit, OnDestroy {
         if (window.innerWidth <= 500) {
             this.smallmobileDevice = true;
             this.tabDeviceDisplay = false;
-            this.desktopDeviceDisplay = false;            
+            this.desktopDeviceDisplay = false;
         } else if (window.innerWidth > 500 && window.innerWidth <= 767) {
             this.smallmobileDevice = false;
             this.tabDeviceDisplay = true;
@@ -217,6 +217,7 @@ export class BillComponent implements OnInit, OnDestroy {
     loadInvoice() {
         const _this=this;
         if (_this.booking['isInvoice']) {
+          alert('22')
             _this.getInvoice().then((invoice) => {
                 _this.booking['invoice'] = invoice;
                 _this.setInvoiceExtras(invoice);
@@ -239,9 +240,11 @@ export class BillComponent implements OnInit, OnDestroy {
     }
 
     setInvoiceExtras(invoice) {
+      alert('1111')
+      console.log(invoice)
         if (invoice.providerData) {
             this.booking['invoiceExtras']['providerName'] = (invoice.providerData?.businessName? invoice.providerData?.businessName : (invoice.providerData?.firstName + ' ' + invoice.providerData?.lastName));
-        }                
+        }
         this.booking['invoiceExtras']['businessName'] = this.booking['info'].providerAccount['businessName'];
         if (invoice.amountDue < 0) {
             this.booking['invoiceExtras']['refundAmount'] = Math.abs(invoice.amountDue);
@@ -263,8 +266,8 @@ export class BillComponent implements OnInit, OnDestroy {
             this.booking['invoiceExtras']['dueDate'] = invoice.dueDate;
             this.booking['invoiceExtras']['_dueDate'] = this.dateFormat.transformToMonthlyDate(invoice.dueDate);
         }
-        if (invoice.hasOwnProperty('invoiceId')) {
-            this.booking['invoiceExtras']['billNumber'] = invoice.invoiceId;
+        if (invoice.hasOwnProperty('invoiceNUm')) {
+            this.booking['invoiceExtras']['billNumber'] = invoice.invoiceNUm;
         }
         if (invoice.discounts && invoice.discounts.length > 0) {
             this.booking['invoiceExtras']['discounts'] = invoice.discounts;
@@ -491,7 +494,7 @@ export class BillComponent implements OnInit, OnDestroy {
     payWithPayTM(pData: any, accountId: any) {
         this.isClickedOnce = true;
         this.loadingPaytm = true;
-        pData.paymentMode = this.selectedPaymentMode;        
+        pData.paymentMode = this.selectedPaymentMode;
         this.paytmService.initializePayment(pData, accountId, this);
     }
     closeloading() {

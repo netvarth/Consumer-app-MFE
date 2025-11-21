@@ -23,6 +23,7 @@ import { RateServicePopupComponent } from '../../../shared/rate-service-popup/ra
 import { AttachmentPopupComponent } from '../../../shared/attachment-popup/attachment-popup.component';
 import { AddInboxMessagesComponent } from '../../../shared/add-inbox-messages/add-inbox-messages.component';
 import { MeetingDetailsComponent } from '../../../shared/meeting-details/meeting-details.component';
+import { TeleBookingService } from '../../../shared/tele-bookings-service';
 
 @Component({
   selector: 'app-my-bookings',
@@ -79,7 +80,8 @@ export class MyBookingsComponent implements OnInit, OnDestroy {
     private groupService: GroupStorageService,
     private consumerService: ConsumerService,
     private galleryService: GalleryService,
-    private lStorageService: LocalStorageService
+    private lStorageService: LocalStorageService,
+     private teleService : TeleBookingService
   ) {
     this.cdnPath = this.sharedService.getCDNPath();
     this.moment = this.dateTimeProcessor.getMoment();
@@ -500,9 +502,9 @@ export class MyBookingsComponent implements OnInit, OnDestroy {
   providerDetail() {
     this.router.navigate([this.sharedService.getRouteID()]);
   }
-  getBookingInvoices(bookingID) {
+  getBookingInvoices(accId,bookingID) {
     return new Promise((resolve, reject) => {
-      this.consumerService.getInvoiceDetailsByuuid(bookingID).subscribe(
+      this.teleService.getInvoiceDetailsByuuid(accId,bookingID).subscribe(
         (invoices: any) => {
           resolve(invoices);
         }, error => {
@@ -535,7 +537,7 @@ export class MyBookingsComponent implements OnInit, OnDestroy {
     }
     console.log("Booking Info:", booking);
     if (booking.invoiceCreated) {
-      this.getBookingInvoices(bookingID).then((invoices: any) => {
+      this.getBookingInvoices(booking.providerAccount.id,bookingID).then((invoices: any) => {
         if (invoices) {
           if (invoices && invoices.length == 1) {
             qParams['invoiceId'] = invoices[0].invoiceUid;

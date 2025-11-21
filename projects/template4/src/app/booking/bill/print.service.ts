@@ -11,6 +11,7 @@ export class PrintService {
      * To Print Receipt
      */
   print(booking: any) {
+    console.log(booking)
     const params = [
       'height=' + screen.height,
       'width=' + screen.width,
@@ -35,11 +36,11 @@ export class PrintService {
     bill_html += '	</tr>';
     bill_html += '	<tr style="line-height:20px">';
     bill_html += '<td width="50%" style="color:#000000; font-size:10pt; font-family:Ubuntu, Arial,sans-serif;">' + (booking['isInvoice'] ? 'Invoice # :' : '') +
-    booking['invoiceExtras']['billNumber'] + '</td>';
+    booking['invoiceExtras']['invoiceNum'] + '</td>';
     bill_html += '<td width="50%"	style="text-align:right;color:#000000; font-size:10pt; font-family:"Ubuntu, Arial,sans-serif;">' + (booking['invoiceExtras']['departmentName'] ? 'Department :' : '') + booking['invoiceExtras']['departmentName'];
     bill_html += '	</td>';
     bill_html += '	</tr>';
-    
+
 
     bill_html += '	<tr style="line-height:20px">';
     bill_html += '<td width="50%"	style="text-align:left;color:#000000; font-size:10pt; font-family:"Ubuntu, Arial,sans-serif;">';
@@ -168,7 +169,8 @@ export class PrintService {
         bill_html += '	</td></tr>';
       }
     }
-    for (const item of booking['invoice'].adhocItemList) {
+    if(booking['invoice']?.adhocItemList){
+ for (const item of booking['invoice'].adhocItemList) {
       bill_html += '	<tr><td style="border-bottom:1px solid #ddd;">';
       bill_html += '<table width="100%"';
       bill_html += '	style="color:#000000; font-size:10pt; line-height:25px; font-family:Ubuntu, Arial,sans-serif; padding-top:10px;padding-bottom:10px">';
@@ -184,6 +186,8 @@ export class PrintService {
       bill_html += '</table>';
       bill_html += '	</td></tr>';
     }
+    }
+
     bill_html += '	<tr><td>';
     bill_html += '<table width="100%" style="color:#000000; font-size:10pt; font-family:Ubuntu, Arial,sans-serif; padding-top:10px;padding-bottom:5px">                                                                             ';
     bill_html += '	<tr style="font-weight: bold">';
