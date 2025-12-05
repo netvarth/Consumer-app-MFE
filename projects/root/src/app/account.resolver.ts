@@ -15,6 +15,7 @@ export class AccountResolver {
   }
 
   fetchUniqueID(id: string): Promise<any> {
+    console.log("Fetch Unique Id:", id);
     return this.accountService.getUniqueID(id);
   }
 

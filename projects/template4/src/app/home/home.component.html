@@ -1,7 +1,7 @@
 <section id="busPageId" class="content bus-page no-padding loginpg" [ngClass]="theme">
     <div class="bus-page-header" *ngIf="!loginRequired">
         <div class="panel panel-default">
-            <div class="panel-heading top-row">
+            <div class="header-container">
                 <app-header [locations]="locations" *ngIf="locations && locations.length > 0"></app-header>
             </div>
             <div class="panel-body no-padding" *ngIf="locations">

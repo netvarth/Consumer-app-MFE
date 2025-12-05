@@ -1,5 +1,6 @@
 @charset "UTF-8";
-@import url('https://fonts.googleapis.com/css2?family=Figtree&display=swap');
+/* Removed remote Google Font import to allow offline/air-gapped build. Host locally if needed. */
+/* @import url('https://fonts.googleapis.com/css2?family=Figtree&display=swap'); */
 @import './assets/scss/_variables.scss';
 @import './assets/scss/_modal.scss';
 @import './assets/scss/_material.scss';

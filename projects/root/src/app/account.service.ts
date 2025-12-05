@@ -31,16 +31,16 @@ export class AccountService {
 
   getUniqueID(idParam: any) {
     const _this = this;
-    console.log("in Get Unique ID");
+    console.log("in Get Unique ID:", idParam);
     
     return new Promise(function (resolve, reject) {
       if (idParam) {
         if (_this.sharedService.getUniqueID()) {
-          _this.sharedService.setRouteID('capp/' + idParam);
+          _this.sharedService.setRouteID(idParam);
           resolve(_this.sharedService.getUniqueID());
         } else {
           _this.getBusinessUniqueId(idParam).subscribe((uniqueId: any) => {
-            _this.sharedService.setRouteID('capp/' + idParam);
+            _this.sharedService.setRouteID(idParam);
             _this.sharedService.setUniqueID(uniqueId);
             resolve(uniqueId);
           }, ()=>{

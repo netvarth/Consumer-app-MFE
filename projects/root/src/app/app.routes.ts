@@ -6,7 +6,8 @@ export const routes: Routes = [
   { path: 'not-found', loadChildren: () => import('./not-found/not-found.module').then(m => m.NotFoundModule) },
   { path: 'maintenance', loadChildren: () => import('./maintenance/maintenance.module').then(m => m.MaintenanceModule) },
   {
-    path: 'capp/:id',
+    // Base href is /capp/, so the router sees just ":id" (not "capp/:id")
+    path: ':id',
     canLoad: [AccountGuard],  // Guard to prevent navigation if condition fails
     loadChildren: () =>
       new Promise<any>((resolve, reject) => {
