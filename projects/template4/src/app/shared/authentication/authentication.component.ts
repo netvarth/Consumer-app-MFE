@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService, ErrorMessagingService, GroupStorageService, LocalStorageService, SharedService, StorageService, ToastService } from 'jconsumer-shared';
@@ -27,11 +28,11 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
   rePassword;
   isLogin = true;
   btnClicked = false;
-  @ViewChild('googleBtnNew', { static: false }) googleBtnNew!: ElementRef<HTMLDivElement>;
-  private googleBtnNewResizeUnlisten?: () => void;
+  @ViewChild('googleBtn', { static: false }) googleBtn!: ElementRef<HTMLDivElement>;
+  private googleBtnResizeUnlisten?: () => void;
   @Input() accountId;
   @Input() accountConfig;
-  private googleBtnNewResizeDebounce?: number;
+  private googleBtnResizeDebounce?: number;
   accountConfiguration: any;
 
   @Output() actionPerformed = new EventEmitter<any>();
@@ -100,6 +101,7 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
     private storageService: StorageService,
     private errorService: ErrorMessagingService,
     private router: Router,
+    private http: HttpClient,
   ) {
     this.loading = true;
     this.cdnPath = this.sharedService.getCDNPath();
@@ -110,6 +112,28 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.lStorageService.removeitemfromLocalStorage('login');
   }
+  // initGoogleButton() {
+  //   console.log("Google Login Button:", this.googleButton);
+  //   setTimeout(() => {
+  //     if (this.googleButton && this.googleButton.nativeElement) {
+  //       const referrer = this;
+  //       referrer.loadGoogleJS().onload = () => {
+  //         google.accounts.id.initialize({
+  //           client_id: "906354236471-jdan9m82qtls09iahte8egdffvvhl5pv.apps.googleusercontent.com",
+  //           callback: (token) => {
+  //             referrer.handleCredentialResponse(token);
+  //           }
+  //         });
+  //         google.accounts.id.renderButton(
+  //           referrer.googleButton.nativeElement,
+  //           { theme: "outline", size: "large", width: "100%" }  // customization attributes
+  //         );
+  //         // google.accounts.id.prompt(); // also display the One Tap dialog
+  //       };
+  //     }
+  //   }, 100);
+  // }
+
   setLoginProperties() {
     if (this.accountConfiguration && this.accountConfiguration['login']) {
         if (this.accountConfiguration['login']['heading']) {
@@ -648,26 +672,26 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
   });
 }
 private setupResponsiveGoogleButton() {
-  if (!this.googleBtnNew?.nativeElement) {
+  if (!this.googleBtn?.nativeElement) {
     return;
   }
   const renderResponsive = () => {
-    if (!this.googleBtnNew?.nativeElement) {
+    if (!this.googleBtn?.nativeElement) {
       return;
     }
-    const width = this.calculateResponsiveGoogleWidth(this.googleBtnNew.nativeElement);
+    const width = this.calculateResponsiveGoogleWidth(this.googleBtn.nativeElement);
     const options = { ...this.googleButtonNewOpts, width };
-    this.renderGisButton(this.googleBtnNew, options);
+    this.renderGisButton(this.googleBtn, options);
   };
   renderResponsive();
   setTimeout(renderResponsive, 0);
   setTimeout(renderResponsive, 0);
-  if (!this.googleBtnNewResizeUnlisten) {
-    this.googleBtnNewResizeUnlisten = this.renderer.listen('window', 'resize', () => {
-      if (this.googleBtnNewResizeDebounce) {
-        window.clearTimeout(this.googleBtnNewResizeDebounce);
+  if (!this.googleBtnResizeUnlisten) {
+    this.googleBtnResizeUnlisten = this.renderer.listen('window', 'resize', () => {
+      if (this.googleBtnResizeDebounce) {
+        window.clearTimeout(this.googleBtnResizeDebounce);
       }
-      this.googleBtnNewResizeDebounce = window.setTimeout(() => renderResponsive(), 0);
+      this.googleBtnResizeDebounce = window.setTimeout(() => renderResponsive(), 0);
     });
   }
 }

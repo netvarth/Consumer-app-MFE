@@ -74,6 +74,11 @@ export class LoginComponent implements OnInit, OnDestroy {
   storeEncId: any;
   deliveryType: any;
   channel = 'SMS'
+  google_loading = false;
+  cdnPath: string = '';
+  isIOSApp: Boolean;
+  googleIntegration: boolean;
+
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
@@ -107,8 +112,14 @@ export class LoginComponent implements OnInit, OnDestroy {
       }
     )
     this.translate.use(JSON.parse(localStorage.getItem('translatevariable')));
+    this.cdnPath = this.sharedService.getCDNPath();
+  }
+  get isAndroidBridgeAvailable(): boolean {
+  return !!(window as any).Android && typeof (window as any).Android.signInWithGoogle === 'function';
   }
   ngOnInit() {
+    this.isIOSApp = this.lStorageService.getitemfromLocalStorage('ios');
+    console.log('isIOS app : '+this.isIOSApp);
     const _this = this;
     this.storageService.getSalutations().then((data: any) => {
       console.log('accountStorageService123', data)
@@ -117,7 +128,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.lStorageService.removeitemfromLocalStorage('logout');
     // this.account = this.accountService.getAccountInfo();
     // this.accountProfile = this.accountService.getJson(this.account['businessProfile']);
-    // this.accountConfig = this.accountService.getAccountConfig();
+    this.accountConfig = this.sharedService.getAccountConfig();
     this.templateConfig = this.sharedService.getTemplateJSON();
     console.log("this.templateConfig", this.templateConfig)
     if (this.accountConfig && this.accountConfig['imagePath'] && this.accountConfig['imagePath']['login']) {
@@ -126,7 +137,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     if (this.templateConfig && this.templateConfig.theme) {
       this.theme = this.templateConfig.theme;
     }
-    this.initGoogleButton();
     this.authService.goThroughLogin().then(
       (status) => {
         if (status) {
@@ -145,6 +155,40 @@ export class LoginComponent implements OnInit, OnDestroy {
       }
       // this.reloadAPIs();
     });
+    if (this.accountConfig && this.accountConfig['googleIntegration'] === false) {
+      this.googleIntegration = false;
+    } else {
+      this.googleIntegration = true;
+      if (this.googleIntegration && !this.isAndroidBridgeAvailable) {
+        // Render after Angular finishes the first pass; handles *ngIf async DOM
+        setTimeout(() => {
+          this.initGoogleButton();
+        });
+      }
+    }
+    const w: any = window as any;
+    w.__onNativeGoogleIdToken = async (idToken: string) => {
+      //alert('Google ID Token received successfully' + idToken.substring(0, 20) + '...');
+      try {
+        // Call your backend: exchange token → create session/JWT
+        //await this.http.post('/api/auth/google', { idToken }).toPromise();
+        await this.handleCredentialResponse(idToken);
+        // Navigate
+        this.router.navigateByUrl('/home');
+      } catch (err) {
+        console.error(err);
+        // show toast: "Google login failed"
+      } finally {
+        this.google_loading = false;
+        this.btnClicked = false;
+      }
+    };
+    w.__onNativeGoogleSignInError = (msg: string) => {
+      console.error(msg);
+      // show toast: msg
+      this.google_loading = false;
+      this.btnClicked = false;
+    };
   }
   ngOnDestroy() {
     if (this.cronHandle) {
@@ -160,25 +204,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     let dashboardUrl = customId + '/dashboard';
     this.router.navigateByUrl(dashboardUrl);
   }
-  /**
-   * Google Integration Code
-   */
-  initGoogleButton() {
-    const referrer = this;
-    referrer.loadGoogleJS().onload = () => {
-      google.accounts.id.initialize({
-        client_id: "906354236471-jdan9m82qtls09iahte8egdffvvhl5pv.apps.googleusercontent.com",
-        callback: (token: any) => {
-          referrer.handleCredentialResponse(token);
-        }
-      });
-      google.accounts.id.renderButton(
-        referrer.googleButton.nativeElement,
-        { theme: "outline", size: "large", width: "100%" }  // customization attributes
-      );
-      // google.accounts.id.prompt(); // also display the One Tap dialog
-    };
-  }
 
   loadGoogleJS() {
     const self = this;
@@ -191,16 +216,29 @@ export class LoginComponent implements OnInit, OnDestroy {
     self.renderer.appendChild(document.body, script);
     return script;
   }
-  handleCredentialResponse(response: any) {
+  handleCredentialResponse(tokenOrObj: any) {
+    // ✅ Normalize to ID token string
+    const idToken: string =
+      typeof tokenOrObj === 'string'
+        ? tokenOrObj
+        : (tokenOrObj?.credential || tokenOrObj?.idToken || '');
+
+    if (!idToken) {
+      console.error('No idToken found in handleCredentialResponse()', tokenOrObj);
+      alert('Google token missing');
+      this.google_loading = false;
+      this.btnClicked = false;
+      return;
+    }
     const _this = this;
     this.lStorageService.removeitemfromLocalStorage('authorization');
     this.lStorageService.removeitemfromLocalStorage('c_authorizationToken');
     this.lStorageService.removeitemfromLocalStorage('googleToken');
-    console.log(response);
+    console.log(tokenOrObj);
     this.googleLogin = true;
-    const payLoad: any = jwtDecode(response.credential);
+    const payLoad: any = jwtDecode(tokenOrObj);
     console.log(payLoad);
-    _this.lStorageService.setitemonLocalStorage('googleToken', 'googleToken-' + response.credential);
+    _this.lStorageService.setitemonLocalStorage('googleToken', 'googleToken-' + tokenOrObj);
     const credentials: any = {
       accountId: _this.sharedService.getAccountID()
     }
@@ -493,8 +531,12 @@ export class LoginComponent implements OnInit, OnDestroy {
       });
   }
   goBack() {
-    this.initGoogleButton();
     this.step = 1;
+    setTimeout(() => {
+      if (this.googleIntegration && !this.isAndroidBridgeAvailable) {
+        this.initGoogleButton();
+      }
+    });
   }
   onPhoneNumberChanged(updatedPhoneNumber: any) {
     console.log('Updated phone number:', updatedPhoneNumber);
@@ -604,5 +646,49 @@ export class LoginComponent implements OnInit, OnDestroy {
         }
       );
     });
+  }
+
+  /**
+   * Google Integration Code
+   */
+  initGoogleButton() {
+    const referrer = this;
+    referrer.loadGoogleJS().onload = () => {
+      google.accounts.id.initialize({
+        client_id: "906354236471-jdan9m82qtls09iahte8egdffvvhl5pv.apps.googleusercontent.com",
+        callback: (token: any) => {
+          referrer.handleCredentialResponse(token);
+        }
+      });
+      google.accounts.id.renderButton(
+        referrer.googleButton.nativeElement,
+        { theme: "outline", size: "large", width: "100%" }  // customization attributes
+      );
+      // google.accounts.id.prompt(); // also display the One Tap dialog
+    };
+  }
+  onNativeGoogleClick() {
+    if (this.btnClicked || this.google_loading) return;
+
+    this.btnClicked = true;
+    this.google_loading = true;
+
+    try {
+      // Call Android bridge (WebView)
+      const w: any = window as any;
+
+      if (this.isAndroidBridgeAvailable) {
+        w.Android.signInWithGoogle();
+      } else {
+        // Not running inside Android WebView
+        this.google_loading = false;
+        this.btnClicked = false;
+        console.info('Android bridge not available');
+      }
+    } catch (e) {
+      this.google_loading = false;
+      this.btnClicked = false;
+      console.error(e);
+    }
   }
 }

@@ -1,141 +1,157 @@
 <div class="authentication" [ngClass]="theme">
-    <div class="p-4">
-        <div class="check-mobile-exist text-center" *ngIf="step===1">
-            <h1>Let's Start</h1>
-            <div class="form-group mobile-no mgn-up-50 ">
-                <label for="phone">Enter your Mobile Number</label>
-                <div class="mb-3">
-                    <app-phone-input [(ngModel)]="phoneNumber" name="phoneNumber" [initialCountry]="'in'"
+    <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+        <!--   chottaboss changes start -->
+        <div class="check-mobile-exist auth-component  text-center1" *ngIf="step===1 ">
+            <h1 class="main-head1">{{heading | translate}}</h1>
+            <h2 class="sub-head1" *ngIf="subHeading">{{subHeading | translate}}</h2>
+            <div class="form-group mobile-no" [ngClass]="alignClass?'mgn-up-10': 'mgn-up-50'">
+             <app-phone-input [(ngModel)]="phoneNumber" name="phoneNumber" [initialCountry]="'in'"
                         [preferredCountries]="preferredCountries" [nationalMode]="false"
                         (phoneNumberChange)="onPhoneNumberChanged($event)" [separateDialCode]="true"></app-phone-input>
-                    <div class="sts-msg error" *ngIf="phoneError">{{phoneError}}</div>
-                    <div class="form-group email mt-4"
-                        *ngIf="phoneNumber && phoneNumber.dialCode != '+91' && !isLogin">
-                        <label for="phone">Enter your Email</label>
-                        <input type="text" class="form-control" id="emailId" [(ngModel)]="emailId" autocomplete="off"
-                            (keypress)="resetApiErrors()">
-                    </div>
-                    <button id="btnSendOTP" class="cust-logpg-submt mt-4 mat-button mdc-button continue-button" type="button"
-                        [disabled]="api_loading || (phoneNumber && phoneNumber.number ? phoneNumber.number.length <= 3 : true)"
-                        (click)="!btnClicked && sendOTP()" (keyup)="clearPhoneExists()">
-                        <span class="continue" *ngIf="!api_loading">Continue</span>
-                        <app-common-innerloading-spinner [spinnerParams]="{diameter:30}" *ngIf="api_loading">
-                        </app-common-innerloading-spinner>
-                    </button>
-                    <div class="centeralign mb-4 mt-5 color-grey" *ngIf="googleIntegration">
-                        ----------------OR-----------------</div>
+                <div class="sts-msg error" *ngIf="phoneError">{{phoneError}}</div>
+                <div class="form-group email mgn-up-20"
+                    *ngIf="phoneNumber && phoneNumber.dialCode != '+91' && !isLogin">
+                    <input type="text" class="form-control" placeholder="Enter your email" id="emailId"
+                        [(ngModel)]="emailId" autocomplete="off" (keypress)="resetApiErrors()">
                 </div>
-            </div>            
-        </div>
-        <div *ngIf="step===2" class="text-center">
-            <h1>Let's get to know you...</h1>
-            <label for="phone">First Name</label>
-            <div class="input-group d-flex">
-                <div class="">
-                    <p-dropdown class="text-capitalize p-drop-style" [options]="salutation" [(ngModel)]="title"
-                        placeholder="Select" ropdownIcon="fa fa-caret-down" optionLabel="name"
-                        optionValue="displayName">
-                        <ng-template let-item pTemplate="salutation">
-                            {{item.displayName}}
-                        </ng-template>
-                    </p-dropdown>
+                <button class="cust-logpg-submt mgn-up-20 mat-button mdc-button continue-button" type="button"
+                    [disabled]="api_loading" (click)="!btnClicked && sendOTP()" (keyup)="clearPhoneExists()">
+                    <span class="continue" *ngIf="!api_loading">{{'Continue' | translate}}</span>
+                    <app-common-innerloading-spinner [spinnerParams]="{diameter:30}" *ngIf="api_loading">
+                    </app-common-innerloading-spinner>
+                </button>
+                <div class="or-divider" *ngIf="googleIntegration && !isPartnerLogin">
+                  <span>OR</span>
                 </div>
-                <div class="flex-grow-1 p-0 mgn-lt-1">
-                    <div class="form-group otp">
-                        <input type="text" class="form-control" id="first_name" [(ngModel)]="firstName"
-                            autocomplete="off" />
-                    </div>
-                </div>
+
+                    <div class="centeralign mgn-bt-20 mgn-up-20 color-grey" *ngIf="isPartnerLogin">
+                        </div>
+                <!-- <div class="form-group mobile-no" *ngIf="googleIntegration">
+                    <div id="buttonDiv" class="g-container" #googleBtn></div>
+                </div> -->
             </div>
+        </div>
+
+
+<!--             otp verification for chottaboss
+ -->           <div *ngIf="step===3 " class="check-mobile-exist auth-component  text-center1">
+            <div class="form-group auth-component otp">
+                <app-common-innerloading-spinner [spinnerParams]="{diameter:30}" *ngIf="loading">
+                </app-common-innerloading-spinner>
+                <h1 class="main-head2">{{'Enter OTP' | translate}}</h1>
+                <label class="sub-head1" *ngIf="phoneNumber && phoneNumber.dialCode==='+91'" for="phone" >OTP Sent to {{phoneNumber.e164Number}}</label>
+                <label class="sub-head1" *ngIf="phoneNumber && phoneNumber.dialCode!=='+91'" for="phone" >OTP Sent to {{emailId?emailId:'email'}}</label>
+                <ng-otp-input class="bkgclr" (onInputChange)="!btnClicked && onOtpChange($event)"
+                    [config]="config"></ng-otp-input>
+                <button class="cust-logpg-submt mgn-up-20 mat-button mdc-button continue-button" type="button"
+                    [disabled]="api_loading || !otpEntered" (click)="!btnClicked && verifyOTP()">
+                    <span class="continue" *ngIf="!api_loading">{{'Verify' | translate}}</span>
+                    <app-common-innerloading-spinner [spinnerParams]="{diameter:30}" *ngIf="api_loading">
+                    </app-common-innerloading-spinner>
+                </button>
+                <p class="mgn-up-20 resendmsg">{{'Didn’t receive the OTP? ' | translate}} <a class="pointer-cursor link"
+                        (click)="!btnClicked && sendOTP('resent')">{{'Resend' | translate}}</a>
+                </p>
+            </div>
+            <div class="form-group auth-component otp">
+                <p  class="sub-head1" *ngIf="googleIntegration" class="">If you are not getting OTP via SMS
+                </p>
+            </div>
+        </div>
+          <!-- chottaboss schema-->
+             <div *ngIf="step===2 " class=" text-center step2-wrapper">
+            <h1>{{'Let\'s get to know you' | translate}}...</h1>
+            <label for="phone" class="auth_field">{{'First Name' | translate}}</label>
+            <div class="input-group d-flex firstname-small">
+              <div class="">
+                  <mat-select  class="form-control field-size form-group otp" id="titles"
+                  [(ngModel)]="title" placeholder="Select">
+                      <mat-option [value]="salutation.displayName"
+                          *ngFor="let salutation of salutation">
+                          <div *ngIf="salutation && salutation.name">
+                              {{salutation.displayName}}</div>
+                      </mat-option>
+                  </mat-select>
+              </div>
+              <div class="flex-grow-1 no-padding mgn-lt-1">
+                <div class="form-group otp">
+                  <input type="text" class="form-control" id="first_name" [(ngModel)]="firstName" autocomplete="off" />
+                </div>
+              </div>
+          </div>
             <div class="form-group otp">
-                <label for="phone">Last Name</label>
+                <label for="phone" class="auth_field">{{'Last Name' | translate}}</label>
                 <input type="text" class="form-control" id="first_name" [(ngModel)]="lastName" autocomplete="off" />
             </div>
             <div class="form-group otp" *ngIf="googleLogin">
-                <label for="phone">Mobile Number</label>
-                <div class="mb-3">
-                    <app-phone-input [(ngModel)]="phoneNumber" name="phoneNumber" [initialCountry]="'in'"
+                <app-phone-input [(ngModel)]="phoneNumber" name="phoneNumber" [initialCountry]="'in'"
                         [preferredCountries]="preferredCountries" [nationalMode]="false"
-                        (phoneNumberChange)="onPhoneNumberChanged($event)"
-                        [separateDialCode]="true"></app-phone-input>
-                    <div class="sts-msg error" *ngIf="phoneError">{{phoneError}}</div>
-                </div>
-            </div>   
-            <div class="form-group otp"
-                    style="display: flex !important; justify-content: space-between !important;">
-                    <button id="btnBack" class="mt-4 mat-button mdc-button signup-button" type="button"
-                        [disabled]="api_loading" (click)="goBack()">
-                        <span>Back</span>
-                        <app-common-innerloading-spinner [spinnerParams]="{diameter:30}" *ngIf="api_loading">
-                        </app-common-innerloading-spinner>
-                    </button>
-                    <button id="btnContinue" class="mt-4 mat-button mdc-button signup-button" type="button"
-                        [disabled]="api_loading" (click)="!btnClicked && signUpConsumer()">
-                        <span >Next</span>
-                        <app-common-innerloading-spinner [spinnerParams]="{diameter:30}" *ngIf="api_loading">
-                        </app-common-innerloading-spinner>
-                    </button>
-                </div>           
-        </div>
-        <div *ngIf="step===3" class="">
-            <div class="form-group otp text-center">
-                <app-common-innerloading-spinner [spinnerParams]="{diameter:30}" *ngIf="loading">
-                </app-common-innerloading-spinner>
-                <h1>Verification</h1>
-                <label *ngIf="phoneNumber && phoneNumber.dialCode==='+91'" for="phone" class="mb-4">Please type
-                    the
-                    verification code sent to {{phoneNumber.e164Number}}</label>
-                <label *ngIf="phoneNumber && phoneNumber.dialCode!=='+91'" for="phone" class="mb-4">Please type
-                    the
-                    verification code sent to {{emailId?emailId: 'email'}}</label>
-                <ng-otp-input class="bkgclr" (onInputChange)="!btnClicked && onOtpChange($event)"
-                    [config]="config"></ng-otp-input>
-                <button id="btnVerifyOTP" class="cust-logpg-submt mt-4 mat-button mdc-button continue-button" type="button"
-                    [disabled]="api_loading" (click)="!btnClicked && verifyOTP()">
-                    <span class="continue" *ngIf="!api_loading">Next</span>
+                        (phoneNumberChange)="onPhoneNumberChanged($event)" [separateDialCode]="true"></app-phone-input>
+                <div class="sts-msg error" *ngIf="phoneError">{{phoneError}}</div>
+            </div>
+            <div class="form-group otp" style="display: flex !important; justify-content: space-between !important;">
+                <button class="mgn-up-20 mat-button mdc-button signup-button" type="button" [disabled]="api_loading"
+                    (click)="goBack()">
+                    <span *ngIf="!api_loading">{{'Back' | translate}}</span>
                     <app-common-innerloading-spinner [spinnerParams]="{diameter:30}" *ngIf="api_loading">
                     </app-common-innerloading-spinner>
                 </button>
-                <p class="mt-4" *ngIf="resetCounterVal==0">Not received yet! <a class="pointer-cursor link"
-                        (click)="!btnClicked && sendOTP('resent')">Resend OTP</a>
-                </p>
-                <div class="counter-outer" style="font-size: 0.90em" *ngIf="resetCounterVal>0">
-                    <br>
-                    {{resend_otp_opt_active_cap}} <span class="counter">{{resetCounterVal}}</span> {{seconds_cap}}
-                </div>
-            </div>
-            <div class="form-group otp text-center">
-                <p *ngIf="googleIntegration" class="">If you are not getting OTP via {{channel}}, Use Google Login
-                </p>
+                <button class="mgn-up-20 mat-button mdc-button signup-button" type="button" [disabled]="api_loading"
+                    (click)="!btnClicked && signUpConsumer()">
+                    <span *ngIf="!api_loading">{{'Next' | translate}}</span>
+                    <app-common-innerloading-spinner [spinnerParams]="{diameter:30}" *ngIf="api_loading">
+                    </app-common-innerloading-spinner>
+                </button>
             </div>
         </div>
+
         <div *ngIf="step===4">
-            <h1>Hi {{firstName}} {{lastName}}</h1>
-            <label for="phone">Set your password for your future logins or you can skip for now.</label>
+            <h1>{{'Hi' | translate}} {{firstName}} {{lastName}}</h1>
+            <label for="phone" class="auth_field">{{'Set your password for your future logins or you can skip for now' |
+                translate}}.</label>
             <div class="form-group otp">
-                <label for="phone">Enter your Password</label>
-                <input type="text" class="form-control" id="first_name" [(ngModel)]="password"
-                    autocomplete="off" />
+                <label for="phone" class="auth_field">{{'Enter your Password' | translate}}</label>
+                <input type="text" class="form-control" id="first_name" [(ngModel)]="password" autocomplete="off" />
             </div>
             <div class="form-group otp">
-                <label for="phone">Confirm Password</label>
-                <input type="text" class="form-control" id="first_name" [(ngModel)]="rePassword"
-                    autocomplete="off" />
+                <label for="phone" class="auth_field">{{'Enter your Password' | translate}}</label>
+                <label for="phone" class="auth_field">{{'Confirm Password' | translate}}</label>
+                <input type="text" class="form-control" id="first_name" [(ngModel)]="rePassword" autocomplete="off" />
             </div>
             <div class="form-group otp">
-                <button id="btnSave" class="cust-logpg-submt mt-4 mat-button mdc-button continue-button" type="button"
+                <button class="cust-logpg-submt mgn-up-20 mat-button mdc-button continue-button" type="button"
                     [disabled]="api_loading" (keyup)="clearPhoneExists()">
-                    <span class="continue" *ngIf="!api_loading">Save</span>
+                    <span class="continue" *ngIf="!api_loading">{{'Save' | translate}}</span>
                     <app-common-innerloading-spinner [spinnerParams]="{diameter:30}" *ngIf="api_loading">
                     </app-common-innerloading-spinner>
                 </button>
-                <span *ngIf="!api_loading">Skip for now</span>
+                <span *ngIf="!api_loading">{{'Skip for now' | translate}}</span>
             </div>
-        </div>
-        <div class="check-mobile-exist text-center" *ngIf="step===3 || step === 1">
-            <div class="form-group mobile-no text-center" *ngIf="googleIntegration">
-                <div id="buttonDiv" class="g-container" #googleBtn></div>
             </div>
-        </div>
-    </div>
-</div>
+            
+            <div #googleBtnContainer class="check-mobile-exist text-center1"
+                *ngIf="(step === 3 || step === 1) && googleIntegration">
+            
+                <div class="google-login-wrap" *ngIf="isAndroidBridgeAvailable">
+                    <button type="button" class="google-pill-btn" [disabled]="google_loading || btnClicked"
+                        (click)="onNativeGoogleClick()">
+            
+                        <img class="google-pill-icon" [src]="cdnPath + 'assets/images/google-logo.svg'" alt="Google" />
+            
+                        <span *ngIf="!google_loading">Continue with Google</span>
+            
+                        <span class="google-pill-spinner" *ngIf="google_loading">
+                            <app-common-innerloading-spinner [spinnerParams]="{ diameter: 18 }">
+                            </app-common-innerloading-spinner>
+                        </span>
+                    </button>
+                </div>
+            
+                <div class="form-group mobile-no text-center btngle" *ngIf="!isAndroidBridgeAvailable">
+                    <div id="googleBtn" #googleBtn></div>
+                </div>
+            
+            </div>
+
+            
+            

@@ -280,7 +280,7 @@ h2 {
   padding: 0 8px;            /* gives small breathing room */
 }
 /* Main Google button */
-div[id="buttonDiv"] .abcRioButton {
+div[id="googleBtn"] .abcRioButton {
   width: 327px !important;
   height: 48px !important;
   border: 1px solid #EFF0F6 !important;
@@ -298,14 +298,14 @@ div[id="buttonDiv"] .abcRioButton {
 }
 
 /* Google logo area */
-div[id="buttonDiv"] .abcRioButtonIcon {
+div[id="googleBtn"] .abcRioButtonIcon {
   width: 20px !important;
   height: 20px !important;
   margin-right: 10px !important;
 }
 
 /* Inner content wrapper (fixes vertical centering) */
-div[id="buttonDiv"] .abcRioButtonContentWrapper {
+div[id="googleBtn"] .abcRioButtonContentWrapper {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -313,7 +313,7 @@ div[id="buttonDiv"] .abcRioButtonContentWrapper {
 }
 
 /* Optional hover */
-div[id="buttonDiv"] .abcRioButton:hover {
+div[id="googleBtn"] .abcRioButton:hover {
   background: #f8f8f8 !important;
 }
 
