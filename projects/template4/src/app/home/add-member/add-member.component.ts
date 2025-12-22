@@ -62,7 +62,7 @@ export class AddMemberComponent implements OnInit {
   }
   address: any;
   mobileNumber: any;
-  salutation: any;
+  // salutation: any;
   cdnPath: string = '';
   constructor(
     public dialogRef: MatDialogRef<AddMemberComponent>,
@@ -131,9 +131,9 @@ export class AddMemberComponent implements OnInit {
       }
       this.email = this.consumerData.email || '';
     }
-    this.storageService.getSalutations().then((data: any) => {
-      this.salutation = data;
-    });
+    // this.storageService.getSalutations().then((data: any) => {
+    //   this.salutation = data;
+    // });
   }
   isNumericSign(evt) {
     return this.commonService.isNumericSign(evt);

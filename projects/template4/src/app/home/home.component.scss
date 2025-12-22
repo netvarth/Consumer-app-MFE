@@ -89,8 +89,8 @@
 }
 
 .bus-page-header .panel-body {
-  margin-top: 60px;
-  min-height: calc(100vh - (115px));
+  margin-top: calc(55px + var(--template4-header-height, 0px));
+  min-height: calc(100vh - (55px + var(--template4-header-height, 0px)));
 }
 
 .header-container {

@@ -286,7 +286,7 @@ export class RootComponent implements OnInit, OnDestroy {
   }
 
   onViewAllBookings() {
-    this.router.navigate([this.sharedService.getRouteID(), 'dashboard', 'bookings']);
+    this.router.navigate([this.sharedService.getRouteID(), 'bookings']);
   }
 
   showBookingDetails(_booking, _source) {

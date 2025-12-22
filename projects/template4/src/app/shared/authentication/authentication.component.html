@@ -5,9 +5,9 @@
             <h1 class="main-head1">{{heading | translate}}</h1>
             <h2 class="sub-head1" *ngIf="subHeading">{{subHeading | translate}}</h2>
             <div class="form-group mobile-no" [ngClass]="alignClass?'mgn-up-10': 'mgn-up-50'">
-             <app-phone-input [(ngModel)]="phoneNumber" name="phoneNumber" [initialCountry]="'in'"
-                        [preferredCountries]="preferredCountries" [nationalMode]="false"
-                        (phoneNumberChange)="onPhoneNumberChanged($event)" [separateDialCode]="true"></app-phone-input>
+                <app-phone-input [(ngModel)]="phoneNumber" name="phoneNumber" [initialCountry]="'in'"
+                    [preferredCountries]="preferredCountries" [nationalMode]="false"
+                    (phoneNumberChange)="onPhoneNumberChanged($event)" [separateDialCode]="true"></app-phone-input>
                 <div class="sts-msg error" *ngIf="phoneError">{{phoneError}}</div>
                 <div class="form-group email mgn-up-20"
                     *ngIf="phoneNumber && phoneNumber.dialCode != '+91' && !isLogin">
@@ -21,26 +21,23 @@
                     </app-common-innerloading-spinner>
                 </button>
                 <div class="or-divider" *ngIf="googleIntegration && !isPartnerLogin">
-                  <span>OR</span>
+                    <span>OR</span>
                 </div>
-
-                    <div class="centeralign mgn-bt-20 mgn-up-20 color-grey" *ngIf="isPartnerLogin">
-                        </div>
-                <!-- <div class="form-group mobile-no" *ngIf="googleIntegration">
-                    <div id="buttonDiv" class="g-container" #googleBtn></div>
-                </div> -->
+                <div class="centeralign mgn-bt-20 mgn-up-20 color-grey" *ngIf="isPartnerLogin">
+                </div>
             </div>
         </div>
-
-
-<!--             otp verification for chottaboss
- -->           <div *ngIf="step===3 " class="check-mobile-exist auth-component  text-center1">
+        <!--             otp verification for chottaboss
+ -->
+        <div *ngIf="step===3 " class="check-mobile-exist auth-component  text-center1">
             <div class="form-group auth-component otp">
                 <app-common-innerloading-spinner [spinnerParams]="{diameter:30}" *ngIf="loading">
                 </app-common-innerloading-spinner>
                 <h1 class="main-head2">{{'Enter OTP' | translate}}</h1>
-                <label class="sub-head1" *ngIf="phoneNumber && phoneNumber.dialCode==='+91'" for="phone" >OTP Sent to {{phoneNumber.e164Number}}</label>
-                <label class="sub-head1" *ngIf="phoneNumber && phoneNumber.dialCode!=='+91'" for="phone" >OTP Sent to {{emailId?emailId:'email'}}</label>
+                <label class="sub-head1" *ngIf="phoneNumber && phoneNumber.dialCode==='+91'" for="phone">OTP Sent to
+                    {{phoneNumber.e164Number}}</label>
+                <label class="sub-head1" *ngIf="phoneNumber && phoneNumber.dialCode!=='+91'" for="phone">OTP Sent to
+                    {{emailId?emailId:'email'}}</label>
                 <ng-otp-input class="bkgclr" (onInputChange)="!btnClicked && onOtpChange($event)"
                     [config]="config"></ng-otp-input>
                 <button class="cust-logpg-submt mgn-up-20 mat-button mdc-button continue-button" type="button"
@@ -54,39 +51,25 @@
                 </p>
             </div>
             <div class="form-group auth-component otp">
-                <p  class="sub-head1" *ngIf="googleIntegration" class="">If you are not getting OTP via SMS
+                <p class="sub-head1" *ngIf="googleIntegration" class="">If you are not getting OTP via SMS
                 </p>
             </div>
         </div>
-          <!-- chottaboss schema-->
-             <div *ngIf="step===2 " class=" text-center step2-wrapper">
+        <!-- chottaboss schema-->
+        <div *ngIf="step===2 " class="step2-wrapper">
             <h1>{{'Let\'s get to know you' | translate}}...</h1>
-            <label for="phone" class="auth_field">{{'First Name' | translate}}</label>
-            <div class="input-group d-flex firstname-small">
-              <div class="">
-                  <mat-select  class="form-control field-size form-group otp" id="titles"
-                  [(ngModel)]="title" placeholder="Select">
-                      <mat-option [value]="salutation.displayName"
-                          *ngFor="let salutation of salutation">
-                          <div *ngIf="salutation && salutation.name">
-                              {{salutation.displayName}}</div>
-                      </mat-option>
-                  </mat-select>
-              </div>
-              <div class="flex-grow-1 no-padding mgn-lt-1">
-                <div class="form-group otp">
-                  <input type="text" class="form-control" id="first_name" [(ngModel)]="firstName" autocomplete="off" />
-                </div>
-              </div>
-          </div>
-            <div class="form-group otp">
+            <div class="form-group otp pt-2">
+                <label for="phone" class="auth_field">{{'First Name' | translate}}</label>
+                <input type="text" class="form-control" id="first_name" [(ngModel)]="firstName" autocomplete="off" />
+            </div>
+            <div class="form-group otp pt-2">
                 <label for="phone" class="auth_field">{{'Last Name' | translate}}</label>
                 <input type="text" class="form-control" id="first_name" [(ngModel)]="lastName" autocomplete="off" />
             </div>
-            <div class="form-group otp" *ngIf="googleLogin">
+            <div class="form-group otp pt-2" *ngIf="googleLogin">
                 <app-phone-input [(ngModel)]="phoneNumber" name="phoneNumber" [initialCountry]="'in'"
-                        [preferredCountries]="preferredCountries" [nationalMode]="false"
-                        (phoneNumberChange)="onPhoneNumberChanged($event)" [separateDialCode]="true"></app-phone-input>
+                    [preferredCountries]="preferredCountries" [nationalMode]="false"
+                    (phoneNumberChange)="onPhoneNumberChanged($event)" [separateDialCode]="true"></app-phone-input>
                 <div class="sts-msg error" *ngIf="phoneError">{{phoneError}}</div>
             </div>
             <div class="form-group otp" style="display: flex !important; justify-content: space-between !important;">
@@ -104,54 +87,20 @@
                 </button>
             </div>
         </div>
-
-        <div *ngIf="step===4">
-            <h1>{{'Hi' | translate}} {{firstName}} {{lastName}}</h1>
-            <label for="phone" class="auth_field">{{'Set your password for your future logins or you can skip for now' |
-                translate}}.</label>
-            <div class="form-group otp">
-                <label for="phone" class="auth_field">{{'Enter your Password' | translate}}</label>
-                <input type="text" class="form-control" id="first_name" [(ngModel)]="password" autocomplete="off" />
-            </div>
-            <div class="form-group otp">
-                <label for="phone" class="auth_field">{{'Enter your Password' | translate}}</label>
-                <label for="phone" class="auth_field">{{'Confirm Password' | translate}}</label>
-                <input type="text" class="form-control" id="first_name" [(ngModel)]="rePassword" autocomplete="off" />
-            </div>
-            <div class="form-group otp">
-                <button class="cust-logpg-submt mgn-up-20 mat-button mdc-button continue-button" type="button"
-                    [disabled]="api_loading" (keyup)="clearPhoneExists()">
-                    <span class="continue" *ngIf="!api_loading">{{'Save' | translate}}</span>
-                    <app-common-innerloading-spinner [spinnerParams]="{diameter:30}" *ngIf="api_loading">
-                    </app-common-innerloading-spinner>
+        <div #googleBtnContainer class="check-mobile-exist text-center1"
+            *ngIf="(step === 3 || step === 1) && googleIntegration">
+            <div class="google-login-wrap" *ngIf="isAndroidBridgeAvailable">
+                <button type="button" class="google-pill-btn" [disabled]="google_loading || btnClicked"
+                    (click)="onNativeGoogleClick()">
+                    <img class="google-pill-icon" [src]="cdnPath + 'assets/images/google-logo.svg'" alt="Google" />
+                    <span *ngIf="!google_loading">Continue with Google</span>
+                    <span class="google-pill-spinner" *ngIf="google_loading">
+                        <app-common-innerloading-spinner [spinnerParams]="{ diameter: 18 }">
+                        </app-common-innerloading-spinner>
+                    </span>
                 </button>
-                <span *ngIf="!api_loading">{{'Skip for now' | translate}}</span>
             </div>
+            <div class="form-group mobile-no text-center btngle" *ngIf="!isAndroidBridgeAvailable">
+                <div id="buttonDiv" #googleBtnNew></div>
             </div>
-            
-            <div #googleBtnContainer class="check-mobile-exist text-center1"
-                *ngIf="(step === 3 || step === 1) && googleIntegration">
-            
-                <div class="google-login-wrap" *ngIf="isAndroidBridgeAvailable">
-                    <button type="button" class="google-pill-btn" [disabled]="google_loading || btnClicked"
-                        (click)="onNativeGoogleClick()">
-            
-                        <img class="google-pill-icon" [src]="cdnPath + 'assets/images/google-logo.svg'" alt="Google" />
-            
-                        <span *ngIf="!google_loading">Continue with Google</span>
-            
-                        <span class="google-pill-spinner" *ngIf="google_loading">
-                            <app-common-innerloading-spinner [spinnerParams]="{ diameter: 18 }">
-                            </app-common-innerloading-spinner>
-                        </span>
-                    </button>
-                </div>
-            
-                <div class="form-group mobile-no text-center btngle" *ngIf="!isAndroidBridgeAvailable">
-                    <div id="buttonDiv" #googleBtnNew></div>
-                </div>
-            
-            </div>
-
-            
-            
+        </div>

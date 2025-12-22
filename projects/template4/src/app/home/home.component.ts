@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { AccountService, AuthService, ConsumerService, GroupStorageService, LocalStorageService, OrderService, SharedService, SubscriptionService, ThemeService } from 'jconsumer-shared';
 import { Subscription } from 'rxjs';
 
@@ -183,6 +183,14 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       }
     })
 
+    this.subscriptions.add(
+      this.router.events.subscribe((event) => {
+        if (event instanceof NavigationEnd) {
+          this.scrollToTop();
+        }
+      })
+    );
+
   }
 
   finishLoading() {
@@ -310,6 +318,12 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     if (status) {
       this.loginRequired = false;
       this.finishLoading();
+    }
+  }
+
+  private scrollToTop(): void {
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, left: 0 });
     }
   }
 }
