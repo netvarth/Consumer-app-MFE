@@ -127,13 +127,31 @@
                 </button>
                 <span *ngIf="!api_loading">{{'Skip for now' | translate}}</span>
             </div>
-        </div>
-
-
-            <!-- New style -->
+            </div>
+            
             <div #googleBtnContainer class="check-mobile-exist text-center1"
-                *ngIf="(step===3 || step===1) ">
-              <div class="form-group mobile-no text-center btngle" *ngIf="googleIntegration">
-              <div id="buttonDiv" #googleBtnNew></div>
+                *ngIf="(step === 3 || step === 1) && googleIntegration">
+            
+                <div class="google-login-wrap" *ngIf="isAndroidBridgeAvailable">
+                    <button type="button" class="google-pill-btn" [disabled]="google_loading || btnClicked"
+                        (click)="onNativeGoogleClick()">
+            
+                        <img class="google-pill-icon" [src]="cdnPath + 'assets/images/google-logo.svg'" alt="Google" />
+            
+                        <span *ngIf="!google_loading">Continue with Google</span>
+            
+                        <span class="google-pill-spinner" *ngIf="google_loading">
+                            <app-common-innerloading-spinner [spinnerParams]="{ diameter: 18 }">
+                            </app-common-innerloading-spinner>
+                        </span>
+                    </button>
+                </div>
+            
+                <div class="form-group mobile-no text-center btngle" *ngIf="!isAndroidBridgeAvailable">
+                    <div id="buttonDiv" #googleBtnNew></div>
+                </div>
+            
             </div>
-            </div>
+
+            
+            
