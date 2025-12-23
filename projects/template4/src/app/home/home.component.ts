@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { AccountService, AuthService, ConsumerService, GroupStorageService, LocalStorageService, OrderService, SharedService, SubscriptionService, ThemeService } from 'jconsumer-shared';
 import { Subscription } from 'rxjs';
 
@@ -35,6 +35,10 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   onetimeQuestionnaireList: any;
   providerConsumerId: any;
   callback: any;
+  showWelcomePopup = false;
+  welcomeImageUrl = '';
+  templateJson;
+  private welcomePopupTimer: any;
   private subscriptions: Subscription = new Subscription();
   constructor(
     private orderService: OrderService,
@@ -182,6 +186,27 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
           break;
       }
     })
+     this.subscriptions.add(
+      this.router.events.subscribe((event) => {
+        if (event instanceof NavigationEnd) {
+          this.scrollToTop();
+        }
+      })
+    );
+     const alreadyLoggedIn = this.checkLogin && this.checkLogin();
+    this.templateJson = this.accountService.getTemplateJson();
+    console.log("this.templateJson", this.templateJson)
+    const welcomePopupState = this.lStorageService.getitemfromLocalStorage(this.welcomePopupStorageKey) || {};
+    const hasSeenWelcomePopup = welcomePopupState && welcomePopupState[this.accountId];
+    if (!alreadyLoggedIn && this.accountConfig?.welcomePageEnabled && this.templateJson?.welcomePage && !hasSeenWelcomePopup) {
+      this.welcomeImageUrl = this.templateJson.welcomePage;
+      this.showWelcomePopup = true;
+      welcomePopupState[this.accountId] = true;
+      this.lStorageService.setitemonLocalStorage(this.welcomePopupStorageKey, welcomePopupState);
+      this.welcomePopupTimer = setTimeout(() => {
+        this.showWelcomePopup = false;
+      }, 10000);
+    }
 
   }
 
@@ -311,5 +336,21 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       this.loginRequired = false;
       this.finishLoading();
     }
+  }
+  
+  private scrollToTop(): void {
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, left: 0 });
+    }
+  }
+  closeWelcomePopup() {
+    this.showWelcomePopup = false;
+    if (this.welcomePopupTimer) {
+      clearTimeout(this.welcomePopupTimer);
+    }
+  }
+   checkLogin() {
+    const login = (this.lStorageService.getitemfromLocalStorage('ynw-credentials')) ? true : false;
+    return login;
   }
 }

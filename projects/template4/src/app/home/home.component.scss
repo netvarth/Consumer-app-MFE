@@ -89,8 +89,8 @@
 }
 
 .bus-page-header .panel-body {
-  margin-top: 60px;
-  min-height: calc(100vh - (115px));
+  margin-top: calc(55px + var(--template4-header-height, 0px));
+  min-height: calc(100vh - (55px + var(--template4-header-height, 0px)));
 }
 
 .header-container {
@@ -100,4 +100,83 @@
   width: 100%;       /* span across the viewport */
   z-index: 1000;     /* keep it above other elements */
   height: 60px;
+}
+/* welcome popup overlay */
+.welcome-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1050;
+  display: grid;
+  place-items: center;
+  pointer-events: auto;
+  animation: welcome-fade-in 300ms ease;
+}
+
+.welcome-overlay__backdrop {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 20%, rgba(255, 122, 0, 0.18), transparent 35%),
+              radial-gradient(circle at 80% 80%, rgba(255, 77, 15, 0.18), transparent 40%),
+              rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(3px);
+  animation: welcome-backdrop 600ms ease;
+}
+
+.welcome-overlay__content {
+  position: relative;
+  width: min(90vw, 533px);
+  max-width: 533px;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22), 0 12px 30px rgba(0, 0, 0, 0.18);
+  transform-origin: center;
+  animation: welcome-zoom 420ms cubic-bezier(0.21, 1, 0.32, 1);
+}
+
+.welcome-overlay__image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.welcome-overlay__close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  border: none;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: transform 160ms ease, background 160ms ease;
+}
+
+.welcome-overlay__close:hover,
+.welcome-overlay__close:focus {
+  transform: scale(1.05);
+  background: rgba(0, 0, 0, 0.7);
+  outline: none;
+}
+
+@keyframes welcome-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes welcome-zoom {
+  0% { transform: scale(0.9) translateY(12px); opacity: 0; }
+  60% { transform: scale(1.02) translateY(0); opacity: 1; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+@keyframes welcome-backdrop {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
