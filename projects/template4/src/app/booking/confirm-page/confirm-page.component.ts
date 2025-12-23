@@ -356,6 +356,6 @@ export class ConfirmPageComponent implements OnInit, OnDestroy {
     this.gotoActiveHome();
   }
   okClick() {
-    this.router.navigate([this.sharedService.getRouteID(), 'dashboard', 'bookings']);
+    this.router.navigate([this.sharedService.getRouteID(), 'bookings']);
   }
 }

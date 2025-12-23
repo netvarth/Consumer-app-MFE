@@ -186,13 +186,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
           break;
       }
     })
-     this.subscriptions.add(
-      this.router.events.subscribe((event) => {
-        if (event instanceof NavigationEnd) {
-          this.scrollToTop();
-        }
-      })
-    );
+    
      const alreadyLoggedIn = this.checkLogin && this.checkLogin();
     this.templateJson = this.accountService.getTemplateJson();
     console.log("this.templateJson", this.templateJson)
@@ -207,6 +201,22 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
         this.showWelcomePopup = false;
       }, 10000);
     }
+
+    this.subscriptions.add(
+      this.router.events.subscribe((event) => {
+        if (event instanceof NavigationEnd) {
+          this.scrollToTop();
+        }
+      })
+    );
+
+    this.subscriptions.add(
+      this.router.events.subscribe((event) => {
+        if (event instanceof NavigationEnd) {
+          this.scrollToTop();
+        }
+      })
+    );
 
   }
 
@@ -337,20 +347,10 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       this.finishLoading();
     }
   }
-  
+
   private scrollToTop(): void {
     if (typeof window !== 'undefined') {
       window.scrollTo({ top: 0, left: 0 });
     }
-  }
-  closeWelcomePopup() {
-    this.showWelcomePopup = false;
-    if (this.welcomePopupTimer) {
-      clearTimeout(this.welcomePopupTimer);
-    }
-  }
-   checkLogin() {
-    const login = (this.lStorageService.getitemfromLocalStorage('ynw-credentials')) ? true : false;
-    return login;
   }
 }

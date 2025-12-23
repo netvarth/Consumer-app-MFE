@@ -323,14 +323,14 @@ export class HeaderComponent implements OnInit {
         if (status) {
           this.viewDashboard();
         } else {
-          let dashboardUrl = this.sharedService.getRouteID() + '/dashboard';
+          let dashboardUrl = this.sharedService.getRouteID() + '/bookings';
           this.lStorageService.setitemonLocalStorage('target', dashboardUrl);
           this.router.navigate([this.sharedService.getRouteID(), 'login']);
         }
       });
   }
   viewDashboard() {
-    let dashboardUrl = this.sharedService.getRouteID() + '/dashboard';
+    let dashboardUrl = this.sharedService.getRouteID() + '/bookings';
     this.router.navigateByUrl(dashboardUrl);
   }
   gotoActiveHome(isLoggedOut?: boolean) {
