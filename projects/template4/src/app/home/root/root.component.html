@@ -60,7 +60,7 @@
     </div>
 
 
-       <div class="mgn-up-10 m-3 mgn-bt-10 pad-bt-10 grid-card">
+       <div class="mgn-up-10 m-3 mgn-bt-10 pad-bt-10 grid-card" *ngIf="templateJson && today_totalbookings?.length">
           <mat-grid-list [cols]="smallDevice ? 1 : 3" rowHeight="300px" [gutterSize]="'10px'">
             <mat-grid-tile *ngFor="let booking of todayBookings | slice:0:bookingsLimit" (click)="showBookingDetails(booking)">
               <ng-container *ngIf="booking.apptStatus">
