@@ -201,7 +201,7 @@ export class TeleBookingService {
         if (source === 'consumer') {
             params = '?account=' + accountId;
         }
-        const url = 'consumer/waitlist/enc/' + encId+ params;
+        const url = 'consumer/waitlist/enc/' + encId + params;
         return this.servicemeta.httpGet(url);
     }
     getTeleApptById(encId, source, accountId?) {
@@ -209,7 +209,7 @@ export class TeleBookingService {
         if (source === 'consumer') {
             params = '?account=' + accountId;
         }
-        const url = 'consumer/appointment/enc/' + encId+ params;
+        const url = 'consumer/appointment/enc/' + encId + params;
         // const url = source + '/appointment/' + uuid + params;
         return this.servicemeta.httpGet(url);
     }
@@ -357,9 +357,13 @@ export class TeleBookingService {
         console.log("Input Phone:", phNo);
 
     }
-       getInvoiceDetailsByuuid(accId, uuid) {
+    getInvoiceDetailsByuuid(accId, uuid) {
         const url = 'consumer/booking/invoice/' + accId + '/booking/' + uuid;
         return this.servicemeta.httpGet(url);
+    }
+    setReadyState(bookingUID) {
+        const url = 'consumer/videocall/notready/' + bookingUID;
+        return this.servicemeta.httpPut(url);
     }
 }
 

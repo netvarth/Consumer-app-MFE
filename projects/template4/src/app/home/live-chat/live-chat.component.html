@@ -1,0 +1,105 @@
+<p-toast class="p-toast-container" [breakpoints]="{'920px': {width: '100%', right: '0', left: '0'}}"></p-toast>
+<app-authentication *ngIf="!isLoggedIn" (actionPerformed)="actionPerformed($event)"
+    [accountId]="accountID"></app-authentication>
+<section class="full-height" *ngIf="isLoggedIn">
+    <div class="videocontainer p-0" *ngIf="!linkExpired" [ngClass]="{'preview-mode': twilioService.preview}">
+        <div class="container previewDiv" [ngClass]="{'hide': !twilioService.preview}">
+            <div class="preview-left previewSubDiv p-0">
+                <div #previewContainer [ngClass]="{'videohgt': (twilioService.camDeviceCount == 0)}"
+                    id="previewContainer" class="previewContainer">
+                </div>
+            </div>
+            <div class="preview-right p-0">
+                <div class="p-0">
+                    <div class="mt-5 mb-3 centeralign p-0">
+                        <h1 *ngIf="loading" class="mt-3">Getting Ready...</h1>
+                        <h2 *ngIf="!loading && twilioService.loading" class="my-3">Trying to Join,</h2>
+                        <p *ngIf="!loading && twilioService.loading">if unable to join in a few seconds please refresh
+                            the page and try again..</p>
+                    </div>
+                    <div class="video_blinking text-center mb-3" *ngIf="!loading && !twilioService.loading">
+                        {{status}}
+                    </div>
+                    <div class="text-center mb-3" *ngIf="loading && !twilioService.loading">
+                        You will be able to join in just a moment
+                    </div>
+                    <app-common-innerloading-spinner *ngIf="loading"></app-common-innerloading-spinner>
+                    <app-common-innerloading-spinner
+                        *ngIf="!loading && twilioService.loading"></app-common-innerloading-spinner>                    
+
+                    <div class="centeralign join-vid-btn mb-3 p-0" *ngIf="!loading">
+                        <button class="startshare" [disabled]="!providerReady || btnClicked"
+                            (click)="onJoinClick()">Start Sharing Video
+                        </button> <button class="ms-1 exit" [disabled]="btnClicked"
+                            (click)="onExitClick()">Exit</button>
+                        <br><br>                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="video-container-org p-0"
+            [ngClass]="{'hide': twilioService.preview, 'in-call': !twilioService.preview}">
+            <div class="remote" id="remote-video" #remoteVideo
+                [ngClass]="{'remote': twilioService.participantsCount > 0, 'remove-hide': twilioService.participantsCount == 0}">
+
+            </div>
+            <div id="local-video" #localVideo
+                [ngClass]="{'local': twilioService.participantsCount > 0, 'local-zeroPs': twilioService.participantsCount == 0}">
+            </div>
+            <div class="icons">
+                <i title="Mute" *ngIf="twilioService.microphone" class="fa fa-microphone round mute"
+                    style="opacity: 1;cursor: pointer;" (click)="onMuteClick()"></i>
+                <i *ngIf="!twilioService.microphone" title="Unmute" class="fa fa-microphone-slash round  mute"
+                    style="opacity: 1;cursor: pointer;" (click)="onUnmuteClick()"></i>
+                <i title="Video" class="round video video-toggle"
+                    style="opacity: 1;cursor: pointer;"
+                    (click)="onVideoToggleClick()">
+                    <span class="fa-stack fa-1x">
+                        <i class="fa fa-video-camera fa-stack-1x"></i>
+                        <i class="fa fa-ban fa-stack-1x stack-ban" [ngClass]="{'fa-invisible': twilioService.video}"></i>
+                    </span>
+                </i>
+                <i *ngIf="twilioService.camDeviceCount > 1  && media"  title="Switch Camera" class="round video video-toggle"
+                    style="opacity: 1;cursor: pointer;" (click)="onSwitchCameraClick()">
+                    <span class="fa-stack fa-1x">
+                        <i class="fa fa-camera fa-stack-1x"></i>
+                        <i class="fa fa-refresh fa-stack-1x"></i>
+                    </span>
+                </i>
+                <i title="Disconnect" class="fa fa-phone red round stop" style="opacity: 1;cursor: pointer;"
+                    (click)="onDisconnectClick()"></i>
+                <span class="pull-right" *ngIf="twilioMainClass.signalStrength==0">
+                    <i class="fa fa-spinner"></i>
+                    <span class="record-text">Reconnecting...</span>
+                </span>
+                <span class="pull-right signal" *ngIf="twilioMainClass.signalStrength==1">
+                    <img [src]="getImageUrl('signal-1')" alt="Signal Strength" />
+                    <br /><span class="record-text">Bad network</span>.
+                </span>
+                <span class="pull-right signal" *ngIf="twilioMainClass.signalStrength==2">
+                    <img [src]="getImageUrl('signal-2')" alt="Signal Strength" />
+                    <br /><span class="record-text">Below average</span>
+                </span>
+                <span class="pull-right signal" *ngIf="twilioMainClass.signalStrength==3" >
+                    <img [src]="getImageUrl('signal-3')" alt="Signal Strength" />
+                    <br /><span class="record-text">Average</span>
+                </span>
+                <span class="pull-right signal" *ngIf="twilioMainClass.signalStrength==4" >
+                    <img [src]="getImageUrl('signal-4')" alt="Signal Strength" />
+                    <br /><span class="record-text">Good</span>
+                </span>
+                <span class="pull-right signal" *ngIf="twilioMainClass.signalStrength==5" >
+                    <img [src]="getImageUrl('signal-5')" alt="Signal Strength" />
+                    <br /><span class="record-text">Excellent</span>
+                </span>
+                <span class="pull-right" *ngIf="recordingFlag">
+                    <i class="fa fa-circle record red blink pull-right"></i>
+                </span>
+
+            </div>
+        </div>
+        <select id="video-devices" hidden></select>
+        <div class="clearfix"></div>
+    </div>
+    <app-link-expired *ngIf="linkExpired"></app-link-expired>
+</section>

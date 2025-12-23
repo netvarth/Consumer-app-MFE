@@ -1,29 +1,20 @@
-import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
-import { NavigationExtras, Router } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
-import {
-  AuthService,
-  BookingService,
-  ConsumerService,
-  DateTimeProcessor,
-  ErrorMessagingService,
-  GroupStorageService,
-  LocalStorageService,
-  Messages,
-  SharedService,
-  SubscriptionService,
-  ToastService
-} from 'jconsumer-shared';
-import { Subscription } from 'rxjs';
-import { GalleryService } from '../../../shared/gallery/galery-service';
-import { GalleryImportComponent } from '../../../shared/gallery/import/gallery-import.component';
-import { ViewRxComponent } from '../../../shared/view-rx/view-rx.component';
-import { InvoiceListComponent } from '../../../shared/invoice-list/invoice-list.component';
-import { RateServicePopupComponent } from '../../../shared/rate-service-popup/rate-service-popup';
-import { AttachmentPopupComponent } from '../../../shared/attachment-popup/attachment-popup.component';
-import { AddInboxMessagesComponent } from '../../../shared/add-inbox-messages/add-inbox-messages.component';
-import { MeetingDetailsComponent } from '../../../shared/meeting-details/meeting-details.component';
-import { TeleBookingService } from '../../../shared/tele-bookings-service';
+import { DOCUMENT } from "@angular/common";
+import { Component, ElementRef, HostListener, Inject, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { DomSanitizer } from "@angular/platform-browser";
+import { ActivatedRoute, NavigationExtras, Router } from "@angular/router";
+import { TranslateService } from "@ngx-translate/core";
+import { AuthService, BookingService, ConsumerService, DateTimeProcessor, ErrorMessagingService, GroupStorageService, LocalStorageService, Messages, OrderService, projectConstantsLocal, SharedService, SubscriptionService, ToastService, WordProcessor } from "jconsumer-shared";
+import { interval as observableInterval, Subscription } from "rxjs";
+import { GalleryService } from "../../../shared/gallery/galery-service";
+import { AddInboxMessagesComponent } from "../../../shared/add-inbox-messages/add-inbox-messages.component";
+import { InvoiceListComponent } from "../../../shared/invoice-list/invoice-list.component";
+import { MeetingDetailsComponent } from "../../../shared/meeting-details/meeting-details.component";
+import { ViewRxComponent } from "../../../shared/view-rx/view-rx.component";
+import { GalleryImportComponent } from "../../../shared/gallery/import/gallery-import.component";
+import { AttachmentPopupComponent } from "../../../shared/attachment-popup/attachment-popup.component";
+import { RateServicePopupComponent } from "../../../shared/rate-service-popup/rate-service-popup";
+import { TeleBookingService } from "../../../shared/tele-bookings-service";
 
 @Component({
   selector: 'app-my-bookings',
@@ -31,105 +22,312 @@ import { TeleBookingService } from '../../../shared/tele-bookings-service';
   styleUrls: ['./my-bookings.component.scss']
 })
 export class MyBookingsComponent implements OnInit, OnDestroy {
-  requestLimit = 2;
-  bookingsLimit = 2;
-  limit = 2;
-  appointmentRequests: any = [];
-  appointmentRequestsCount = 0;
-  bookings: any = [];
-  // allBookings: any = [];
-  bookingTitle;
-  bookingTitles: any = [
-    { id: 1, caption: 'today', displayName: 'Today\'s Booking' },
-    { id: 2, caption: 'future', displayName: 'Upcoming Bookings' },
-    { id: 3, caption: 'previous', displayName: 'Previous Bookings', imgPath: '' }
-  ]
 
+  send_msg_cap = Messages.SEND_MSG_CAP;
+  make_pay_cap = Messages.MAKE_PAYMENT_CAP;
+  bill_cap = Messages.BILL_CAPTION;
+  rate_visit = Messages.RATE_VISIT;
+  get_token_btn = Messages.GET_TOKEN;
+  server_date;
+  waitlists;
+  appointments: any = [];
+  history;
+  dateFormat = projectConstantsLocal.PIPE_DISPLAY_DATE_FORMAT;
+  newDateFormat = projectConstantsLocal.DATE_MM_DD_YY_FORMAT;
+  monthFormat = projectConstantsLocal.DATE_FORMAT_STARTS_MONTH;
+  dateFormatSp = projectConstantsLocal.PIPE_DISPLAY_DATE_FORMAT_WITH_DAY;
+  timeFormat = projectConstantsLocal.PIPE_DISPLAY_TIME_FORMAT;
+  loadcomplete = { waitlist: false, history: false, donations: false, appointment: false };
+  tooltipcls = projectConstantsLocal.TOOLTIP_CLS;
+  pagination: any = {
+    startpageval: 1,
+    totalCnt: 0,
+    perPage: projectConstantsLocal.PERPAGING_LIMIT
+  };
+  panelOpenState = false;
+  total_requests: any = [];
+  apptRequests: any = [];
+  moreApptRequest: any = [];
+  more_requestShow = false;
+  isRequest: boolean = false;
+  s3url = null;
+  settingsjson = null;
+  settings_exists = false;
+  futuredate_allowed = false;
+  reload_history_api = { status: true };
+  subscription: Subscription;
+  cronHandle: Subscription;
+  countercronHandle: Subscription;
+  cronStarted;
+  refreshTime = projectConstantsLocal.CONSUMER_DASHBOARD_REFRESH_TIME;
+  refreshTimeForTracking = 600000;
+  counterrefreshTime = 60; // seconds, set to reduce the counter every minute, if required
+  open_fav_div = null;
+  hideShowAnimator = false;
+  nextavailableCaption = Messages.NXT_AVAILABLE_TIME_CAPTION;
+  estimatesmallCaption = Messages.ESTIMATED_TIME_SMALL_CAPTION;
+  notificationdialogRef;
   addnotedialogRef;
-  accountId: any;
-  screenWidth: number;
-  smallDevice: boolean;
-  moment;
-  todayDate = new Date();
-  rupee_symbol = 'Ã¢â€šÂ¹';
-  loading: boolean;
-  showattachmentDialogRef;
-  theme: any
+  checkindialogRef;
   ratedialogRef;
   privacydialogRef;
   canceldialogRef;
-  private subscriptions: Subscription = new Subscription();
-  loggedIn: boolean = true;
-  activeUser;
+  servicesjson: any = [];
+  public time = 300;
+  public mode = 'horizontal';
+  public perspective = 2000;
+  public init = 0;
+  isCheckinEnabled = true;
+  coupondialogRef: MatDialogRef<{}, any>;
+  nextAvailDate;
+  terminologiesJson: any = [];
+  mins;
+  status: Boolean;
+  callingModesDisplayName = projectConstantsLocal.CALLING_MODES;
+  donations: any = [];
+  rupee_symbol = 'Ã¢â€šÂ¹';
+  appttime_arr: any = [];
+  api_error: any;
+  api_loading = false;
+  futureAllowed = true;
+  usr_details: any;
+  login_details: any;
+  future_appointments: any = [];
+  future_waitlists: any = [];
+  todayDate = new Date();
+  tDate: any;
+  // path = projectConstants.PATH;
+  locationholder: any;
+  today_totalbookings: any = [];
+  future_totalbookings: any = [];
+  todayBookings: any = [];
+  todayBookings_more: any = [];
+  more_tdybookingsShow = false;
+  futureBookings: any = [];
+  futureBookings_more: any = [];
+  more_futrbookingsShow = false;
+  appointmentslist: any = [];
+  tdyDate: string;
+  loading = true;
+  provider_label: any;
   viewrxdialogRef;
-  galleryDialog;
-  showCancelledBookings = false;
-  activeBookings: any;
-  cancelledBookings: any;
-  cdnPath: string = '';
-  constructor(
+  tomorrowDate: Date;
+  screenWidth: number;
+  no_of_grids: number;
+  bookingStatusClasses = projectConstantsLocal.BOOKING_STATUS_CLASS;
+  display_dateFormat = projectConstantsLocal.DATE_FORMAT_WITH_MONTH;
+  galleryDialog: any;
+  extras: any;
+
+  accountId: any;
+  customAppid: any;
+  customId: any;
+  countryCode: any;
+  chatId: any;
+  showTeleBt = false;
+  tele_popUp;
+  @ViewChild('popupforApp') popUp: ElementRef;
+  showattachmentDialogRef: MatDialogRef<unknown, any>;
+  theme: any;
+  fromApp = false;
+  homeView: any;
+  customLink: boolean = false;
+  accountProfile: any;
+  accountConfig: any;
+  account: any;
+  moment: any;
+  loggedIn: boolean = true;
+  ivrEnabled = false;
+  callBackList: any = [];
+  callBackHistoryList: ArrayBuffer;
+  invoiceDetailsById: any;
+  allInvocies: any;
+  selectedInoviceId: any;
+  uuid: any;
+  showOrder = false;
+  more_tdyOrdersShow: boolean;
+  more_futrOrdersShow: boolean;
+  total_tdy_order: any[];
+  todayOrderslst: any[];
+  todayOrderslst_more: any[];
+  total_future_order: any[];
+  futureOrderslst: any[];
+  futureOrderslst_more: any[];
+  future_orders: any = [];
+  orders: any = [];
+  myOrders: any;
+  onlineOrder: any = false;
+  limit = 3;
+  orderLimit = 3;
+  settings: any;
+  apptSettings: any;
+  enabledWaitlist: any;
+  enableAppt: any;
+  isPartnerLogin: any;
+  orderData: any;
+  templateJson: any;
+  showReorder: boolean;
+  reorder: boolean = false;
+  loggedUser: any;
+  hideIcons: any;
+  ordrIconUrl = "";
+  loginstyle: any;
+  private subs = new Subscription();
+  activeUser: any;
+  cdnPath = '';
+  constructor(private consumerService: ConsumerService,
     private sharedService: SharedService,
-    private router: Router,
-    private subscriptionService: SubscriptionService,
+    public translate: TranslateService,
+    private dialog: MatDialog, private router: Router,
+    @Inject(DOCUMENT) public document,
+    private activated_route: ActivatedRoute,
+    private lStorageService: LocalStorageService,
+    private groupService: GroupStorageService,
+    private wordProcessor: WordProcessor,
+    private toastService: ToastService,
+    private galleryService: GalleryService,
     private dateTimeProcessor: DateTimeProcessor,
+    private authService: AuthService,
+    private orderService: OrderService,
+    private subscriptionService: SubscriptionService,
     private errorService: ErrorMessagingService,
     private bookingService: BookingService,
-    private dialog: MatDialog,
-    private toastService: ToastService,
-    private authService: AuthService,
-    private groupService: GroupStorageService,
-    private consumerService: ConsumerService,
-    private galleryService: GalleryService,
-    private lStorageService: LocalStorageService,
-     private teleService : TeleBookingService
-  ) {
-    this.cdnPath = this.sharedService.getCDNPath();
-    this.moment = this.dateTimeProcessor.getMoment();
+    private teleService: TeleBookingService,
+    public _sanitizer: DomSanitizer) {
+      this.cdnPath = this.sharedService.getCDNPath();
+      this.ordrIconUrl = `${this.cdnPath}customapp/assets/images/shopping-cart-of-checkered-design.svg`;
+    if (this.lStorageService.getitemfromLocalStorage('onlineOrder')) {
+      this.onlineOrder = this.lStorageService.getitemfromLocalStorage('onlineOrder');
+    }
+    if (this.lStorageService.getitemfromLocalStorage('partner')) {
+      this.isPartnerLogin = this.lStorageService.getitemfromLocalStorage('partner')
+    }
+    this.account = this.sharedService.getAccountInfo();
+    this.settings = this.sharedService.getJson(this.account['settings']);
+    this.apptSettings = this.sharedService.getJson(this.account['appointmentsettings']);
+    this.activeUser = this.groupService.getitemFromGroupStorage('jld_scon');
+    this.enableAppt = this.apptSettings.enableAppt;
+    this.enabledWaitlist = this.settings.enabledWaitlist;
+    console.log("this.apptSettings", this.enableAppt)
+    console.log("this.apptSettingsthis.settings", this.enabledWaitlist)
+
+    this.accountProfile = this.sharedService.getJson(this.account['businessProfile']);
+    this.accountId = this.accountProfile.id;
+    if (!this.enableAppt && !this.enabledWaitlist) {
+      this.showOrders();
+    }
     this.onResize();
-    let subscription = this.subscriptionService.getMessage().subscribe(
-      (message) => {
-        switch (message.ttype) {
-          case 'locationChanged':
-            this.bookingTitleChanged(this.bookingTitle);
-            break;
-        }
-      });
-    this.subscriptions.add(subscription);
+    this.subs.add(this.activated_route.queryParams.subscribe(qparams => {
+      if (qparams['source'] && (qparams['source'] === 'checkin_prepayment' || qparams['source'] === 'appt_prepayment')) {
+        this.api_loading = true;
+        setTimeout(() => {
+          this.api_loading = false;
+        }, 8000);
+      }
+    }));
   }
   @HostListener('window:resize', ['$event'])
   onResize() {
-    if (window.innerWidth <= 767) {
-      this.smallDevice = true;
+    this.screenWidth = window.innerWidth;
+    if (this.screenWidth >= 1024) {
+      this.no_of_grids = 3;
+    } else if (this.screenWidth >= 768) {
+      this.no_of_grids = 2;
     } else {
-      this.smallDevice = false;
+      this.no_of_grids = 1;
     }
   }
-  goBack() {
-    this.router.navigate([this.sharedService.getRouteID(), 'dashboard']);
-  }
 
-  ngOnDestroy(): void {
-    this.subscriptionService.sendMessage({ ttype: 'hideLocation' });
-    setTimeout(() => {
-      this.subscriptions.unsubscribe();
-    }, 100);
+  actionPerformed(event) {
+    this.subscriptionService.sendMessage({ ttype: 'refresh' });
+    this.initConsumer();
   }
-
-  ngOnInit(): void {
-    this.accountId = this.sharedService.getAccountID();
+  initConsumer() {
     this.authService.goThroughLogin().then((status) => {
       console.log("Status:", status);
       if (status) {
-        this.initMyBookings();
-        setTimeout(() => {
-          this.subscriptionService.sendMessage({ ttype: 'showLocation' });
-        }, 100);
+        this.api_loading = false;
+        if (this.lStorageService.getitemfromLocalStorage('reqFrom') === 'cuA') {
+          this.fromApp = true;
+        }
+        this.activeUser = this.groupService.getitemFromGroupStorage('jld_scon');
+        this.login_details = this.sharedService.getJson(this.lStorageService.getitemfromLocalStorage('ynw-credentials'));
+        this.tele_popUp = this.lStorageService.getitemfromLocalStorage('showTelePop');
+        let login = this.login_details;
+        if (login && login.countryCode && login.countryCode.startsWith('+')) {
+          this.countryCode = login.countryCode.substring(1);
+          this.consumerService.consumertelegramChat(this.countryCode, login.loginId).subscribe(
+            data => {
+              this.chatId = data;
+              if (this.chatId === null) {
+                this.showTeleBt = true;
+                if (this.tele_popUp) {
+                  this.popUp.nativeElement.style.display = 'block';
+                  this.lStorageService.removeitemfromLocalStorage('showTelePop');
+                }
+              }
+            });
+        }
+        this.wordProcessor.setTerminologies(this.sharedService.getTerminologies());
+        this.provider_label = this.wordProcessor.getTerminologyTerm('provider');
+        this.locationholder = this.lStorageService.getitemfromLocalStorage('ynw-locdet');
+        this.moment = this.dateTimeProcessor.getMoment();
+        this.server_date = this.lStorageService.getitemfromLocalStorage('sysdate');
+        this.getAppointmentToday();
+        this.subs.add(observableInterval(this.refreshTime * 1000).subscribe(x => {
+          this.reloadAPIs();
+        }));
+        this.subs.add(observableInterval(this.counterrefreshTime * 1000).subscribe(x => {
+          this.recheckwaitlistCounters();
+        }));
+        this.getApptRequests();
+        this.loggedIn = true;
       } else {
         this.loggedIn = false;
+        this.api_loading = false;
       }
     });
-    let subs = this.galleryService.getMessage().subscribe(input => {
-      console.log("Reached Here:");
+  }
+  ngOnInit() {
+    const _this = this;
+    this.router.routeReuseStrategy.shouldReuseRoute = function () {
+      return false;
+    };
+    this.api_loading = true;
+    this.subscriptionService.sendMessage({ ttype: 'showLocation' });
+    this.server_date = this.lStorageService.getitemfromLocalStorage('sysdate');
+    this.account = this.sharedService.getAccountInfo();
+    this.accountConfig = this.sharedService.getAccountConfig();
+    if (this.accountConfig && this.accountConfig['loginstyle']) {
+      this.loginstyle = this.accountConfig['loginstyle'];
+    }
+    if (this.accountConfig && this.accountConfig.ivrEnabled) {
+      this.ivrEnabled = true;
+    }
+    if (this.accountConfig && this.accountConfig['theme']) {
+      this.theme = this.accountConfig['theme'];
+    }
+    if (this.accountConfig && this.accountConfig['mode']) {
+      this.homeView = this.accountConfig['mode'];
+    }
+    this.accountProfile = this.sharedService.getJson(this.account['businessProfile']);
+    this.accountId = this.accountProfile.id;
+    // this.customId = this.accountService.getCustomId();
+    this.templateJson = this.sharedService.getTemplateJSON();
+    if (this.templateJson.hidePrice) {
+      this.hideIcons = this.templateJson.hidePrice;
+    }
+    let language = this.lStorageService.getitemfromLocalStorage('translatevariable');
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
+    if (this.accountConfig && this.accountConfig.ivrEnabled) {
+      this.getCallbackRequestList();
+      this.getCallbackRequestHistoryList();
+    }
+    this.restoreDashboardPreference();
+    _this.initConsumer();
+    this.subs.add(this.galleryService.getMessage().subscribe(input => {
+      console.log("Reached Here:", input);
       if (input && input.accountId && input.uuid && input.type === 'appt') {
         this.consumerService.addAppointmentAttachment(input.accountId, input.uuid, input.value)
           .subscribe(
@@ -157,175 +355,352 @@ export class MyBookingsComponent implements OnInit, OnDestroy {
             );
         }
       }
-    });
-    this.subscriptions.add(subs);
+    }));
   }
-  initMyBookings() {
-    this.activeUser = this.groupService.getitemFromGroupStorage('jld_scon');
-    this.setAppointmentRequests();
-    let bookingType = this.groupService.getitemFromGroupStorage('b-t');
-    if (bookingType) {
-      let orderTitle = this.bookingTitles.filter(orderFilter => orderFilter.id == bookingType)[0];
-      this.bookingTitleChanged(orderTitle);
-    } else {
-      this.bookingTitleChanged(this.bookingTitles[0]);
+  goBack() {
+    this.lStorageService.setitemonLocalStorage('tabIndex', "Home")
+    this.router.navigate([this.sharedService.getRouteID()]);
+  }
+  private restoreDashboardPreference() {
+    const storedPref = this.lStorageService.getitemfromLocalStorage('orderStat');
+    const wantsOrders = storedPref === true || storedPref === 'true';
+    const wantsBookings = storedPref === false || storedPref === 'false';
+    if (wantsOrders && this.onlineOrder && !this.showOrder) {
+      this.showOrders();
+    } else if (wantsBookings && (this.enabledWaitlist || this.enableAppt) && this.showOrder) {
+      this.showBookings();
     }
   }
-  actionPerformed(event) {
-    this.initMyBookings();
-  }
-  setAppointmentRequests() {
-    this.bookingService.getAppointmentRequests(this.accountId).subscribe(
-      (requests: any) => {
-        this.appointmentRequests = requests;
-        this.appointmentRequestsCount = requests.length;
-      }
-    )
-  }
-
-  showMore(type) {
-    this.bookings = [...this.activeBookings];
-    switch (type) {
-      case 'requests':
-        if (this.appointmentRequests.length > this.limit) {
-          this.requestLimit = this.appointmentRequests.length;
-        }
-        break;
-      case 'bookings':
-        if (this.bookings.length > this.limit) {
-          this.bookingsLimit = this.bookings.length;
-        }
-        break;
-    }
-  }
-
-  showLess(type) {
-    this.bookings = [...this.activeBookings];
-    switch (type) {
-      case 'requests':
-        if (this.appointmentRequests.length > this.limit) {
-          this.requestLimit = 2;
-        }
-        break;
-      case 'bookings':
-        if (this.bookings.length > this.limit) {
-          this.bookingsLimit = 2;
-        }
-        break;
-    }
-  }
-
-  setTodayBookings() {
-    const _this = this;
-    let selectedLocation = this.lStorageService.getitemfromLocalStorage('c-location');
-    let appointmentFilters = { 'apptStatus-neq': 'failed,prepaymentPending', 'account-eq': this.accountId };
-    selectedLocation ? appointmentFilters['location-eq'] = selectedLocation : '';
-    this.bookingService.getAppointmentToday(appointmentFilters).subscribe(
-      (appointments: any) => {
-        let todaydate = this.dateTimeProcessor.transformToYMDFormat(this.todayDate);
-        let waitlistFilters = {
-          'waitlistStatus-neq': 'failed,prepaymentPending', 'date-eq': todaydate, 'account-eq': this.accountId
-        };
-        this.bookingService.getWaitlist(waitlistFilters).subscribe(
-          (waitlists) => {
-            let bookings = appointments.concat(waitlists);
-            _this.setBookings(bookings);
-            this.subscriptionService.sendMessage({ ttype: 'loading_stop' });
-            this.loading = false;
-          }
-        )
-      }
-    )
-  }
-
-  setFutureBookings() {
-    const _this = this;
-    let selectedLocation = this.lStorageService.getitemfromLocalStorage('c-location');
-    let appointmentFilters = { 'apptStatus-neq': 'failed,prepaymentPending', 'account-eq': this.accountId };
-    selectedLocation ? appointmentFilters['location-eq'] = selectedLocation : '';
-    this.bookingService.getAppointmentFuture(appointmentFilters).subscribe(
-      (appointments: any) => {
-        let waitlistFilters = {
-          'waitlistStatus-neq': 'failed,prepaymentPending', 'account-eq': this.accountId
-        };
-        _this.bookingService.getFutureWaitlist(waitlistFilters).subscribe(
-          (waitlists) => {
-            let bookings = appointments.concat(waitlists);
-            _this.setBookings(bookings);
-            _this.subscriptionService.sendMessage({ ttype: 'loading_stop' });
-            _this.loading = false;
-          });
-      });
-  }
-
-  setPreviousBookings() {
-    const _this = this;
-    let selectedLocation = this.lStorageService.getitemfromLocalStorage('c-location');
-    this.subscriptionService.sendMessage({ ttype: 'loading_start' });
-    let filter = { 'account-eq': this.accountId };
-    selectedLocation ? filter['location-eq'] = selectedLocation : '';
-    this.bookingService.getAppointmentHistory(filter).subscribe(
-      (appointments: any) => {
-        this.bookingService.getWaitlistHistory(filter).subscribe(
-          (waitlists) => {
-            let allbookings = appointments.concat(waitlists);
-            let bookings = allbookings.map((booking) => {
-              if (booking['appmtDate']) {
-                booking['date'] = booking['appmtDate'];
-              }
-              return booking;
-            })
-            _this.setBookings(bookings);
-            _this.subscriptionService.sendMessage({ ttype: 'loading_stop' });
-            this.loading = false;
-          });
-      });
-  }
-
-  setBookings(bookings) {
-    this.activeBookings = this.getActiveBookings(bookings);
-    this.cancelledBookings = this.getCancelledBookings(bookings);
-    if (this.activeBookings.length === 0 && this.cancelledBookings.length > 0) {
-      this.bookings = [...this.cancelledBookings];
-    } else {
-      this.bookings = [...this.activeBookings];
-    }
-
-  }
-
-  bookingTitleChanged(bookingTitle) {
-    this.showCancelledBookings = false;
-    this.bookingTitle = bookingTitle;
-    console.log("Booking Caption", bookingTitle.caption);
-    this.subscriptionService.sendMessage({ ttype: 'loading_start' });
+  getApptRequests() {
     this.loading = true;
-    switch (bookingTitle.caption) {
-      case 'today':
-        this.bookingsLimit = 2;
-        this.limit = 2;
-        this.setTodayBookings();
-        this.groupService.setitemToGroupStorage('b-t', '1');
-        break;
-      case 'future':
-        this.bookingsLimit = 2;
-        this.limit = 2;
-        this.setFutureBookings();
-        this.groupService.setitemToGroupStorage('b-t', '2');
-        break;
-      case 'previous':
-        this.limit = 10;
-        this.bookingsLimit = 10;
-        this.setPreviousBookings();
-        this.groupService.setitemToGroupStorage('b-t', '3');
+    this.consumerService.getApptRequestList(this.accountId).subscribe((res: any) => {
+      console.log("Requestsss :", res);
+      this.waitlists = res;
+      this.total_requests = this.waitlists;
+      this.isRequest = true;
+      this.loading = false;
+      this.apptRequests = [];
+      this.moreApptRequest = [];
+      //tslint:disable-next-line:no-shadowed-variable
+      for (let i = 0; i < this.total_requests.length; i++) {
+        if (i <= 2) {
+          this.apptRequests.push(this.total_requests[i]);
+          console.log("For 3 only", this.apptRequests);
+        } else {
+          this.moreApptRequest.push(this.total_requests[i]);
+          console.log("more than 3", this.moreApptRequest);
+        }
+      }
+    })
+  }
+  redirectto(mod) {
+    switch (mod) {
+      case 'profile':
+        this.router.navigate([this.sharedService.getRouteID(), 'profile']);
         break;
     }
   }
+  paymentsClicked(types) {
+    let queryParams = {};
+    queryParams['type'] = types
+    const navigationExtras: NavigationExtras = {
+      queryParams: queryParams
+    };
+    this.router.navigate([this.sharedService.getRouteID(), 'payments'], navigationExtras);
+  }
 
-  bookingDetails(booking) {
-    console.log("booking" + booking);
+  // showBookingDetails(booking, type?) {
+  //   let bookingID = booking.apptStatus ? booking.uid : booking.uid;
+  //   this.router.navigate([this.sharedService.getRouteID(), 'booking', bookingID]);
+    
+  //   let queryParams = {};
+  //   if (booking.apptStatus) {
+  //     queryParams['uuid'] = booking.uid;
+  //     queryParams['type'] = type;
+  //     const navigationExtras: NavigationExtras = {
+  //       queryParams: queryParams
+  //     };
+  //     this.router.navigate([this.customId, 'apptdetails'], navigationExtras);
+  //   } else if (booking.waitlistStatus) {
+  //     queryParams['uuid'] = booking.ynwUuid;
+  //     queryParams['type'] = type;
+  //     const navigationExtras: NavigationExtras = {
+  //       queryParams: queryParams
+  //     };
+  //     this.router.navigate([this.customId, 'checkindetails'], navigationExtras);
+  //   }
+  // }
+  closeCounters() {
+    if (this.cronHandle) {
+      this.cronHandle.unsubscribe();
+    }
+    if (this.countercronHandle) {
+      this.countercronHandle.unsubscribe();
+    }
+  }
+  ngOnDestroy() {
+    if (this.notificationdialogRef) {
+      this.notificationdialogRef.close();
+    }
+    if (this.addnotedialogRef) {
+      this.addnotedialogRef.close();
+    }
+    if (this.checkindialogRef) {
+      this.checkindialogRef.close();
+    }
+    if (this.ratedialogRef) {
+      this.ratedialogRef.close();
+    }
+    if (this.privacydialogRef) {
+      this.privacydialogRef.close();
+    }
+    if (this.canceldialogRef) {
+      this.canceldialogRef.close();
+    }
+    this.subs.unsubscribe();
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+  }
+  getCallbackRequestHistoryList() {
+    this.tDate = this.dateTimeProcessor.transformToYMDFormat(this.todayDate);
+    let callData = {
+      'createdDate-lt': this.tDate
+    };
+    // this.consumerService.getCallbackRequestList(callData).subscribe((data) => {
+    //   this.callBackHistoryList = data;
+    // })
+  }
+  getCallbackRequestList() {
+    let params = {
+      'callStatus-eq': "callBackRequested"
+    };
+    // this.consumerService.getCallbackRequestList(params).subscribe((data) => {
+    //   this.callBackList = data;
+    // })
+  }
+  getWaitlist() {
+    this.loadcomplete.waitlist = false;
+    this.tDate = this.dateTimeProcessor.transformToYMDFormat(this.todayDate);
+    let params = {
+      'waitlistStatus-neq': 'failed,prepaymentPending', 'date-eq': this.tDate
+    };
+    if (this.accountId) {
+      params['account-eq'] = this.accountId;
+    }
+    this.subs.add(this.consumerService.getWaitlist(params).subscribe(data => {
+      this.waitlists = data;
+      this.today_totalbookings = this.appointments.concat(this.waitlists);
+      this.loading = false;
+      this.getAppointmentFuture();
+      // more case
+      this.todayBookings = [];
+      console.log(this.todayBookings);
+      this.todayBookings_more = [];
+      // tslint:disable-next-line:no-shadowed-variable
+      for (let i = 0; i < this.today_totalbookings.length; i++) {
+        if (i <= 2) {
+          this.todayBookings.push(this.today_totalbookings[i]);
+          console.log(this.todayBookings);
+        } else {
+          this.todayBookings_more.push(this.today_totalbookings[i]);
+        }
+      }
+      const todaydt = new Date(this.server_date.split(' ')[0]).toLocaleString(this.dateTimeProcessor.REGION_LANGUAGE, { timeZone: this.dateTimeProcessor.TIME_ZONE_REGION });
+      const today = new Date(todaydt);
+      let i = 0;
+      let retval;
+      for (const waitlist of this.waitlists) {
+        const waitlist_date = new Date(waitlist.date);
+        today.setHours(0, 0, 0, 0);
+        waitlist_date.setHours(0, 0, 0, 0);
+        this.waitlists[i].future = false;
+        retval = this.getAppxTime(waitlist);
+        if (today.valueOf() < waitlist_date.valueOf()) {
+          this.waitlists[i].future = true;
+          this.waitlists[i].estimated_time = retval.time;
+          this.waitlists[i].estimated_timenow = retval.timenow;
+          this.waitlists[i].estimated_timeslot = retval.timeslot;
+          this.waitlists[i].estimated_caption = retval.caption;
+          this.waitlists[i].estimated_date = retval.date;
+          this.waitlists[i].estimated_date_type = retval.date_type;
+          this.waitlists[i].estimated_autocounter = retval.autoreq;
+        } else {
+          this.waitlists[i].estimated_time = retval.time;
+          this.waitlists[i].estimated_timenow = retval.timenow;
+          this.waitlists[i].estimated_timeslot = retval.timeslot;
+          this.waitlists[i].estimated_caption = retval.caption;
+          this.waitlists[i].estimated_date = retval.date;
+          this.waitlists[i].estimated_date_type = retval.date_type;
+          this.waitlists[i].estimated_autocounter = retval.autoreq;
+          this.waitlists[i].estimated_timeinmins = retval.time_inmins;
+        }
+        this.waitlists[i].cancelled_caption = retval.cancelled_caption;
+        this.waitlists[i].cancelled_date = retval.cancelled_date;
+        this.waitlists[i].cancelled_time = retval.cancelled_time;
+        i++;
+      }
+      this.loadcomplete.waitlist = true;
+    }, () => {
+      this.loadcomplete.waitlist = true;
+    }
+    ));
+  }
+  getAppxTime(waitlist) {
+    const appx_ret = { 'caption': '', 'date': '', 'date_type': 'string', 'time': '', 'timenow': '', 'timeslot': '', 'autoreq': false, 'time_inmins': waitlist.appxWaitingTime, 'cancelled_time': '', 'cancelled_date': '', 'cancelled_caption': '' };
+    if (waitlist.waitlistStatus !== 'cancelled') {
+      if (waitlist.hasOwnProperty('serviceTime') || waitlist.calculationMode === 'NoCalc') {
+        appx_ret.caption = 'Checked in for'; // 'Check-In Time';
+        if (waitlist.calculationMode === 'NoCalc') {
+          appx_ret.time = waitlist.queue.queueStartTime + ' - ' + waitlist.queue.queueEndTime;
+        } else {
+          appx_ret.time = waitlist.serviceTime;
+        }
+        const waitlist_date = new Date(waitlist.date);
+        const todaydt = new Date(this.server_date.split(' ')[0]).toLocaleString(this.dateTimeProcessor.REGION_LANGUAGE, { timeZone: this.dateTimeProcessor.TIME_ZONE_REGION });
+        const today = new Date(todaydt);
+        today.setHours(0, 0, 0, 0);
+        waitlist_date.setHours(0, 0, 0, 0);
+        appx_ret.date = waitlist.date;
+        appx_ret.date_type = 'date';
+        appx_ret.timeslot = waitlist.queue.queueStartTime + ' - ' + waitlist.queue.queueEndTime;
+      } else {
+        if (waitlist.appxWaitingTime === 0) {
+          appx_ret.caption = this.estimatesmallCaption; // 'Estimated Time';
+          appx_ret.time = waitlist.queue.queueStartTime + ' - ' + waitlist.queue.queueEndTime;
+          appx_ret.timenow = 'Now';
+        } else if (waitlist.appxWaitingTime !== 0) {
+          appx_ret.caption = this.estimatesmallCaption; // 'Estimated Time';
+          appx_ret.date = '';
+          appx_ret.time = this.dateTimeProcessor.convertMinutesToHourMinute(waitlist.appxWaitingTime);
+          appx_ret.autoreq = true;
+        }
+      }
+    } else {
+      let time = [];
+      let time1 = [];
+      let t2;
+      appx_ret.caption = 'Checked in for';
+      appx_ret.date = waitlist.date;
+      appx_ret.time = waitlist.queue.queueStartTime + ' - ' + waitlist.queue.queueEndTime;
+      appx_ret.cancelled_date = this.moment(waitlist.statusUpdatedTime, 'YYYY-MM-DD').format();
+      time = waitlist.statusUpdatedTime.split('-');
+      time1 = time[2].trim();
+      t2 = time1.slice(2);
+      appx_ret.cancelled_time = t2;
+      appx_ret.cancelled_caption = 'Cancelled on ';
+    }
+    return appx_ret;
+  }
 
-    let bookingID = booking.apptStatus ? booking.uid : booking.uid;
-    this.router.navigate([this.sharedService.getRouteID(), 'booking', bookingID]);
+  getApptlist() {
+    this.loadcomplete.appointment = false;
+    const params = { 'apptStatus-neq': 'failed,prepaymentPending' };
+    this.subs.add(this.consumerService.getApptlist(params)
+      .subscribe(
+        data => {
+          this.appointments = data;
+          console.log("appointments", this.appointments)
+          const todaydt = new Date(this.server_date.split(' ')[0]).toLocaleString(this.dateTimeProcessor.REGION_LANGUAGE, { timeZone: this.dateTimeProcessor.TIME_ZONE_REGION });
+          const today = new Date(todaydt);
+          let i = 0;
+          let retval;
+          for (const appointment of this.appointments) {
+            const waitlist_date = new Date(appointment.appmtDate);
+            today.setHours(0, 0, 0, 0);
+            waitlist_date.setHours(0, 0, 0, 0);
+            this.appointments[i].future = false;
+            retval = this.getApptAppxTime(appointment);
+            if (today.valueOf() < waitlist_date.valueOf()) {
+              this.appointments[i].future = true;
+              this.appointments[i].estimated_time = retval.time;
+              this.appointments[i].estimated_timeslot = retval.timeslot;
+              this.appointments[i].estimated_caption = retval.caption;
+              this.appointments[i].estimated_date = retval.date;
+              this.appointments[i].estimated_date_type = retval.date_type;
+              this.appointments[i].estimated_autocounter = retval.autoreq;
+            } else {
+              this.appointments[i].estimated_time = retval.time;
+              this.appointments[i].estimated_timeslot = retval.timeslot;
+              this.appointments[i].estimated_caption = retval.caption;
+              this.appointments[i].estimated_date = retval.date;
+              this.appointments[i].estimated_date_type = retval.date_type;
+              this.appointments[i].estimated_autocounter = retval.autoreq;
+            }
+            this.appointments[i].cancelled_caption = retval.cancelled_caption;
+            this.appointments[i].cancelled_date = retval.cancelled_date;
+            this.appointments[i].cancelled_time = retval.cancelled_time;
+            i++;
+          }
+          this.loadcomplete.appointment = true;
+        }, () => {
+          this.loadcomplete.appointment = true;
+        }
+      ));
+  }
+
+  getApptAppxTime(appointment) {
+    const appx_ret = { 'caption': '', 'date': '', 'date_type': 'string', 'time': '', 'timeslot': '', 'autoreq': false, 'cancelled_time': '', 'cancelled_date': '', 'cancelled_caption': '' };
+    if (appointment.apptStatus !== 'Cancelled' && appointment.apptStatus !== 'Rejected') {
+      appx_ret.caption = 'Appointment for'; // 'Check-In Time';
+      appx_ret.time = appointment.appmtTime;
+      const waitlist_date = new Date(appointment.appmtDate);
+      const todaydt = new Date(this.server_date.split(' ')[0]).toLocaleString(this.dateTimeProcessor.REGION_LANGUAGE, { timeZone: this.dateTimeProcessor.TIME_ZONE_REGION });
+      const today = new Date(todaydt);
+      today.setHours(0, 0, 0, 0);
+      waitlist_date.setHours(0, 0, 0, 0);
+      appx_ret.date = appointment.appmtDate;
+      appx_ret.date_type = 'date';
+      appx_ret.timeslot = appointment.schedule.apptSchedule.timeSlots[0].sTime + ' - ' + appointment.schedule.apptSchedule.timeSlots[0].eTime;
+    } else {
+      let time = [];
+      let time1 = [];
+      let t2;
+      appx_ret.caption = 'Appointment for';
+      appx_ret.date = appointment.appmtDate;
+      appx_ret.time = appointment.appmtTime;
+      if (appointment.statusUpdatedTime) {
+        appx_ret.cancelled_date = this.moment(appointment.statusUpdatedTime, 'YYYY-MM-DD').format();
+        time = appointment.statusUpdatedTime.split('-');
+        time1 = time[2].trim();
+        t2 = time1.slice(2);
+        appx_ret.cancelled_time = t2;
+      }
+      if (appointment.apptStatus === 'Rejected') {
+        appx_ret.cancelled_caption = 'Rejected on ';
+      } else {
+        appx_ret.cancelled_caption = 'Cancelled on ';
+      }
+    }
+    return appx_ret;
+  }
+
+  doCancelWaitlist(booking) {
+    const _this = this;
+    let bookingType = booking.apptStatus ? 'appointment' : 'checkin';
+    this.bookingService.doCancelWaitlist(booking, bookingType, this.theme, this)
+      .then(
+        data => {
+          if (data === 'reloadlist') {
+            this.today_totalbookings = [];
+            this.future_totalbookings = [];
+            this.todayBookings = [];
+            this.todayBookings_more = [];
+            this.futureBookings = [];
+            this.futureBookings_more = [];
+            this.appointmentslist = [];
+            this.total_requests = [];
+            this.apptRequests = [];
+            this.moreApptRequest = [];
+            this.getAppointmentToday();
+            this.getAppointmentFuture();
+            this.getApptRequests();
+          }
+        }, error => {
+          let errorObj = this.errorService.getApiError(error);
+          this.toastService.showError(errorObj);
+        }
+      );
   }
   rescheduleBooking(booking) {
     let bookingID = booking.apptStatus ? booking.uid : booking.uid;
@@ -354,6 +729,16 @@ export class MyBookingsComponent implements OnInit, OnDestroy {
     }
     this.addNote(pass_ob);
   }
+
+  addCommonMessage(provider) {
+    const pass_ob = {};
+    pass_ob['source'] = 'consumer-common';
+    pass_ob['user_id'] = provider.id;
+    pass_ob['name'] = provider.businessName;
+    pass_ob['theme'] = this.theme;
+    this.addNote(pass_ob);
+  }
+
   addNote(pass_ob) {
     this.addnotedialogRef = this.dialog.open(AddInboxMessagesComponent, {
       width: '50%',
@@ -362,9 +747,75 @@ export class MyBookingsComponent implements OnInit, OnDestroy {
       autoFocus: true,
       data: pass_ob
     });
-    this.addnotedialogRef.afterClosed().subscribe(() => {
+    this.addnotedialogRef.afterClosed().subscribe(result => {
+      if (result === 'reloadlist') {
+      }
     });
   }
+
+  handle_pageclick(pg) {
+    this.pagination.startpageval = pg;
+    // this.getHistroy();
+  }
+
+  setPaginationFilter() {
+    const api_filter = {};
+    api_filter['from'] = (this.pagination.startpageval) ? (this.pagination.startpageval - 1) * this.pagination.perPage : 0;
+    api_filter['count'] = this.pagination.perPage;
+    return api_filter;
+  }
+
+  goCheckin(data, location, type) {
+    let provider_data = null;
+    if (type === 'fav_provider') {
+      provider_data = data;
+    } else {
+      provider_data = data.provider || null;
+    }
+    let chdatereq;
+    if (location['onlineCheckIn'] && location['isAvailableToday'] && location['availableToday']) {
+      chdatereq = false;
+    } else {
+      chdatereq = false;
+    }
+    this.setCheckinData(provider_data, location, location['estimatedtime_det']['cdate'], chdatereq);
+  }
+  setCheckinData(provider, location, currdate, chdatereq = false) {
+    let queryParams = {
+      loc_id: location.id,
+      sel_date: currdate,
+      cur: chdatereq,
+      tel_serv_stat: provider.virtulServiceStatus
+    }
+    const navigationExtras: NavigationExtras = {
+      queryParams: queryParams
+    };
+    this.router.navigate([this.customId, 'checkin'], navigationExtras);
+  }
+  reloadAPIs() {
+    this.getAppointmentToday();
+    this.getAppointmentFuture();
+    this.getApptRequests();
+    this.reload_history_api = { status: true };
+  }
+
+  recheckwaitlistCounters() {
+    if (this.waitlists && this.waitlists.length > 0) {
+      for (let i = 0; i < this.waitlists.length; i++) {
+        if (this.waitlists[i].estimated_autocounter) {
+          if (this.waitlists[i].estimated_timeinmins > 0) {
+            this.waitlists[i].estimated_timeinmins = (this.waitlists[i].estimated_timeinmins - 1);
+            if (this.waitlists[i].estimated_timeinmins === 0) {
+              this.waitlists[i].estimated_time = 'Now';
+            } else {
+              this.waitlists[i].estimated_time = this.dateTimeProcessor.convertMinutesToHourMinute(this.waitlists[i].estimated_timeinmins);
+            }
+          }
+        }
+      }
+    }
+  }
+
   btnJoinVideoClicked(booking, event) {
     event.stopPropagation();
     let bookingID = booking.apptStatus ? booking.appointmentEncId : booking.checkinEncId;
@@ -373,47 +824,86 @@ export class MyBookingsComponent implements OnInit, OnDestroy {
     }
     return false;
   }
-  viewprescription(booking) {
-    this.viewrxdialogRef = this.dialog.open(ViewRxComponent, {
-      width: '50%',
-      panelClass: ['commonpopupmainclass', 'popup-class'],
-      disableClose: true,
-      data: {
-        theme: this.theme,
-        accencUid: booking.prescShortUrl ? (window.location.origin + booking.prescShortUrl) : booking.prescUrl
-      }
-    });
-  }
-  getMeetingDetails(booking) {
-    let bookingSource = booking.apptStatus ? 'appt' : 'waitlist';
-    const passData = {
-      'type': bookingSource,
-      'details': booking,
-      'theme': this.theme
-    };
-    this.addnotedialogRef = this.dialog.open(MeetingDetailsComponent, {
-      width: '50%',
-      panelClass: ['commonpopupmainclass', 'popup-class'],
-      disableClose: true,
-      data: passData
-    });
-    this.addnotedialogRef.afterClosed().subscribe(result => {
-    });
-  }
-  doCancelWaitlist(booking) {
-    const _this = this;
-    let bookingType = booking.apptStatus ? 'appointment' : 'checkin';
-    this.bookingService.doCancelWaitlist(booking, bookingType, this.theme, this)
-      .then(
-        data => {
-          if (data === 'reloadlist') {
-            _this.bookingTitleChanged(_this.bookingTitle);
-          }
+  
+  getBookingInvoices(accId, bookingID) {
+    return new Promise((resolve, reject) => {
+      this.teleService.getInvoiceDetailsByuuid(accId, bookingID).subscribe(
+        (invoices: any) => {
+          resolve(invoices);
         }, error => {
           let errorObj = this.errorService.getApiError(error);
           this.toastService.showError(errorObj);
+          reject(error)
         }
-      );
+      )
+    })
+  }
+  goToInvoiceList() {
+    return new Promise((resolve, reject) => {
+      this.addnotedialogRef = this.dialog.open(InvoiceListComponent, {
+        width: '50%',
+        panelClass: ['commonpopupmainclass', 'popup-class', 'loginmainclass', 'smallform'],
+        disableClose: true,
+        autoFocus: true,
+        data: this.allInvocies
+      });
+      this.addnotedialogRef.afterClosed().subscribe(result => {
+        resolve(result);
+      });
+    })
+  }
+  selectInvoiceFromList(invoices: any) {
+    return new Promise((resolve, reject) => {
+      this.addnotedialogRef = this.dialog.open(InvoiceListComponent, {
+        width: '50%',
+        panelClass: ['commonpopupmainclass', 'popup-class', 'loginmainclass', 'smallform'],
+        disableClose: true,
+        autoFocus: true,
+        data: invoices
+      });
+      this.addnotedialogRef.afterClosed().subscribe(invoiceID => {
+        resolve(invoiceID);
+      });
+    })
+  }
+  viewBill(booking, event) {
+    event.stopPropagation();
+    let bookingID = booking.apptStatus ? booking.uid : booking.uid;
+    let qParams = {
+      paidInfo: false
+    }
+    console.log("Booking Info:", booking);
+    if (booking.invoiceCreated) {
+      this.getBookingInvoices(booking.providerAccount.id, bookingID).then((invoices: any) => {
+        if (invoices) {
+          if (invoices && invoices.length == 1) {
+            qParams['invoiceId'] = invoices[0].invoiceUid;
+            this.router.navigate([this.sharedService.getRouteID(), 'booking', 'bill', bookingID], { queryParams: qParams });
+          } else {
+            this.selectInvoiceFromList(invoices).then((invoiceID) => {
+              if (invoiceID) {
+                qParams['invoiceId'] = invoiceID;
+                this.router.navigate([this.sharedService.getRouteID(), 'booking', 'bill', bookingID], { queryParams: qParams });
+              }
+            })
+          }
+        }
+      })
+    } else {
+      let queryParams = {
+        paidStatus: false
+      }
+      const navigationExtras: NavigationExtras = {
+        queryParams: queryParams
+      };
+      this.router.navigate([this.sharedService.getRouteID(), 'booking', 'bill', bookingID], navigationExtras);
+    }
+  }
+
+
+  getMapUrl(latitude, longitude) {
+    const mapurl = projectConstantsLocal.MAP_BASE_URL + latitude + ',' + longitude + '/@' + latitude + ',' + longitude + ',15z';
+    return mapurl;
   }
   rateService(booking) {
     let bookingType = booking.apptStatus ? 'appointment' : 'checkin';
@@ -429,36 +919,158 @@ export class MyBookingsComponent implements OnInit, OnDestroy {
       }
     });
     this.ratedialogRef.afterClosed().subscribe(result => {
-      this.bookingTitleChanged(this.bookingTitle);
+      // this.bookingTitleChanged(this.bookingTitle);
+
     });
   }
-  gotoQuestionnaire(booking) {
-    let bookingID = booking.apptStatus ? booking.uid : booking.uid;
-    let bookingType = booking.apptStatus ? 'consAppt' : 'consCheckin';
+  makeFailedPayment(waitlist) {
+    this.router.navigate([this.customId, 'checkin', 'payment', waitlist.ynwUuid]);
+  }
+  makeApptFailedPayment(waitlist) {
+    this.router.navigate([this.customId, 'appointment', 'payment', waitlist.uid]);
+  }
+
+  gotoHistory() {
     const navigationExtras: NavigationExtras = {
       queryParams: {
-        uuid: bookingID,
-        providerId: booking.providerAccount.id,
-        type: bookingType
+        is_orderShow: this.showOrder ? 'true' : 'false'
       }
     };
-    this.router.navigate([this.sharedService.getRouteID(), 'questionnaire'], navigationExtras);
+    this.router.navigate([this.sharedService.getRouteID(), 'history'], navigationExtras);
   }
-  sendAttachment(booking, bookingType) {
-    let bookingID = booking.apptStatus ? booking.uid : booking.uid;
+  getAppointmentToday() {
+    let params = { 'apptStatus-neq': 'failed,prepaymentPending' };
+    if (this.accountId) {
+      params['account-eq'] = this.accountId;
+    }
+    this.subs.add(this.consumerService.getAppointmentToday(params)
+      .subscribe(
+        data => {
+          this.appointmentslist = data;
+          this.appointments = [];
+          this.appointments = this.appointmentslist;
+          this.getWaitlist();
+          this.getApptRequests();
+        }));
+  }
+  getAppointmentFuture() {
+    let params = { 'apptStatus-neq': 'failed,prepaymentPending' };
+    if (this.accountId) {
+      params['account-eq'] = this.accountId;
+    }
+    this.subs.add(this.consumerService.getAppointmentFuture(params)
+      .subscribe(
+        data => {
+          this.future_appointments = data;
+          this.getWaitlistFuture();
+        }));
+  }
+  getWaitlistFuture() {
+    let params = { 'waitlistStatus-neq': 'failed,prepaymentPending' };
+    if (this.accountId) {
+      params['account-eq'] = this.accountId;
+    }
+    this.subs.add(this.consumerService.getWaitlistFuture(params)
+      .subscribe(
+        data => {
+          this.future_waitlists = data;
+          this.future_totalbookings = this.future_waitlists.concat(this.future_appointments);
+          this.loading = false;
+          this.futureBookings = [];
+          this.futureBookings_more = [];
+          for (let i = 0; i < this.future_totalbookings.length; i++) {
+            if (i <= 2) {
+              this.futureBookings.push(this.future_totalbookings[i]);
+            } else {
+              this.futureBookings_more.push(this.future_totalbookings[i]);
+            }
+          }
+        }));
+  }
+  getSingleTime(slot) {
+    const slots = slot.split('-');
+    return this.dateTimeProcessor.convert24HourtoAmPm(slots[0]);
+  }
+ 
+  showMoreTdyBookings() {
+    this.more_tdybookingsShow = true;
+  }
+  showlessTdyBookings() {
+    this.more_tdybookingsShow = false;
+  }
+  showMoreFutrBookings() {
+    this.more_futrbookingsShow = true;
+  }
+  showlessFutrBookings() {
+    this.more_futrbookingsShow = false;
+  }
+  showMoreRequest() {
+    this.more_requestShow = true;
+  }
+  showLessRequest() {
+    this.more_requestShow = false;
+  }
+  stopprop(event) {
+    event.stopPropagation();
+  }
+  getTimeToDisplay(min) {
+    return this.dateTimeProcessor.convertMinutesToHourMinute(min);
+  }
+  viewprescription(checkin) {
+    console.log("Checkin:", checkin);
+    this.viewrxdialogRef = this.dialog.open(ViewRxComponent, {
+      width: '50%',
+      panelClass: ['commonpopupmainclass', 'popup-class'],
+      disableClose: true,
+      data: {
+        theme: this.theme,
+        accencUid: checkin.prescShortUrl ? (window.location.origin + checkin.prescShortUrl) : checkin.prescUrl
+      }
+    });
+  }
+  getBookingStatusClass(status) {
+    const retdet = this.bookingStatusClasses.filter(
+      soc => soc.value === this.wordProcessor.firstToUpper(status));
+    if (retdet[0]) {
+      return retdet[0].class;
+    } else {
+      return '';
+    }
+  }
+  sendAttachment(booking, type) {
+    console.log(booking);
+    console.log(type);
+    const pass_ob = {};
+    pass_ob['user_id'] = booking.providerAccount.id;
+    if (type === 'appt') {
+      pass_ob['type'] = type;
+      pass_ob['uuid'] = booking.uid;
+    } else if (type === 'checkin') {
+      pass_ob['type'] = type;
+      pass_ob['uuid'] = booking.ynwUuid;
+    } else {
+      pass_ob['type'] = type;
+      pass_ob['uuid'] = booking.uid;
+    }
+    this.addattachment(pass_ob);
+  }
+
+  addattachment(pass_ob) {
+    console.log(pass_ob);
     this.galleryDialog = this.dialog.open(GalleryImportComponent, {
       width: '50%',
       panelClass: ['popup-class', 'commonpopupmainclass'],
       disableClose: true,
       data: {
         source_id: 'consumerimages',
-        accountId: booking.providerAccount.id,
-        uid: bookingID,
-        type: bookingType,
+        accountId: pass_ob.user_id,
+        uid: pass_ob.uuid,
+        type: pass_ob.type,
         theme: this.theme
       }
     });
     this.galleryDialog.afterClosed().subscribe(result => {
+      this.reloadAPIs();
     });
   }
   getAttachments(booking) {
@@ -499,70 +1111,33 @@ export class MyBookingsComponent implements OnInit, OnDestroy {
       _this.toastService.showError(errorObj);
     })
   }
-  providerDetail() {
-    this.router.navigate([this.sharedService.getRouteID()]);
-  }
-  getBookingInvoices(accId,bookingID) {
-    return new Promise((resolve, reject) => {
-      this.teleService.getInvoiceDetailsByuuid(accId,bookingID).subscribe(
-        (invoices: any) => {
-          resolve(invoices);
-        }, error => {
-          let errorObj = this.errorService.getApiError(error);
-          this.toastService.showError(errorObj);
-          reject(error)
-        }
-      )
-    })
-  }
-  selectInvoiceFromList(invoices: any) {
-    return new Promise((resolve, reject) => {
-      this.addnotedialogRef = this.dialog.open(InvoiceListComponent, {
-        width: '50%',
-        panelClass: ['commonpopupmainclass', 'popup-class', 'loginmainclass', 'smallform'],
-        disableClose: true,
-        autoFocus: true,
-        data: invoices
-      });
-      this.addnotedialogRef.afterClosed().subscribe(invoiceID => {
-        resolve(invoiceID);
-      });
-    })
-  }
-  viewBill(booking, event) {
-    event.stopPropagation();
-    let bookingID = booking.apptStatus ? booking.uid : booking.uid;
-    let qParams = {
-      paidInfo: false
-    }
-    console.log("Booking Info:", booking);
-    if (booking.invoiceCreated) {
-      this.getBookingInvoices(booking.providerAccount.id,bookingID).then((invoices: any) => {
-        if (invoices) {
-          if (invoices && invoices.length == 1) {
-            qParams['invoiceId'] = invoices[0].invoiceUid;
-            this.router.navigate([this.sharedService.getRouteID(), 'booking', 'bill', bookingID], { queryParams: qParams });
-          } else {
-            this.selectInvoiceFromList(invoices).then((invoiceID) => {
-              if (invoiceID) {
-                qParams['invoiceId'] = invoiceID;
-                this.router.navigate([this.sharedService.getRouteID(), 'booking', 'bill', bookingID], { queryParams: qParams });
-              }
-            })
-          }
-        }
-      })
+  gotoQuestionnaire(booking) {
+    console.log(booking);
+    let uuid;
+    let type;
+    if (booking.waitlistingFor) {
+      uuid = booking.ynwUuid;
+      type = 'consCheckin';
     } else {
-      let queryParams = {
-        paidStatus: false
-      }
-      const navigationExtras: NavigationExtras = {
-        queryParams: queryParams
-      };
-      this.router.navigate([this.sharedService.getRouteID(), 'booking', 'bill', bookingID], navigationExtras);
+      uuid = booking.uid;
+      type = 'consAppt';
     }
+    const navigationExtras: NavigationExtras = {
+      queryParams: {
+        uuid: uuid,
+        providerId: booking.providerAccount.id,
+        type: type
+      }
+    };
+    this.router.navigate([this.customId, 'questionnaire'], navigationExtras);
   }
 
+  bookingDetails(booking) {
+    console.log("booking" + booking);
+
+    let bookingID = booking.apptStatus ? booking.uid : booking.uid;
+    this.router.navigate([this.sharedService.getRouteID(), 'booking', bookingID]);
+  }
   cardClicked(actionObj) {
     console.log("ACtion Obj:", actionObj);
     let booking = actionObj['booking'];
@@ -614,22 +1189,236 @@ export class MyBookingsComponent implements OnInit, OnDestroy {
         break;
     }
   }
-
-  stopprop(event) {
-    event.stopPropagation();
+  getMeetingDetails(booking) {
+    let bookingSource = booking.apptStatus ? 'appt' : 'waitlist';
+    const passData = {
+      'type': bookingSource,
+      'details': booking,
+      'theme': this.theme
+    };
+    this.addnotedialogRef = this.dialog.open(MeetingDetailsComponent, {
+      width: '50%',
+      panelClass: ['commonpopupmainclass', 'popup-class'],
+      disableClose: true,
+      data: passData
+    });
+    this.addnotedialogRef.afterClosed().subscribe(result => {
+    });
+  }
+  providerDetail() {
+    this.router.navigate([this.sharedService.getRouteID()]);
+  }
+  gotoDetails() {
+    const source = this.lStorageService.getitemfromLocalStorage('source');
+    console.log(source);
+    if (source) {
+      window.location.href = source;
+      this.lStorageService.removeitemfromLocalStorage('reqFrom');
+      this.lStorageService.removeitemfromLocalStorage('source');
+    } else {
+      this.router.navigate([this.customId]);
+    }
+  }
+  closeModal() {
+    this.popUp.nativeElement.style.display = 'none';
   }
 
-  getCancelledBookings(bookings) {
-    return bookings.filter(booking =>
-      booking.apptStatus === 'Cancelled' ||
-      booking.waitlistStatus === 'cancelled'
+  initMyOrders() {
+    // this.subscriptionService.sendMessage({ ttype: 'loading_start' });
+    this.loading = true;
+    this.api_loading = true;
+    let filters = {
+      'accountId-eq': this.accountId,
+      'orderStatus-eq': 'ORDER_CONFIRMED,ORDER_COMPLETED,ORDER_CANCELED'
+    };
+    this.subs.add(this.orderService.getOrders(filters).subscribe((orders: any) => {
+      this.myOrders = orders;
+      this.loading = false;
+      this.api_loading = false;
+      // this.subscriptionService.sendMessage({ ttype: 'loading_stop' });
+    }));
+  }
+
+  showMoreTdyOrders() {
+    this.more_tdyOrdersShow = true;
+  }
+  showlessTdyOrders() {
+    this.more_tdyOrdersShow = false;
+  }
+  showMoreFutOrders() {
+    this.more_futrOrdersShow = true;
+  }
+  showlessFutOrders() {
+    this.more_futrOrdersShow = false;
+  }
+  showOrders() {
+    this.showOrder = true;
+    this.lStorageService.setitemonLocalStorage('orderStat', true);
+    this.initMyOrders();
+  }
+  showBookings() {
+    this.showOrder = false;
+    this.lStorageService.setitemonLocalStorage('orderStat', false);
+  }
+
+  showMore() {
+    if (this.myOrders.length > this.limit) {
+      this.orderLimit = this.myOrders.length;
+    }
+  }
+
+  showLess() {
+    if (this.myOrders.length > this.limit) {
+      this.orderLimit = this.limit;
+    }
+  }
+  showOrderDetails(order) {
+    let queryParams = {};
+    queryParams['uuid'] = order.uid;
+    const navigationExtras: NavigationExtras = {
+      queryParams: queryParams
+    };
+    this.router.navigate([this.customId, 'orderdetails'], navigationExtras);
+    this.subscriptionService.sendMessage({ ttype: 'hideItemSearch', value: 0 });
+  }
+  setOrderStatus(original) {
+    let modifiedStr = original.replace(/_/g, ' ');
+    return modifiedStr
+  }
+
+  reOrder(order) {
+    this.api_loading = true;
+    this.orderService.getOrderByUid(order.uid).subscribe(orderData => {
+      this.orderData = orderData;
+      console.log("orderData", orderData)
+      this.createCart(this.orderData).then(data => {
+        console.log("data", data)
+        this.router.navigate([this.sharedService.getRouteID(), 'cart'])
+      })
+    },
+      error => {
+        this.api_loading = false;
+        this.toastService.showError(error);
+        // this.snackbarService.openSnackBar(error, { 'panelClass': 'snackbarerror' });
+      })
+  }
+
+  createCart(orderData) {
+    console.log("orderData", orderData)
+    let cartInfo = {}
+    cartInfo['store'] = {
+      'encId': orderData?.store?.encId
+    }
+    cartInfo['providerConsumer'] = {
+      'id': orderData?.providerConsumer?.id
+    }
+    cartInfo['deliveryType'] = orderData?.deliveryType;
+    if (this.isPartnerLogin) {
+      // cartInfo['items'] = orderData?.itemDtoList.map(item => ({
+      //   catalogItem: {
+      //     encId: item.catalogItem?.encId
+      //   },
+      //   quantity: item.orderQuantity,
+      //   templateSchema: item?.templateSchema,
+      //   templateSchemaValue: item?.templateSchemaValue ? item?.templateSchemaValue : {}
+      // }));
+      cartInfo['items'] = orderData?.itemDtoList?.map(item => {
+        const todayDate = new Date();
+        return {
+          catalogItem: {
+            encId: item?.catalogItem?.encId
+          },
+          quantity: item?.orderQuantity,
+          templateSchema: item?.templateSchema,
+          templateSchemaValue: {
+            ...item?.templateSchemaValue,
+            date: todayDate
+          }
+        };
+      });
+      cartInfo['partner'] =
+      {
+        'id': this.loggedUser?.partner?.id
+      }
+      cartInfo['orderCategory'] = 'LAB_SYNC',
+        cartInfo['orderSource'] = 'PARTNER'
+    } else {
+      cartInfo['items'] = orderData?.itemDtoList.map(item => ({
+        catalogItem: {
+          encId: item.catalogItem?.encId
+        },
+        quantity: item.orderQuantity
+      }));
+      cartInfo['orderCategory'] = 'SALES_ORDER',
+        cartInfo['orderSource'] = 'PROVIDER_CONSUMER'
+    }
+    console.log("cartInfo", cartInfo)
+    return new Promise((resolve, reject) => {
+      this.orderService.createCart(cartInfo).subscribe(
+        (data) => {
+          resolve(data);
+        }, (error) => {
+          resolve(false);
+          this.toastService.showError(error);
+          // this.snackbarService.openSnackBar(error, { 'panelClass': 'snackbarerror' });
+        }
+      );
+    });
+  }
+  private pickFirst<T>(...vals: T[]): T | null {
+    for (const v of vals) if (v !== undefined && v !== null && v !== '') return v as T;
+    return null;
+  }
+
+  private asDate(anyDate: any): Date | null {
+    try {
+      if (!anyDate) return null;
+      return new Date(anyDate);
+    } catch { return null; }
+  }
+
+  // try common field names you already use across appt/check-in
+  private getStart(booking: any): Date | null {
+    return this.asDate(
+      this.pickFirst(
+        booking?.apptTime, booking?.appointmentTime, booking?.scheduleTime,
+        booking?.startTime, booking?.wlTime, booking?.createdTime
+      )
     );
   }
 
-  getActiveBookings(bookings) {
-    return bookings.filter(booking =>
-      booking.apptStatus !== 'Cancelled' ||
-      booking.waitlistStatus !== 'cancelled'
-    );
+  getMonth(b: any): string {
+    const d = this.getStart(b); if (!d) return '';
+    return d.toLocaleString('en-US', { month: 'short', year: 'numeric' }); // "Oct 2025"
+  }
+  getDay(b: any): string {
+    const d = this.getStart(b); if (!d) return '';
+    return String(d.getDate()).padStart(2, '0');
+  }
+  getDayName(b: any): string {
+    const d = this.getStart(b); if (!d) return '';
+    return d.toLocaleString('en-US', { weekday: 'long' });
+  }
+  getTime(b: any): string {
+    const d = this.getStart(b); if (!d) return '';
+    return d.toLocaleString('en-US', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  getTitle(b: any): string {
+    return this.pickFirst(
+      b?.serviceName, b?.apptType, b?.title, b?.displayName, 'Appointment'
+    ) as string;
+  }
+
+  getBookingId(b: any): string {
+    return this.pickFirst(b?.encId, b?.bookingId, b?.id, '#') as string;
+  }
+
+  getTimezone(b: any): string {
+    return this.pickFirst(b?.timezone, 'Asia/Calcutta') as string;
+  }
+
+  getApptFor(b: any): string {
+    return this.pickFirst(b?.customerName, b?.consumer?.firstName, b?.patientName, 'Self') as string;
   }
 }

@@ -1,4 +1,4 @@
-<header *ngIf="config && headerName=='header1'" class="px-1">
+<header *ngIf="header && config && headerName=='header1'" class="px-1">
     <div class="header">
         <div class="d-flex header-section align-items-center justify-content-between">
             <div class="d-flex align-items-center">
@@ -95,7 +95,7 @@
     </div>
 </header>
 
-<header *ngIf="config && headerName=='header2'" class="container header2"
+<header *ngIf="header && config && headerName=='header2'" class="container header2"
     [ngStyle]="{ 'font-family': config.primaryFont }">
     <div class="header">
         <div class="header-grid">
@@ -220,7 +220,7 @@
         </div>
     </div>
 </header>
-<header *ngIf="config && headerName=='header3'" class="container header3"
+<header *ngIf="header && config && headerName=='header3'" class="container header3"
     [ngStyle]="{ 'font-family': config.primaryFont }">
     <div class="header">
         <div class="header-grid">
