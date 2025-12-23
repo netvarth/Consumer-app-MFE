@@ -38,6 +38,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   showWelcomePopup = false;
   welcomeImageUrl = '';
   templateJson;
+  welcomePopupStorageKey = 'welcomePopupShown';
   private welcomePopupTimer: any;
   private subscriptions: Subscription = new Subscription();
   constructor(
@@ -55,6 +56,12 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   ) {
     this.onResize();
     this.activatedRoute.queryParams.subscribe(qparams => {
+       if (qparams && qparams['cl_dt']) {
+        console.log(qparams['cl_dt']);
+        if ((qparams['cl_dt'] == "true" || qparams['cl_dt'] == true) && !this.lStorageService.getitemfromLocalStorage('cleared')) {
+          this.clearStorage();
+        }
+      }
       if (qparams && qparams['callback']) {
         this.callback = qparams['callback'];
       }
@@ -91,6 +98,9 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     // };
   }
   ngOnDestroy(): void {
+     if (this.welcomePopupTimer) {
+      clearTimeout(this.welcomePopupTimer);
+    }
     this.subscriptions.unsubscribe();
     this.cartFooterSubscription.unsubscribe();
   }
@@ -187,28 +197,20 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       }
     })
     
-     const alreadyLoggedIn = this.checkLogin && this.checkLogin();
-    this.templateJson = this.accountService.getTemplateJson();
-    console.log("this.templateJson", this.templateJson)
-    const welcomePopupState = this.lStorageService.getitemfromLocalStorage(this.welcomePopupStorageKey) || {};
-    const hasSeenWelcomePopup = welcomePopupState && welcomePopupState[this.accountId];
-    if (!alreadyLoggedIn && this.accountConfig?.welcomePageEnabled && this.templateJson?.welcomePage && !hasSeenWelcomePopup) {
-      this.welcomeImageUrl = this.templateJson.welcomePage;
-      this.showWelcomePopup = true;
-      welcomePopupState[this.accountId] = true;
-      this.lStorageService.setitemonLocalStorage(this.welcomePopupStorageKey, welcomePopupState);
-      this.welcomePopupTimer = setTimeout(() => {
-        this.showWelcomePopup = false;
-      }, 10000);
-    }
-
-    this.subscriptions.add(
-      this.router.events.subscribe((event) => {
-        if (event instanceof NavigationEnd) {
-          this.scrollToTop();
-        }
-      })
-    );
+      const alreadyLoggedIn = this.checkLogin && this.checkLogin();
+      this.templateJson = this.sharedService.getTemplateJSON();
+      console.log("this.templateJson", this.templateJson)
+      const welcomePopupState = this.lStorageService.getitemfromLocalStorage(this.welcomePopupStorageKey) || {};
+      const hasSeenWelcomePopup = welcomePopupState && welcomePopupState[this.accountId];
+      if (!alreadyLoggedIn && this.accountConfig?.welcomePageEnabled && this.templateJson?.welcomePage && !hasSeenWelcomePopup) {
+        this.welcomeImageUrl = this.templateJson.welcomePage;
+        this.showWelcomePopup = true;
+        welcomePopupState[this.accountId] = true;
+        this.lStorageService.setitemonLocalStorage(this.welcomePopupStorageKey, welcomePopupState);
+        this.welcomePopupTimer = setTimeout(() => {
+          this.showWelcomePopup = false;
+        }, 10000);
+      }
 
     this.subscriptions.add(
       this.router.events.subscribe((event) => {
@@ -352,5 +354,19 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     if (typeof window !== 'undefined') {
       window.scrollTo({ top: 0, left: 0 });
     }
+  }
+  checkLogin() {
+    const login = (this.lStorageService.getitemfromLocalStorage('ynw-credentials')) ? true : false;
+    return login;
+  }
+  closeWelcomePopup() {
+    this.showWelcomePopup = false;
+    if (this.welcomePopupTimer) {
+      clearTimeout(this.welcomePopupTimer);
+    }
+  }
+  clearStorage() {
+    this.lStorageService.clearAll();
+    this.lStorageService.setitemonLocalStorage('cleared', true);
   }
 }

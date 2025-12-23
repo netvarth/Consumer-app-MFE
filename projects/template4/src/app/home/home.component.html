@@ -1,3 +1,12 @@
+    <div class="welcome-overlay" *ngIf="showWelcomePopup && welcomeImageUrl" role="dialog" aria-modal="true"
+      aria-label="Welcome banner" (click)="closeWelcomePopup()">
+      <div class="welcome-overlay__backdrop"></div>
+      <div class="welcome-overlay__content" (click)="$event.stopPropagation()">
+        <button type="button" class="welcome-overlay__close" aria-label="Close"
+          (click)="closeWelcomePopup()">&times;</button>
+        <img [src]="welcomeImageUrl" alt="Welcome" class="welcome-overlay__image" />
+      </div>
+    </div>
 <section id="busPageId" class="content bus-page no-padding loginpg" [ngClass]="theme">
     <div class="bus-page-header" *ngIf="!loginRequired">
         <div class="panel panel-default">
