@@ -1,541 +1,214 @@
 <p-toast class="p-toast-container" [breakpoints]="{'920px': {width: '100%', right: '0', left: '0'}}"></p-toast>
 
-<section class="container no-padding-small cust-book-details customWidth">
-    <div class="content p-0 comn-cls checkin-details">
-        <div [ngClass]="{row: !smallDevice}">
-            <div class="panel panel-default p-0">
-                <div class="panel-body p-0">
-                    <div class="c-outer m0">
-                        <div class="c-body booking-content">
-                            <div class="panel-heading cstmHeader">
-                                <div (click)="gotoPrev()" class="backFlex">
-                                    <div><i class="fa fa-arrow-left" aria-hidden="true"></i></div>
-                                    <div>{{pageTitle | capitalizeFirst}}</div>
-                                </div>
-                            </div>
-                            <div class="lbl">
-                                <div class="card" *ngIf="!api_loading">
-                                    <app-common-innerloading-spinner> </app-common-innerloading-spinner>
-                                </div>
-                                <div *ngIf="api_loading && booking['info'] && !smallDevice">
-                                    <div class="mb-4 cust-det-outline card flexClass direction">
-                                        <div class="w-50 p-3 borderClr">
-                                            <div class="my-2 l-ht-2 flexClass">
-                                                <div class="customCard" *ngIf="booking['logo']">
-                                                    <img class="imageInfo" src="{{booking['logo']}}" />
-                                                </div>
-                                                <div class="customWidth">
-                                                    <div class="CustomerDetails">
-                                                        <div class="cstmLineHeight">
-                                                            <div class="orderStatus" *ngIf="booking['status']">
-                                                                <div class="stausCustom">{{'Status : ' | translate}}
-                                                                </div>
-                                                                <div class="stausCustom">{{booking['status'] |
-                                                                    capitalizeFirst}}</div>
-                                                            </div>
-                                                            <div class="orderStatus mt-2"
-                                                                *ngIf="booking['info']?.providerAccount?.businessName"
-                                                                (click)="gotoHome()">
-                                                                <div class="businessName pointer-cursor">
-                                                                    {{booking['info'].providerAccount.businessName |
-                                                                    capitalizeFirst}}</div>
-                                                            </div>
-                                                            <div class="orderStatus mt-2" *ngIf="booking['location']">
-                                                                <div class="customOrder"> {{booking['location'] |
-                                                                    capitalizeFirst}}</div>
-                                                            </div>
-                                                        </div>
-                                                        <div>
-                                                            <button (click)="sendMessage()" id="btnSendMessage"
-                                                                type="submit" class="contactProviderBtn">
-                                                                <span *ngIf="!api_loadingCtctProvider">{{'Message to provider' | translate}}</span>
-                                                                <app-common-innerloading-spinner color="#fff"
-                                                                    [spinnerParams]="{diameter:30}"
-                                                                    *ngIf="api_loadingCtctProvider">
-                                                                </app-common-innerloading-spinner>
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                    <div class="orderIdType mt-2">
-                                                        <div>
-                                                            <div class="customOrder">{{'Booking Id' | translate}}</div>
-                                                            <div class="orderNumber">{{booking.encID}}</div>
-                                                        </div>
-                                                        <div *ngIf="booking['info']?.provider" class="mt-2 usr-name">
-                                                            <div class="customOrder">{{provider_label | translate |
-                                                                capitalizeFirst}}</div>
-                                                            <div class="orderNumber">
-                                                                {{(booking['info'].provider.businessName) ? booking['info'].provider.businessName
-                                                                : booking['info'].provider.firstName + ' ' + booking['info'].provider.lastName}}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="my-2 l-ht-2 row booking-info-cont pt-2">
-                                                <div class="col-8">
-                                                    <div class="row mb-2"
-                                                        *ngIf="booking?.bookingFor[0]?.firstName || booking?.bookingFor[0]?.lastName">
-                                                        <div class="col-4 col-title">{{'Booking For' | translate}}</div>
-                                                        <div class="col-8 col-value"
-                                                            *ngIf="booking.bookingFor[0]?.firstName || booking.bookingFor[0]?.lastName">
-                                                            <div>
-                                                                <span
-                                                                    *ngIf="booking.bookingFor[0]?.title">{{booking.bookingFor[0]?.title}}&nbsp;</span>
-                                                                {{booking.bookingFor[0]?.firstName |
-                                                                capitalizeFirst}}
-                                                                {{booking.bookingFor[0]?.lastName |
-                                                                capitalizeFirst}}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row mb-2" *ngIf="booking['mobile']">
-                                                        <div class="col-4 col-title">{{'Mobile' | translate}}</div>
-                                                        <div class="col-8 col-value">
-                                                            <div class="no-pointer-events">{{booking['mobile']}}</div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row mb-2" *ngIf="booking['email']">
-                                                        <div class="col-4 col-title">{{'Email' | translate}}</div>
-                                                        <div class="col-8 col-value" >
-                                                            <div class="no-pointer-events">{{booking['email']}}</div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row mb-2" *ngIf="booking['date']">
-                                                        <div class="col-4 col-title">{{'Date & Time' | translate}}</div>
-                                                        <div class="col-8 col-value">
-                                                            <div> {{booking['date'] |
-                                                                date:'EEEE'}}, {{booking['date'] |
-                                                                date:'d'}}&nbsp;{{booking['date'] |
-                                                                date:'MMM'}}&nbsp;{{booking['date'] | date:'y'}},
-                                                                {{booking['time']}}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row mb-2 " *ngIf="booking['info']?.timezone">
-                                                        <div class="col-4 col-title">{{ 'Timezone' | translate }} </div>
-                                                        <div class="col-8 col-value">{{booking['info']?.timezone}}</div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-4 text-center">
-                                                    <div>
-                                                        <qrcode id="print-section" [qrdata]="qr_value" [width]="256"
-                                                            [errorCorrectionLevel]="'M'"></qrcode>
-                                                    </div>
-                                                    <div class="statusCheck">{{'Check your status' | translate}}</div>
-                                                </div>
-                                            </div>
-                                            <div class="my-2 l-ht-2">
-                                                <div>
-                                                    <div class="businessName" *ngIf="cust_notes_cap">{{cust_notes_cap |
-                                                        capitalizeFirst | translate}}</div>
-                                                    <div class="timeslotOrder"
-                                                        *ngIf="booking['info']?.consumerNote &&  booking['info']?.consumerNote !== ''">
-                                                        {{booking['info'].consumerNote}}
-                                                    </div>
-                                                    <div class="timeslotOrder notFound"
-                                                        *ngIf="booking['info']?.consumerNote == '' || !booking['info']?.consumerNote">
-                                                        {{no_cus_notes_cap}}
-                                                    </div>
-                                                </div>
-                                                <div class="mt-2">
-                                                    <div class="businessName">{{'Instructions' | translate}}</div>
-                                                    <div class="timeslotOrder notFound"
-                                                        *ngIf="!booking['info'].service.postInfoText || booking['info'].service.postInfoText===''">
-                                                        {{'No Instructions Found' | translate}}
-                                                    </div>
-                                                    <div class="timeslotOrder"
-                                                        *ngIf="booking['info'].service.postInfoText !==''"
-                                                        [innerHTML]="booking['info'].service.postInfoText">
-                                                    </div>
-                                                </div>
-                                                <div class="mt-2" *ngIf="booking['isCancelled']">
-                                                    <div class="businessName">{{'Cancellation Reason' | translate}}
-                                                    </div>
-                                                    <div class="timeslotOrder">
-                                                        {{booking['cancelReason']}}
-                                                    </div>
-                                                </div>
-                                                <div class="mt-2"
-                                                    *ngIf="booking['isCancelled'] && booking['cancelMessage']">
-                                                    <div class="businessName">{{'Cancellation Message' | translate}}
-                                                    </div>
-                                                    <div class="timeslotOrder">
-                                                        {{booking['cancelMessage']}}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="my-2 l-ht-2 btnAction">
-                                                <div>
-                                                    <button type="submit" class="reschedulebtn" id="btnReschedule"
-                                                        *ngIf="this.booking['actions']['reschedule']"
-                                                        (click)="rescheduleBooking()">
-                                                        <div class="rescheduleCstm">
-                                                            <div>
-                                                                <img class="actionImg"
-                                                                    src="{{cdnPath}}assets/images/myjaldee/reschedule.png" />
-                                                            </div>
-                                                            <div>{{'Reschedule' | translate}}</div>
-                                                        </div>
-                                                    </button>
-                                                </div>
-                                                <div>
-                                                    <button type="submit" class="cancelbtn" id="btnCancelBooking"
-                                                        *ngIf="booking['actions']['cancel']"
-                                                        (click)="cancelBooking()">
-                                                        <div class="cancelCstm">
-                                                            <div>
-                                                                <img class="actionImg"
-                                                                    src="{{cdnPath}}assets/images/myjaldee/cancel.png" />
-                                                            </div>
-                                                            <div>{{'Cancel Booking' | translate}}</div>
-                                                        </div>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="w-50">
-                                            <div
-                                                class="col-sm-12 col-md-12 col-lg-12  col-xl-12 col-12 mgn-up-10 mgn-bt-10 l-ht-2 ">
-                                                <div>
-                                                    <div class="serviceDCetails">{{'Service Details' | translate}}</div>
-                                                    <div class="mt-2">
-                                                        <div class="serviceCstm">
-                                                            <app-service-info [booking]="booking"></app-service-info>
-                                                        </div>
-                                                        <app-meeting-info [meetingInfo]="meetingDetails"
-                                                            [callingChannel]="callingChannel"
-                                                            [callingMode]="callingMode" [callingNumber]="callingNumber">
-                                                        </app-meeting-info>
-                                                        <!-- <div class="mt-2 calendaropen">
-                                                            <div (click)="addToCalendar()" class="calendarTxt">{{'Add On calendar' | translate}}</div>
-                                                            <div (click)="addToCalendar()">
-                                                                <i class="fa fa-calendar"></i>
-                                                            </div>
-                                                        </div> -->
-                                                        <div class="mt-2  justifyContent-1" *ngIf="booking['info']?.amountPaid">
-                                                            <div class="flex1">
-                                                                <div class="serviceChargetxt">{{'Amount Paid' | translate}}</div>
-                                                                <div class="serviceChanrge">{{booking['info']?.amountPaid |currency:'&#8377;'}}</div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="mt-4 waitListFlex gap">
-                                                            <div class="serviceCstm customWidth"
-                                                            *ngIf="booking['actions']['joinMeeting']">
-                                                                <button class="meetingBtn" id="btnJoinVideo">
-                                                                    <app-service-image [booking]="booking"></app-service-image>
-                                                                    <div class="serviceName">
-                                                                        <a class="joinMeeting joinMeetingCstm"
-                                                                            *ngIf="meetingDetails && meetingDetails.joiningUrl" href="{{meetingDetails.joiningUrl}}"
-                                                                            target="blank">{{'Join Video Consultation' | translate}}</a>
-                                                                    </div>
-                                                                </button>
-                                                            </div>
-                                                            <div class="serviceCstm customWidth" *ngIf="booking['actions']['joinJaldeeVideo']">
-                                                                <button class="meetingBtn" id="btnJoinJaldeeVideo">
-                                                                    <div class="serviceName">
-                                                                        <a class="joinMeeting joinMeetingCstm" (click)="joinMeeting()"
-                                                                            target="blank">{{'Join Video Consultation' | translate}}</a>
-                                                                    </div>
-                                                                </button>
-                                                            </div>
-                                                            <div class="serviceCstm"
-                                                                *ngIf="booking['actions']['sendAttachment']"
-                                                                (click)="sendAttachmentBooking()">
-                                                                <button class="attchmentBtn" id="btnSendAttachment">
-                                                                    <i class="material-icons">attach_file</i>
-                                                                    <div>{{'Send Attachment' | translate}}</div>
-                                                                </button>
-                                                            </div>
-                                                            <div class="serviceCstm"
-                                                            *ngIf="showviewAttachment || booking['actions']['hasAttachment']">
-                                                                <button class="attchmentBtn" id="btnViewAttachment"
-                                                                    (click)="viewAttachment()">
-                                                                    <i class="material-icons">attach_file</i><span
-                                                                        class="menuInfo">View Attachments</span>
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div *ngIf="booking['info'] && api_loading && smallDevice">
-                                    <div class="mb-4 cust-det-outline card">
-                                        <div class="logoFlex">
-                                            <div>
-                                                <div class="customCard" *ngIf="blogo">
-                                                    <img class="imageInfo" src="{{blogo}}" />
-                                                </div>
-                                            </div>
-                                            <div class="statusInfo">
-                                                <div class="orderStatus" *ngIf="booking['status']">
-                                                    <div class="stausCustom">{{'Status : ' | translate}}
-                                                    </div>
-                                                    <div class="stausCustom">{{booking['status'] | capitalizeFirst}}
-                                                    </div>
-                                                </div>
-                                                <div class="orderStatus mt-2"
-                                                    *ngIf="booking['info']?.providerAccount?.businessName"
-                                                    (click)="gotoHome()">
-                                                    <div class="businessName pointer-cursor">
-                                                        {{booking['info'].providerAccount.businessName |
-                                                        capitalizeFirst}}</div>
-                                                </div>
-                                                <div class="orderStatus mt-2" *ngIf="booking['location']">
-                                                    <div class="customOrder"> {{booking['location'] |
-                                                        capitalizeFirst}}</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="mt-2">
-                                                <div class="row mb-2">
-                                                    <div class="col-3 col-title">{{'Booking Id' | translate}}
-                                                    </div>
-                                                    <div class="col-9 col-value">{{booking.encID}}</div>
-                                                </div>
-                                                <div class="row mb-2" *ngIf="booking['info']?.provider" >
-                                                    <div class="col-3 col-title">{{provider_label | translate |
-                                                        capitalizeFirst}}</div>
-                                                    <div class="col-9 col-value">
-                                                        {{(booking['info'].provider.businessName) ?
-                                                        booking['info'].provider.businessName
-                                                        : booking['info'].provider.firstName +
-                                                        ' ' + booking['info'].provider.lastName}}</div>
-                                                </div>
-                                            <div class="mt-2">
-                                                <div class="row mb-2"
-                                                    *ngIf="booking?.bookingFor[0]?.firstName || booking?.bookingFor[0]?.lastName">
-                                                    <div class="col-3 col-title">{{'Booking For' | translate}}</div>
-                                                    <div class="col-9 col-value"
-                                                        *ngIf="booking.bookingFor[0]?.firstName || booking.bookingFor[0]?.lastName">
-                                                        <div>
-                                                            <span
-                                                                *ngIf="booking.bookingFor[0]?.title">{{booking.bookingFor[0]?.title}}&nbsp;</span>
-                                                            {{booking.bookingFor[0]?.firstName |
-                                                            capitalizeFirst}}
-                                                            {{booking.bookingFor[0]?.lastName |
-                                                            capitalizeFirst}}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row mb-2" *ngIf="booking['mobile']">
-                                                    <div class="col-3 col-title">{{'Mobile' | translate}}</div>
-                                                    <div class="col-9 col-value">
-                                                        <div class="no-pointer-events">{{booking['mobile']}}</div>
-                                                    </div>
-                                                </div>
-                                                <div class="row mb-2" *ngIf="booking['email']">
-                                                    <div class="col-3 col-title">{{'Email' | translate}}</div>
-                                                    <div class="col-9 col-value">
-                                                        <div class="no-pointer-events">{{booking['email']}}</div>
-                                                    </div>
-                                                </div>
-                                                <div class="row mb-2" *ngIf="booking['date']">
-                                                    <div class="col-3 col-title">{{'Date & Time' | translate}}</div>
-                                                    <div class="col-9 col-value">
-                                                        <div> {{booking['date'] |
-                                                            date:'EEEE'}}, {{booking['date'] |
-                                                            date:'d'}}&nbsp;{{booking['date'] |
-                                                            date:'MMM'}}&nbsp;{{booking['date'] | date:'y'}},
-                                                            {{booking['time']}}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row mb-2" *ngIf="booking['info']?.timezone">
-                                                    <div class="col-3 col-title">{{ 'Timezone' | translate }} </div>
-                                                    <div class="col-9 col-value">{{booking['info']?.timezone}}</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-12 col-md-12 col-lg-12  col-xl-12 col-12 mt-2">
-                                            <button (click)="sendMessage()" type="submit" id="btnSendMessage"
-                                                class="contactProviderBtn">
-                                                <span *ngIf="!api_loadingCtctProvider">{{'Message to provider' |
-                                                    translate}}</span>
-                                                <app-common-innerloading-spinner color="#fff"
-                                                    [spinnerParams]="{diameter:30}" *ngIf="api_loadingCtctProvider">
-                                                </app-common-innerloading-spinner>
-                                            </button>
-                                        </div>
-                                        <div class="col-sm-12 col-md-12 col-lg-12  col-xl-12 col-12 mt-2 text-center">
-                                            <div>
-                                                <qrcode id="print-section" [qrdata]="qr_value" [width]="256"
-                                                    [errorCorrectionLevel]="'M'"></qrcode>
-                                            </div>
-                                            <div class="statusCheck">{{'Check your status' | translate}}</div>
-                                        </div>
-                                        <div class="col-sm-12 col-md-12 col-lg-12  col-xl-12 col-12 mt-2">
-                                            <app-service-info [booking]="booking"></app-service-info>
-                                            <app-meeting-info [meetingInfo]="meetingDetails" [callingNumber]="callingNumber"
-                                                [callingChannel]="callingChannel" [callingMode]="callingMode">
-                                            </app-meeting-info>
-                                        </div>
-                                        <div class="mt-2">
-                                            <div class="mt-2 serviceCstm justifyContent-1" *ngIf="booking['info']?.amountPaid">
-                                                <div>
-                                                    <div class="serviceChargetxt">{{'Amount Paid' | translate}}</div>
-                                                    <div class="serviceChanrge">{{booking['info']?.amountPaid |currency:'&#8377;'}}</div>
-                                                </div>
-                                            </div>
-                                            <div class="mb-4">
-                                                <div class="serviceCstm customWidth"
-                                                *ngIf="booking['actions']['joinJaldeeVideo']">
-                                                    <button class="meetingBtn" id="btnJoinJaldeeVideo">
-                                                        <app-service-image [booking]="booking"></app-service-image>
-                                                        <div class="serviceName">
-                                                            <a class="joinMeeting joinMeetingCstm"
-                                                                *ngIf="meetingDetails && meetingDetails.joiningUrl" href="{{meetingDetails.joiningUrl}}"
-                                                                target="blank">{{'Join Video Consultation' | translate}}</a>
-                                                        </div>
-                                                    </button>
-                                                </div>
-                                                <div class="serviceCstm customWidth" *ngIf="booking['actions']['joinMeeting']">
-                                                    <button class="meetingBtn" id="btnJoinVideo">
-                                                        <div class="serviceName">
-                                                            <a class="joinMeeting joinMeetingCstm" (click)="joinMeeting()"
-                                                                target="blank">{{'Join Video Consultation' | translate}}</a>
-                                                        </div>
-                                                    </button>
-                                                </div>
-                                                <div class="serviceCstm customWidth" *ngIf="booking['actions']['sendAttachment']">
-                                                    <button class="attchmentBtn" id="btnSendAttachment"
-                                                        (click)="sendAttachmentBooking()">
-                                                        <i class="material-icons">attach_file</i>
-                                                        <div>{{'Send Attachment' | translate}}</div>
-                                                    </button>
-                                                </div>
-                                                <div class="serviceCstm customWidth">
-                                                    <button class="attchmentBtn" id="btnViewAttachment"
-                                                        *ngIf="showviewAttachment || booking['actions']['hasAttachment']"
-                                                        (click)="viewAttachment()">
-                                                        <i class="material-icons">attach_file</i><span
-                                                            class="menuInfo">View Attachments</span>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="mb-4">
-                                            <div class="noteCard">
-                                                <div class="businessName" *ngIf="cust_notes_cap">{{cust_notes_cap |
-                                                    capitalizeFirst | translate}}</div>
-                                                <div class="timeslotOrder timeSlotOrderSmall"
-                                                    *ngIf="booking['info']?.consumerNote &&  booking['info']?.consumerNote !== ''">
-                                                    {{booking['info'].consumerNote}}
-                                                </div>
-                                                <div class="timeslotOrder notFound"
-                                                    *ngIf="booking['info']?.consumerNote == '' || !booking['info']?.consumerNote">
-                                                    {{no_cus_notes_cap}}
-                                                </div>
-                                            </div>
-                                            <div class="mt-2 noteCard">
-                                                <div class="businessName">{{'Instructions' | translate}}</div>                                                
-                                                <div class="timeslotOrder notFound"
-                                                    *ngIf="!booking['info'].service.postInfoText || booking['info'].service.postInfoText===''">
-                                                    {{'No Instructions Found' | translate}}
-                                                </div>
-                                                <div class="timeslotOrder timeSlotOrderSmall"
-                                                    *ngIf="booking['info'].service.postInfoText !==''"
-                                                    [innerHTML]="booking['info'].service.postInfoText">
-                                                </div>
-                                            </div>
-                                            <div class="mt-2 noteCard" *ngIf="booking['isCancelled']">
-                                                <div class="businessName">{{'Cancellation Reason' | translate}}
-                                                </div>
-                                                <div class="timeslotOrder timeSlotOrderSmall">
-                                                    {{booking['cancelReason']}}
-                                                </div>
-                                            </div>
-                                            <div class="mt-2 noteCard"
-                                                *ngIf="booking['isCancelled'] && booking['cancelMessage']">
-                                                <div class="businessName">{{'Cancellation Message' | translate}}
-                                                </div>
-                                                <div class="timeslotOrder timeSlotOrderSmall">
-                                                    {{booking['cancelMessage']}}
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="mb-4 btnFlex">
-                                            <div>
-                                                <button type="submit" class="reschedulebtn" id="btnReschedule"
-                                                    *ngIf="this.booking['actions']['reschedule']"
-                                                    (click)="rescheduleBooking()">
-                                                    <div class="rescheduleCstm">
-                                                        <div>
-                                                            <img class="actionImg"
-                                                                src="{{cdnPath}}assets/images/myjaldee/reschedule.png" />
-                                                        </div>
-                                                        <div>{{'Reschedule' | translate}}</div>
-                                                    </div>
-                                                </button>
-                                            </div>
-                                            <div>
-                                                <button type="submit" class="cancelbtn" id="btnCancelBooking"
-                                                    *ngIf="booking['actions']['cancel']"
-                                                    (click)="cancelBooking()">
-                                                    <div class="cancelCstm">
-                                                        <div>
-                                                            <img class="actionImg"
-                                                                src="{{cdnPath}}assets/images/myjaldee/cancel.png" />
-                                                        </div>
-                                                        <div>{{'Cancel Booking' | translate}}</div>
-                                                    </div>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card" *ngIf="this.booking['questionnaires']?.length > 0">
-                                    <div class="pad-10">
-                                        <h3 class="no-margin">
-                                            {{questionnaire_heading}}
-                                        </h3>
-                                    </div>
-                                    <ng-container *ngIf="this.booking['questionnaires']?.length > 1">
-                                        <mat-accordion class="qnr-accord p-0" *ngFor="let qnr of this.booking['questionnaires']">
-                                            <mat-expansion-panel>
-                                                <mat-expansion-panel-header>
-                                                    <mat-panel-title>
-                                                        {{(qnr.questionnaireName) ? qnr.questionnaireName :
-                                                        qnr.questionnaireId}}
-                                                        <div class="qnrstatus">
-                                                            <span class="greenc"
-                                                                *ngIf="getQnrStatus(qnr) === 'submitted'">{{'Submitted'
-                                                                | translate}}</span>
-                                                            <span class="red"
-                                                                *ngIf="getQnrStatus(qnr) !== 'submitted'">{{'Released' |
-                                                                translate}}</span>
-                                                        </div>
-                                                    </mat-panel-title>
-                                                </mat-expansion-panel-header>
-                                                <div class="c-details">
-                                                    <app-questionnaire [questionnaireList]="qnr"
-                                                        [source]="booking['qnrSource']" [uuid]="booking['info'].id"
-                                                        [accountId]="booking['info'].providerAccount.id" [type]="'details'"
-                                                        [waitlistStatus]="booking['info'].status"
-                                                        (returnAnswers)="getQuestionAnswers($event)">
-                                                    </app-questionnaire>
-                                                </div>
-                                            </mat-expansion-panel>
-                                        </mat-accordion>
-                                    </ng-container>
-                                    <ng-container *ngIf="this.booking['questionnaires']?.length === 1">
-                                        <div class="c-details" *ngFor="let qnr of this.booking['questionnaires']">
-                                            <app-questionnaire [questionnaireList]="qnr" [source]="booking['qnrSource']"
-                                                [uuid]="booking['info'].providerAccount.id" [accountId]="booking['info'].providerAccount.id"
-                                                [type]="'details'" [waitlistStatus]="booking['info'].status"
-                                                (returnAnswers)="getQuestionAnswers($event)">
-                                            </app-questionnaire>
-                                        </div>
-                                    </ng-container>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+<section class="booking-redesign">
+  <ng-container *ngIf="api_loading && booking['info']; else loadingState">
+    <header class="booking-header">
+      <!-- <div class="brand-mini" *ngIf="booking['logo']" (click)="gotoHome()">
+        <img [src]="booking['logo']" alt="Brand logo" />
+      </div> -->
+      <div class="header-actions">
+        
+          <i class="fa fa-arrow-left" (click)="gotoPrev()" aria-hidden="true"></i>
+       
+        <!-- <button type="button" class="icon-btn" *ngIf="hasActionMenuItems()" (click)="toggleActionMenu($event)">
+          <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="icon-btn profile">
+          <i class="fa fa-user" aria-hidden="true"></i>
+        </button>
+        <div class="action-menu" *ngIf="actionMenuOpen" (click)="onMenuClick($event)">
+          <button type="button" class="action-menu-item" (click)="sendMessage(); closeActionMenu()">
+            <i class="fa fa-comments" aria-hidden="true"></i>
+            <span>{{'Message to Provider' | translate}}</span>
+          </button>
+          <button type="button" class="action-menu-item" *ngIf="booking['actions']['reschedule']"
+            (click)="rescheduleBooking(); closeActionMenu()">
+            <i class="fa fa-calendar" aria-hidden="true"></i>
+            <span>{{'Reschedule' | translate}}</span>
+          </button>
+          <button type="button" class="action-menu-item" *ngIf="booking['actions']['sendAttachment']"
+            (click)="sendAttachmentBooking(); closeActionMenu()">
+            <i class="fa fa-paperclip" aria-hidden="true"></i>
+            <span>{{'Send Attachment' | translate}}</span>
+          </button>
+          <button type="button" class="action-menu-item" *ngIf="booking['actions']['hasAttachment']"
+            (click)="viewAttachment(); closeActionMenu()">
+            <i class="fa fa-folder-open" aria-hidden="true"></i>
+            <span>{{'View Attachments' | translate}}</span>
+          </button>
+          <button type="button" class="action-menu-item danger" *ngIf="booking['actions']['cancel']"
+            (click)="cancelBooking(); closeActionMenu()">
+            <i class="fa fa-ban" aria-hidden="true"></i>
+            <span>{{'Cancel Booking' | translate}}</span>
+          </button> -->
+        <!-- </div> -->
+      </div>
+    </header>
+
+    <div class="booking-body">
+      <div class="card booking-card">
+        <div class="card-top">
+          <div class="logo-block" *ngIf="booking['logo']">
+            <img [src]="booking['logo']" alt="Provider logo" />
+          </div>
+          <div class="summary">
+            <div class="status-line" *ngIf="booking['status']">
+              <span class="label">{{'Status :' | translate}}</span>
+              <span class="value">{{booking['status']}}</span>
             </div>
+            <div class="provider-name" *ngIf="booking['info']?.providerAccount?.businessName">
+              {{booking['info'].providerAccount.businessName}}
+            </div>
+            <div class="provider-location" *ngIf="booking['location']">
+              {{booking['location']}}
+            </div>
+          </div>
+          <button type="button" class="icon-btn subtle" *ngIf="hasActionMenuItems()" (click)="toggleActionMenu($event)">
+            <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+          </button>
+          <div class="action-menu" *ngIf="actionMenuOpen" (click)="onMenuClick($event)">
+          <button type="button" class="action-menu-item" (click)="sendMessage(); closeActionMenu()">
+            <i class="fa fa-comments" aria-hidden="true"></i>
+            <span>{{'Message to Provider' | translate}}</span>
+          </button>
+          <button type="button" class="action-menu-item" *ngIf="booking['actions']['reschedule']"
+            (click)="rescheduleBooking(); closeActionMenu()">
+            <i class="fa fa-calendar" aria-hidden="true"></i>
+            <span>{{'Reschedule' | translate}}</span>
+          </button>
+          <button type="button" class="action-menu-item" *ngIf="booking['actions']['sendAttachment']"
+            (click)="sendAttachmentBooking(); closeActionMenu()">
+            <i class="fa fa-paperclip" aria-hidden="true"></i>
+            <span>{{'Send Attachment' | translate}}</span>
+          </button>
+          <button type="button" class="action-menu-item" *ngIf="booking['actions']['hasAttachment']"
+            (click)="viewAttachment(); closeActionMenu()">
+            <i class="fa fa-folder-open" aria-hidden="true"></i>
+            <span>{{'View Attachments' | translate}}</span>
+          </button>
+          <button type="button" class="action-menu-item danger" *ngIf="booking['actions']['cancel']"
+            (click)="cancelBooking(); closeActionMenu()">
+            <i class="fa fa-ban" aria-hidden="true"></i>
+            <span>{{'Cancel Booking' | translate}}</span>
+          </button>
+                 </div> 
         </div>
+        <div class="meta-grid">
+          <div class="meta-item" *ngIf="booking.encID">
+            <div class="meta-label">{{'Booking Id' | translate}}</div>
+            <div class="meta-value">{{booking.encID}}</div>
+          </div>
+          <div class="meta-item" *ngIf="booking?.bookingFor?.length && (booking.bookingFor[0]?.firstName || booking.bookingFor[0]?.lastName)">
+            <div class="meta-label">{{'Booking For' | translate}}</div>
+            <div class="meta-value">
+              <span *ngIf="booking.bookingFor[0]?.title">{{booking.bookingFor[0].title}}&nbsp;</span>
+              {{booking.bookingFor[0]?.firstName | capitalizeFirst}}
+              {{booking.bookingFor[0]?.lastName | capitalizeFirst}}
+            </div>
+          </div>
+          <div class="meta-item" *ngIf="booking['mobile']">
+            <div class="meta-label">{{'Mobile' | translate}}</div>
+            <div class="meta-value no-wrap">{{booking['mobile']}}</div>
+          </div>
+          <div class="meta-item" *ngIf="booking['email']">
+            <div class="meta-label">{{'Email' | translate}}</div>
+            <div class="meta-value">{{booking['email']}}</div>
+          </div>
+          <div class="meta-item" *ngIf="booking['date']">
+            <div class="meta-label">{{'Date & Time' | translate}}</div>
+            <div class="meta-value">
+              {{booking['date'] | date:'EEEE'}}, {{booking['date'] | date:'d'}}&nbsp;{{booking['date'] | date:'MMM'}}&nbsp;{{booking['date'] | date:'y'}}, {{booking['time']}}
+            </div>
+          </div>
+          <div class="meta-item" *ngIf="booking['info']?.timezone">
+            <div class="meta-label">{{'Timezone' | translate}}</div>
+            <div class="meta-value">{{booking['info']?.timezone}}</div>
+          </div>
+        </div>
+      </div>
+
+      <ng-container *ngIf="booking['actions']['joinJaldeeVideo'] && meetingDetails?.joiningUrl; else joinWithHandler">
+        <a class="cta-button" id="btnJoinJaldeeVideo" [href]="meetingDetails.joiningUrl" target="_blank">
+          <i class="fa fa-video-camera" aria-hidden="true"></i>
+          <span>{{'Join Video Consultation' | translate}}</span>
+        </a>
+      </ng-container>
+      <ng-template #joinWithHandler>
+        <button type="button" class="cta-button" id="btnJoinVideo" *ngIf="booking['actions']['joinMeeting'] || booking['actions']['joinJaldeeVideo']"
+          (click)="joinMeeting()">
+          <i class="fa fa-video-camera" aria-hidden="true"></i>
+          <span>{{'Join Video Consultation' | translate}}</span>
+        </button>
+      </ng-template>
+
+      <div class="card instructions-card">
+        <div class="card-title">{{'Instructions' | translate}}</div>
+        <div class="card-text" [innerHTML]="booking['info']?.service?.postInfoText || instructionFallback"></div>
+      </div>
+
+      <div class="more-info-row" *ngIf="this.booking['questionnaires']?.length > 0" >
+        <a class="more-info" href="javascript:void(0)">{{'More Info' | translate}}</a>
+        <!-- <button class="ghost-btn" type="button" disabled>
+          <i class="fa fa-pencil" aria-hidden="true"></i>
+          <span>{{'Edit' | translate}}</span>
+        </button> -->
+      </div>
+
+      <!-- <div class="card pet-card">
+        <div class="info-row">
+          <span class="info-label">{{'Pet Breed' | translate}}:</span>
+          <span class="info-value">{{booking['info']?.petDetails?.breed || booking?.bookingFor?.[0]?.breed || '-'}}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">{{'Age' | translate}}:</span>
+          <span class="info-value bold">{{booking['info']?.petDetails?.age || booking?.bookingFor?.[0]?.age || '-'}}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">{{'Weight' | translate}}:</span>
+          <span class="info-value bold">{{booking['info']?.petDetails?.weight || booking?.bookingFor?.[0]?.weight || '-'}}</span>
+        </div>
+      </div> -->
+
+      <div class="" *ngIf="this.booking['questionnaires']?.length > 0">
+        
+        <ng-container *ngIf="this.booking['questionnaires']?.length > 1">
+          <mat-accordion class="qnr-accord p-0" *ngFor="let qnr of this.booking['questionnaires']">
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  {{(qnr.questionnaireName) ? qnr.questionnaireName : qnr.questionnaireId}}
+                  <div class="qnrstatus">
+                    <span class="greenc" *ngIf="getQnrStatus(qnr) === 'submitted'">{{'Submitted' | translate}}</span>
+                    <span class="red" *ngIf="getQnrStatus(qnr) !== 'submitted'">{{'Released' | translate}}</span>
+                  </div>
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <div class="c-details">
+                <app-questionnaire [questionnaireList]="qnr" [source]="booking['qnrSource']" [uuid]="booking['info'].id"
+                  [accountId]="booking['info'].providerAccount.id" [type]="'details'"
+                  [waitlistStatus]="booking['info']?.apptStatus || booking['info']?.waitlistStatus || booking['info']?.status"
+                  (returnAnswers)="getQuestionAnswers($event)">
+                </app-questionnaire>
+              </div>
+            </mat-expansion-panel>
+          </mat-accordion>
+        </ng-container>
+        <ng-container *ngIf="this.booking['questionnaires']?.length === 1">
+          <div class="c-details" *ngFor="let qnr of this.booking['questionnaires']">
+            <app-questionnaire [questionnaireList]="qnr" [source]="booking['qnrSource']"
+              [uuid]="booking['info'].providerAccount.id" [accountId]="booking['info'].providerAccount.id" [type]="'details'"
+              [waitlistStatus]="booking['info']?.apptStatus || booking['info']?.waitlistStatus || booking['info']?.status"
+              (returnAnswers)="getQuestionAnswers($event)">
+            </app-questionnaire>
+          </div>
+        </ng-container>
+      </div>
     </div>
+  </ng-container>
+
+  <ng-template #loadingState>
+    <div class="card loader-card">
+      <app-common-innerloading-spinner></app-common-innerloading-spinner>
+    </div>
+  </ng-template>
 </section>

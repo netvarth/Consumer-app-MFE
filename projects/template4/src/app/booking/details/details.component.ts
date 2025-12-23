@@ -6,6 +6,7 @@ import {
   ConsumerService,
   DateTimeProcessor,
   ErrorMessagingService,
+  GroupStorageService,
   Messages,
   projectConstantsLocal,
   SharedService,
@@ -69,10 +70,12 @@ export class DetailsComponent implements OnInit, OnDestroy {
     bookingFor: null,
     encID: null,
     location: null,
-    questionnaires: [],
-    qnrSource: null
+  questionnaires: [],
+  qnrSource: null
 
   };
+  actionMenuOpen = false;
+  instructionFallback = 'Our veterinarians provide a 5-minute window for joining appointments, and if you\'re unable to join within that time, it will be automatically rescheduled';
   accountID: any;
   qr_value: string;
   api_loading: boolean = false;
@@ -85,6 +88,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
   showattachmentDialogRef: any;
   meetingDetails: any;
   cdnPath: string = '';
+  activeUser: any;
 
   constructor(
     private sharedService: SharedService,
@@ -100,7 +104,8 @@ export class DetailsComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private bookingService: BookingService,
     private router: Router,
-    private galleryService: GalleryService
+    private galleryService: GalleryService,
+    private groupService: GroupStorageService
   ) {
     this.cdnPath = this.sharedService.getCDNPath();
     this.onResize();
@@ -126,6 +131,13 @@ export class DetailsComponent implements OnInit, OnDestroy {
     }
   }
 
+  @HostListener('document:click', ['$event'])
+  closeMenuOnOutside(event: Event) {
+    if (this.actionMenuOpen) {
+      this.actionMenuOpen = false;
+    }
+  }
+
   initBookingAttributes(bookingID: string) {
     this.booking['uid'] = bookingID;
     if (bookingID.startsWith('h_')) {
@@ -144,6 +156,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
     if (accountConfig && accountConfig['theme']) {
       this.theme = accountConfig['theme'];
     }
+    this.activeUser = this.groupService.getitemFromGroupStorage('jld_scon');
     this.accountID = this.sharedService.getAccountID();
     this.loadBookingInfo();
     let subs = this.galleryService.getMessage().subscribe(input => {
@@ -241,6 +254,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
       _this.setActions(booking);
       _this.setQuestionaries(booking);
       _this.api_loading = true;
+      this.actionMenuOpen = false;
     })
   }
   setActions(booking: any) {
@@ -290,8 +304,21 @@ export class DetailsComponent implements OnInit, OnDestroy {
     }
   }
   joinMeeting() {
+    const bookingInfo = this.booking['info'];
+    if (!bookingInfo) {
+      return;
+    }
+    if (this.callingChannel === 'VideoCall') {
+      if (bookingInfo.videoCallButton && bookingInfo.videoCallButton !== 'DISABLED') {
+        const bookingEncId = this.booking['isAppointment'] ? bookingInfo.appointmentEncId : bookingInfo.checkinEncId;
+        if (bookingEncId && this.activeUser?.primaryPhoneNumber) {
+          this.router.navigate([this.sharedService.getRouteID(), 'meeting', this.activeUser.primaryPhoneNumber, bookingEncId]);
+        }
+      }
+      return;
+    }
     let source = this.booking['isAppointment'] ? 'appt' : 'wl';
-    this.getMeetingDetails(this.booking['info'], source);
+    this.getMeetingDetails(bookingInfo, source);
   }
   getMeetingDetails(details, source) {
     const passData = {
@@ -621,5 +648,25 @@ export class DetailsComponent implements OnInit, OnDestroy {
       
       // this.addnotedialogRef.close();
     });
+  }
+
+  toggleActionMenu(event: Event) {
+    event.stopPropagation();
+    this.actionMenuOpen = !this.actionMenuOpen;
+  }
+
+  closeActionMenu() {
+    this.actionMenuOpen = false;
+  }
+
+  onMenuClick(event: Event) {
+    event.stopPropagation();
+  }
+
+  hasActionMenuItems(): boolean {
+    return !!this.booking?.info;
+  }
+
+  getQuestionAnswers(event) {
   }
 }

@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BookingService, CapitalizeFirstPipeModule, CurrencyService, ErrrorMessageModule, I8nModule, LoadingSpinnerModule, PaymentsModule, QuestionnaireModule, ShortFileNameModule } from 'jconsumer-shared';
+import { BookingService, CapitalizeFirstPipeModule, CurrencyService, ErrrorMessageModule, I8nModule, LoadingSpinnerModule, PaymentsModule, ShortFileNameModule } from 'jconsumer-shared';
+import { QuestionnaireModule } from '../../shared/questionaire/edit/questionnaire.module';
 import { RouterModule, Routes } from '@angular/router';
 import { ConsumerEmailModule } from '../../shared/consumer-email/consumer-email.module';
 import { CheckinAddMemberModule } from '../../shared/checkin-add-member/checkin-add-member.module';

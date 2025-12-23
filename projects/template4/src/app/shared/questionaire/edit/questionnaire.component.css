@@ -172,7 +172,7 @@
 .qnrDisableState .card,
 .qnrDisableState .dropzone-default,
 .qnrDisableState .dz-image-preview {
-  background: #eeeeee9e !important;
+  background: #ffffff !important;
 }
 
 .qnr-section {
@@ -180,10 +180,10 @@
   padding-bottom: 10px;
   text-transform: uppercase;
 }
-
+/* 
 .qnrsec {
   padding: 10px;
-}
+} */
 
 .section-shadow {
   margin: 20px 10px;
@@ -279,9 +279,9 @@
   }
 }
 
-.qnrsec {
+/* .qnrsec {
   padding: 10px;
-}
+} */
 
 .p-10 {
   padding: 8px !important;
@@ -325,6 +325,7 @@
   font-size: 1rem;
   font-weight: 400;
   color: #3f4254;
+  /* margin-top: 6px; */
 }
 
 label {
