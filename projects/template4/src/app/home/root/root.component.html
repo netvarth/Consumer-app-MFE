@@ -51,28 +51,40 @@
   </div>
   <!-- Section header: Upcoming Bookings -->
 
-    <div class="section-bar bookings-bar" *ngIf="templateJson && today_totalbookings?.length">
-      <div class="section-left">
-        <span class="icon-bg"><i class="fa fa-calendar" aria-hidden="true"></i></span>
-        <span class="title">Upcoming Bookings</span>
-      </div>
-      <button type="button" class="view-all" (click)="onViewAllBookings()">View all</button>
+  <div class="section-bar bookings-bar" *ngIf="templateJson && nextBooking && !isBookingCancelled(nextBooking) && !isBookingCompleted(nextBooking)">
+    <div class="section-left">
+      <span class="icon-bg"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+      <span class="title">Upcoming Bookings</span>
     </div>
+    <button type="button"
+            class="view-all"
+            *ngIf="hasMultipleActiveBookings()"
+            (click)="onViewAllBookings()">View More</button>
+  </div>
 
+  <div class="mgn-up-10 m-3 mgn-bt-10 pad-bt-10 grid-card"
+       *ngIf="templateJson && nextBooking && !isBookingCancelled(nextBooking) && !isBookingCompleted(nextBooking)">
+    <mat-grid-list [cols]="1" rowHeight="300px" [gutterSize]="'10px'">
+      <mat-grid-tile (click)="showBookingDetails(nextBooking, nextBookingType || 'today')">
+        <ng-container *ngIf="nextBooking.apptStatus">
+          <app-appt-card [booking]="nextBooking"
+                         [type]="nextBookingType || 'today'"
+                         [smallDevice]="smallDevice"
+                         (actionPerformed)="cardClicked($event)"></app-appt-card>
+        </ng-container>
+ 
+      </mat-grid-tile>
+    </mat-grid-list>
+  </div>
 
-       <div class="mgn-up-10 m-3 mgn-bt-10 pad-bt-10 grid-card" *ngIf="templateJson && today_totalbookings?.length">
-          <mat-grid-list [cols]="smallDevice ? 1 : 3" rowHeight="300px" [gutterSize]="'10px'">
-            <mat-grid-tile *ngFor="let booking of todayBookings | slice:0:bookingsLimit" (click)="showBookingDetails(booking)">
-              <ng-container *ngIf="booking.apptStatus">
-                <app-appt-card [booking]="booking" type="today"
-                  (actionPerformed)="cardClicked($event)"
-
-
-                  [smallDevice]="smallDevice"></app-appt-card>
-              </ng-container>
-            </mat-grid-tile>
-          </mat-grid-list>
-        </div>
+      <div class="ratingcard-wrap" *ngIf="templateJson?.trustFeatures">
+        <img class="ratingcard-img" [src]="templateJson?.trustFeatures" loading="lazy" decoding="async">
+      </div>
+      
+      
+      <div class="ratingcard-wrap" *ngIf="templateJson?.ratingcard">
+        <img class="ratingcard-img" [src]="templateJson?.ratingcard" loading="lazy" decoding="async">
+      </div>
 
 
   <!-- Coming soon section -->

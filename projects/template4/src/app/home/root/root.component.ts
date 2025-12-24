@@ -63,9 +63,13 @@ export class RootComponent implements OnInit, OnDestroy {
     'more': true
   };
   today_totalbookings: any[] = [];
+  future_totalbookings: any[] = [];
   todayBookings: any[] = [];
+  futureBookings: any[] = [];
   private todaysAppointments: any[] = [];
   private todaysWaitlists: any[] = [];
+  private futureAppointments: any[] = [];
+  private futureWaitlists: any[] = [];
   bgCover: any;
   serverDate: any;
   callback: any;
@@ -89,6 +93,8 @@ export class RootComponent implements OnInit, OnDestroy {
   allInvocies: any;
   galleryDialog: any;
   showattachmentDialogRef: MatDialogRef<unknown, any>;
+  nextBooking: any = null;
+  nextBookingType: 'today' | 'future' | null = null;
   constructor(
     private accountService: AccountService,
     private consumerService: ConsumerService,
@@ -175,15 +181,57 @@ export class RootComponent implements OnInit, OnDestroy {
     this.selectedIndex = this.templateJson.section1.title;
     this.changeLocation(this.accountService.getActiveLocation());
     this.loadTodayBookings();
+    this.loadFutureBookings();
     if (this.callback === 'communicate') {
       this.communicateHandler();
     }
+  }
+  private fetchFutureAppointments() {
+    const params: any = { 'apptStatus-neq': 'failed,prepaymentPending,Cancelled,Rejected' };
+    if (this.accountId) {
+      params['account-eq'] = this.accountId;
+    }
+    const sub = this.consumerService.getAppointmentFuture(params).subscribe((appointments) => {
+      this.futureAppointments = Array.isArray(appointments) ? appointments : [];
+      this.fetchFutureWaitlists();
+    }, () => {
+      this.futureAppointments = [];
+      this.fetchFutureWaitlists();
+    });
+    this.subscriptions.add(sub);
+  }
+  private fetchFutureWaitlists() {
+    const params: any = { 'waitlistStatus-neq': 'failed,prepaymentPending,cancelled' };
+    if (this.accountId) {
+      params['account-eq'] = this.accountId;
+    }
+    const sub = this.consumerService.getWaitlistFuture(params).subscribe((waitlists) => {
+      this.futureWaitlists = Array.isArray(waitlists) ? waitlists : [];
+      this.mergeFutureBookings();
+    }, () => {
+      this.futureWaitlists = [];
+      this.mergeFutureBookings();
+    });
+    this.subscriptions.add(sub);
+  }
+  private mergeFutureBookings() {
+    const combined = [...(this.futureAppointments || []), ...(this.futureWaitlists || [])];
+    const activeBookings = combined.filter(b => !this.isBookingCancelled(b) && !this.isBookingCompleted(b));
+    this.future_totalbookings = activeBookings;
+    this.futureBookings = activeBookings.slice(0, 3);
+    this.updateNextBooking();
   }
   private resetTodayBookings() {
     this.todaysAppointments = [];
     this.todaysWaitlists = [];
     this.today_totalbookings = [];
     this.todayBookings = [];
+  }
+  private resetFutureBookings() {
+    this.futureAppointments = [];
+    this.futureWaitlists = [];
+    this.future_totalbookings = [];
+    this.futureBookings = [];
   }
   private loadTodayBookings() {
     this.authService.goThroughLogin().then((status) => {
@@ -194,6 +242,17 @@ export class RootComponent implements OnInit, OnDestroy {
       }
     }).catch(() => {
       this.resetTodayBookings();
+    });
+  }
+  private loadFutureBookings() {
+    this.authService.goThroughLogin().then((status) => {
+      if (status) {
+        this.fetchFutureAppointments();
+      } else {
+        this.resetFutureBookings();
+      }
+    }).catch(() => {
+      this.resetFutureBookings();
     });
   }
   private fetchTodayAppointments() {
@@ -230,8 +289,10 @@ export class RootComponent implements OnInit, OnDestroy {
   }
   private mergeTodayBookings() {
     const combined = [...(this.todaysAppointments || []), ...(this.todaysWaitlists || [])];
-    this.today_totalbookings = combined;
-    this.todayBookings = combined.slice(0, 3);
+    const activeBookings = combined.filter(b => !this.isBookingCancelled(b) && !this.isBookingCompleted(b));
+    this.today_totalbookings = activeBookings;
+    this.todayBookings = activeBookings.slice(0, 3);
+    this.updateNextBooking();
   }
 
   setDepartments(depts) {
@@ -309,8 +370,83 @@ export class RootComponent implements OnInit, OnDestroy {
     this.router.navigate([this.sharedService.getRouteID(), 'bookings']);
   }
 
-  showBookingDetails(_booking, _source) {
-    this.onViewAllBookings();
+  updateNextBooking() {
+    const nowTs = this.getCurrentTimestamp();
+    const candidates: Array<{ booking: any; type: 'today' | 'future'; ts: number }> = [];
+
+    for (const booking of this.today_totalbookings || []) {
+      if (this.isBookingCancelled(booking) || this.isBookingCompleted(booking)) { continue; }
+      const ts = this.getBookingTimestamp(booking);
+      if (Number.isFinite(ts)) { candidates.push({ booking, type: 'today', ts }); }
+    }
+    for (const booking of this.future_totalbookings || []) {
+      if (this.isBookingCancelled(booking) || this.isBookingCompleted(booking)) { continue; }
+      const ts = this.getBookingTimestamp(booking);
+      if (Number.isFinite(ts)) { candidates.push({ booking, type: 'future', ts }); }
+    }
+
+    const upcoming = candidates.filter(c => c.ts >= nowTs);
+    const pool = upcoming.length ? upcoming : [];
+
+    if (!pool.length) {
+      this.nextBooking = null;
+      this.nextBookingType = null;
+      return;
+    }
+
+    pool.sort((a, b) => a.ts - b.ts);
+    const next = pool[0];
+    this.nextBooking = next.booking;
+    this.nextBookingType = next.type;
+  }
+
+  isBookingCancelled(booking: any): boolean {
+    const status = (booking?.apptStatus || booking?.waitlistStatus || '').toString().toLowerCase();
+    return status === 'cancelled' || status === 'canceled';
+  }
+
+  isBookingCompleted(booking: any): boolean {
+    const status = (booking?.apptStatus || booking?.waitlistStatus || '').toString().toLowerCase();
+    return status === 'completed';
+  }
+
+  private getBookingTimestamp(booking: any): number {
+    const dateStr = booking?.appmtDate || booking?.date;
+    if (!dateStr) { return Number.POSITIVE_INFINITY; }
+
+    const timeCandidate = booking?.appmtTime || booking?.apptTime || booking?.queue?.queueStartTime || booking?.serviceTime;
+    const startTime = (timeCandidate || '').split('-')[0]?.trim();
+    const composed = startTime ? `${dateStr} ${startTime}` : `${dateStr} 00:00`;
+    const ts = new Date(composed).getTime();
+    return Number.isFinite(ts) ? ts : Number.POSITIVE_INFINITY;
+  }
+
+  hasMultipleActiveBookings(): boolean {
+    const activeBookings = [
+      ...(this.today_totalbookings || []),
+      ...(this.future_totalbookings || [])
+    ].filter(b => !this.isBookingCancelled(b) && !this.isBookingCompleted(b));
+    return activeBookings.length > 1;
+  }
+
+  private getCurrentTimestamp(): number {
+    const ts = this.serverDate ? new Date(this.serverDate).getTime() : Date.now();
+    return Number.isFinite(ts) ? ts : Date.now();
+  }
+
+   showBookingDetails(booking: any, type?: 'today' | 'future') {
+    const queryParams: any = { type };
+    if (booking?.apptStatus) {
+      // queryParams['uuid'] = booking.uid;
+      // this.router.navigate([ 'apptdetails'], { queryParams });
+      // this.router.navigate([this.sharedService.getRouteID(), 'booking/', booking.uid]);
+      let bookingID = booking.apptStatus ? booking.uid : booking.uid;
+    this.router.navigate([this.sharedService.getRouteID(), 'booking', bookingID]);
+    }
+    // } else if (booking?.waitlistStatus) {
+    //   queryParams['uuid'] = booking.ynwUuid;
+    //   this.router.navigate([ 'checkindetails'], { queryParams });
+    // }
   }
 
   // cardClicked(actionObj) {

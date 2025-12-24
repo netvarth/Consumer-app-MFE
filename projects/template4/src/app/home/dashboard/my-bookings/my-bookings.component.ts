@@ -1365,4 +1365,25 @@ export class MyBookingsComponent implements OnInit, OnDestroy {
   getApptFor(b: any): string {
     return this.pickFirst(b?.customerName, b?.consumer?.firstName, b?.patientName, 'Self') as string;
   }
+   showBookingDetails(booking, type?) {
+    let bookingID = booking.apptStatus ? booking.uid : booking.uid;
+    this.router.navigate([this.sharedService.getRouteID(), 'booking', bookingID]);
+    
+    let queryParams = {};
+    if (booking.apptStatus) {
+      queryParams['uuid'] = booking.uid;
+      queryParams['type'] = type;
+      const navigationExtras: NavigationExtras = {
+        queryParams: queryParams
+      };
+      this.router.navigate([this.customId, 'apptdetails'], navigationExtras);
+    } else if (booking.waitlistStatus) {
+      queryParams['uuid'] = booking.ynwUuid;
+      queryParams['type'] = type;
+      const navigationExtras: NavigationExtras = {
+        queryParams: queryParams
+      };
+      this.router.navigate([this.customId, 'checkindetails'], navigationExtras);
+    }
+  }
 }

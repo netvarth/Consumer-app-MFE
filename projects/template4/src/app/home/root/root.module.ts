@@ -21,7 +21,8 @@ import { AdvancedProfileModule } from '../../shared/profile/advanced-profile/adv
 import { ApptCardModule } from '../../shared/appt-card/appt-card.module';
 import { InvoiceListModule } from '../../shared/invoice-list/invoice-list.module';
 import { AttachmentPopupModule } from '../../shared/attachment-popup/attachment-popup.module';
-
+import { GalleryModule } from '../../shared/gallery/gallery.module';
+import { WLCardModule } from '../../shared/wl-card/wl-card.module';
 const routes: Routes = [
   { path: '', component: RootComponent }
 ]
@@ -49,8 +50,10 @@ const routes: Routes = [
     QuickActionsModule,
     AdvancedProfileModule,
     ApptCardModule,
+    WLCardModule,
     InvoiceListModule,
     ErrrorMessageModule,
+    GalleryModule,
     AttachmentPopupModule,
     RouterModule.forChild(routes)
   ],
