@@ -172,7 +172,7 @@
 .qnrDisableState .card,
 .qnrDisableState .dropzone-default,
 .qnrDisableState .dz-image-preview {
-  background: #ffffff !important;
+  background: #ededed !important;
 }
 
 .qnr-section {
@@ -268,8 +268,8 @@
 .col-lg-12 {
   position: relative;
   width: 100%;
-  padding-right: 12.5px;
-  padding-left: 12.5px;
+  /* padding-right: 12.5px;
+  padding-left: 12.5px; */
 }
 
 @media (min-width: 1200px) {
