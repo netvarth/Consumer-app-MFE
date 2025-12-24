@@ -797,6 +797,7 @@
 							}
 						],
 						"styles": [
+							"node_modules/primeicons/primeicons.css",
 							"projects/template4/src/styles.scss"
 						],
 						"scripts": []

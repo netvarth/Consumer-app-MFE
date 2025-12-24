@@ -689,7 +689,8 @@ export class MyBookingsComponent implements OnInit, OnDestroy {
     const navigationExtras: NavigationExtras = {
       queryParams: queryParams
     };
-    this.router.navigate([this.sharedService.getRouteID(), 'booking'], navigationExtras);
+    let routePath = booking.apptStatus ? 'appointment' : 'checkin';
+    this.router.navigate([this.sharedService.getRouteID(), routePath], navigationExtras);
   }
   addWaitlistMessage(booking, type?) {
     let bookingID = booking.apptStatus ? booking.uid : booking.uid;

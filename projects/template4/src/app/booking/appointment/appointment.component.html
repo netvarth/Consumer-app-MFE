@@ -33,7 +33,7 @@
       </div>
     </div>
 
-    <div class="col-md-8 col-lg-8 col-sm-12 col-12 d-flex align-items-stretch p-1" *ngIf="!loading">
+    <div class="col-md-8 col-lg-8 col-sm-12 col-12 d-flex align-items-stretch p-1 pt-3" *ngIf="!loading">
       <div class="card1 shadow hgt-adjust">
         <!-- Wizard Started -->
         <div class="wizard wizard-1" id="kt_wizard_v1" data-wizard-state="step-first" data-wizard-clickable="false"
@@ -111,7 +111,9 @@
                 (click)="confirmClicked(allSlots && allSlots.length === 0)"
                 [class.disabled]="allSlots && allSlots.length === 0"
                 [disabled]="allSlots && allSlots.length === 0">
-                {{'Book an Appointment' | translate}}
+                <i class="fa fa-calendar-o"></i>&nbsp; {{ (this.appointmentType === 'reschedule')
+                   ? ('Reschedule Appointment' | translate)
+                    : ('Book an Appointment' | translate) }}
               </button>
             </div>
           </ng-container>
