@@ -10,7 +10,7 @@
             <mat-datepicker #picker [dateClass]="dateClass.bind(this)">
             </mat-datepicker>
             <input class="" style="visibility: hidden; width:1px" type="text" [matDatepicker]="picker" [min]="minDate"
-              [max]="maxDate" [value]="selected_date" (dateChange)="date_value_changed();" [(ngModel)]="selected_date">
+              [max]="maxDate" [value]="selected_date" (dateChange)="date_value_changed($event)" [(ngModel)]="selected_date">
           </b>
         </h6>
       </div>
@@ -78,11 +78,14 @@
       </button>
       <mat-datepicker #picker [dateClass]="dateClass.bind(this)"></mat-datepicker>
       <input class="d-none" type="text" [matDatepicker]="picker" [min]="minDate"
-        [max]="maxDate" [value]="selected_date" (dateChange)="date_value_changed();" [(ngModel)]="selected_date">
+        [max]="maxDate" [value]="selected_date" (dateChange)="date_value_changed($event);" [(ngModel)]="selected_date">
     </div>
     <div class="date-compact-card__days">
       <button type="button"
+        #dayButton
+        [attr.data-iso]="day.iso"
         *ngFor="let day of displayDates"
+        [attr.tabindex]="-1"
         [disabled]="day.disabled"
         [class.is-selected]="day.iso === selected_date"
         (click)="!day.disabled && selectCompactDate(day.iso)">
