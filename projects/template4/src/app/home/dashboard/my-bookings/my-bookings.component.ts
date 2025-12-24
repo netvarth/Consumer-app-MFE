@@ -312,7 +312,6 @@ export class MyBookingsComponent implements OnInit, OnDestroy {
     }
     this.accountProfile = this.sharedService.getJson(this.account['businessProfile']);
     this.accountId = this.accountProfile.id;
-    // this.customId = this.accountService.getCustomId();
     this.templateJson = this.sharedService.getTemplateJSON();
     if (this.templateJson.hidePrice) {
       this.hideIcons = this.templateJson.hidePrice;
@@ -408,28 +407,6 @@ export class MyBookingsComponent implements OnInit, OnDestroy {
     };
     this.router.navigate([this.sharedService.getRouteID(), 'payments'], navigationExtras);
   }
-
-  // showBookingDetails(booking, type?) {
-  //   let bookingID = booking.apptStatus ? booking.uid : booking.uid;
-  //   this.router.navigate([this.sharedService.getRouteID(), 'booking', bookingID]);
-    
-  //   let queryParams = {};
-  //   if (booking.apptStatus) {
-  //     queryParams['uuid'] = booking.uid;
-  //     queryParams['type'] = type;
-  //     const navigationExtras: NavigationExtras = {
-  //       queryParams: queryParams
-  //     };
-  //     this.router.navigate([this.customId, 'apptdetails'], navigationExtras);
-  //   } else if (booking.waitlistStatus) {
-  //     queryParams['uuid'] = booking.ynwUuid;
-  //     queryParams['type'] = type;
-  //     const navigationExtras: NavigationExtras = {
-  //       queryParams: queryParams
-  //     };
-  //     this.router.navigate([this.customId, 'checkindetails'], navigationExtras);
-  //   }
-  // }
   closeCounters() {
     if (this.cronHandle) {
       this.cronHandle.unsubscribe();
@@ -764,34 +741,6 @@ export class MyBookingsComponent implements OnInit, OnDestroy {
     api_filter['count'] = this.pagination.perPage;
     return api_filter;
   }
-
-  goCheckin(data, location, type) {
-    let provider_data = null;
-    if (type === 'fav_provider') {
-      provider_data = data;
-    } else {
-      provider_data = data.provider || null;
-    }
-    let chdatereq;
-    if (location['onlineCheckIn'] && location['isAvailableToday'] && location['availableToday']) {
-      chdatereq = false;
-    } else {
-      chdatereq = false;
-    }
-    this.setCheckinData(provider_data, location, location['estimatedtime_det']['cdate'], chdatereq);
-  }
-  setCheckinData(provider, location, currdate, chdatereq = false) {
-    let queryParams = {
-      loc_id: location.id,
-      sel_date: currdate,
-      cur: chdatereq,
-      tel_serv_stat: provider.virtulServiceStatus
-    }
-    const navigationExtras: NavigationExtras = {
-      queryParams: queryParams
-    };
-    this.router.navigate([this.customId, 'checkin'], navigationExtras);
-  }
   reloadAPIs() {
     this.getAppointmentToday();
     this.getAppointmentFuture();
@@ -923,12 +872,6 @@ export class MyBookingsComponent implements OnInit, OnDestroy {
       // this.bookingTitleChanged(this.bookingTitle);
 
     });
-  }
-  makeFailedPayment(waitlist) {
-    this.router.navigate([this.customId, 'checkin', 'payment', waitlist.ynwUuid]);
-  }
-  makeApptFailedPayment(waitlist) {
-    this.router.navigate([this.customId, 'appointment', 'payment', waitlist.uid]);
   }
 
   gotoHistory() {

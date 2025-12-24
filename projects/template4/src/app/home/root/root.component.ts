@@ -1,10 +1,17 @@
 import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
-import { AccountService, AuthService, BookingService, ConsumerService, DateTimeProcessor, JGalleryService, LocalStorageService, Messages, SharedService, SubscriptionService } from 'jconsumer-shared';
+import { AccountService, AuthService, BookingService, ConsumerService, DateTimeProcessor, ErrorMessagingService, GroupStorageService, JGalleryService, LocalStorageService, Messages, SharedService, SubscriptionService, ToastService } from 'jconsumer-shared';
 import { AddInboxMessagesComponent } from '../../shared/add-inbox-messages/add-inbox-messages.component';
+import { MeetingDetailsComponent } from '../../shared/meeting-details/meeting-details.component';
+import { ViewRxComponent } from '../../shared/view-rx/view-rx.component';
+import { InvoiceListComponent } from '../../shared/invoice-list/invoice-list.component';
+import { RateServicePopupComponent } from '../../shared/rate-service-popup/rate-service-popup';
+import { TeleBookingService } from '../../shared/tele-bookings-service';
+import { GalleryImportComponent } from '../../shared/gallery/import/gallery-import.component';
+import { AttachmentPopupComponent } from '../../shared/attachment-popup/attachment-popup.component';
 @Component({
   selector: 'app-root',
   templateUrl: './root.component.html',
@@ -72,6 +79,16 @@ export class RootComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription = new Subscription();
   heroSection: any;
   blogConfig: any;
+  notificationdialogRef;
+  addnotedialogRef;
+  checkindialogRef;
+  ratedialogRef;
+  privacydialogRef;
+  canceldialogRef;
+  viewrxdialogRef;
+  allInvocies: any;
+  galleryDialog: any;
+  showattachmentDialogRef: MatDialogRef<unknown, any>;
   constructor(
     private accountService: AccountService,
     private consumerService: ConsumerService,
@@ -85,7 +102,11 @@ export class RootComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private subscriptionService: SubscriptionService,
     private sharedService: SharedService,
-    private jGalleryService: JGalleryService
+    private jGalleryService: JGalleryService,
+    private errorService: ErrorMessagingService,
+    private toastService: ToastService,
+    private teleService: TeleBookingService,
+    private groupService: GroupStorageService
   ) {
     let language = this.lStorageService.getitemfromLocalStorage('translatevariable');
     this.translate.setDefaultLang(language);
@@ -122,7 +143,6 @@ export class RootComponent implements OnInit, OnDestroy {
     this.apptSettings = this.accountService.getJson(this.account['appointmentsettings']);
     this.accountProfile = this.accountService.getJson(this.account['businessProfile']);
     this.accountId = this.accountProfile.id;
-    // this.customId = this.accountProfile['customId'] ? this.accountProfile['customId'] : this.accountProfile['accEncUid'];
     this.donationServicesJson = this.accountService.getJson(this.account['donationServices']);
     if (this.accountProfile.cover) {
       this.bgCover = this.accountProfile.cover.url;
@@ -293,10 +313,361 @@ export class RootComponent implements OnInit, OnDestroy {
     this.onViewAllBookings();
   }
 
-  cardClicked(actionObj) {
-    actionObj?.event?.stopPropagation?.();
-    this.onViewAllBookings();
+  // cardClicked(actionObj) {
+  //   actionObj?.event?.stopPropagation?.();
+  //   this.onViewAllBookings();
+  // }
+  bookingDetails(booking) {
+    console.log("booking" + booking);
+
+    let bookingID = booking.apptStatus ? booking.uid : booking.uid;
+    this.router.navigate([this.sharedService.getRouteID(), 'booking', bookingID]);
   }
+  rescheduleBooking(booking) {
+    let bookingID = booking.apptStatus ? booking.uid : booking.uid;
+    let queryParams = {
+      uuid: bookingID,
+      type: 'reschedule',
+      service_id: booking.service.id
+    }
+    const navigationExtras: NavigationExtras = {
+      queryParams: queryParams
+    };
+    let routePath = booking.apptStatus ? 'appointment' : 'checkin';
+    this.router.navigate([this.sharedService.getRouteID(), routePath], navigationExtras);
+  }
+  rateService(booking) {
+      let bookingType = booking.apptStatus ? 'appointment' : 'checkin';
+      this.ratedialogRef = this.dialog.open(RateServicePopupComponent, {
+        width: '50%',
+        panelClass: ['commonpopupmainclass', 'popup-class'],
+        disableClose: true,
+        autoFocus: true,
+        data: {
+          'detail': booking,
+          'isFrom': bookingType,
+          'theme': this.theme
+        }
+      });
+      this.ratedialogRef.afterClosed().subscribe(result => {
+        // this.bookingTitleChanged(this.bookingTitle);
+  
+      });
+    }
+    doCancelWaitlist(booking) {
+    const _this = this;
+    let bookingType = booking.apptStatus ? 'appointment' : 'checkin';
+    this.bookingService.doCancelWaitlist(booking, bookingType, this.theme, this)
+      .then(
+        data => {
+          if (data === 'reloadlist') {
+          }
+        }, error => {
+          let errorObj = this.errorService.getApiError(error);
+          this.toastService.showError(errorObj);
+        }
+      );
+  }
+  addWaitlistMessage(booking, type?) {
+    let bookingID = booking.apptStatus ? booking.uid : booking.uid;
+    const pass_ob = {};
+    pass_ob['source'] = 'consumer-waitlist';
+    pass_ob['user_id'] = booking.providerAccount.id;
+    pass_ob['userId'] = booking.providerAccount.uniqueId;
+    pass_ob['name'] = booking.providerAccount.businessName;
+    pass_ob['typeOfMsg'] = 'single';
+    pass_ob['uuid'] = bookingID;
+    pass_ob['theme'] = this.theme;
+    if (type === 'appt') {
+      pass_ob['appt'] = type;
+    }
+    this.addNote(pass_ob);
+  }
+  addNote(pass_ob) {
+    this.addnotedialogRef = this.dialog.open(AddInboxMessagesComponent, {
+      width: '50%',
+      panelClass: ['commonpopupmainclass', 'popup-class', 'loginmainclass', 'smallform'],
+      disableClose: true,
+      autoFocus: true,
+      data: pass_ob
+    });
+    this.addnotedialogRef.afterClosed().subscribe(result => {
+      if (result === 'reloadlist') {
+      }
+    });
+  }
+  sendAttachment(booking, type) {
+      console.log(booking);
+      console.log(type);
+      const pass_ob = {};
+      pass_ob['user_id'] = booking.providerAccount.id;
+      if (type === 'appt') {
+        pass_ob['type'] = type;
+        pass_ob['uuid'] = booking.uid;
+      } else if (type === 'checkin') {
+        pass_ob['type'] = type;
+        pass_ob['uuid'] = booking.ynwUuid;
+      } else {
+        pass_ob['type'] = type;
+        pass_ob['uuid'] = booking.uid;
+      }
+      this.addattachment(pass_ob);
+    }
+  
+    addattachment(pass_ob) {
+      console.log(pass_ob);
+      this.galleryDialog = this.dialog.open(GalleryImportComponent, {
+        width: '50%',
+        panelClass: ['popup-class', 'commonpopupmainclass'],
+        disableClose: true,
+        data: {
+          source_id: 'consumerimages',
+          accountId: pass_ob.user_id,
+          uid: pass_ob.uuid,
+          type: pass_ob.type,
+          theme: this.theme
+        }
+      });
+      this.galleryDialog.afterClosed().subscribe(result => {
+        // this.reloadAPIs();
+      });
+    }
+    getAttachments(booking) {
+      const _this = this;
+      return new Promise(function (resolve, reject) {
+        if (booking.apptStatus) {
+          _this.bookingService.getAppointmentAttachmentsByUuid(booking.uid, booking.providerAccount.id).subscribe(
+            (attachments: any) => {
+              resolve(attachments);
+            }, (error) => { reject(error) });
+        } else {
+          _this.bookingService.getWaitlistAttachmentsByUuid(booking.uid, booking.providerAccount.id).subscribe(
+            (attachments: any) => {
+              resolve(attachments);
+            }, (error) => { reject(error) });
+        }
+      })
+    }
+    viewAttachment(booking, bookingType) {
+        const _this = this;
+        this.getAttachments(booking).then((attachments: any) => {
+          _this.showattachmentDialogRef = _this.dialog.open(AttachmentPopupComponent, {
+            width: '50%',
+            panelClass: ['popup-class', 'commonpopupmainclass'],
+            disableClose: true,
+            data: {
+              attachments: attachments,
+              type: bookingType,
+              theme: this.theme
+            }
+          });
+          _this.showattachmentDialogRef.afterClosed().subscribe(result => {
+            if (result === 'reloadlist') {
+            }
+          });
+        }).catch((error) => {
+          let errorObj = _this.errorService.getApiError(error);
+          _this.toastService.showError(errorObj);
+        })
+      }
+  cardClicked(actionObj) {
+    console.log("ACtion Obj:", actionObj);
+    let booking = actionObj['booking'];
+    let action = actionObj['action'];
+    let event = actionObj['event'];
+    let bookingType = booking.apptStatus ? 'appt' : 'checkin';
+    switch (action) {
+      case 'details':
+        this.bookingDetails(booking);
+        break;
+      case 'reschedule':
+        this.rescheduleBooking(booking);
+        break;
+      case 'rating':
+        this.rateService(booking);
+        break;
+      case 'cancel':
+        this.doCancelWaitlist(booking);
+        break;
+      case 'communicate':
+        this.addWaitlistMessage(booking, bookingType);
+        break;
+      case 'sendMessage':
+        this.addWaitlistMessage(booking, bookingType);
+        break;
+      case 'sendAttachment':
+        this.sendAttachment(booking, bookingType);
+        break;
+      case 'viewAttachment':
+        this.viewAttachment(booking, bookingType);
+        break;
+      case 'meetingDetails':
+        this.getMeetingDetails(booking);
+        break;
+      case 'moreInfo':
+        this.gotoQuestionnaire(booking);
+        break;
+      case 'viewPrescription':
+        this.viewprescription(booking);
+        break;
+      case 'viewBill':
+        this.viewBill(booking, event);
+        break;
+      case 'joinVideo':
+        this.btnJoinVideoClicked(booking, event);
+        break;
+      case 'providerDetails':
+        this.providerDetail();
+        break;
+    }
+  }
+  btnJoinVideoClicked(booking, event) {
+      event.stopPropagation();
+      let activeUser = this.groupService.getitemFromGroupStorage('jld_scon');
+      let bookingID = booking.apptStatus ? booking.appointmentEncId : booking.checkinEncId;
+      if (booking.videoCallButton && booking.videoCallButton !== 'DISABLED') {
+        this.router.navigate([this.sharedService.getRouteID(), 'meeting', activeUser.primaryPhoneNumber, bookingID]);
+      }
+      return false;
+    }
+    
+    getBookingInvoices(accId, bookingID) {
+      return new Promise((resolve, reject) => {
+        this.teleService.getInvoiceDetailsByuuid(accId, bookingID).subscribe(
+          (invoices: any) => {
+            resolve(invoices);
+          }, error => {
+            let errorObj = this.errorService.getApiError(error);
+            this.toastService.showError(errorObj);
+            reject(error)
+          }
+        )
+      })
+    }
+    goToInvoiceList() {
+      return new Promise((resolve, reject) => {
+        this.addnotedialogRef = this.dialog.open(InvoiceListComponent, {
+          width: '50%',
+          panelClass: ['commonpopupmainclass', 'popup-class', 'loginmainclass', 'smallform'],
+          disableClose: true,
+          autoFocus: true,
+          data: this.allInvocies
+        });
+        this.addnotedialogRef.afterClosed().subscribe(result => {
+          resolve(result);
+        });
+      })
+    }
+    selectInvoiceFromList(invoices: any) {
+      return new Promise((resolve, reject) => {
+        this.addnotedialogRef = this.dialog.open(InvoiceListComponent, {
+          width: '50%',
+          panelClass: ['commonpopupmainclass', 'popup-class', 'loginmainclass', 'smallform'],
+          disableClose: true,
+          autoFocus: true,
+          data: invoices
+        });
+        this.addnotedialogRef.afterClosed().subscribe(invoiceID => {
+          resolve(invoiceID);
+        });
+      })
+    }
+    viewBill(booking, event) {
+      event.stopPropagation();
+      let bookingID = booking.apptStatus ? booking.uid : booking.uid;
+      let qParams = {
+        paidInfo: false
+      }
+      console.log("Booking Info:", booking);
+      if (booking.invoiceCreated) {
+        this.getBookingInvoices(booking.providerAccount.id, bookingID).then((invoices: any) => {
+          console.log("Invoices:", invoices);
+          if (invoices) {
+            if (invoices && invoices.length == 1) {
+              qParams['invoiceId'] = invoices[0].uid;
+              this.router.navigate([this.sharedService.getRouteID(), 'booking', 'bill', bookingID], { queryParams: qParams });
+            } else {
+              this.selectInvoiceFromList(invoices).then((invoiceID) => {
+                if (invoiceID) {
+                  qParams['invoiceId'] = invoiceID;
+                  this.router.navigate([this.sharedService.getRouteID(), 'booking', 'bill', bookingID], { queryParams: qParams });
+                }
+              })
+            }
+          }
+        })
+      } else {
+        let queryParams = {
+          paidStatus: false
+        }
+        const navigationExtras: NavigationExtras = {
+          queryParams: queryParams
+        };
+        this.router.navigate([this.sharedService.getRouteID(), 'booking', 'bill', bookingID], navigationExtras);
+      }
+    }
+  viewprescription(checkin) {
+      console.log("Checkin:", checkin);
+      this.viewrxdialogRef = this.dialog.open(ViewRxComponent, {
+        width: '50%',
+        panelClass: ['commonpopupmainclass', 'popup-class'],
+        disableClose: true,
+        data: {
+          theme: this.theme,
+          accencUid: checkin.prescShortUrl ? (window.location.origin + checkin.prescShortUrl) : checkin.prescUrl
+        }
+      });
+    }
+  gotoQuestionnaire(booking) {
+    console.log(booking);
+    let uuid;
+    let type;
+    if (booking.waitlistingFor) {
+      uuid = booking.ynwUuid;
+      type = 'consCheckin';
+    } else {
+      uuid = booking.uid;
+      type = 'consAppt';
+    }
+    const navigationExtras: NavigationExtras = {
+      queryParams: {
+        uuid: uuid,
+        providerId: booking.providerAccount.id,
+        type: type
+      }
+    };
+    this.router.navigate([this.sharedService.getRouteID(), 'questionnaire'], navigationExtras);
+  }
+  getMeetingDetails(booking) {
+      let bookingSource = booking.apptStatus ? 'appt' : 'waitlist';
+      const passData = {
+        'type': bookingSource,
+        'details': booking,
+        'theme': this.theme
+      };
+      this.addnotedialogRef = this.dialog.open(MeetingDetailsComponent, {
+        width: '50%',
+        panelClass: ['commonpopupmainclass', 'popup-class'],
+        disableClose: true,
+        data: passData
+      });
+      this.addnotedialogRef.afterClosed().subscribe(result => {
+      });
+    }
+    providerDetail() {
+      this.router.navigate([this.sharedService.getRouteID()]);
+    }
+    gotoDetails() {
+      const source = this.lStorageService.getitemfromLocalStorage('source');
+      console.log(source);
+      if (source) {
+        window.location.href = source;
+        this.lStorageService.removeitemfromLocalStorage('reqFrom');
+        this.lStorageService.removeitemfromLocalStorage('source');
+      } else {
+        this.router.navigate([this.sharedService.getRouteID()]);
+      }
+    }
   setBasicProfile() {
     this.basicProfile['theme'] = this.theme;
     this.basicProfile['businessName'] = this.accountProfile['businessName'];

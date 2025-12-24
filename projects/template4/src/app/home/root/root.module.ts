@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { RootComponent } from './root.component';
-import { DateFormatPipeModule, I8nModule, JGalleryModule, SafeHtmlModule, ToastService } from 'jconsumer-shared';
+import { DateFormatPipeModule, ErrrorMessageModule, I8nModule, JGalleryModule, SafeHtmlModule, ToastService } from 'jconsumer-shared';
 import { AddInboxMessagesModule } from '../../shared/add-inbox-messages/add-inbox-messages.module';
 import { BasicProfileNewModule } from '../../shared/profile/basic-profile-new/basic-profile-new.module';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -19,6 +19,8 @@ import { BasicProfileModule } from './basic-profile/basic-profile.module';
 import { QuickActionsModule } from './quick-actions/quick-actions.module';
 import { AdvancedProfileModule } from '../../shared/profile/advanced-profile/advanced-profile.module';
 import { ApptCardModule } from '../../shared/appt-card/appt-card.module';
+import { InvoiceListModule } from '../../shared/invoice-list/invoice-list.module';
+import { AttachmentPopupModule } from '../../shared/attachment-popup/attachment-popup.module';
 
 const routes: Routes = [
   { path: '', component: RootComponent }
@@ -47,6 +49,9 @@ const routes: Routes = [
     QuickActionsModule,
     AdvancedProfileModule,
     ApptCardModule,
+    InvoiceListModule,
+    ErrrorMessageModule,
+    AttachmentPopupModule,
     RouterModule.forChild(routes)
   ],
   exports: [RootComponent],
