@@ -11,7 +11,7 @@ export class PrintService {
      * To Print Receipt
      */
   print(booking: any) {
-    console.log(booking)
+    console.log("booking", booking)
     const params = [
       'height=' + screen.height,
       'width=' + screen.width,
@@ -26,109 +26,137 @@ export class PrintService {
       bill_html += '<td style="color:#000000; text-align:center;font-size:10pt; font-family:"Ubuntu, Arial,sans-serif; text-transform: capitalize !important;">' + booking['location'] + '</td>';
       bill_html += '	</tr>';
     }
+    if (booking['invoiceExtras']['gstNumber']) {
+      bill_html += '<td width="50%"	style="text-align:center;color:#000000; font-size:10pt; font-family:"Ubuntu, Arial,sans-serif;">';
+      bill_html += 'GSTIN ' + booking['invoiceExtras']['gstNumber'];
+      bill_html += '</td>';
+    }
     bill_html += '<div style="margin-right:10px!important;"><img src="' + booking?.account?.logo + '" width="80px" style="border-radius:50%!important"></div>';
     bill_html += '	<tr><td style="border-bottom:1px solid #ddd;">';
     bill_html += '<table width="100%">';
     bill_html += '	<tr style="line-height:20px">';
     bill_html += '<td width="50%" style="color:#000000; font-size:10pt; font-family:Ubuntu, Arial,sans-serif;">' + (booking['bookingFor'][0]?.title ? (booking['bookingFor'][0]?.title + ' ') : '') + (booking['bookingFor'][0]?.firstName ? booking['bookingFor'][0]?.firstName : '') + ' ' + (booking['bookingFor'][0]?.lastName ? booking['bookingFor'][0]?.lastName : '') + '</td>';
+    bill_html += '	</tr>';
+    bill_html += '	<tr style="line-height:20px">';
+    if (booking['isInvoice']) {
+      bill_html += '<td width="50%" style="color:#000000; font-size:10pt; font-family:Ubuntu, Arial,sans-serif;">' + (booking['isInvoice'] ? 'Invoice # :' : '') +
+        booking['invoiceExtras']['invoiceNum'] + '</td>';
+    }
+
     bill_html += '<td width="50%"	style="text-align:right;color:#000000; font-size:10pt; font-family:"Ubuntu, Arial,sans-serif;">' + (booking['isInvoice'] ? 'Invoice Date :' : '') + booking['invoiceExtras']['_billDate'];
     bill_html += '	</td>';
     bill_html += '	</tr>';
-    bill_html += '	<tr style="line-height:20px">';
-    bill_html += '<td width="50%" style="color:#000000; font-size:10pt; font-family:Ubuntu, Arial,sans-serif;">' + (booking['isInvoice'] ? 'Invoice # :' : '') +
-    booking['invoiceExtras']['invoiceNum'] + '</td>';
-    bill_html += '<td width="50%"	style="text-align:right;color:#000000; font-size:10pt; font-family:"Ubuntu, Arial,sans-serif;">' + (booking['invoiceExtras']['departmentName'] ? 'Department :' : '') + booking['invoiceExtras']['departmentName'];
-    bill_html += '	</td>';
-    bill_html += '	</tr>';
-
-
-    bill_html += '	<tr style="line-height:20px">';
-    bill_html += '<td width="50%"	style="text-align:left;color:#000000; font-size:10pt; font-family:"Ubuntu, Arial,sans-serif;">';
-    if (booking['invoiceExtras']['gstNumber']) {
-      bill_html += 'GSTIN ' + booking['invoiceExtras']['gstNumber'];
-    }
-    bill_html += '</td>';
-    bill_html += '<td width="50%" style="text-align:right;color:#000000;  text-transform: capitalize !important; font-size:10pt; font-family:"Ubuntu, Arial,sans-serif;">';
-    if (booking['invoiceExtras']['providerName']) {
+    bill_html += '<tr style="line-height:20px">';
+    if (booking['providerLabel'] && booking['invoiceExtras']['providerName']) {
+      bill_html += '<td width="50%" style="text-align:left;color:#000000;  text-transform: capitalize !important; font-size:10pt; font-family:"Ubuntu, Arial,sans-serif;">';
       bill_html += booking['providerLabel'] + ':' + booking['invoiceExtras']['providerName'];
+      bill_html += '</td>';
     }
-    bill_html += '</td>';
-    bill_html += '<td width="50%"	style="text-align:right;color:#000000; font-size:10pt; font-family:"Ubuntu, Arial,sans-serif;">';
     if (booking['invoiceExtras']['_dueDate']) {
+      bill_html += '<td width="50%"	style="text-align:right;color:#000000; font-size:10pt; font-family:"Ubuntu, Arial,sans-serif;">';
       bill_html += 'Due Date :' + booking['invoiceExtras']['_dueDate'];
+      bill_html += '</td>';
     }
-    bill_html += '	</td>';
-    bill_html += '	</tr>';
-    bill_html += '	<tr>';
-    if (booking['isInvoice'] && booking['invoice'].billStatus && booking['invoice'].billStatus == 'Cancel') {
-      bill_html += '<td style="color:#000000;  text-transform: capitalize !important; font-size:10pt; font-family:"Ubuntu, Arial,sans-serif;">' +
-        'Cancelled'
-        + '</td>';
+    bill_html += '</tr>';
+    bill_html += '<tr>';
+    bill_html += '<td width="50%" style="text-align:left; color:#000000; text-transform: capitalize; font-size:10pt; font-family:Ubuntu, Arial, sans-serif;">';
+    if (booking['isInvoice'] && booking['invoice'].billStatus === 'Cancel') {
+      bill_html += 'Cancelled';
     }
-    bill_html += '	</tr>';
-    bill_html += '	<tr>';
-    if (booking['isInvoice'] && booking['invoice'].billStatus && booking['invoice'].billStatus == 'Settled') {
-      bill_html += '<td style="color:#000000;  text-transform: capitalize !important; font-size:10pt; font-family:"Ubuntu, Arial,sans-serif;">' +
-        'Settled'
-        + '</td>';
-    }
-    bill_html += '	</tr>';
-    bill_html += '</table>';
-    bill_html += '	</td></tr>';
-    bill_html += '<tr><td style="border-bottom:1px solid #ddd;">';
-    bill_html += '<table width="100%"';
-    bill_html += '	style="color:#000000; font-size:10pt; line-height:15px; font-family:Ubuntu, Arial,sans-serif; padding-top:5px;padding-bottom:5px">';
-    bill_html += '	<tr>';
-    bill_html += '<td width="40%" style="text-align:right; font-weight:600 !important;">' + 'Service';
     bill_html += '</td>';
-    bill_html += '<td width="15%" style="text-align:right; font-weight:600 !important;">' + 'Rate';
+    if (booking['invoiceExtras']['departmentName']) {
+      bill_html += '<td width="50%"	style="text-align:right;color:#000000; font-size:10pt; font-family:"Ubuntu, Arial,sans-serif;">' + (booking['invoiceExtras']['departmentName'] ? 'Department :' : '') + booking['invoiceExtras']['departmentName'];
+    }
     bill_html += '</td>';
-    bill_html += '<td width="15%" style="text-align:right; font-weight:600 !important;">' + 'Quantity' + '</td>';
-    bill_html += '<td width="30%" style="text-align:right; font-weight:600 !important;">' + 'Price' + '</td>';
-    bill_html += '	</tr>';
+    bill_html += '</tr>';
     bill_html += '</table>';
-    bill_html += '	</td></tr>';
+    bill_html += '</td></tr>';
+    if (booking && booking.invoiceID !== undefined && booking && booking.invoiceID !== null) {
+      bill_html += '<tr><td style="border-bottom:1px solid #ddd;">';
+      bill_html += '<table width="100%"';
+      bill_html += '	style="color:#000000; font-size:10pt; line-height:15px; font-family:Ubuntu, Arial,sans-serif; padding-top:5px;padding-bottom:5px">';
+      bill_html += '	<tr>';
+      bill_html += '<td width="10%" style="text-align:right; font-weight:600 !important;">' + 'Service';
+      bill_html += '</td>';
+      bill_html += '<td width="10%" style="text-align:right; font-weight:600 !important;">' + 'Rate';
+      bill_html += '</td>';
+      bill_html += '<td width="10%" style="text-align:right; font-weight:600 !important;">' + 'Quantity' + '</td>';
+      bill_html += '<td width="10%" style="text-align:right; font-weight:600 !important;">' + 'Total Rate' + '</td>';
+      bill_html += '<td width="10%" style="text-align:right; font-weight:600 !important;">' + 'Discount' + '</td>';
+      bill_html += '<td width="10%" style="text-align:right; font-weight:600 !important;">' + 'After Discount' + '</td>';
+      bill_html += '<td width="10%" style="text-align:right; font-weight:600 !important;">' + 'Tax' + '</td>';
+      bill_html += '<td width="10%" style="text-align:right; font-weight:600 !important;">' + 'Price' + '</td>';
+      bill_html += '	</tr>';
+      bill_html += '</table>';
+      bill_html += '	</td></tr>';
+    } else {
+      bill_html += '<tr><td style="border-bottom:1px solid #ddd;">';
+      bill_html += '<table width="100%"';
+      bill_html += '	style="color:#000000; font-size:10pt; line-height:15px; font-family:Ubuntu, Arial,sans-serif; padding-top:5px;padding-bottom:5px">';
+      bill_html += '	<tr>';
+      bill_html += '<td width="10%" style="text-align:right; font-weight:600 !important;">' + 'Service';
+      bill_html += '</td>';
+      bill_html += '<td width="10%" style="text-align:right; font-weight:600 !important;">' + 'Rate';
+      bill_html += '</td>';
+      bill_html += '<td width="10%" style="text-align:right; font-weight:600 !important;">' + 'Quantity' + '</td>';
+      bill_html += '<td width="10%" style="text-align:right; font-weight:600 !important;">' + 'Total Rate' + '</td>';
+      bill_html += '<td width="10%" style="text-align:right; font-weight:600 !important;">' + 'Tax' + '</td>';
+      bill_html += '<td width="10%" style="text-align:right; font-weight:600 !important;">' + 'Price' + '</td>';
+      bill_html += '	</tr>';
+      bill_html += '</table>';
+      bill_html += '	</td></tr>';
+    }
+
+
+
     if (booking['invoiceExtras']['services']) {
       for (const service of booking['invoiceExtras']['services']) {
         bill_html += '	<tr><td style="border-bottom:1px solid #ddd;">';
         bill_html += '<table width="100%"';
         bill_html += '	style="color:#000000; font-size:10pt; line-height:25px; font-family:Ubuntu, Arial,sans-serif; padding-top:10px;padding-bottom:10px">';
         bill_html += '	<tr >';
-        bill_html += '<td width="40%"';
+        bill_html += '<td width="10%"';
         bill_html += '	style="text-align:right;font-weight:bold;">';
         bill_html += service.serviceName;
         if (service.getGSTpercentage > 0) {
           bill_html += '<span style="font-size: .60rem;;font-weight: 600;color: #fda60d;"><sup> Tax</sup></span>';
         }
         bill_html += '</td>';
-        bill_html += '<td width="15%"';
+        bill_html += '<td width="10%"';
         bill_html += '	style="text-align:right">' + ' &#x20b9;' + parseFloat(service.price).toFixed(2);
         bill_html += '</td>';
-        bill_html += '<td width="15%"';
+        bill_html += '<td width="10%"';
         bill_html += '	style="text-align:right">' + service.quantity;
         bill_html += '</td>';
-        bill_html += '<td width="30%"';
-        bill_html += '	style="text-align:right">&#x20b9;' + (service.quantity * service.price).toFixed(2) + '</td>';
+        bill_html += '<td width="10%"';
+        bill_html += '	style="text-align:right">' + ' &#x20b9;' + parseFloat(service.totalPrice).toFixed(2);
+        bill_html += '</td>';
+        bill_html += '<td width="10%"';
+        bill_html += '	style="text-align:right">' + ' &#x20b9;' + parseFloat(service.taxAmount).toFixed(2);
+        bill_html += '</td>';
+        bill_html += '<td width="10%"';
+        bill_html += '	style="text-align:right">' + ' &#x20b9;' + parseFloat(service.netRate).toFixed(2);
+        bill_html += '</td>';
         bill_html += '	</tr>';
-        if (service.discount && service.discount.length > 0) {
-          for (const serviceDiscount of service.discount) {
-            bill_html += '	<tr style="color:#aaa">';
-            bill_html += '<td style="text-align:right;"';
-            bill_html += '	colspan="2">' + serviceDiscount.name + '</td>';
-            bill_html += '<td style="text-align:right">(-) &#x20b9;' + parseFloat(serviceDiscount.discountValue).toFixed(2);
-            bill_html += '</td>';
-            bill_html += '	</tr>';
-          }
+        // if (service.discount && service.discount.length > 0) {
+        //   for (const serviceDiscount of service.discount) {
+        //     bill_html += '	<tr style="color:#aaa">';
+        //     bill_html += '<td style="text-align:right;"';
+        //     bill_html += '	colspan="2">' + serviceDiscount.name + '</td>';
+        //     bill_html += '<td style="text-align:right">(-) &#x20b9;' + parseFloat(serviceDiscount.discountValue).toFixed(2);
+        //     bill_html += '</td>';
+        //     bill_html += '	</tr>';
+        //   }
 
-          bill_html += '	<tr style="line-height:0;">';
-          bill_html += '<td style="text-align:right" colspan="2"></td>';
-          bill_html += '<td style="text-align:right; border-bottom:1px dotted #ddd">Â </td>';
-          bill_html += '	</tr>';
-          bill_html += '	<tr style="font-weight:bold">';
-          bill_html += '<td style="text-align:right"colspan="2">Sub Total</td>';
-          bill_html += '<td style="text-align:right">&#x20b9;' + parseFloat(service.netRate).toFixed(2) + '</td>';
-          bill_html += '	</tr>';
-        }
+        //   bill_html += '	<tr style="line-height:0;">';
+        //   bill_html += '<td style="text-align:right" colspan="2"></td>';
+        //   bill_html += '<td style="text-align:right; border-bottom:1px dotted #ddd">Â </td>';
+        //   bill_html += '	</tr>';
+        //   bill_html += '	<tr style="font-weight:bold">';
+        //   bill_html += '<td style="text-align:right"colspan="2">Sub Total</td>';
+        //   bill_html += '<td style="text-align:right">&#x20b9;' + parseFloat(service.netRate).toFixed(2) + '</td>';
+        //   bill_html += '	</tr>';
+        // }
         bill_html += '</table>';
         bill_html += '	</td></tr>';
       }
@@ -144,50 +172,67 @@ export class PrintService {
           bill_html += '<span style="font-size: .60rem;;font-weight: 600;color: #fda60d;"><sup> Tax</sup></span>';
         }
         bill_html += '</td>';
+        bill_html += '<td width="10%"';
+        bill_html += '	style="text-align:right">' + ' &#x20b9;' + parseFloat(item.price).toFixed(2);
+        bill_html += '</td>';
         bill_html += '<td width="20%" style="text-align:right">Qty ' + item.quantity + '</td>';
-        bill_html += '<td width="30%" style="text-align:right">&#x20b9;' + (item.quantity * item.price).toFixed(2) + '</td>';
+        bill_html += '<td width="30%" style="text-align:right">&#x20b9;' + parseFloat(item.totalPrice).toFixed(2); + '</td>';
+        bill_html += '<td width="30%" style="text-align:right">&#x20b9;' + parseFloat(item.taxAmount).toFixed(2); + '</td>';
+        bill_html += '<td width="30%" style="text-align:right">&#x20b9;' + parseFloat(item.netRate).toFixed(2); + '</td>';
         bill_html += '	</tr>';
-        if (item.discount && item.discount.length > 0) {
-          for (const itemDiscount of item.discount) {
-            bill_html += '	<tr style="color:#aaa">';
-            bill_html += '<td style="text-align:right" colspan="2">' + itemDiscount.name + '</td>';
-            bill_html += '<td style="text-align:right">(-) &#x20b9;' + parseFloat(itemDiscount.discountValue).toFixed(2) + '</td>';
-            bill_html += '	</tr>';
-          }
-        }
-        if (item.discount && item.discount.length > 0) {
-          bill_html += '	<tr style="line-height:0;">';
-          bill_html += '<td style="text-align:right" colspan="2"></td>';
-          bill_html += '<td style="text-align:right; border-bottom:1px dotted #ddd">Â </td>';
-          bill_html += '	</tr>';
-          bill_html += '	<tr style="font-weight:bold">';
-          bill_html += '<td style="text-align:right" colspan="2">Sub Total</td>';
-          bill_html += '<td style="text-align:right">&#x20b9;' + parseFloat(item.netRate).toFixed(2) + '</td>';
-          bill_html += '	</tr>';
-        }
+
         bill_html += '</table>';
         bill_html += '	</td></tr>';
       }
     }
-    if(booking['invoice']?.adhocItemList){
- for (const item of booking['invoice'].adhocItemList) {
-      bill_html += '	<tr><td style="border-bottom:1px solid #ddd;">';
-      bill_html += '<table width="100%"';
-      bill_html += '	style="color:#000000; font-size:10pt; line-height:25px; font-family:Ubuntu, Arial,sans-serif; padding-top:10px;padding-bottom:10px">';
-      bill_html += '	<tr>';
-      bill_html += '<td width="50%" style="text-align:left;font-weight:bold;">' + item.itemName + ' @ &#x20b9;' + parseFloat(item.price).toFixed(2);
-      if (item.GSTpercentage > 0) {
-        bill_html += '<span style="font-size: .60rem;;font-weight: 600;color: #fda60d;"><sup> Tax</sup></span>';
+    if (booking['invoice'].adhocItemList) {
+      for (const item of booking['invoice'].adhocItemList) {
+        bill_html += '	<tr><td style="border-bottom:1px solid #ddd;">';
+        bill_html += '<table width="100%"';
+        bill_html += '	style="color:#000000; font-size:10pt; line-height:25px; font-family:Ubuntu, Arial,sans-serif; padding-top:10px;padding-bottom:10px">';
+        bill_html += '	<tr>';
+        bill_html += '<td width="50%" style="text-align:left;font-weight:bold;">' + item.itemName + ' @ &#x20b9;' + parseFloat(item.price).toFixed(2);
+        if (item.GSTpercentage > 0) {
+          bill_html += '<span style="font-size: .60rem;;font-weight: 600;color: #fda60d;"><sup> Tax</sup></span>';
+        }
+        bill_html += '</td>';
+        bill_html += '<td width="10%"';
+        bill_html += '	style="text-align:right">' + ' &#x20b9;' + parseFloat(item.price).toFixed(2);
+        bill_html += '</td>';
+        bill_html += '<td width="20%" style="text-align:right">Qty ' + item.quantity + '</td>';
+        bill_html += '<td width="30%" style="text-align:right">&#x20b9;' + parseFloat(item.totalPrice).toFixed(2); + '</td>';
+        bill_html += '<td width="30%" style="text-align:right">&#x20b9;' + parseFloat(item.taxAmount).toFixed(2); + '</td>';
+        bill_html += '<td width="30%" style="text-align:right">&#x20b9;' + parseFloat(item.netRate).toFixed(2); + '</td>';
+        bill_html += '	</tr>';
+        bill_html += '</table>';
+        bill_html += '	</td></tr>';
       }
-      bill_html += '</td>';
-      bill_html += '<td width="20%" style="text-align:right">Qty ' + item.quantity + '</td>';
-      bill_html += '<td width="30%" style="text-align:right">&#x20b9;' + (item.quantity * item.price).toFixed(2) + '</td>';
-      bill_html += '	</tr>';
-      bill_html += '</table>';
-      bill_html += '	</td></tr>';
     }
+    if (booking['invoice'].detailList) {
+      for (const item of booking['invoice'].detailList) {
+        bill_html += '	<tr><td style="border-bottom:1px solid #ddd;">';
+        bill_html += '<table width="100%"';
+        bill_html += '	style="color:#000000; font-size:10pt; line-height:25px; font-family:Ubuntu, Arial,sans-serif; padding-top:10px;padding-bottom:10px">';
+        bill_html += '	<tr>';
+        bill_html += '<td width="10%" style="text-align:left;font-weight:bold;">' + item.itemName;
+        if (item.GSTpercentage > 0) {
+          bill_html += '<span style="font-size: .60rem;;font-weight: 600;color: #fda60d;"><sup> Tax</sup></span>';
+        }
+        bill_html += '</td>';
+        bill_html += '<td width="10%"';
+        bill_html += '	style="text-align:right">' + ' &#x20b9;' + parseFloat(item.price).toFixed(2);
+        bill_html += '</td>';
+        bill_html += '<td width="10%" style="text-align:right">' + item.quantity + '</td>';
+        bill_html += '<td width="10%" style="text-align:right">&#x20b9;' + parseFloat(item.netTotal).toFixed(2); + '</td>';
+        bill_html += '<td width="10%" style="text-align:right">&#x20b9;' + parseFloat(item.discountTotal).toFixed(2); + '</td>';
+        bill_html += '<td width="10%" style="text-align:right">&#x20b9;' + parseFloat(item.netTotalAfterDiscount).toFixed(2); + '</td>';
+        bill_html += '<td width="10%" style="text-align:right">&#x20b9;' + parseFloat(item.taxTotal).toFixed(2); + '</td>';
+        bill_html += '<td width="10%" style="text-align:right">&#x20b9;' + parseFloat(item.netRate).toFixed(2); + '</td>';
+        bill_html += '	</tr>';
+        bill_html += '</table>';
+        bill_html += '	</td></tr>';
+      }
     }
-
     bill_html += '	<tr><td>';
     bill_html += '<table width="100%" style="color:#000000; font-size:10pt; font-family:Ubuntu, Arial,sans-serif; padding-top:10px;padding-bottom:5px">                                                                             ';
     bill_html += '	<tr style="font-weight: bold">';
@@ -202,7 +247,7 @@ export class PrintService {
         bill_html += '<table width="100%" style="color:#000000; font-size:10pt; font-family:Ubuntu, Arial,sans-serif; padding-bottom:5px">';
         bill_html += '	<tr style="color:#aaa">';
         bill_html += '<td width="70%" style="text-align:right">' + billDiscount.name + '</td>';
-        bill_html += '<td width="30%" style="text-align:right">(-) &#x20b9;' + parseFloat(billDiscount.discValue).toFixed(2) + '</td>';
+        bill_html += '<td width="30%" style="text-align:right">(-) &#x20b9;' + parseFloat(billDiscount.discountValue).toFixed(2) + '</td>';
         bill_html += '	</tr>';
         bill_html += '</table>';
         bill_html += '	</td></tr>';
@@ -220,16 +265,43 @@ export class PrintService {
         bill_html += '	</td></tr>';
       }
     }
-    if (booking['invoice'].taxableTotal !== 0) {
+    if (booking && booking.invoiceID !== undefined && booking && booking.invoiceID !== null) {
+      if (booking['invoice'].totalTaxAmount > 0) {
+        bill_html += '	<tr><td>';
+        bill_html += '<table width="100%"	style="color:#000000; font-size:10pt; font-family:Ubuntu, Arial,sans-serif; ;padding-bottom:5px">';
+        bill_html += '	<tr style="font-weight: bold;">';
+        bill_html += '<td width="70%" style="text-align:right">Tax</td>';
+        bill_html += '<td width="30%" style="text-align:right">&#x20b9;' + parseFloat(booking['invoice'].totalTaxAmount).toFixed(2) + '</td>';
+        bill_html += '	</tr>';
+        bill_html += '</table>';
+        bill_html += '	</td></tr>';
+      }
+    } else {
+      if (booking['invoice'].taxTotal > 0) {
+        bill_html += '	<tr><td>';
+        bill_html += '<table width="100%"	style="color:#000000; font-size:10pt; font-family:Ubuntu, Arial,sans-serif; ;padding-bottom:5px">';
+        bill_html += '	<tr style="font-weight: bold;">';
+        bill_html += '<td width="70%" style="text-align:right">Tax</td>';
+        bill_html += '<td width="30%" style="text-align:right">&#x20b9;' + parseFloat(booking['invoice'].taxTotal).toFixed(2) + '</td>';
+        bill_html += '	</tr>';
+        bill_html += '</table>';
+        bill_html += '	</td></tr>';
+      }
+    }
+    if (booking['invoice'].roundedValue != 0) {
+      let roundedValue = parseFloat(booking['invoice'].roundedValue).toFixed(2);
+      let formattedValue = booking['invoice'].roundedValue > 0 ? `₹+${roundedValue}` : `₹${roundedValue}`;
       bill_html += '	<tr><td>';
-      bill_html += '<table width="100%" style="color:#000000; font-size:10pt; font-family:Ubuntu, Arial,sans-serif; ;padding-bottom:5px">';
-      bill_html += '	<tr>';
-      bill_html += '<td width="70%" style="text-align:right">Tax ' + booking['invoice'].taxPercentage + ' % of &#x20b9;' + parseFloat(booking['invoice'].taxableTotal).toFixed(2) + '(CGST-' + (booking['invoice'].taxPercentage / 2) + '%, SGST-' + (booking['invoice'].taxPercentage / 2) + '%)</td>';
-      bill_html += '<td width="30%" style="text-align:right">(+) &#x20b9;' + parseFloat(booking['invoiceExtras']['netTaxAmount']).toFixed(2) + '</td>';
+      bill_html += '<table width="100%" style="color:#000000; font-size:10pt; font-family:Ubuntu, Arial, sans-serif; padding-bottom:5px">';
+      bill_html += '	<tr style="font-weight: bold;">';
+      bill_html += '<td width="70%" style="text-align:right">Rounded Value</td>';
+      bill_html += `<td width="30%" style="text-align:right; font-weight: bold;">${formattedValue}</td>`;
       bill_html += '	</tr>';
       bill_html += '</table>';
       bill_html += '	</td></tr>';
     }
+
+
     if (booking['invoice'].netRate > 0) {
       bill_html += '	<tr><td>';
       bill_html += '<table width="100%"	style="color:#000000; font-size:10pt; font-family:Ubuntu, Arial,sans-serif; ;padding-bottom:5px">';

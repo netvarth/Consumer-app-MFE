@@ -875,9 +875,10 @@ export class MyBookingsComponent implements OnInit, OnDestroy {
     console.log("Booking Info:", booking);
     if (booking.invoiceCreated) {
       this.getBookingInvoices(booking.providerAccount.id, bookingID).then((invoices: any) => {
+        console.log("Invoices:", invoices);
         if (invoices) {
           if (invoices && invoices.length == 1) {
-            qParams['invoiceId'] = invoices[0].invoiceUid;
+            qParams['invoiceId'] = invoices[0].uid;
             this.router.navigate([this.sharedService.getRouteID(), 'booking', 'bill', bookingID], { queryParams: qParams });
           } else {
             this.selectInvoiceFromList(invoices).then((invoiceID) => {
