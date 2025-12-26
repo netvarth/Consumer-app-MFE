@@ -84,7 +84,7 @@
           </div>
         </div>
 
-        <div class="detail-row" *ngIf="appointment.location?.place">
+        <!-- <div class="detail-row" *ngIf="appointment.location?.place">
           <div class="detail-icon">
             <i class="fa fa-map-marker"></i>
           </div>
@@ -102,7 +102,7 @@
               </a>
             </p>
           </div>
-        </div>
+        </div> -->
 
  <!--        <div class="detail-row" *ngIf="appointment.provider || appointment.providerAccount?.businessName">
           <div class="detail-icon">
@@ -167,9 +167,9 @@
         </div>
       </section>
 
-      <p class="status-note" *ngIf="appointment.apptStatus">
+      <!-- <p class="status-note" *ngIf="appointment.apptStatus">
         {{'Your Request have been sent to Provider' | translate}}
-      </p>
+      </p> -->
 
       <section class="pre-instruction" *ngIf="appointment.service && appointment.service.postInfoEnabled && appointment.service.postInfoTitle">
         <h3 class="pre-instruction__title">Pre Instruction:</h3>

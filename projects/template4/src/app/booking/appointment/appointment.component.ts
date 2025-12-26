@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, HostListener, NgZone, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, ElementRef, HostListener, NgZone, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute, NavigationExtras, Router } from "@angular/router";
 import { MatDialog } from "@angular/material/dialog";
 import { Location } from "@angular/common";
@@ -14,7 +14,7 @@ import { ConsumerEmailComponent } from "../../shared/consumer-email/consumer-ema
     templateUrl: './appointment.component.html',
     styleUrls: ['./appointment.component.scss']
 })
-export class AppointmentComponent implements OnInit, OnDestroy {
+export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, AfterViewChecked {
 
     private subs: Subscription = new Subscription();
     scheduledAppmtId  // scheduled appointment id for reschedule
@@ -85,7 +85,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     providerConsumerId; // id of the selected provider consumer
     providerConsumerList: any;
     addmemberobj = { 'fname': '', 'title': '', 'lname': '', 'mobile': '', 'gender': '', 'dob': '' };
-
+    cdnPath: string = '';
     balanceAmount: any;
     paymentDetails: any = [];
 
@@ -178,6 +178,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     isPaymentNeeded;
     isCouponsAvailable: boolean = false;
     confirmButton = { 'caption': 'Confirm', 'disabled': false };
+    payAmountLabel = '';
     amountToPayAfterJCash: any;
     bookingPolicy: boolean;
     bookingPolicyContent: any;
@@ -190,6 +191,12 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     booking_firstName: any;
     booking_lastName: any;
     currentAttachment: any;
+    showLumaSpinner = false;
+    lumaOverlayMode: 'loading' | 'message' = 'loading';
+    lumaOverlayMessage = '';
+    lumaOverlayDismissible = false;
+    paymentmodescroll = true;
+    pendingScrollToTop = false;
     constructor(
         private activatedRoute: ActivatedRoute,
         private lStorageService: LocalStorageService,
@@ -253,7 +260,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
 
     @HostListener('window:resize', ['$event'])
     onResize() {
-        if (window.innerWidth <= 767) {
+        if (window.innerWidth <= 880) {
             this.smallDevice = true;
         } else {
             this.smallDevice = false;
@@ -262,6 +269,9 @@ export class AppointmentComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.subs.unsubscribe();
+        if (typeof window !== 'undefined' && 'scrollRestoration' in window.history) {
+            window.history.scrollRestoration = 'auto';
+        }
     }
     getRescheduledInfo() {
         const _this = this;
@@ -293,6 +303,8 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     }
     ngOnInit(): void {
         const _this = this;
+        this.configureScrollRestoration();
+        this.scrollToTop();
         this.onResize();
         let language = this.lStorageService.getitemfromLocalStorage('translatevariable');
         this.translate.setDefaultLang(language);
@@ -346,6 +358,15 @@ export class AppointmentComponent implements OnInit, OnDestroy {
             this.fromApp = true;
         }
     }
+    ngAfterViewInit(): void {
+        this.scrollToTop();
+    }
+    ngAfterViewChecked(): void {
+        if (this.pendingScrollToTop && this.bookStep === 5) {
+            this.pendingScrollToTop = false;
+            this.scrollToTop();
+        }
+    }
     privacyClicked(e) {
         e.preventDefault();
         this.privacy = !this.privacy;
@@ -353,6 +374,30 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     privacyCheck(event) {
         this.checkPolicy = event.target.checked;
         this.setButtonVisibility();
+    }
+    private configureScrollRestoration() {
+        if (typeof window !== 'undefined' && 'scrollRestoration' in window.history) {
+            window.history.scrollRestoration = 'manual';
+        }
+    }
+    private scrollToTop() {
+        setTimeout(() => {
+            if (typeof window !== 'undefined') {
+                window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+                document.body.scrollTop = 0;
+                document.documentElement.scrollTop = 0;
+            }
+            if (this.paytmview && this.paytmview.nativeElement) {
+                this.paytmview.nativeElement.scrollTop = 0;
+            }
+        }, 100);
+    }
+    private handleReviewEntry() {
+        if (this.bookStep === 5) {
+            this.paymentmodescroll = true;
+            this.pendingScrollToTop = true;
+            this.scrollToTop();
+        }
     }
     setBasicProfile() {
         this.accountId = this.accountProfile.id;
@@ -497,6 +542,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                                         _this.bookStep = 4;
                                     } else {
                                         _this.bookStep = 5;
+                                        _this.handleReviewEntry();
                                         this.confirmAppointment('next');
                                     }
                                     console.log("Bookstep3:", _this.bookStep);
@@ -505,6 +551,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                                         _this.bookStep = 4;
                                     } else {
                                         _this.bookStep = 5;
+                                        _this.handleReviewEntry();
                                         this.confirmAppointment('next');
                                     }
                                 }
@@ -536,6 +583,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                                         _this.bookStep = 4;
                                     } else {
                                         _this.bookStep = 5;
+                                        _this.handleReviewEntry();
                                         this.confirmAppointment('next');
                                     }
                                     console.log("Bookstep3:", _this.bookStep);
@@ -547,6 +595,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                                         _this.bookStep = 4;
                                     } else {
                                         _this.bookStep = 5;
+                                        _this.handleReviewEntry();
                                         this.confirmAppointment('next');
 
                                     }
@@ -664,6 +713,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                                             console.log("Questions:", questions);
 
                                             _this.bookStep = 5;
+                                            _this.handleReviewEntry();
                                             _this.confirmAppointment('next');
 
                                             _this.loggedIn = true;
@@ -679,6 +729,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                 else {
                     console.log("Else block :")
                     this.bookStep = 5;
+                    this.handleReviewEntry();
                     this.confirmAppointment('next');
                     this.initAppointment();
                 }
@@ -815,6 +866,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     // BookStep = 2 --- Questionaire
     // BookStep = 3 --- Review/Confirm / File / Note
     goToStep(type) {
+        const previousStep = this.bookStep;
         const _this = this;
         console.log("BookStep1:" + this.bookStep);
         if (type === 'next') {
@@ -839,6 +891,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                                                     _this.bookStep = 4;
                                                 } else {
                                                     _this.bookStep = 5;
+                                                    _this.handleReviewEntry();
                                                     this.confirmAppointment('next');
                                                 }
                                                 console.log("Bookstep2:", _this.bookStep);
@@ -850,6 +903,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                                                     _this.bookStep = 4;
                                                 } else {
                                                     _this.bookStep = 5;
+                                                    _this.handleReviewEntry();
                                                     this.confirmAppointment('next');
                                                 }
                                             }
@@ -880,6 +934,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                                                     _this.bookStep = 4;
                                                 } else {
                                                     _this.bookStep = 5;
+                                                    _this.handleReviewEntry();
                                                     this.confirmAppointment('next');
                                                 }
                                                 console.log("Bookstep2:", _this.bookStep);
@@ -888,6 +943,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                                                     _this.bookStep = 4;
                                                 } else {
                                                     _this.bookStep = 5;
+                                                    _this.handleReviewEntry();
                                                     this.confirmAppointment('next');
                                                 }
                                             }
@@ -1004,6 +1060,10 @@ export class AppointmentComponent implements OnInit, OnDestroy {
             }
         } else {
             this.bookStep = type;
+        }
+        if (this.bookStep === 5 && previousStep !== 5) {
+            this.paymentmodescroll = true;
+            this.scrollToTop();
         }
         if (this.bookStep === 5) {
             this.confirmAppointment('next');
@@ -1204,8 +1264,14 @@ export class AppointmentComponent implements OnInit, OnDestroy {
             this.bookStep = 4;
         } else {
             this.bookStep = 5;
+            this.handleReviewEntry();
             this.confirmAppointment();
         }
+    }
+    dismissLumaOverlay() {
+        this.resetConfirmState();
+        // this.showLumaSpinner = false;
+        this.router.navigate([this.customId,'bookings']);
     }
 
     initAppointment() {
@@ -1274,6 +1340,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                         // this.snackbarService.openSnackBar('Please provide ' + this.selectedService.consumerNoteTitle, { 'panelClass': 'snackbarerror' });
                     } else {
                         this.bookStep++;
+                        this.handleReviewEntry();
                         this.confirmAppointment();
                     }
                 }
@@ -2320,7 +2387,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
 
     finishAppointment(status) {
         if (status) {
-            this.isClickedOnce = false;
+            this.resetConfirmState();
             // this.snackbarService.openSnackBar(Messages.PROVIDER_BILL_PAYMENT, { 'panelClass': 'snackbarnormal' });
             let queryParams = {
                 uuid: this.trackUuid
@@ -2462,6 +2529,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     }
     closeloading() {
         this.ngZone.run(() => {
+          this.resetConfirmState();
           this.btnClicked = false;
           this.loadingPaytm = false;
           this.subscriptionService.sendMessage({ ttype: 'loading_stop' });
@@ -2586,6 +2654,28 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                 });
         });
     }
+    handleConfirmClick() {
+        if (this.confirmButton['disabled']) {
+            return;
+        }
+        this.isClickedOnce = true;
+        if (this.confirmButton['action'] === 'payment') {
+            this.showLumaSpinner = true;
+            this.lumaOverlayMode = 'loading';
+            this.lumaOverlayMessage = this.translate.instant('Please Wait...') || 'Please Wait...';
+            this.lumaOverlayDismissible = false;
+        }
+        this.setButtonVisibility();
+        this.confirmBooking();
+    }
+    resetConfirmState() {
+        this.isClickedOnce = false;
+        this.showLumaSpinner = false;
+        this.lumaOverlayMode = 'loading';
+        this.lumaOverlayMessage = '';
+        this.lumaOverlayDismissible = false;
+        this.setButtonVisibility();
+    }
     confirmBooking() {
         switch (this.confirmButton['action']) {
             case 'reschedule':
@@ -2602,17 +2692,33 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                 this.selectedService.noDateTime)) {
             this.confirmButton['caption'] = 'Send Request';
             this.confirmButton['action'] = "request";
+            this.paymentmodescroll = true;
+            this.payAmountLabel = '';
         } else if (this.appointmentType === 'reschedule' && !this.selectedService.noDateTime) {
             this.confirmButton['caption'] = 'Reschedule';
             this.confirmButton['action'] = "reschedule";
+            this.paymentmodescroll = false;
+            this.payAmountLabel = '';
         } else if (this.paymentDetails.amountRequiredNow > 0) {
-            this.confirmButton['caption'] = 'Make Payment';
+            const amountLabel = this.formatAmountForPayButton(this.paymentDetails.amountRequiredNow);
+            this.confirmButton['caption'] = `Pay ${amountLabel}`;
             this.confirmButton['action'] = "payment";
+            this.paymentmodescroll = true;
+            this.payAmountLabel = amountLabel;
         } else {
             this.confirmButton['caption'] = 'Confirm';
             this.confirmButton['action'] = "confirm";
+            this.paymentmodescroll = true;
+            this.payAmountLabel = '';
         }
         this.setButtonVisibility();
+    }
+    private formatAmountForPayButton(amount: any): string {
+        const numericAmount = Number(amount);
+        if (isNaN(numericAmount)) {
+            return '0';
+        }
+        return numericAmount.toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
     }
     setButtonVisibility() {
         if ((this.bookingPolicy && !this.checkPolicy) || this.isClickedOnce) {
@@ -2626,15 +2732,44 @@ export class AppointmentComponent implements OnInit, OnDestroy {
             this.paymentModeSection.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
     }
+    getImageSrc(mode: string) {
+         let cdnPath = this.sharedService.getCDNPath();
+        if (!mode) {
+            return '';
+        }
+        const normalized = mode.toString().toLowerCase();
+        const fileMap: { [key: string]: string } = {
+            upi: 'upiPayment.png',
+            cc: 'creditcard.png',
+            dc: 'debitCard.png',
+            nb: 'netBanking.png',
+            wallet: 'wallet.png',
+            paylater: 'payLater.png'
+        };
+        const fileName = fileMap[normalized] || `${normalized}.png`;
+        return `${cdnPath}assets/images/myjaldee/${fileName}`;
+    }
      getSelectedPaymentModeLabel(): string {
         if (!this.selectedService?.isPrePayment || !this.paymentMode) {
             return '';
         }
+        const modeLabelMap: { [key: string]: string } = {
+            cc: 'Credit Card',
+            dc: 'Debit Card',
+            nb: 'Net Banking',
+            upi: 'UPI',
+            wallet: 'Wallet'
+        };
+        const mapModeLabel = (value: string) => {
+            const normalized = (value || '').toLowerCase();
+            return modeLabelMap[normalized] || value;
+        };
         const matchedConvenientMode = (this.convenientPaymentModes || []).find((mode: any) => {
             return mode.mode === this.paymentMode && (mode.isInternational === undefined || mode.isInternational === this.shownonIndianModes);
         });
         if (matchedConvenientMode) {
-            return matchedConvenientMode.modeDisplayName || matchedConvenientMode.displayName || matchedConvenientMode.mode;
+            const label = matchedConvenientMode.modeDisplayName || matchedConvenientMode.displayName || matchedConvenientMode.mode;
+            return mapModeLabel(label);
         }
         if (this.paymentmodes) {
             const combinedModes = [
@@ -2643,9 +2778,10 @@ export class AppointmentComponent implements OnInit, OnDestroy {
             ];
             const fallbackMode = combinedModes.find((mode: any) => mode.mode === this.paymentMode);
             if (fallbackMode) {
-                return fallbackMode.modeDisplayName || fallbackMode.displayName || fallbackMode.mode;
+                const label = fallbackMode.modeDisplayName || fallbackMode.displayName || fallbackMode.mode;
+                return mapModeLabel(label);
             }
         }
-        return this.paymentMode;
+        return mapModeLabel(this.paymentMode);
     }
 }

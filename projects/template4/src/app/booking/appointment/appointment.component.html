@@ -1,9 +1,30 @@
+<div class="luma-page-spinner" *ngIf="showLumaSpinner">
+  <div class="luma-page-spinner__backdrop" (click)="lumaOverlayDismissible && dismissLumaOverlay()"></div>
+  <div class="luma-page-spinner__content" [ngClass]="{'luma-page-spinner__content--message': lumaOverlayMode === 'message'}">
+    <ng-container *ngIf="lumaOverlayMode === 'loading'">
+      <div class="luma-page-spinner__visual">
+        <div class="luma-page-spinner__fallback"></div>
+      </div>
+      <div class="luma-page-spinner__text">{{ lumaOverlayMessage || ('Please Wait...' | translate) }}</div>
+    </ng-container>
+    <ng-container *ngIf="lumaOverlayMode === 'message'">
+      <div class="luma-page-message-card">
+        <p class="luma-page-message-card__text">{{ lumaOverlayMessage }}</p>
+        <div class="luma-page-message-card__footer">
+          <span class="luma-page-message-card__secured">Secured by</span>
+          <span class="luma-page-message-card__brand">Jaldee</span>
+        </div>
+        <button type="button" class="luma-page-spinner__close" (click)="dismissLumaOverlay()">{{'Close' | translate}}</button>
+      </div>
+    </ng-container>
+  </div>
+</div>
 <div class="card shadow d-flex flex-row header">
   <div class="my-auto">
     <a class="" (click)="goBack('back')"><i class="fa fa-arrow-left"></i>&emsp;</a>
   </div>
   <div class="text-center mx-auto">
-    <app-booking-accountinfo [businessInfo]="businessInfo" [smallDevice]="smallDevice" *ngIf="smallDevice">
+    <app-booking-accountinfo [businessInfo]="businessInfo" [smallDevice]="smallDevice" *ngIf="smallDevice" [accountConfig]="accountConfig">
     </app-booking-accountinfo>
   </div>
 </div>
@@ -27,7 +48,7 @@
   <div class="col-12 d-flex no-padding" *ngIf="loggedIn">
     <div class="col-md-4 col-lg-4 col-sm-12 col-12s-stretch desktop-only p-1" *ngIf="!smallDevice">
       <div class="card shadow">
-        <app-booking-accountinfo [businessInfo]="businessInfo" [smallDevice]="smallDevice">
+        <app-booking-accountinfo [businessInfo]="businessInfo" [smallDevice]="smallDevice" [accountConfig]="accountConfig">
         </app-booking-accountinfo>
         <div class="booking-img"></div>
       </div>
@@ -241,6 +262,7 @@
             <div class="mr-2">
               <button type="button"
                 class="mx-auto text-center next-button btn btn-light-primary font-weight-bold text-capitalize px-9 py-4"
+                style="border-radius: 14px !important;"
                 (click)="goToStep('prev')">
                 {{'Previous' | translate}}
               </button>
@@ -467,16 +489,34 @@
           <div class="booking-review__footer booking-review__footer--sticky">
             <div class="booking-review__sticky-content">
               <button type="button" class="booking-review__sticky-mode"
-                *ngIf="selectedService?.isPrePayment && paymentDetails?.amountRequiredNow > 0"
+                *ngIf="selectedService?.isPrePayment && paymentDetails?.amountRequiredNow > 0 && paymentmodescroll"
                 (click)="scrollToPaymentModeSection()" tabindex="0">
-                <i class="fa fa-shopping-cart" aria-hidden="true"></i>
-                <span class="booking-review__sticky-mode-value">{{ getSelectedPaymentModeLabel() }}</span>
-                <i class="fa fa-chevron-down" aria-hidden="true"></i>
+                <span class="booking-review__sticky-mode-info">
+                  <span class="first-section">
+                  <span class="booking-review__sticky-mode-label">Payment Mode </span>
+                    <span class="first-sub">
+                   <img *ngIf="paymentMode" class="booking-review__sticky-mode-icon" [src]="getImageSrc(paymentMode)"
+                    alt="Selected payment mode icon">
+                  <span class="booking-review__sticky-mode-value">
+                   &nbsp;{{ getSelectedPaymentModeLabel() }}  </span>
+                  </span>
+                  </span>
+
+                    <span class="booking-review__sticky-mode-subinfo">
+
+                   <i class="fa fa-arrow-circle-down" aria-hidden="true"></i>
+                   </span>
+                </span>
               </button>
               <button type="button" [class.disabled]="confirmButton['disabled']" [disabled]="confirmButton['disabled']"
-                (click)="!isClickedOnce && confirmBooking()"
-                class="next-button btn btn-primary font-weight-bold px-12 booking-review__cta">
-                {{confirmButton['caption'] | translate}}</button>
+                (click)="handleConfirmClick()"
+                class="next-button btn btn-primary font-weight-bold px-12 booking-review__cta"
+                [ngClass]="{'booking-review__cta--full': paymentmodescroll, 'booking-review__cta--nowrap': confirmButton['action']==='payment'}">
+                <ng-container *ngIf="confirmButton['action']==='payment'; else defaultCta">
+                  {{'Pay' | translate}} <span class="rupee-font">&#8377;</span>{{payAmountLabel}}
+                </ng-container>
+                <ng-template #defaultCta>{{confirmButton['caption'] | translate}}</ng-template>
+              </button>
             </div>
           </div>
         </div>
