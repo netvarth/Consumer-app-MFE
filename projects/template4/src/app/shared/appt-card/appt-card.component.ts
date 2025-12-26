@@ -132,9 +132,9 @@ export class ApptCardComponent implements OnInit, OnChanges {
       && (history.waitlistStatus === 'started' || history.waitlistStatus === 'arrived' || history.waitlistStatus === 'checkedIn')) {
       this.showJoinJaldeeVideoBtn = true;
       this.showJoinOtherVideoBtn = false;
-      this.videoBtnCaption = 'Join Video Consultation';
+      this.videoBtnCaption = 'Join Video';
       if (history.videoCallMessage && history.videoCallMessage === 'Call in progress') {
-        this.videoBtnCaption = 'Re-join Video Consultation';
+        this.videoBtnCaption = 'Re-join Video';
       }
     }
     if (this.type !== 'future' && history.videoCallButton && history.videoCallButton === 'ENABLED' && history.service.serviceType === 'virtualService' &&
@@ -143,9 +143,9 @@ export class ApptCardComponent implements OnInit, OnChanges {
       && (history.waitlistStatus === 'started' || history.waitlistStatus === 'arrived' || history.waitlistStatus === 'checkedIn')) {
       this.showJoinJaldeeVideoBtn = false;
       this.showJoinOtherVideoBtn = true;
-      this.videoBtnCaption = 'Join Video Consultation';
+      this.videoBtnCaption = 'Join Video';
       if (history.videoCallMessage && history.videoCallMessage === 'Call in progress') {
-        this.videoBtnCaption = 'Re-join Video Consultation';
+        this.videoBtnCaption = 'Re-join Video';
       }
     }
     if (history.amountDue > 0 && (history.billViewStatus == 'Show') && waitlistStatus != 'cancelled' && billStatus != 'settled') {
@@ -208,9 +208,9 @@ export class ApptCardComponent implements OnInit, OnChanges {
       (apptStatus === 'started' || apptStatus === 'arrived' || apptStatus === 'confirmed')) {
       this.showJoinJaldeeVideoBtn = true;
       this.showJoinOtherVideoBtn = false;
-      this.videoBtnCaption = 'Join Video Consultation';
+      this.videoBtnCaption = 'Join Video';
       if (this.booking.videoCallMessage && this.booking.videoCallMessage === 'Call in progress') {
-        this.videoBtnCaption = 'Re-join Video Consultation';
+        this.videoBtnCaption = 'Re-join Video';
       }
     }
     if (this.type !== 'future' && this.booking.videoCallButton && this.booking.videoCallButton==='ENABLED' && this.booking.service.serviceType === 'virtualService' && this.booking.service.virtualCallingModes.length > 0 &&
@@ -218,9 +218,9 @@ export class ApptCardComponent implements OnInit, OnChanges {
       && (apptStatus === 'started' || apptStatus === 'arrived' || apptStatus === 'confirmed')) {
         this.showJoinJaldeeVideoBtn = false;
       this.showJoinOtherVideoBtn = true;
-      this.videoBtnCaption = 'Join Video Consultation';
+      this.videoBtnCaption = 'Join Video';
       if (this.booking.videoCallMessage && this.booking.videoCallMessage === 'Call in progress') {
-        this.videoBtnCaption = 'Re-join Video Consultation';
+        this.videoBtnCaption = 'Re-join Video';
       }
     }
     if(this.booking.amountDue>0 && (this.booking.billViewStatus=='Show') && apptStatus !== 'cancelled' 

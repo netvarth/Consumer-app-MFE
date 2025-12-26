@@ -202,7 +202,8 @@
 /* make the video button itself stretch across the available space */
 .video-flex .fill{
   width:100%;
-  text-align:center;        /* keeps label centered on wide buttons */
+  text-align:center;  
+  border-radius: 14px !important;      /* keeps label centered on wide buttons */
 }
 
 /* tidy text wrapping on all buttons/badges */
