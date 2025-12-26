@@ -162,13 +162,22 @@ export class PaymentsComponent implements OnInit, OnDestroy {
         event.stopPropagation();
         this.router.navigate([this.sharedService.getRouteID(), 'payments', id]);
     }
-    gotoInvoice(event,invId) {
-        event.stopPropagation();
-        let navigationExtras: NavigationExtras = {
-            queryParams: { 'accId': this.accountId,  'uuid': invId, 'ynwUuid': true}
-          };
-       
-        this.router.navigate([this.sharedService.getRouteID(), 'payments', 'view'],navigationExtras);
+    gotoInvoice(event, payment) {
+        event?.stopPropagation();
+        const bookingId = payment?.ynwUuid || payment?.bookingUid || payment?.uid;
+        const invoiceId = payment?.invoiceUid || payment;
+        const qParams: any = { paidInfo: false };
+        if (invoiceId) {
+            qParams['invoiceId'] = invoiceId;
+        }
+        if (bookingId) {
+            this.router.navigate([this.sharedService.getRouteID(), 'booking', 'bill', bookingId], { queryParams: qParams });
+        } else {
+            const navigationExtras: NavigationExtras = {
+                queryParams: { 'accId': this.accountId, 'uuid': invoiceId, 'ynwUuid': true }
+            };
+            this.router.navigate([this.sharedService.getRouteID(), 'payments', 'view'], navigationExtras);
+        }
     }
     providerDetail(event) {
         this.router.navigate[this.sharedService.getRouteID()]

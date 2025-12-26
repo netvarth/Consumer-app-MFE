@@ -354,31 +354,31 @@
   }
 
   .successPayTxt {
-    border-radius: 5.32806px;
-    background: #D2FDED;
-    color: #52BD94;
+    border-radius: 6px;
+    background: #d7f7ed;
+    color: #2ea575;
     padding: 5px;
-    font-weight: 600;
+    font-weight: 700;
     font-size: 12px;
     text-align: center;
   }
 
   .failedPayTxt {
-    background: #FFF4F4;
-    border-radius: 5.32806px;
-    color: #FF4E4E;
+    border-radius: 6px;
+    background: #fff1f1;
+    color: #ff4e4e;
     padding: 5px;
-    font-weight: 600;
+    font-weight: 700;
     font-size: 12px;
     text-align: center;
   }
 
   .pendingPayTxt {
-    background: #FEECD7;
-    border-radius: 5.32806px;
-    color: #FF9549;
+    border-radius: 6px;
+    background: #ffefe0;
+    color: #ff9549;
     padding: 5px;
-    font-weight: 600;
+    font-weight: 700;
     font-size: 12px;
     text-align: center;
   }
@@ -554,24 +554,24 @@
     }
 
     .successPayTxt {
-      color: #52BD94 !important;
-      padding: 0px !important;
-      border-radius: 0% !important;
-      background: none !important;
+      background: #d7f7ed !important;
+      color: #2ea575 !important;
+      padding: 6px 10px !important;
+      border-radius: 6px !important;
     }
 
     .failedPayTxt {
-      color: #FF4E4E !important;
-      padding: 0px !important;
-      border-radius: 0% !important;
-      background: none !important;
+      background: #fff1f1 !important;
+      color: #ff4e4e !important;
+      padding: 6px 10px !important;
+      border-radius: 6px !important;
     }
 
     .pendingPayTxt {
-      color: #FF9549 !important;
-      padding: 0px !important;
-      border-radius: 0% !important;
-      background: none !important;
+      background: #ffefe0 !important;
+      color: #ff9549 !important;
+      padding: 6px 10px !important;
+      border-radius: 6px !important;
     }
 
     .cstmGapGateWay {
@@ -594,3 +594,170 @@
     gap: 5px;
     align-items: center;
   }
+
+  /* Payments Log redesign */
+  .payments-log {
+    padding: 20px;
+    background: #f9fbfd;
+    border-radius: 10px;
+  }
+
+  .payments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .list-header {
+    display: grid;
+    grid-template-columns: 1.2fr 1.5fr 1.2fr 1.2fr 1fr;
+    padding: 0 12px 8px;
+    color: #6a6a6a;
+    font-weight: 600;
+    font-size: 14px;
+    border-bottom: 1px solid #e9eef4;
+  }
+
+  .payment-row {
+    display: grid;
+    grid-template-columns: 1.2fr 1.5fr 1.2fr 1.2fr 1fr;
+    gap: 10px;
+    align-items: center;
+    padding: 16px 12px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 5px 20px rgba(32, 39, 46, 0.08);
+  }
+
+  .payment-row:hover {
+    box-shadow: 0 6px 24px rgba(32, 39, 46, 0.12);
+  }
+
+  .payment-col {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 14px;
+    color: #2d2d2d;
+  }
+
+  .invoice-link a {
+    color: #0066d4;
+    font-weight: 700;
+  }
+
+  .amount-value {
+    font-weight: 700;
+    color: #151b26;
+  }
+
+  .gateway {
+    color: #009fda;
+    font-weight: 600;
+    font-size: 12px;
+  }
+
+  .status-pill {
+    border-radius: 6px;
+    padding: 8px 14px;
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    text-align: center;
+    width: fit-content;
+  }
+
+  .payments-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .payment-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 14px;
+    box-shadow: 0 5px 20px rgba(32, 39, 46, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .card-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .card-row .label {
+    color: #6a6a6a;
+    font-weight: 600;
+    font-size: 13px;
+  }
+
+  .card-row .value {
+    font-weight: 600;
+    color: #151b26;
+    text-align: right;
+  }
+
+  .payments-list .payment-col.mode,
+  .payments-cards .card-row .value.paymentGatewayCstm {
+    line-height: 1.4;
+  }
+
+  @media (max-width: 992px) {
+    .list-header {
+      grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    }
+
+    .payment-row {
+      grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+      gap: 8px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .payments-log {
+      padding: 16px;
+    }
+
+    .list-header {
+      display: none;
+    }
+
+    .payment-row {
+      grid-template-columns: 1fr;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .payment-col {
+      flex-direction: row;
+      justify-content: space-between;
+    }
+  }
+  .invoice-label {
+   margin-right: 4px;
+    font-size: 16px;
+    color: #000000;
+    font-weight: 700;
+  }
+.back-section{
+  display: flex;
+  flex-direction: row;
+  padding: 17px 3px;
+}
+.back-label{
+  font-size: 16px;
+  color: #000000;
+  font-weight: 700;
+  margin-left: 8px;
+}

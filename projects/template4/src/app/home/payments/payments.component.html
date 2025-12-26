@@ -2,8 +2,15 @@
     <div class="content container mt-1 p-0 see-pages cons-members">
         <div class="panel panel-default">
             <div class="panel-body p-0">
+                <div class="back-section">
+                    <div (click)="backToDashboard()" class="pointer">
+                        <i class="fa fa-arrow-left clrChangeHeader"></i>
+                        <span class="back-label">{{'Back' | translate}}</span>
+                    </div>
+
+                </div>
                 <div class="customCard title-gb headerBorder">
-                    <div (click)="backToDashboard()"><i class="fa fa-arrow-left clrChangeHeader"></i> </div>
+                    <!-- <div (click)="backToDashboard()"><i class="fa fa-arrow-left clrChangeHeader"></i> </div> -->
                     <div *ngIf="type && type==='payments'">
                         <div class="myAcText">{{'Payments Log' | translate}}</div>
                         <div class="accountEditText">{{'Your payment transaction history' |
@@ -16,185 +23,112 @@
                         </div>
                     </div>
                 </div>
-                <div *ngIf="type && type==='payments'" class="customCard">
-                    <div>
-                        <app-common-innerloading-spinner *ngIf="loading"></app-common-innerloading-spinner>
-                        <div class="mainFlex" *ngIf="!loading && !smallDevice">
-                            <div class="fullWidth customCardMr">
-                                <div>
-                                    <div class="no-dta" *ngIf="(payments && payments.length ===0)">
-                                        <div> {{'No payments' | translate}}</div>
-                                    </div>
-                                    <div class="table-outer d-tbl"
-                                        *ngIf="payments && payments.length && payments.length !==0">
-                                        <table class="table">
-                                            <thead class="tHEAD">
-                                                <tr>
-                                                    <th class="tHeadTr">{{'Account Holder' | translate}}</th>
-                                                    <th class="tHeadTr">{{'Invoice' | translate}}</th>
-                                                    <th class="tHeadTr">{{'Date and Time' | translate}}</th>
-                                                    <th class="tHeadTr">{{'Amount' | translate}}</th>
-                                                    <th class="tHeadTr">{{'Payment Mode' | translate}}</th>
-                                                    <th class="tHeadTr">{{'Status' | translate}}</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr class="cursor-pointer" *ngFor="let payment of payments;let i=index"
-                                                    (click)="providerDetail(payment.accountEncodedId,$event)">
-                                                    <td data-title="accountName">
-                                                        <div class="cstmServiceName cursor-pointer"
-                                                            (click)="providerDetail()"
-                                                            *ngIf="payment && payment['accountName']">
-                                                            {{payment['accountName']}}</div>
-                                                        <span *ngIf="payment && payment.acceptPaymentBy">
-                                                            <span
-                                                                class="paymentGatewayCstm">{{payment.acceptPaymentBy}}</span>
-                                                        </span>
-                                                    </td>
-                                                    <td data-title="ServiceName" class="serviceName">
-                                                        <div class="cstmServiceName pointer"
-                                                            *ngIf="payment && payment.invoiceId && payment.invoiceUid">
-                                                            <span (click)="gotoInvoice($event,payment.invoiceUid)"
-                                                                class="pointer">
-                                                                <a class="pointer"
-                                                                    [matTooltip]="'View Invoice'">#{{payment.invoiceId}}</a>
-                                                            </span>
-                                                        </div>
-                                                    </td>
-                                                    <td data-title="paymentOn">
-                                                        <div class="cstmPaymentInfo"
-                                                            *ngIf="payment && payment.paymentOn">
-                                                            {{stringtoDate(payment.paymentOn,'date')}}
-                                                            {{stringtoDate(payment.paymentOn,'time')}}</div>
-                                                    </td>
-                                                    <td data-title="amount">
-                                                        <div (click)="gotoPayment(payment['id'])"
-                                                            class="cstmServiceName cursor-pointer"
-                                                            *ngIf="payment && payment.amount">
-                                                            {{payment.amount |currency:'&#8377; ' }}</div>
-                                                        <div>
-                                                            <span class="txnTypeCust"
-                                                                *ngIf="payment && payment.txnType && payment.txnType==='Appointment'">{{'Appointment'
-                                                                | translate}}</span>
-                                                            <span class="txnTypeCust"
-                                                                *ngIf="(payment && payment.txnType && payment.txnType==='Waitlist') && !payment.showTokenId">{{'Checkin'
-                                                                | translate}}</span>
-                                                            <span class="txnTypeCust"
-                                                                *ngIf="(payment && payment.txnType && payment.txnType==='Waitlist') && payment.showTokenId">{{'Token'
-                                                                | translate}}</span>
-                                                            <span class="txnTypeCust"
-                                                                *ngIf="payment && payment.txnType && payment.txnType==='Donation'">{{'Donation'
-                                                                | translate}}</span>
-                                                            <span class="txnTypeCust"
-                                                                *ngIf="payment && payment.txnType && payment.txnType==='Order'">{{'Order'
-                                                                | translate}}</span>
-                                                        </div>
-                                                    </td>
-                                                    <td data-title="acceptPaymentBy">
-                                                        <div class="cstmPaymentInfo"
-                                                            *ngIf="payment && payment.paymentModeName">
-                                                            {{payment.paymentModeName}}</div>
-                                                        <span *ngIf="payment && payment.paymentGateway">
-                                                            <span class="paymentGatewayCstm">{{'Payment Gateway: ' |
-                                                                translate}}</span>
-                                                            <span
-                                                                class="paymentGatewayCstm">{{payment.paymentGateway}}</span>
-                                                        </span>
-                                                    </td>
-                                                    <td data-title="Action">
-                                                        <div [ngClass]="{successPayTxt: payment.status==='SUCCESS' , failedPayTxt: payment.status==='FAILED',
-                                                        pendingPayTxt: payment.status==='PENDING'}"
-                                                            class="cstmPaymentInfo" *ngIf="payment && payment.status">
-                                                            {{payment.status.charAt(0).toUpperCase() +
-                                                            payment.status.slice(1)}}</div>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
+                <div *ngIf="type && type==='payments'" class="customCard payments-log">
+                    <app-common-innerloading-spinner *ngIf="loading"></app-common-innerloading-spinner>
+
+                    <div class="no-dta" *ngIf="!loading && payments && payments.length ===0">
+                        <div>{{'No payments' | translate}}</div>
+                    </div>
+
+                    <div class="payments-list" *ngIf="!loading && payments && payments.length && !smallDevice">
+                        <div class="list-header" *ngIf="!smallDevice">
+                            <div>{{'Invoice' | translate}}</div>
+                            <div>{{'Date and Time' | translate}}</div>
+                            <div>{{'Amount' | translate}}</div>
+                            <div>{{'Payment Mode' | translate}}</div>
+                            <div>{{'Status' | translate}}</div>
+                        </div>
+
+                        <div class="payment-row" *ngFor="let payment of payments; let i=index">
+                            <div class="payment-col invoice" (click)="gotoInvoice($event,payment)">
+                                <span class="invoice-label">{{'Invoice' | translate}}</span>
+                                <div class="invoice-link" *ngIf="payment && payment.invoiceId && payment.invoiceUid">
+                                    <a class="pointer" [matTooltip]="'View Invoice'">#{{payment.invoiceId}}</a>
+                                </div>
+                            </div>
+
+                            <div class="payment-col date" *ngIf="payment && payment.paymentOn">
+                                <div class="cstmPaymentInfo">
+                                    {{stringtoDate(payment.paymentOn,'date')}} {{stringtoDate(payment.paymentOn,'time')}}
+                                </div>
+                            </div>
+
+                            <div class="payment-col amount" (click)="gotoPayment(payment['id'])" *ngIf="payment && payment.amount">
+                                <div class="amount-value">{{payment.amount |currency:'&#8377; ' }}</div>
+                                <div class="txnTypeCust"
+                                    *ngIf="payment && payment.txnType && payment.txnType==='Appointment'">{{'Appointment' | translate}}</div>
+                                <div class="txnTypeCust"
+                                    *ngIf="(payment && payment.txnType && payment.txnType==='Waitlist') && !payment.showTokenId">{{'Checkin' | translate}}</div>
+                                <div class="txnTypeCust"
+                                    *ngIf="(payment && payment.txnType && payment.txnType==='Waitlist') && payment.showTokenId">{{'Token' | translate}}</div>
+                                <div class="txnTypeCust"
+                                    *ngIf="payment && payment.txnType && payment.txnType==='Donation'">{{'Donation' | translate}}</div>
+                                <div class="txnTypeCust"
+                                    *ngIf="payment && payment.txnType && payment.txnType==='Order'">{{'Order' | translate}}</div>
+                            </div>
+
+                            <div class="payment-col mode">
+                                <div class="cstmPaymentInfo" *ngIf="payment && payment.paymentModeName">
+                                    {{payment.paymentModeName}}
+                                </div>
+                                <div class="paymentGatewayCstm gateway" *ngIf="payment && payment.paymentGateway">
+                                    {{'Payment Gateway: ' | translate}} {{payment.paymentGateway}}
+                                </div>
+                            </div>
+
+                            <div class="payment-col status" *ngIf="payment && payment.status">
+                                <div [ngClass]="{successPayTxt: payment.status==='SUCCESS' , failedPayTxt: payment.status==='FAILED',
+                                    pendingPayTxt: payment.status==='PENDING'}"
+                                    class="status-pill">
+                                    {{payment.status.charAt(0).toUpperCase() + payment.status.slice(1)}}
                                 </div>
                             </div>
                         </div>
-                        <div *ngIf="!loading && smallDevice" class="mt-4">
-                            <div class="no-dta fullWidth customCardMr" *ngIf="(payments && payments.length ===0)">
-                                <div> {{'No payments' | translate}}</div>
+                    </div>
+
+                    <div *ngIf="!loading && payments && payments.length && smallDevice" class="payments-cards">
+                        <div class="payment-card" *ngFor="let payment of payments; let i=index">
+                            <div class="card-top">
+                                <div class="invoice-link" *ngIf="payment && payment.invoiceId && payment.invoiceUid"
+                                    (click)="gotoInvoice($event,payment)">
+                                    <span class="invoice-label">{{'Invoice' | translate}}</span>
+                                    <a class="pointer" [matTooltip]="'View Invoice'">#{{payment.invoiceId}}</a>
+                                </div>
+                                <div class="status-pill"
+                                    [ngClass]="{successPayTxt: payment.status==='SUCCESS' , failedPayTxt: payment.status==='FAILED',
+                                        pendingPayTxt: payment.status==='PENDING'}"
+                                    *ngIf="payment && payment.status">
+                                    {{payment.status.charAt(0).toUpperCase() + payment.status.slice(1)}}
+                                </div>
                             </div>
-                            <div class="fullWidth customCardMr" *ngFor="let payment of payments;let i=index">
-                                <div class="flexBasisSmall" (click)="gotoInvoice($event,payment.invoiceUid)">
-                                    <div *ngIf="payment && payment.invoiceId && payment.invoiceUid"
-                                        class="flexBasisSmall cursor-pointer">
-                                        <div class="labelHeader">{{'Invoice :' | translate}}</div>
-                                        <div class="labelAns" class="cursor-pointer">
-                                            <a class="pointer" [matTooltip]="'View Invoice'">#{{payment.invoiceId}}</a>
-                                        </div>
-                                    </div>
+
+                            <div class="card-row" *ngIf="payment && payment.paymentOn">
+                                <div class="label">{{'Date and Time' | translate}}</div>
+                                <div class="value">{{stringtoDate(payment.paymentOn,'date')}} {{stringtoDate(payment.paymentOn,'time')}}</div>
+                            </div>
+
+                            <div class="card-row" *ngIf="payment && payment.amount">
+                                <div class="label">{{'Amount' | translate}}</div>
+                                <div class="value amount-value" (click)="gotoPayment(payment['id'])">
+                                    {{payment.amount |currency:'&#8377; ' }}
+                                    <span class="txnTypeCust" *ngIf="payment && payment.txnType && payment.txnType==='Appointment'">({{'Appointment' | translate}})</span>
+                                    <span class="txnTypeCust" *ngIf="(payment && payment.txnType && payment.txnType==='Waitlist') && !payment.showTokenId">({{'Checkin'| translate}})</span>
+                                    <span class="txnTypeCust" *ngIf="(payment && payment.txnType && payment.txnType==='Waitlist') && payment.showTokenId">({{'Token'|translate}})</span>
+                                    <span class="txnTypeCust" *ngIf="payment && payment.txnType && payment.txnType==='Donation'">({{'Donation' | translate}})</span>
+                                    <span class="txnTypeCust" *ngIf="payment && payment.txnType && payment.txnType==='Order'">({{'Order' | translate}})</span>
                                 </div>
-                                <div class="flexBasisSmall ">
-                                    <div *ngIf="payment.amount">
-                                        <div class="labelHeader">{{'Amount' | translate}}</div>
-                                        <div class="ammtFlex" (click)="gotoPayment(payment['id'])">
-                                            <div class="labelAns cursor-pointer">
-                                                {{payment.amount |currency:'&#8377; ' }}
-                                            </div>
-                                            <div class="labelAns"
-                                                *ngIf="payment && payment.txnType && payment.txnType==='Appointment'">
-                                                ({{'Appointment' | translate}})
-                                            </div>
-                                            <div class="labelAns"
-                                                *ngIf="(payment && payment.txnType && payment.txnType==='Waitlist') && !payment.showTokenId">
-                                                ({{'Checkin'| translate}})
-                                            </div>
-                                            <div class="labelAns"
-                                                *ngIf="(payment && payment.txnType && payment.txnType==='Waitlist') && payment.showTokenId">
-                                                ({{'Token'|translate}})
-                                            </div>
-                                            <div class="labelAns"
-                                                *ngIf="payment && payment.txnType && payment.txnType==='Donation'">
-                                                ({{'Donation' | translate}})
-                                            </div>
-                                            <div class="labelAns"
-                                                *ngIf="payment && payment.txnType && payment.txnType==='Order'">
-                                                ({{'Order' | translate}})
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div *ngIf="payment && (payment.paymentModeName)">
-                                        <div class="labelHeader">{{'Payment Mode' | translate}}</div>
-                                        <div class="labelAns">
-                                            <div>{{payment.paymentModeName | capitalizeFirst}}</div>
-                                        </div>
-                                    </div>
+                            </div>
+
+                            <div class="card-row" *ngIf="payment && (payment.paymentModeName)">
+                                <div class="label">{{'Payment Mode' | translate}}</div>
+                                <div class="value">
+                                    {{payment.paymentModeName | capitalizeFirst}}
                                 </div>
-                                <div *ngIf="payment && payment.paymentGateway" class="flexBasisSmall cstmGapGateWay">
-                                    <div class="labelHeader">{{'Payment Gateway :' | translate}}</div>
-                                    <div class="labelAns">{{payment.paymentGateway | capitalizeFirst}}</div>
-                                </div>
-                                <div class="flexBasisSmall">
-                                    <div *ngIf="payment && payment.status" class="flexBasisSmall">
-                                        <div class="labelHeader">{{'Status :' | translate}}</div>
-                                        <div class="labelAns"
-                                            [ngClass]="{successPayTxt: payment.status==='SUCCESS' , failedPayTxt: payment.status==='FAILED',
-                                                                                                pendingPayTxt: payment.status==='PENDING'}">
-                                            {{payment.status.charAt(0).toUpperCase() + payment.status.slice(1)}}
-                                        </div>
-                                    </div>
-                                    <div *ngIf="payment && payment.paymentOn" class="flexBasisSmall">
-                                        <div class="labelHeader">{{'Date and Time :' | translate}}</div>
-                                        <div class="labelAns">
-                                            {{stringtoDate(payment.paymentOn,'date')}}
-                                            {{stringtoDate(payment.paymentOn,'time')}}</div>
-                                    </div>
-                                </div>
-                                <div class="flexBasisSmall" style="justify-content: flex-start;">
-                                    <div class="labelHeader">{{'Account :' | translate}}</div>
-                                    <div *ngIf="payment && payment['accountName']" class="labelAns"
-                                        (click)="providerDetail()">
-                                        {{payment['accountName']}}
-                                        <span class="successPayTxt">
-                                            {{payment['acceptPaymentBy']}}
-                                        </span>
-                                    </div>
-                                </div>
+                            </div>
+
+                            <div class="card-row" *ngIf="payment && payment.paymentGateway">
+                                <div class="label">{{'Payment Gateway' | translate}}</div>
+                                <div class="value paymentGatewayCstm">{{payment.paymentGateway | capitalizeFirst}}</div>
                             </div>
                         </div>
                     </div>
