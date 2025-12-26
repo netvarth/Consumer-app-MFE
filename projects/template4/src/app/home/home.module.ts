@@ -35,6 +35,7 @@ const routes: Routes = [
       { path: 'support', loadChildren: () => import('./support/support.module').then(m => m.SupportModule) },
       { path: 'service/:serid', loadChildren: () => import('./service-page/service-page.module').then(m => m.ServicePageModule) },
       { path: 'meeting/:phonenumber/:id', loadChildren: () => import('./live-chat/live-chat.module').then(m => m.LiveChatModule)},
+      { path: 'history', loadChildren: () => import('./history/history.module').then(m => m.ConsumerHistoryModule) },
     ]
   }
 ]

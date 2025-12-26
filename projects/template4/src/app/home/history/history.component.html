@@ -1,0 +1,224 @@
+<section class="history-page" [ngClass]="theme">
+  <div class="history-container">
+    <div class="history-header">
+      <button type="button" class="history-back" (click)="goback()">
+        <i class="fa fa-arrow-left" aria-hidden="true"></i>
+        <span>Back</span>
+      </button>
+
+    </div>
+
+    <app-common-innerloading-spinner *ngIf="loading"></app-common-innerloading-spinner>
+    <div><h1>{{ 'History' | translate }}</h1></div>
+    <div class="history-login" *ngIf="!loading && !loggedIn">
+      <div class="history-login__card">
+        <app-authentication (actionPerformed)="actionPerformed($event)" [accountId]="accountId"></app-authentication>
+      </div>
+    </div>
+
+    <div *ngIf="!loading && loggedIn">
+      <ng-container *ngIf="entire_history && entire_history.length; else emptyHistory">
+        <article class="history-card" *ngFor="let entry of entire_history">
+          <header class="history-card__header calbg-top" [ngClass]="getHeaderClass(entry)">
+            <div>
+              <span class="history-card__eyebrow">{{ getEntryHeaderLabel(entry) }}</span>
+              <h2>{{ getEntryTitle(entry) | capitalizeFirst }}</h2>
+            </div>
+            <div class="history-card__header-actions">
+              <span [ngClass]="getStatusPillClass(entry)">{{ getEntryStatusText(entry) }}</span>
+              <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="History actions">
+                <mat-icon>more_horiz</mat-icon>
+              </button>
+            </div>
+          </header>
+
+          <div class="history-card__body">
+            <ng-container *ngIf="isWaitlistEntry(entry) || isAppointmentEntry(entry)">
+              <div class="history-card__item">
+                <span class="history-card__icon calendar">
+                  <i class="fa fa-calendar" aria-hidden="true"></i>
+                </span>
+                <div>
+                  <div class="history-card__label">Date &amp; Time</div>
+                  <div class="history-card__value" *ngIf="isWaitlistEntry(entry)">
+                    {{ entry.date | date: 'MMM d, yyyy' }},
+                    {{ entry.queue?.queueStartTime }} - {{ entry.queue?.queueEndTime }}
+                  </div>
+                  <div class="history-card__value" *ngIf="isAppointmentEntry(entry)">
+                    {{ entry.date | date: 'MMM d, yyyy' }}
+                    <ng-container *ngIf="entry.appmtTime">, {{ getSingleTime(entry.appmtTime) }}</ng-container>
+                  </div>
+                </div>
+              </div>
+
+              <div class="history-card__item">
+                <span class="history-card__icon service">
+                  <i class="fa fa-stethoscope" aria-hidden="true"></i>
+                </span>
+                <div>
+                  <div class="history-card__label">Service</div>
+                  <div class="history-card__value">
+                    {{ getServiceName(entry) | capitalizeFirst }}
+                  </div>
+                </div>
+              </div>
+
+              <div class="history-card__item" *ngIf="!hideLocationGlobal">
+                <span class="history-card__icon location">
+                  <i class="fa fa-map-marker" aria-hidden="true"></i>
+                </span>
+                <div>
+                  <div class="history-card__label">Location</div>
+                  <div class="history-card__value">
+                    {{ getLocationName(entry) | capitalizeFirst }}
+                  </div>
+                </div>
+              </div>
+
+              <div class="history-card__item">
+                <span class="history-card__icon user">
+                  <i class="fa fa-user" aria-hidden="true"></i>
+                </span>
+                <div>
+                  <div class="history-card__label">Service for</div>
+                  <div class="history-card__value">{{ getPersonName(entry) | capitalizeFirst }}</div>
+                </div>
+              </div>
+            </ng-container>
+
+            <ng-container *ngIf="isOrderEntry(entry)">
+              <div class="history-card__item">
+                <span class="history-card__icon calendar">
+                  <i class="fa fa-calendar" aria-hidden="true"></i>
+                </span>
+                <div>
+                  <div class="history-card__label">Date &amp; Time</div>
+                  <div class="history-card__value">
+                    {{ entry.orderDate | date: 'MMM d, yyyy' }}
+                    <ng-container *ngIf="entry.timeSlot">
+                      , {{ entry.timeSlot?.sTime }} - {{ entry.timeSlot?.eTime }}
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+
+              <div class="history-card__item">
+                <span class="history-card__icon service">
+                  <i class="fa fa-shopping-bag" aria-hidden="true"></i>
+                </span>
+                <div>
+                  <div class="history-card__label">Order Type</div>
+                  <div class="history-card__value">{{ getOrderMode(entry) }}</div>
+                </div>
+              </div>
+
+              <div class="history-card__item" *ngIf="!hideLocationGlobal">
+                <span class="history-card__icon location">
+                  <i class="fa fa-map-marker" aria-hidden="true"></i>
+                </span>
+                <div >
+                  <div class="history-card__label">Location</div>
+                  <div class="history-card__value">{{ getLocationName(entry) | capitalizeFirst }}</div>
+                </div>
+              </div>
+
+              <div class="history-card__item">
+                <span class="history-card__icon user">
+                  <i class="fa fa-user" aria-hidden="true"></i>
+                </span>
+                <div>
+                  <div class="history-card__label">Order for</div>
+                  <div class="history-card__value">{{ getPersonName(entry) | capitalizeFirst }}</div>
+                </div>
+              </div>
+
+              <div class="history-card__item">
+                <span class="history-card__icon items">
+                  <i class="fa fa-list-ul" aria-hidden="true"></i>
+                </span>
+                <div>
+                  <div class="history-card__label">Items</div>
+                  <div class="history-card__value">{{ getOrderItemsCount(entry) }}</div>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+
+          <mat-menu #menu="matMenu">
+            <ng-container *ngIf="isWaitlistEntry(entry)">
+              <button mat-menu-item (click)="showBookingDetails(entry)">
+                <i class="fa fa-file-text"></i>
+                <span>View Booking</span>
+              </button>
+              <button mat-menu-item (click)="addWaitlistMessage(entry)">
+                <i class="fa chat-icon"></i>
+                <span>{{ send_message_cap }}</span>
+              </button>
+              <button mat-menu-item *ngIf="entry.billStatus" (click)="getWaitlistBill(entry)">
+                <i class="bill-icon-history"></i>
+                <span>Invoice</span>
+              </button>
+              <button mat-menu-item *ngIf="entry.prescShared" (click)="viewprescription(entry)">
+                <i class="mr-rx-icon-customer"></i>
+                <span>View Prescription</span>
+              </button>
+              <button mat-menu-item *ngIf="entry.waitlistStatus === 'done'" [class.rated]="isRated(entry)" (click)="rateService(entry)">
+                <i class="fa fa-star-o" aria-hidden="true"></i>
+                <span>{{ rate_your_visit }}</span>
+              </button>
+            </ng-container>
+
+            <ng-container *ngIf="isAppointmentEntry(entry)">
+              <button mat-menu-item (click)="showBookingDetails(entry)">
+                <i class="fa fa-file-text"></i>
+                <span>View Booking</span>
+              </button>
+              <button mat-menu-item (click)="addApptMessage(entry)">
+                <i class="fa chat-icon"></i>
+                <span>{{ send_message_cap }}</span>
+              </button>
+              <button mat-menu-item *ngIf="entry.billStatus" (click)="getApptBill(entry)">
+                <i class="bill-icon-history"></i>
+                <span>Invoice</span>
+              </button>
+              <button mat-menu-item *ngIf="entry.prescShared" (click)="viewprescription(entry)">
+                <i class="mr-rx-icon-customer"></i>
+                <span>View Prescription</span>
+              </button>
+              <button mat-menu-item *ngIf="entry.apptStatus === 'Completed'" [class.rated]="isRated(entry)" (click)="rateApptService(entry)">
+                <i class="fa fa-star-o" aria-hidden="true"></i>
+                <span>{{ rate_your_visit }}</span>
+              </button>
+            </ng-container>
+
+            <ng-container *ngIf="isOrderEntry(entry)">
+              <button mat-menu-item (click)="showBookingDetails(entry)">
+                <i class="fa fa-file-text"></i>
+                <span>View Order</span>
+              </button>
+              <button mat-menu-item (click)="addordertMessage(entry)">
+                <i class="fa chat-icon"></i>
+                <span>{{ send_message_cap }}</span>
+              </button>
+              <button mat-menu-item [class.rated]="isRated(entry)" (click)="rateOrderService(entry)">
+                <i class="fa fa-star-o" aria-hidden="true"></i>
+                <span>Rate Your Order</span>
+              </button>
+              <button mat-menu-item *ngIf="entry.bill && entry.bill.billViewStatus === 'Show'" (click)="getOrderBill(entry)">
+                <i class="bill-icon-history"></i>
+                <span>Invoice</span>
+              </button>
+            </ng-container>
+          </mat-menu>
+        </article>
+      </ng-container>
+    </div>
+
+    <ng-template #emptyHistory>
+      <div class="history-empty">
+        <img class="history-empty__image" src="./assets/images/myjaldee/noHistory.png" alt="No history" />
+        <p class="history-empty__text">Nothing to show here yet!</p>
+      </div>
+    </ng-template>
+  </div>
+</section>

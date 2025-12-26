@@ -3,40 +3,80 @@
     <a (click)="menuSelected(templateJson.section1)"
        [ngClass]="{'active-nav' : selectedIndex === templateJson.section1?.title }"
        *ngIf="templateJson.section1">
-      <i class="fa"
-         [ngClass]="[templateJson.section1.theme?templateJson.section1.theme:'', templateJson.section1.icon?templateJson.section1.icon:'fa-home']"></i>
+      <ng-container *ngIf="templateJson.section1.icon?.includes('.svg') || templateJson.section1.icon?.startsWith('http'); else section1FaIcon">
+        <img class="nav-icon"
+             [src]="templateJson.section1.icon"
+             [alt]="templateJson.section1.title"
+             loading="lazy"/>
+      </ng-container>
+      <ng-template #section1FaIcon>
+        <i class="fa"
+           [ngClass]="[templateJson.section1.theme?templateJson.section1.theme:'', templateJson.section1.icon?templateJson.section1.icon:'fa-home']"></i>
+      </ng-template>
       <span>{{templateJson.section1.title | translate}}</span>
     </a>
 
     <a (click)="menuSelected(templateJson.section2)"
        [ngClass]="{'active-nav' : selectedIndex === templateJson.section2?.title }"
        *ngIf="templateJson.section2">
-      <i class="fa"
-         [ngClass]="[templateJson.section2.theme?templateJson.section2.theme:'', templateJson.section2.icon?templateJson.section2.icon:'fa-medkit']"></i>
+      <ng-container *ngIf="templateJson.section2.icon?.includes('.svg') || templateJson.section2.icon?.startsWith('http'); else section2FaIcon">
+        <img class="nav-icon"
+             [src]="templateJson.section2.icon"
+             [alt]="templateJson.section2.title"
+             loading="lazy"/>
+      </ng-container>
+      <ng-template #section2FaIcon>
+        <i class="fa"
+           [ngClass]="[templateJson.section2.theme?templateJson.section2.theme:'', templateJson.section2.icon?templateJson.section2.icon:'fa-medkit']"></i>
+      </ng-template>
       <span>{{templateJson.section2.title | translate}}</span>
     </a>
 
     <a (click)="menuSelected(templateJson.section3)"
        [ngClass]="{'active-nav' : selectedIndex === templateJson.section3?.title }"
        *ngIf="templateJson.section3">
-      <i class="fa"
-         [ngClass]="[templateJson.section3.theme?templateJson.section3.theme:'', templateJson.section3.icon?templateJson.section3.icon:'fa-users']"></i>
+      <ng-container *ngIf="templateJson.section3.icon?.includes('.svg') || templateJson.section3.icon?.startsWith('http'); else section3FaIcon">
+        <img class="nav-icon"
+             [src]="templateJson.section3.icon"
+             [alt]="templateJson.section3.title"
+             loading="lazy"/>
+      </ng-container>
+      <ng-template #section3FaIcon>
+        <i class="fa"
+           [ngClass]="[templateJson.section3.theme?templateJson.section3.theme:'', templateJson.section3.icon?templateJson.section3.icon:'fa-users']"></i>
+      </ng-template>
       <span>{{templateJson.section3.title | translate}}</span>
     </a>
 
     <a (click)="menuSelected(templateJson.section4)"
        [ngClass]="{'active-nav' : selectedIndex === templateJson.section4?.title }"
        *ngIf="templateJson.section4">
-      <i class="fa"
-         [ngClass]="[templateJson.section4.theme?templateJson.section4.theme:'', templateJson.section4.icon?templateJson.section4.icon:'fa-gear']"></i>
+      <ng-container *ngIf="templateJson.section4.icon?.includes('.svg') || templateJson.section4.icon?.startsWith('http'); else section4FaIcon">
+        <img class="nav-icon"
+             [src]="templateJson.section4.icon"
+             [alt]="templateJson.section4.title"
+             loading="lazy"/>
+      </ng-container>
+      <ng-template #section4FaIcon>
+        <i class="fa"
+           [ngClass]="[templateJson.section4.theme || '', templateJson.section4.icon || 'fa-gear']"></i>
+      </ng-template>
       <span>{{templateJson.section4.title | translate}}</span>
     </a>
 
     <a (click)="menuSelected(templateJson.section5)"
        [ngClass]="{'active-nav' : selectedIndex === templateJson.section5?.title }"
        *ngIf="templateJson.section5">
-      <i class="fa"
-         [ngClass]="[templateJson.section5.theme?templateJson.section5.theme:'', templateJson.section5.icon?templateJson.section5.icon:'fa-address-book']"></i>
+      <ng-container *ngIf="templateJson.section5.icon?.includes('.svg') || templateJson.section5.icon?.startsWith('http'); else section5FaIcon">
+        <img class="nav-icon"
+             [src]="templateJson.section5.icon"
+             [alt]="templateJson.section5.title"
+             loading="lazy"/>
+      </ng-container>
+      <ng-template #section5FaIcon>
+        <i class="fa"
+           [ngClass]="[templateJson.section5.theme?templateJson.section5.theme:'', templateJson.section5.icon?templateJson.section5.icon:'fa-address-book']"></i>
+      </ng-template>
       <span>{{templateJson.section5.title}}</span>
     </a>
   </div>
