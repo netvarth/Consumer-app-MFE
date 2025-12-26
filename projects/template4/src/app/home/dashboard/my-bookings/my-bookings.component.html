@@ -8,10 +8,10 @@
   </div>
   <div *ngIf="loggedIn">
     <section class="container consumer-dashhome p-0 no-padding-small" [ngClass]="theme">
-      <div class="card shadow d-flex flex-row header p-2 goBack" *ngIf="loggedIn">
+      <div class="card shadow d-flex flex-row header goBack" *ngIf="loggedIn">
         <div class="my-auto d-flex" (click)="goBack()">
           <i class="fa fa-arrow-left me-2"></i>
-          <p class="Back">Back to home</p>
+          <p class="Back">Back</p>
         </div>
       </div>
       <div class="content consumer-dash spinner" *ngIf="api_loading">

@@ -142,12 +142,12 @@
       {{ 'Pay' | translate }}
     </button>
 
-    <button *ngIf="showInvoiceBtn && booking.invoiceCreated"
+    <div *ngIf="showInvoiceBtn && booking.invoiceCreated"
 
             class="btn-outline rupee-font btn-invoices"
             (click)="cardActionPerformed('appt','viewBill',booking,$event)">
       {{ 'Invoice' | translate }}
-    </button>
+    </div>
   </div>
 
   <!-- RIGHT: flexible; grows to take remaining width -->
