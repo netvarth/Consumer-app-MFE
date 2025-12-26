@@ -1,6 +1,6 @@
 .support-page {
     min-height: 100vh;
-    background: #f7f9fc;
+    background: #ffffff;
 }
 
 .support-container {
@@ -128,4 +128,10 @@
         height: 56px;
         font-size: 22px;
     }
+}
+.back-section {
+    // border: 1px solid #e5e7eb;
+    // border-radius: 8px;
+    padding: 16px 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
