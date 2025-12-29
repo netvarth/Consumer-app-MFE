@@ -627,7 +627,7 @@
                   </div>
                 </div>
                    <div class="member-modal__footer">
-                    <button type="button" class="member-modal__confirm" (click)="actionCompleted()">
+                    <button type="button" class="member-modal__confirm" [class.disabled]="disable" [disabled]="disable" (click)="actionCompleted()">
                       {{'Yes, Confirm Member' | translate}}
                     </button>
                   </div>
@@ -636,7 +636,7 @@
                 <button type="button" class="disp-none cancel btn btn-light-primary mat-button font-weight-bold"
                   data-bs-dismiss="modal">{{'Cancel' | translate}}</button>
                 <button type="button" class="btn btn-primary mat-button font-weight-bold hf-btn"
-                  (click)="actionCompleted()">{{'Ok' | translate}}</button>
+                  [class.disabled]="disable" [disabled]="disable" (click)="actionCompleted()">{{'Ok' | translate}}</button>
               </div>
 
               

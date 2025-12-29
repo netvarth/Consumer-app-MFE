@@ -128,7 +128,7 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
     emailError = null;
     phoneError: string;
     whatsappError = '';
-    disable: boolean;
+    disable = false;
     appointmentIdsList: any[];
     wallet: any;
     pGateway: any;
@@ -1073,6 +1073,9 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
     }
 
     actionCompleted() {
+        if ((this.action === 'members' || this.action === 'addmember') && this.disable) {
+            return;
+        }
         if (this.action !== 'members' && this.action !== 'addmember' && this.action !== 'note' && this.action !== 'attachment') {
             if (this.appointmentType == 'reschedule' && this.scheduledAppointment.service && this.scheduledAppointment.service.priceDynamic) {
                 this.subs.add(this.consumerService.getAppointmentReschedulePricelist(this.scheduledAppointment.service.id).subscribe(
@@ -1101,6 +1104,9 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
         }
     }
     handleSaveMember() {
+        if (this.disable) {
+            return;
+        }
         this.disable = true;
         let derror = '';
         const namepattern = new RegExp(projectConstantsLocal.VALIDATOR_CHARONLY);
@@ -1113,9 +1119,9 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
         }
         if (derror === '') {
             const post_data = {
-                    'firstName': this.addmemberobj.fname.trim(),
-                    'lastName': this.addmemberobj.lname.trim(),
-                    'title': this.addmemberobj.title.trim()
+                    'firstName': this.safeTrim(this.addmemberobj.fname),
+                    'lastName': this.safeTrim(this.addmemberobj.lname),
+                    'title': this.safeTrim(this.addmemberobj.title)
             };
             if (this.addmemberobj.mobile !== '') {
                 post_data['primaryMobileNo'] = this.addmemberobj.mobile;
@@ -1135,6 +1141,8 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
                 this.setConsumerFamilyMembers(this.parentCustomer).then();
                 setTimeout(() => {
                     this.goBack();
+                    this.disable = false;
+                    this.resetAddMemberObj();
                 }, projectConstantsLocal.TIMEOUT_DELAY);
             },
                 error => {
@@ -1151,38 +1159,49 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
             this.apiSuccess = '';
         }, 2000);
     }
+    private resetAddMemberObj() {
+        this.addmemberobj = { 'fname': '', 'title': '', 'lname': '', 'mobile': '', 'gender': '', 'dob': '' };
+    }
     resetApiErrors() {
         this.emailError = null;
     }
     saveMemberDetails() {
+        if (this.disable) {
+            return;
+        }
+        this.disable = true;
         const _this = this;
         this.resetApiErrors();
         this.emailError = '';
         this.phoneError = '';
         this.whatsappError = '';
         this.changePhone = true;
-        if (this.commObj['communicationPhNo'] && this.commObj['communicationPhNo'].trim() !== '') {
+        if (this.safeTrim(this.commObj?.communicationPhNo) !== '') {
         } else {
             // this.snackbarService.openSnackBar('Please enter phone number', { 'panelClass': 'snackbarerror' });
+            this.disable = false;
             return false;
         }
         if (this.selectedService && this.selectedService.virtualCallingModes && this.selectedService.virtualCallingModes[0].callingMode === 'WhatsApp') {
-            if (!this.commObj['comWhatsappCountryCode'] || (this.commObj['comWhatsappCountryCode'] && this.commObj['comWhatsappCountryCode'].trim() === '')) {
+            if (this.safeTrim(this.commObj?.comWhatsappCountryCode) === '') {
                 // this.snackbarService.openSnackBar('Please enter country code', { 'panelClass': 'snackbarerror' });
+                this.disable = false;
                 return false;
             }
-            if (this.commObj['comWhatsappNo'] && this.commObj['comWhatsappNo'].trim() !== '') {
+            if (this.safeTrim(this.commObj?.comWhatsappNo) !== '') {
                 this.callingModes = this.commObj['comWhatsappCountryCode'].replace('+', '') + this.commObj['comWhatsappNo'];
             } else {
                 // this.snackbarService.openSnackBar('Please enter whatsapp number', { 'panelClass': 'snackbarerror' });
+                this.disable = false;
                 return false;
             }
         }
-        if (this.commObj['communicationEmail'] && this.commObj['communicationEmail'].trim() !== '') {
+        if (this.safeTrim(this.commObj?.communicationEmail) !== '') {
             const pattern = new RegExp(projectConstantsLocal.VALIDATOR_EMAIL);
             const result = pattern.test(this.commObj['communicationEmail']);
             if (!result) {
                 this.emailError = "Email is invalid";
+                this.disable = false;
                 return false;
             } else {
                 this.appmtFor[0]['email'] = this.commObj['communicationEmail'];
@@ -1200,12 +1219,20 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
                     this.bookStep = 3;
                 }
             }
-        })
+        }).catch(() => {
+            this.disable = false;
+        }).finally(() => {
+            this.disable = false;
+        });
         this.safeCloseModal();
         setTimeout(() => {
             this.action = '';
+            this.disable = false;
         }, 500);
         return true;
+    }
+    private safeTrim(value: any): string {
+        return (value || '').toString().trim();
     }
     private safeCloseModal() {
         if (this.closebutton && this.closebutton.nativeElement) {
@@ -2471,6 +2498,9 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
     addMember() {
         this.action = 'addmember';
         this.disable = false;
+        this.resetAddMemberObj();
+        this.apiError = '';
+        this.apiSuccess = '';
     }
     /**
     *
