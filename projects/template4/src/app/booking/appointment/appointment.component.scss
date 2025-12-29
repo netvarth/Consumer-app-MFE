@@ -1672,7 +1672,7 @@ font-weight: 600;
 
 .member-modal__confirm:hover {
     transform: translateY(-1px);
-    box-shadow: var(--booking-cta-shadow-hover, 0 26px 44px rgba(255, 96, 0, 0.36));
+    // box-shadow: var(--booking-cta-shadow-hover, 0 26px 44px rgba(255, 96, 0, 0.36));
 }
 
 .member-modal__confirm:disabled,

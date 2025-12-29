@@ -30,7 +30,7 @@
 </div>
 <section #consumer_appointment class="consumerAppt no-padding"
   [ngClass]="[smallDevice?'container':'container-fluid', theme?theme:'']">
-  <button #membersModalTrigger type="button" class="d-none" data-bs-toggle="modal" data-bs-target="#exampleModalCenter"></button>
+  <!-- <button #membersModalTrigger type="button" class="d-none" data-bs-toggle="modal" data-bs-target="#exampleModalCenter"></button> -->
   <div [ngClass]="{'loadingpaytm': loadingPaytm}"></div>
   <!-- <div class="customLoader" *ngIf="loadingPaytm">
     <app-common-innerloading-spinner></app-common-innerloading-spinner>
@@ -607,9 +607,9 @@
                       <div class="pull-left"> {{'Booking For' | translate}} </div>
                       <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button> -->
                       <div class="close-btn">
-                        <button type="button" class="member-modal__close" aria-label="{{'Close' | translate}}" (click)="closebutton.click()">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
+                        <button type="button" class="member-modal__close" aria-label="{{'Close' | translate}}" #closebutton data-bs-dismiss="modal">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -626,19 +626,20 @@
                     </ng-container>
                   </div>
                 </div>
-              </ng-container>
-              <!-- <div class="modal-footer">
-                <button type="button" class="disp-none cancel btn btn-light-primary mat-button font-weight-bold"
-                  data-bs-dismiss="modal" #closebutton>{{'Cancel' | translate}}</button>
-                <button type="button" class="btn btn-primary mat-button font-weight-bold hf-btn"
-                  (click)="actionCompleted()">{{'Ok' | translate}}</button>
-              </div> -->
-
-               <div class="member-modal__footer">
+                   <div class="member-modal__footer">
                     <button type="button" class="member-modal__confirm" (click)="actionCompleted()">
                       {{'Yes, Confirm Member' | translate}}
                     </button>
                   </div>
+              </ng-container>
+              <div class="modal-footer" *ngIf="action !='members'">
+                <button type="button" class="disp-none cancel btn btn-light-primary mat-button font-weight-bold"
+                  data-bs-dismiss="modal">{{'Cancel' | translate}}</button>
+                <button type="button" class="btn btn-primary mat-button font-weight-bold hf-btn"
+                  (click)="actionCompleted()">{{'Ok' | translate}}</button>
+              </div>
+
+              
               <div class="error-section" *ngIf="apiError !== ''">
                 {{apiError}}
               </div>

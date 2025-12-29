@@ -504,7 +504,7 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
             }
         }
         if (this.action !== 'addmember') {
-            this.closebutton.nativeElement.click();
+            this.safeCloseModal();
         }
         setTimeout(() => {
             if (this.action === 'note' || this.action === 'members' || (this.action === 'service' && !this.departmentEnabled)
@@ -1201,11 +1201,16 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
                 }
             }
         })
-        this.closebutton.nativeElement.click();
+        this.safeCloseModal();
         setTimeout(() => {
             this.action = '';
         }, 500);
         return true;
+    }
+    private safeCloseModal() {
+        if (this.closebutton && this.closebutton.nativeElement) {
+            this.closebutton.nativeElement.click();
+        }
     }
 
 
