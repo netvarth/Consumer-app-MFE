@@ -1,145 +1,215 @@
-import { catchError, switchMap } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpErrorResponse, HttpParams } from '@angular/common/http';
-import { Observable, throwError, EMPTY, Subject } from 'rxjs';
-import { Router } from '@angular/router';
+import {
+  HttpEvent,
+  HttpInterceptor,
+  HttpHandler,
+  HttpRequest,
+  HttpErrorResponse
+} from '@angular/common/http';
+import { Observable, BehaviorSubject, throwError, EMPTY, from } from 'rxjs';
+import { catchError, switchMap, filter, take, timeout, first } from 'rxjs/operators';
+import { Router, NavigationEnd } from '@angular/router';
 import { AuthService, LocalStorageService, SharedService } from 'jconsumer-shared';
 import { projectConstants } from '../environment';
+import { AccountService } from './account.service';
+
+interface MaintenanceStatus {
+  maintenanceMode: boolean;
+  message?: string;
+  // Add other expected fields here if needed
+}
 
 @Injectable()
 export class ExtendHttpInterceptor implements HttpInterceptor {
 
-  private _refreshSubject: Subject<any> = new Subject<any>();
-  private _maintananceSubject: Subject<any> = new Subject<any>();
-  target: any;
+  private _refreshSubject = new BehaviorSubject<string | null>(null);
+  private _isRefreshing = false;
 
+  private _maintenanceSubject = new BehaviorSubject<MaintenanceStatus | null>(null);
+  private _maintenanceInProgress = false;
 
   constructor(
     private lStorageService: LocalStorageService,
     private router: Router,
-    private authService: AuthService,
-    private sharedService: SharedService
-  ) { 
-  }
+    private accountService: AccountService,
+    private sharedService: SharedService,
+    private authService: AuthService
+  ) { }
 
-  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {    
-    if (request.url.substr(0, 4) === 'http') {
+  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    // If request URL starts with http (external), don't modify
+    if (request.url.startsWith('http')) {
       return next.handle(request);
     }
-    if (this.lStorageService.getitemfromLocalStorage('c-location') && request.method!=='GET') {
-      request = request.clone({
-        params: this.getModifiedParams(request.params)
-      });      
-    }
-    request = request.clone({ headers: request.headers.set('Accept', 'application/json'), withCredentials: true });
-    request = request.clone({ headers: request.headers.append('Cache-Control', 'no-cache, no-store, must-revalidate, post-check=0, pre-check=0'), withCredentials: true });
-    request = request.clone({ headers: request.headers.append('Pragma', 'no-cache'), withCredentials: true });
-    request = request.clone({ headers: request.headers.append('SameSite', 'None'), withCredentials: true });
-    request = request.clone({ headers: request.headers.append('Expires', '0'), withCredentials: true });
-    if (Intl.DateTimeFormat().resolvedOptions().timeZone) {
-      request = request.clone({ headers: request.headers.append('timezone', Intl.DateTimeFormat().resolvedOptions().timeZone), withCredentials: true });
-    }
-    // Custom Website *******************
 
-    // if (this.lStorageService.getitemfromLocalStorage('source')) {
-    //   request = request.clone({ headers: request.headers.append('BOOKING_REQ_FROM', 'CUSTOM_WEBSITE'), withCredentials: true });
-    //   request = request.clone({ headers: request.headers.append('website-link', this.lStorageService.getitemfromLocalStorage('source')), withCredentials: true });
-    //   // **********************************
-    // } else {
-    // QR Link **************************
-    request = request.clone({ headers: request.headers.append('BOOKING_REQ_FROM', 'WEB_LINK'), withCredentials: true });
-    // **********************************
-    // }
-    if (this.lStorageService.getitemfromLocalStorage('logout')) {
-      this.lStorageService.removeitemfromLocalStorage('c_authorizationToken');
-    } 
-    if (this.lStorageService.getitemfromLocalStorage('ynw-credentials')) {
-      this.lStorageService.removeitemfromLocalStorage('c_authorizationToken');
-    } else {
-      if (this.lStorageService.getitemfromLocalStorage('googleToken')) {
-        request = request.clone({ headers: request.headers.append('authToken', this.lStorageService.getitemfromLocalStorage('googleToken')), withCredentials: true });
-      }
-      if (this.lStorageService.getitemfromLocalStorage("c_authorizationToken")) {
-        request = request.clone({ headers: request.headers.append('authorization', this.lStorageService.getitemfromLocalStorage("c_authorizationToken")), withCredentials: true });
-      } else if (!this.lStorageService.getitemfromLocalStorage('logout')){
-        request = request.clone({ headers: request.headers.append('authorization', 'browser'), withCredentials: true });
-      }
-    }        
-    request = request.clone({ url: projectConstants.APIENDPOINT + request.url, responseType: 'json' });
-    const _this = this;
+    const isRefreshCall = request.url.includes('consumer/oauth/token/refresh');
+    request = this.updateHeader(request, isRefreshCall);
+
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
-        if (_this._checkSessionExpiryErr(error)) {
-          return _this._ifSessionExpiredN().pipe(
+        if (this._isSessionExpiredError(error)) {
+          // Handle token refresh flow
+          return this._handleSessionExpired().pipe(
             switchMap(() => {
-              return EMPTY;
+              // Retry original request with updated token
+              const retryReq = this.updateHeader(request, false);
+              return next.handle(retryReq);
             })
           );
-        } else if (_this._checkMaintanance(error)) {
-          return _this._ifMaintenanceOn().pipe(
+        } else if (this._isMaintenanceError(error)) {
+          // Handle maintenance mode
+          return this._handleMaintenance().pipe(
             switchMap(() => {
-              _this.router.navigate(['maintenance']);
+              this.router.navigate(['maintenance']);
               return EMPTY;
             })
           );
         }
-        return throwError(error);
+        // Other errors: rethrow
+        return throwError(() => error);
       })
     );
   }
 
-  private getModifiedParams(params: any): HttpParams {
-    return params.append('location', this.lStorageService.getitemfromLocalStorage('c-location'));
-  }
+  private updateHeader(request: HttpRequest<any>, isRefreshCall: boolean): HttpRequest<any> {
+    let headers = request.headers
+      .set('Accept', 'application/json')
+      .set('Cache-Control', 'no-cache, no-store, must-revalidate, post-check=0, pre-check=0')
+      .set('Pragma', 'no-cache')
+      .set('SameSite', 'None')
+      .set('Expires', '0')
+      .set('BOOKING_REQ_FROM', 'CUSTOM_APP');
 
-  private _checkMaintanance(error: HttpErrorResponse): boolean {
-    if (error.status && error.status === 405)
-      return true;
-    return false
-  }
-
-  private _ifSessionExpiredN() {
-    const _this = this;
-
-    _this._refreshSubject.subscribe({
-      complete: () => {
-        _this._refreshSubject = new Subject<any>();
-      }
-    });
-    // let fullPath = window.location.href;
-    // const origin = `${this.platformLocation.protocol}//${this.platformLocation.hostname}${this.platformLocation.port ? ':' + this.platformLocation.port : ''}/csite/`;
-    // let target = fullPath.split(origin)[1];
-    // this.lStorageService.setitemonLocalStorage('target', target);
-    // console.log("Target:", _this.target);
-    if (_this._refreshSubject.observers.length === 1) {
-      _this.authService.doLogout().then(
-        (refreshSubject: any) => {
-          _this._refreshSubject.next(refreshSubject);
-          // _this.accountService.sendMessage({ ttype: 'refresh' });
-          _this.router.navigate([_this.sharedService.getRouteID()]);
-        });
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    if (timezone) {
+      headers = headers.set('timezone', timezone);
     }
-    return _this._refreshSubject;
-  }
-  private _ifMaintenanceOn() {
-    this._maintananceSubject.subscribe({
-      complete: () => {
-        this._maintananceSubject = new Subject<any>();
+
+    let params = request.params;
+    if (this.lStorageService.getitemfromLocalStorage('c-location') && request.method !== 'GET') {
+      params = params.append('location', this.lStorageService.getitemfromLocalStorage('c-location'));
+    }
+
+    if (this.lStorageService.getitemfromLocalStorage('logout')) {
+      this.lStorageService.removeitemfromLocalStorage('c_authorizationToken');
+      const appId = this.lStorageService.getitemfromLocalStorage('appId');
+      const installId = this.lStorageService.getitemfromLocalStorage('installId');
+      if (appId && installId) {
+        headers = headers.set('Authorization', `${appId}-${installId}`);
       }
-    });
-    if (this._maintananceSubject.observers.length === 1) {
-      this.sharedService.callMaintanance().then(
-        (refreshSubject: any) => {
-          this._maintananceSubject.next(refreshSubject);
+    } else if (isRefreshCall) {
+      // Use refresh token for refresh calls
+      const refreshToken = this.lStorageService.getitemfromLocalStorage('refreshToken') || '';
+      headers = headers.set('Authorization', refreshToken);
+    } else {
+      // Use auth token for normal calls
+      const authToken = this.lStorageService.getitemfromLocalStorage('c_authorizationToken');
+      if (authToken) {
+        headers = headers.set('Authorization', authToken);
+      } else {
+        const appId = this.lStorageService.getitemfromLocalStorage('appId');
+        const installId = this.lStorageService.getitemfromLocalStorage('installId');
+        if (appId && installId) {
+          headers = headers.set('Authorization', `${appId}-${installId}`);
         }
+      }
+    }
+
+    const googleToken = this.lStorageService.getitemfromLocalStorage('googleToken');
+    if (googleToken) {
+      headers = headers.set('authToken', googleToken);
+    }
+    // ✅ Guard against double-prefixing full URLs
+    const finalUrl = request.url.startsWith('http')
+      ? request.url
+      : this.sharedService.getAPIEndPoint() + request.url;
+    return request.clone({
+      headers,
+      params,
+      url: finalUrl,
+      responseType: 'json',
+      withCredentials: true,
+    });
+  }
+
+  private _isSessionExpiredError(error: HttpErrorResponse): boolean {
+    return error.status === 419;
+  }
+
+  private _isMaintenanceError(error: HttpErrorResponse): boolean {
+    return error.status === 405;
+  }
+
+
+  private _handleSessionExpired(): Observable<string | null> {
+    if (!this._isRefreshing) {
+      this._isRefreshing = true;
+      this._refreshSubject.next(null); // reset
+
+      const ynwUser = this.sharedService.getJson(this.lStorageService.getitemfromLocalStorage('ynw-credentials'));
+      if (!ynwUser) {
+        this._isRefreshing = false;
+        this._handleRefreshFailure();
+        return EMPTY;
+      }
+
+      return from(this.authService.refreshToken()).pipe(
+        timeout(10000),
+        switchMap(response => this.authService.refresh(response)),
+        catchError(err => {
+          this._handleRefreshFailure();
+          return throwError(() => err);
+        }),
+        switchMap((token: string) => {
+          this._isRefreshing = false;
+          this._refreshSubject.next(token);
+          return this._refreshSubject.pipe(
+            filter(t => t !== null),
+            take(1)
+          );
+        })
+      );
+    } else {
+      // Wait for ongoing refresh to complete and get token from subject
+      return this._refreshSubject.pipe(
+        filter(token => token !== null),
+        take(1)
       );
     }
-    return this._maintananceSubject;
   }
-  private _checkSessionExpiryErr(error: HttpErrorResponse): boolean {
-    return (
-      error.status &&
-      error.status === 419 || (error.status === 401 && error.error === 'Session Already Exist')
-    );
+
+  private _handleRefreshFailure() {
+    this._refreshSubject.next(null);
+    this._isRefreshing = false;
+
+    this.authService.doLogout().then(() => {
+      this.router.navigate([this.sharedService.getRouteID()]);
+
+      this.router.events.pipe(
+        first(event => event instanceof NavigationEnd)
+      ).subscribe(() => {
+        window.location.reload();
+      });
+    });
+  }
+
+  private _handleMaintenance(): Observable<MaintenanceStatus | null> {
+    if (!this._maintenanceInProgress) {
+      this._maintenanceInProgress = true;
+
+      this.accountService.callMaintanance()
+        .then((data: any) => {
+          this._maintenanceSubject.next(data);
+          this._maintenanceSubject.complete();
+          this._maintenanceInProgress = false;
+        })
+        .catch(err => {
+          this._maintenanceSubject.error(err);
+          this._maintenanceSubject = new BehaviorSubject<MaintenanceStatus | null>(null);
+          this._maintenanceInProgress = false;
+        });
+    }
+
+    return this._maintenanceSubject.asObservable();
   }
 }

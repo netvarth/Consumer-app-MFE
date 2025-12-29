@@ -12,7 +12,7 @@ export class AccountService {
   S3EndPoint = projectConstants.S3ENDPOINT;
   SAPath = projectConstants.SAPATH;
   i8nPath = projectConstants.I8NPATH;
-  UIPath =projectConstants.ROOTUIPATH;
+  UIPath = projectConstants.ROOTUIPATH;
   accountInfo: any;
 
   constructor(
@@ -32,7 +32,7 @@ export class AccountService {
   getUniqueID(idParam: any) {
     const _this = this;
     console.log("in Get Unique ID:", idParam);
-    
+
     return new Promise(function (resolve, reject) {
       if (idParam) {
         if (_this.sharedService.getUniqueID()) {
@@ -43,11 +43,11 @@ export class AccountService {
             _this.sharedService.setRouteID(idParam);
             _this.sharedService.setUniqueID(uniqueId);
             resolve(uniqueId);
-          }, ()=>{
+          }, () => {
             _this.router.navigate(['not-found']);
           });
         }
-      }   
+      }
     });
   }
   /**
@@ -62,6 +62,9 @@ export class AccountService {
 
   getSystemDate() {
     return this.serviceMeta.httpGet('provider/server/date');
+  }
+  callMaintanance(): Promise<{ maintenanceMode: boolean; message?: string }> {
+    return Promise.resolve({ maintenanceMode: true, message: 'Site under maintenance' });
   }
 
 }
