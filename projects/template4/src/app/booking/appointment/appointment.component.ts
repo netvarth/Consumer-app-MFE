@@ -116,6 +116,7 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
         caption: []
     }; // storing message to be uploaded
     @ViewChild('modal') modal; // referring modal object
+    @ViewChild('membersModalTrigger') membersModalTrigger: ElementRef;
     @ViewChild('closebutton') closebutton;
     @ViewChild('paymentModeSection') paymentModeSection: ElementRef;
     action = ''; // To navigate between different actions like note/upload/add familymember/members etc
@@ -1630,6 +1631,11 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
     handleSideScreen(action) {
         console.log("This.action:", action);
         this.action = action;
+        if (action === 'members' && this.membersModalTrigger?.nativeElement) {
+            this.membersModalTrigger.nativeElement.click();
+        } else if (this.modal && this.modal.nativeElement) {
+            this.modal.nativeElement.click();
+        }
     }
 
     checkCouponvalidity() {
@@ -2489,6 +2495,7 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
     }
 
     popupClosed() {
+        
     }
     rescheduleAppointment() {
         this.btnClicked = true;
