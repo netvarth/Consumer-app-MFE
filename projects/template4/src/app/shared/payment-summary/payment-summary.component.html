@@ -51,7 +51,7 @@
     </div>
 
     <div class="payment-summary__notes" *ngIf="paymentDetails['amountToPay'] > 0">
-        <div class="payment-summary__note">{{'Booking Will be confirmed only after the payment' | translate}}</div>
+        <div class="payment-summary__note">{{'Booking will be confirmed only after the payment' | translate}}</div>
         <ng-container *ngIf="service.taxable">
             <div class="payment-summary__note"
                 *ngIf="paymentDetails.totalDiscount > 0">{{'Any discounts and taxes will be applied only in the final bill' | translate}}</div>

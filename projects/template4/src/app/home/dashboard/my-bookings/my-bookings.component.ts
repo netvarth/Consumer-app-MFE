@@ -863,6 +863,7 @@ export class MyBookingsComponent implements OnInit, OnDestroy {
       panelClass: ['commonpopupmainclass', 'popup-class'],
       disableClose: true,
       autoFocus: true,
+      restoreFocus: false,
       data: {
         'detail': booking,
         'isFrom': bookingType,

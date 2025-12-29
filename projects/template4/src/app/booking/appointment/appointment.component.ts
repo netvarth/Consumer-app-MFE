@@ -1316,10 +1316,11 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
               _this.parentCustomer = spConsumer;
               _this.providerConsumerId = spConsumer.id;
               console.log("Parent Consumer:", spConsumer);
+              if (_this.appointmentType != 'reschedule') {
               _this.apptDetails_firstName = spConsumer.firstName;
               _this.apptDetails_lastName = spConsumer.lastName;
               _this.apptDetails_title = spConsumer.title;
-                if (_this.appointmentType != 'reschedule') {
+                
                     _this.appmtFor.push({ id: spConsumer.id, firstName: spConsumer.firstName, lastName: spConsumer.lastName });
                     _this.prepaymentAmount = _this.appmtFor.length * _this.selectedService.minPrePaymentAmount || 0;
                     _this.serviceCost = _this.selectedService.price;
@@ -2232,7 +2233,7 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
                     if (data.urls && data.urls.length > 0) {
                         for (const url of data.urls) {
                             _this.api_loading_video = true;
-                            _this.subscriptionService.sendMessage({ ttype: 'loading_file_start' });
+                            // _this.subscriptionService.sendMessage({ ttype: 'loading_file_start' });
                             const file = _this.questionAnswers.filestoUpload[url.labelName][url.document];
                             _this.questionaireService.videoaudioS3Upload(file, url.url)
                                 .subscribe(() => {
@@ -2247,7 +2248,7 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
                                                     let errorObj = _this.errorService.getApiError(error);
                                                     // _this.snackbarService.openSnackBar(_this.wordProcessor.getProjectErrorMesssages(errorObj, _this.accountService.getTerminologies()), { 'panelClass': 'snackbarerror' });
                                                     _this.api_loading_video = false;
-                                                    _this.subscriptionService.sendMessage({ ttype: 'loading_file_stop' });
+                                                    // _this.subscriptionService.sendMessage({ ttype: 'loading_file_stop' });
                                                     resolve(false);
                                                 });
                                     }

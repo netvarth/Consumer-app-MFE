@@ -426,7 +426,6 @@ export class DetailsComponent implements OnInit, OnDestroy {
     canceldialogRef.afterClosed().subscribe(result =>
        {
       if (result && (result.cancelReason || result.rejectReason) || result) {
-        this.toastService.showSuccess('Booking cancelled successfully');
         let subs = this.bookingService.removeBooking(this.booking['uid'], type, booking.providerAccount.id, result)
           .subscribe(() => {
             this.router.navigate([this.sharedService.getRouteID(), 'dashboard']);
