@@ -1,145 +1,121 @@
 <div id="page" *ngIf="templateJson">
-    <div id="footer-bar" class="footer-bar-1">
+  <div id="footer-bar" class="footer-bar-1">
     <a (click)="menuSelected(templateJson.section1)"
-       [ngClass]="{'active-nav' : selectedIndex === templateJson.section1?.title }"
-       *ngIf="templateJson.section1">
-      <ng-container *ngIf="templateJson.section1.icon?.includes('.svg') || templateJson.section1.icon?.startsWith('http'); else section1FaIcon">
-        <img class="nav-icon"
-             [src]="templateJson.section1.icon"
-             [alt]="templateJson.section1.title"
-             loading="lazy"/>
+      [ngClass]="{'active-nav' : selectedIndex === templateJson.section1?.title }" *ngIf="templateJson.section1">
+      <ng-container
+        *ngIf="templateJson.section1.icon?.includes('.svg') || templateJson.section1.icon?.startsWith('http'); else section1FaIcon">
+        <img class="nav-icon" [src]="templateJson.section1.icon" [alt]="templateJson.section1.title" loading="lazy" />
       </ng-container>
       <ng-template #section1FaIcon>
         <i class="fa"
-           [ngClass]="[templateJson.section1.theme?templateJson.section1.theme:'', templateJson.section1.icon?templateJson.section1.icon:'fa-home']"></i>
+          [ngClass]="[templateJson.section1.theme?templateJson.section1.theme:'', templateJson.section1.icon?templateJson.section1.icon:'fa-home']"></i>
       </ng-template>
       <span>{{templateJson.section1.title | translate}}</span>
     </a>
 
     <a (click)="menuSelected(templateJson.section2)"
-       [ngClass]="{'active-nav' : selectedIndex === templateJson.section2?.title }"
-       *ngIf="templateJson.section2">
-      <ng-container *ngIf="templateJson.section2.icon?.includes('.svg') || templateJson.section2.icon?.startsWith('http'); else section2FaIcon">
-        <img class="nav-icon"
-             [src]="templateJson.section2.icon"
-             [alt]="templateJson.section2.title"
-             loading="lazy"/>
+      [ngClass]="{'active-nav' : selectedIndex === templateJson.section2?.title }" *ngIf="templateJson.section2">
+      <ng-container
+        *ngIf="templateJson.section2.icon?.includes('.svg') || templateJson.section2.icon?.startsWith('http'); else section2FaIcon">
+        <img class="nav-icon" [src]="templateJson.section2.icon" [alt]="templateJson.section2.title" loading="lazy" />
       </ng-container>
       <ng-template #section2FaIcon>
         <i class="fa"
-           [ngClass]="[templateJson.section2.theme?templateJson.section2.theme:'', templateJson.section2.icon?templateJson.section2.icon:'fa-medkit']"></i>
+          [ngClass]="[templateJson.section2.theme?templateJson.section2.theme:'', templateJson.section2.icon?templateJson.section2.icon:'fa-medkit']"></i>
       </ng-template>
       <span>{{templateJson.section2.title | translate}}</span>
     </a>
 
     <a (click)="menuSelected(templateJson.section3)"
-       [ngClass]="{'active-nav' : selectedIndex === templateJson.section3?.title }"
-       *ngIf="templateJson.section3">
-      <ng-container *ngIf="templateJson.section3.icon?.includes('.svg') || templateJson.section3.icon?.startsWith('http'); else section3FaIcon">
-        <img class="nav-icon"
-             [src]="templateJson.section3.icon"
-             [alt]="templateJson.section3.title"
-             loading="lazy"/>
+      [ngClass]="{'active-nav' : selectedIndex === templateJson.section3?.title }" *ngIf="templateJson.section3">
+      <ng-container
+        *ngIf="templateJson.section3.icon?.includes('.svg') || templateJson.section3.icon?.startsWith('http'); else section3FaIcon">
+        <img class="nav-icon" [src]="templateJson.section3.icon" [alt]="templateJson.section3.title" loading="lazy" />
       </ng-container>
       <ng-template #section3FaIcon>
         <i class="fa"
-           [ngClass]="[templateJson.section3.theme?templateJson.section3.theme:'', templateJson.section3.icon?templateJson.section3.icon:'fa-users']"></i>
+          [ngClass]="[templateJson.section3.theme?templateJson.section3.theme:'', templateJson.section3.icon?templateJson.section3.icon:'fa-users']"></i>
       </ng-template>
       <span>{{templateJson.section3.title | translate}}</span>
     </a>
 
     <a (click)="menuSelected(templateJson.section4)"
-       [ngClass]="{'active-nav' : selectedIndex === templateJson.section4?.title }"
-       *ngIf="templateJson.section4">
-      <ng-container *ngIf="templateJson.section4.icon?.includes('.svg') || templateJson.section4.icon?.startsWith('http'); else section4FaIcon">
-        <img class="nav-icon"
-             [src]="templateJson.section4.icon"
-             [alt]="templateJson.section4.title"
-             loading="lazy"/>
+      [ngClass]="{'active-nav' : selectedIndex === templateJson.section4?.title }" *ngIf="templateJson.section4">
+      <ng-container
+        *ngIf="templateJson.section4.icon?.includes('.svg') || templateJson.section4.icon?.startsWith('http'); else section4FaIcon">
+        <img class="nav-icon" [src]="templateJson.section4.icon" [alt]="templateJson.section4.title" loading="lazy" />
       </ng-container>
       <ng-template #section4FaIcon>
-        <i class="fa"
-           [ngClass]="[templateJson.section4.theme || '', templateJson.section4.icon || 'fa-gear']"></i>
+        <i class="fa" [ngClass]="[templateJson.section4.theme || '', templateJson.section4.icon || 'fa-gear']"></i>
       </ng-template>
       <span>{{templateJson.section4.title | translate}}</span>
     </a>
 
     <a (click)="menuSelected(templateJson.section5)"
-       [ngClass]="{'active-nav' : selectedIndex === templateJson.section5?.title }"
-       *ngIf="templateJson.section5">
-      <ng-container *ngIf="templateJson.section5.icon?.includes('.svg') || templateJson.section5.icon?.startsWith('http'); else section5FaIcon">
-        <img class="nav-icon"
-             [src]="templateJson.section5.icon"
-             [alt]="templateJson.section5.title"
-             loading="lazy"/>
+      [ngClass]="{'active-nav' : selectedIndex === templateJson.section5?.title }" *ngIf="templateJson.section5">
+      <ng-container
+        *ngIf="templateJson.section5.icon?.includes('.svg') || templateJson.section5.icon?.startsWith('http'); else section5FaIcon">
+        <img class="nav-icon" [src]="templateJson.section5.icon" [alt]="templateJson.section5.title" loading="lazy" />
       </ng-container>
       <ng-template #section5FaIcon>
         <i class="fa"
-           [ngClass]="[templateJson.section5.theme?templateJson.section5.theme:'', templateJson.section5.icon?templateJson.section5.icon:'fa-address-book']"></i>
+          [ngClass]="[templateJson.section5.theme?templateJson.section5.theme:'', templateJson.section5.icon?templateJson.section5.icon:'fa-address-book']"></i>
       </ng-template>
       <span>{{templateJson.section5.title}}</span>
     </a>
   </div>
-     <!-- Optional cover -->
+  <!-- Optional cover -->
   <div class="home-cover-wrap" *ngIf="templateJson?.homepagecover">
-    <img class="home-cover"
-         [src]="templateJson.homepagecover"
-         alt="Homepage cover"
-         loading="lazy"
-         decoding="async"
-         (click)="createappoinment()"/>
+    <img class="home-cover" [src]="templateJson.homepagecover" alt="Homepage cover" loading="lazy" decoding="async"
+      (click)="createappoinment()" />
   </div>
   <!-- Section header: Upcoming Bookings -->
 
-  <div class="section-bar bookings-bar" *ngIf="templateJson && nextBooking && !isBookingCancelled(nextBooking) && !isBookingCompleted(nextBooking)">
+  <div class="section-bar bookings-bar"
+    *ngIf="templateJson && nextBooking && !isBookingCancelled(nextBooking) && !isBookingCompleted(nextBooking)">
     <div class="section-left">
       <span class="icon-bg"><i class="fa fa-calendar" aria-hidden="true"></i></span>
       <span class="title">Upcoming Bookings</span>
     </div>
-    <button type="button"
-            class="view-all"
-            *ngIf="hasMultipleActiveBookings()"
-            (click)="onViewAllBookings()">View More</button>
+    <button type="button" class="view-all" *ngIf="hasMultipleActiveBookings()" (click)="onViewAllBookings()">View
+      More</button>
   </div>
 
   <div class="mgn-up-10 m-3 mgn-bt-10 pad-bt-10 grid-card"
-       *ngIf="templateJson && nextBooking && !isBookingCancelled(nextBooking) && !isBookingCompleted(nextBooking)">
+    *ngIf="templateJson && nextBooking && !isBookingCancelled(nextBooking) && !isBookingCompleted(nextBooking)">
     <mat-grid-list [cols]="1" rowHeight="300px" [gutterSize]="'10px'">
       <mat-grid-tile (click)="showBookingDetails(nextBooking, nextBookingType || 'today')">
         <ng-container *ngIf="nextBooking.apptStatus">
-          <app-appt-card [booking]="nextBooking"
-                         [type]="nextBookingType || 'today'"
-                         [smallDevice]="smallDevice"
-                         (actionPerformed)="cardClicked($event)"></app-appt-card>
+          <app-appt-card [booking]="nextBooking" [type]="nextBookingType || 'today'" [smallDevice]="smallDevice"
+            (actionPerformed)="cardClicked($event)"></app-appt-card>
         </ng-container>
- 
+
       </mat-grid-tile>
     </mat-grid-list>
   </div>
 
-      <div class="ratingcard-wrap" *ngIf="templateJson?.trustFeatures">
-        <img class="ratingcard-img" [src]="templateJson?.trustFeatures" loading="lazy" decoding="async">
-      </div>
-      
-      
-      <div class="ratingcard-wrap" *ngIf="templateJson?.ratingcard">
-        <img class="ratingcard-img" [src]="templateJson?.ratingcard" loading="lazy" decoding="async">
-      </div>
+  <div class="ratingcard-wrap" *ngIf="templateJson?.trustFeatures">
+    <img class="ratingcard-img" [src]="templateJson?.trustFeatures" loading="lazy" decoding="async">
+  </div>
+
+
+  <div class="ratingcard-wrap" *ngIf="templateJson?.ratingcard">
+    <img class="ratingcard-img" [src]="templateJson?.ratingcard" loading="lazy" decoding="async">
+  </div>
 
 
   <!-- Coming soon section -->
-  <section class="section-block coming-soon-section" >
+  <section class="section-block coming-soon-section">
     <div class="section-head">
       <div>
         <p class="eyebrow">{{ templateJson?.section1?.comingSoon?.title || 'Coming Soon' }}</p>
       </div>
     </div>
     <div class="coming-grid">
-      <article class="coming-card"
-               *ngFor="let card of comingSoonCards"
-               [style.--accent]="card.accent || '#FFE0CC'"
-               (click)="onComingSoonCard(card)">
-        <img *ngIf="card.image" class="coming-image" [src]="card.image" [alt]="card.title" loading="lazy" decoding="async">
+      <article class="coming-card" *ngFor="let card of comingSoonCards" [style.--accent]="card.accent || '#FFE0CC'"
+        (click)="onComingSoonCard(card)">
+        <img *ngIf="card.image" class="coming-image" [src]="card.image" [alt]="card.title" loading="lazy"
+          decoding="async">
         <div class="coming-visual" *ngIf="!card.image">
           <i class="fa" [ngClass]="card.icon || 'fa-paw'"></i>
         </div>
@@ -147,36 +123,27 @@
     </div>
   </section>
   <!-- Blogs section -->
-  <section class="section-block blog-section"
-           *ngIf="blogConfig?.showBlogs && filteredBlogs.length">
+  <section class="section-block blog-section" *ngIf="blogConfig?.showBlogs && filteredBlogs.length">
     <div class="section-head blog-head">
       <div>
         <p class="eyebrow">{{ blogConfig?.blogsCaption || 'Our Blogs' }}</p>
       </div>
-      <button type="button"
-              class="view-all"
-              *ngIf="blogConfig?.showMoreBlogs && blogConfig?.moreBlogsLink"
-              (click)="openBlog({ link: blogConfig.moreBlogsLink })">
+      <button type="button" class="view-all" *ngIf="blogConfig?.showMoreBlogs && blogConfig?.moreBlogsLink"
+        (click)="openBlog({ link: blogConfig.moreBlogsLink })">
         {{ blogConfig?.moreBlogsCaption || 'View All' }}
       </button>
     </div>
 
     <div class="blog-filters" *ngIf="blogFilters.length">
-      <button type="button"
-              class="filter-chip"
-              *ngFor="let filter of blogFilters"
-              [class.active]="activeBlogFilter === filter.key"
-              (click)="selectBlogFilter(filter.key)">
+      <button type="button" class="filter-chip" *ngFor="let filter of blogFilters"
+        [class.active]="activeBlogFilter === filter.key" (click)="selectBlogFilter(filter.key)">
         {{ filter.label }}
       </button>
     </div>
 
     <div class="blog-list">
       <article class="blog-row" *ngFor="let blog of filteredBlogs" (click)="openBlog(blog)">
-        <img [src]="blog.image"
-             [alt]="blog.title"
-             loading="lazy"
-             decoding="async">
+        <img [src]="blog.image" [alt]="blog.title" loading="lazy" decoding="async">
         <div class="blog-body">
           <div class="blog-meta">
             <span class="blog-date"><i class="fa fa-calendar"></i>{{ blog.date }}</span>
@@ -187,8 +154,8 @@
       </article>
     </div>
     <div>
-    <span class="more_blogs" (click)="moreblogs()">View More Blogs</span>
-  </div>
+      <span class="more_blogs" (click)="moreblogs()">View More Blogs</span>
+    </div>
   </section>
 
 </div>
