@@ -146,7 +146,8 @@ export class WlCardComponent implements OnInit, OnChanges {
     if (history.amountDue > 0 && (history.billViewStatus == 'Show') && history.waitlistStatus != 'cancelled' && history.billStatus != 'Settled') {
       this.showPayBtn = true;
     }
-    if ((history.waitlistStatus != 'cancelled' && history.billStatus != 'Settled')) {
+    const hasInvoice = history.invoiceCreated || history.billViewStatus === 'Show';
+    if (history.waitlistStatus != 'cancelled' && hasInvoice) {
       this.showInvoiceBtn = true;
     }
     if (history.billViewStatus == 'Show' && ((!(history.amountDue > 0) && history.waitlistStatus != 'cancelled') || (history.waitlistStatus === 'cancelled' && history.paymentStatus !== 'NotPaid'))) {
@@ -235,7 +236,8 @@ export class WlCardComponent implements OnInit, OnChanges {
     if (this.booking.amountDue > 0 && (this.booking.billViewStatus == 'Show') && this.booking.waitlistStatus != 'cancelled' && this.booking.billStatus != 'Settled') {
       this.showPayBtn = true;
     }
-    if ((this.booking.waitlistStatus != 'cancelled' && this.booking.billStatus != 'Settled')) {
+    const hasInvoice = this.booking.invoiceCreated || this.booking.billViewStatus === 'Show';
+    if (this.booking.waitlistStatus != 'cancelled' && hasInvoice) {
       this.showInvoiceBtn = true;
     }
     if (this.booking.billViewStatus == 'Show' && ((!(this.booking.amountDue > 0) && this.booking.waitlistStatus != 'cancelled') || (this.booking.waitlistStatus === 'cancelled' && this.booking.paymentStatus !== 'NotPaid'))) {

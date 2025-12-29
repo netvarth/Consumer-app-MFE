@@ -118,9 +118,10 @@ export class ApptCardComponent implements OnInit, OnChanges {
       && this.booking.apptStatus != 'Rejected' && this.booking.billStatus != 'Settled') {
       this.showPayBtn = true
     }
+    const hasInvoice = this.booking.invoiceCreated || this.booking.billViewStatus === 'Show';
     if (this.booking.apptStatus != 'Cancelled'
-    && this.booking.apptStatus != 'Rejected' && this.booking.billStatus != 'Settled') {
-    this.showInvoiceBtn = true
+    && this.booking.apptStatus != 'Rejected' && hasInvoice) {
+    this.showInvoiceBtn = true;
   }
    
     if (this.booking.billViewStatus == 'Show' &&

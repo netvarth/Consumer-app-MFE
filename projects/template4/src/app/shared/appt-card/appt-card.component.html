@@ -123,7 +123,7 @@
 
 
   </div>
- <div class="button-container"
+<div class="button-container"
      *ngIf="booking.service.serviceType==='virtualService'
             && booking.apptStatus!=='Cancelled'
             && booking.apptStatus!=='Completed'">
@@ -180,6 +180,18 @@
             (click)="cardActionPerformed('appt','viewPrescription',booking,$event)">
       {{ 'View Prescription' | translate }}
     </button>
+  </div>
+</div>
+
+<!-- Invoice fallback for completed/other bookings -->
+<div class="button-container"
+     *ngIf="showInvoiceBtn && booking.invoiceCreated
+            && (booking.service.serviceType!=='virtualService' || booking.apptStatus==='Completed')">
+  <div class="left-inline">
+    <div class="btn-outline rupee-font btn-invoices"
+         (click)="cardActionPerformed('appt','viewBill',booking,$event)">
+      {{ 'Invoice' | translate }}
+    </div>
   </div>
 </div>
 

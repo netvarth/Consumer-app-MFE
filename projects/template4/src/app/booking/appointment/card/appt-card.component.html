@@ -146,17 +146,18 @@
                     translate }}
                     {{booking.amountPaid | currency:'&#8377;'}}</span>
             </div>
-            <div class="col-7 p-0 mgn-up-5">
-                <button *ngIf="showPayBtn && !booking.invoiceCreated" mat-flat-button class="btns rupee-font mgn-rt-5"
-                    (click)="cardActionPerformed('appt', 'viewBill', booking, $event)">{{'Pay' | translate}}
-                </button>
-            </div>
-            <div class="col-7 p-0 mgn-up-5">
-                <button *ngIf="showInvoiceBtn && booking.invoiceCreated" mat-flat-button
-                    class="btns rupee-font mgn-rt-5"
-                    (click)="cardActionPerformed('appt', 'viewBill', booking, $event)">{{'Invoice' | translate}}
-                </button>
-            </div>
+        <div class="col-7 p-0 mgn-up-5">
+            <button *ngIf="showPayBtn && !booking.invoiceCreated" mat-flat-button class="btns rupee-font mgn-rt-5"
+                (click)="cardActionPerformed('appt', 'viewBill', booking, $event)">{{'Pay' | translate}}
+            </button>
+        </div>
+        <div class="col-7 p-0 mgn-up-5">
+            <button *ngIf="showInvoiceBtn && booking.invoiceCreated"
+                    mat-flat-button class="btns rupee-font mgn-rt-5"
+                    (click)="cardActionPerformed('appt', 'viewBill', booking, $event)">
+                {{'Invoice' | translate}}
+            </button>
         </div>
     </div>
+</div>
 </div>
