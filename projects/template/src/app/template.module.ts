@@ -9,7 +9,9 @@ const routes: Routes = [
   setupInjectionContextForLoadChildren({
     runGuardsAndResolvers: 'always',
     canLoad: [TemplateGuard],
-    path: '', loadChildren: async (environmentService = inject(EnvironmentService)) => {
+    path: '',
+    loadChildren: async () => {
+      const environmentService = inject(EnvironmentService);
       const templateId = localStorage.getItem('_tid');
       remoteEntry = environmentService.getEnvironment('HOME') + '/remoteEntry.json';
       
