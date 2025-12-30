@@ -618,7 +618,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
     const navigationExtras: NavigationExtras = {
       queryParams: queryParams
     };
-    this.router.navigate([this.sharedService.getRouteID(), 'booking'], navigationExtras);
+    this.router.navigate([this.sharedService.getRouteID(), 'appointment'], navigationExtras);
   }
   sendMessage() {
     let type = this.booking['isAppointment'] ? 'appt' : 'checkin';

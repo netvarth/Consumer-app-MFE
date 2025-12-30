@@ -128,17 +128,18 @@
       </div>
 
       <ng-container *ngIf="booking['actions']['joinJaldeeVideo'] && meetingDetails?.joiningUrl; else joinWithHandler">
-        <a class="cta-button" id="btnJoinJaldeeVideo" [href]="meetingDetails.joiningUrl" target="_blank">
-          <i class="fa fa-video-camera" aria-hidden="true"></i>
-          <span>{{'Join Video Consultation' | translate}}</span>
-        </a>
-      </ng-container>
-      <ng-template #joinWithHandler>
         <button type="button" class="cta-button" id="btnJoinVideo" *ngIf="booking['actions']['joinMeeting'] || booking['actions']['joinJaldeeVideo']"
           (click)="joinMeeting()">
           <i class="fa fa-video-camera" aria-hidden="true"></i>
           <span>{{'Join Video Consultation' | translate}}</span>
         </button>
+        
+      </ng-container>
+      <ng-template #joinWithHandler>
+        <a class="cta-button" id="btnJoinJaldeeVideo" [href]="meetingDetails.joiningUrl" target="_blank">
+          <i class="fa fa-video-camera" aria-hidden="true"></i>
+          <span>{{'Join Video Consultation' | translate}}</span>
+        </a>
       </ng-template>
 
       <div class="card instructions-card">
