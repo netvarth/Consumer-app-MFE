@@ -41,7 +41,7 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
     terminologies;    // To hold the terminology json
     accountType;      // To know the account type Branch/Individual SP/SP User etc
     appointmentType;  // Reschedule or not
-    multipleSelection;// To allow multiple slot selection or not
+    multipleSelection = 1; // Slots selectable at a time (force single selection)
     scheduledAppointment;// To store the scheduled appointment for rescheduled
     users = [];            // To store the users/providers/doctors
     selectedSlots: any = [] // To hold the appointment slots selected
@@ -738,11 +738,8 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
             }
 
 
-            if (activeService.maxBookingsAllowed > 1 && this.appointmentType != 'reschedule') {
-                this.multipleSelection = activeService.maxBookingsAllowed;
-            } else {
-                this.multipleSelection = 1;
-            }
+            // Restrict to a single slot selection irrespective of maxBookingsAllowed
+            this.multipleSelection = 1;
             if (activeService.virtualCallingModes) {
                 this.setVirtualInfoServiceInfo(activeService, this.appointmentType);
             }
