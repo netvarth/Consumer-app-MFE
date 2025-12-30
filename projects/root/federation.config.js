@@ -3,7 +3,7 @@ const { withNativeFederation, shareAll } = require('@angular-architects/native-f
 module.exports = withNativeFederation({
 
   shared: {
-    ...shareAll({ singleton: true, strictVersion: false, requiredVersion: 'auto', includeSecondaries: true }),
+    ...shareAll({ singleton: true, strictVersion: true, requiredVersion: 'auto', includeSecondaries: true }),
     'date-fns': { singleton: true, strictVersion: false, requiredVersion: 'auto', includeSecondaries: true },
     'date-fns/format': { singleton: true, strictVersion: false, requiredVersion: 'auto' },
     'date-fns-tz': { singleton: true, strictVersion: false, requiredVersion: 'auto' }
