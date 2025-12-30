@@ -14,7 +14,8 @@ routes.push(
   setupInjectionContextForLoadChildren({
     path: '',
     canLoad: [SharedAccountGuard],
-    loadChildren: async (environmentService = inject(EnvironmentService)) => {
+    loadChildren: async () => {
+      const environmentService = inject(EnvironmentService);
       const remoteUrl = environmentService.getEnvironment(templateId) + '/remoteEntry.json';
       return loadRemoteModule({
         remoteEntry: remoteUrl,
