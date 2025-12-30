@@ -61,23 +61,10 @@
         </div>
         <div *ngIf="step===2" class="text-center">
             <h1>Let's get to know you...</h1>
-            <label for="phone">First Name</label>
-            <div class="input-group d-flex">
-                <div class="">
-                    <p-dropdown class="text-capitalize p-drop-style" [options]="salutation" [(ngModel)]="title"
-                        placeholder="Select" ropdownIcon="fa fa-caret-down" optionLabel="name"
-                        optionValue="displayName">
-                        <ng-template let-item pTemplate="salutation">
-                            {{item.displayName}}
-                        </ng-template>
-                    </p-dropdown>
-                </div>
-                <div class="flex-grow-1 p-0 mgn-lt-1">
-                    <div class="form-group otp">
-                        <input type="text" class="form-control" id="first_name" [(ngModel)]="firstName"
+            <div class="form-group otp">
+                <label for="phone">First Name</label>
+                <input type="text" class="form-control" id="first_name" [(ngModel)]="firstName"
                             autocomplete="off" />
-                    </div>
-                </div>
             </div>
             <div class="form-group otp">
                 <label for="phone">Last Name</label>

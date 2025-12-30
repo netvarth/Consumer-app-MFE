@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService, ErrorMessagingService, GroupStorageService, LocalStorageService, SharedService, StorageService, ToastService } from 'jconsumer-shared';
+import { AuthService, ErrorMessagingService, GroupStorageService, LocalStorageService, SharedService, ToastService } from 'jconsumer-shared';
 import { jwtDecode } from "jwt-decode";
 declare var google;
 import { interval as observableInterval, Subscription } from 'rxjs';
@@ -62,7 +62,6 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
   alignClass: any;
   resend_otp_opt_active_cap = 'Resend OTP option will be active in';
   seconds_cap = 'seconds'
-  salutation: any;
   title: any;
   preferredCountries = ['in', 'uk', 'us'];
   separateDialCode = true;
@@ -98,10 +97,8 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
     private cd: ChangeDetectorRef,
     private sharedService: SharedService,
     private ngZone: NgZone,
-    private storageService: StorageService,
     private errorService: ErrorMessagingService,
     private router: Router,
-    private http: HttpClient,
   ) {
     this.loading = true;
     this.cdnPath = this.sharedService.getCDNPath();
@@ -155,9 +152,6 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
     this.isIOSApp = this.lStorageService.getitemfromLocalStorage('ios');
     console.log('isIOS app : ' + this.isIOSApp);
     this.accountId = this.sharedService.getAccountID();
-    this.storageService.getSalutations().then((data: any) => {
-      this.salutation = data;
-    });
     this.lStorageService.removeitemfromLocalStorage('login');
     this.lStorageService.removeitemfromLocalStorage('logout');
     this.templateConfig = this.sharedService.getTemplateJSON();

@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
-import { AuthService, ErrorMessagingService, GroupStorageService, LocalStorageService, SharedService, StorageService, ToastService } from 'jconsumer-shared';
+import { AuthService, ErrorMessagingService, GroupStorageService, LocalStorageService, SharedService, ToastService } from 'jconsumer-shared';
 import { jwtDecode } from "jwt-decode";
 declare var google;
 import { interval as observableInterval, Subscription } from 'rxjs';
@@ -52,7 +52,7 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
   cronHandle: Subscription;
   resend_otp_opt_active_cap = 'Resend OTP option will be active in';
   seconds_cap = 'seconds'
-  salutation: any;
+  // salutation: any;
   title: any;
   preferredCountries = ['in', 'uk', 'us'];
   separateDialCode = true;
@@ -75,7 +75,7 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
     private cd: ChangeDetectorRef,
     private sharedService: SharedService,
     private ngZone: NgZone,
-    private storageService: StorageService,
+    // private storageService: StorageService,
     private errorService: ErrorMessagingService
   ) {
     this.loading = true;
@@ -104,9 +104,9 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
   }, 100);
   }
   ngOnInit(): void {
-    this.storageService.getSalutations().then((data: any) => {
-      this.salutation = data;
-    });
+    // this.storageService.getSalutations().then((data: any) => {
+    //   this.salutation = data;
+    // });
     this.lStorageService.removeitemfromLocalStorage('login');
     this.lStorageService.removeitemfromLocalStorage('logout');
     this.templateConfig = this.sharedService.getTemplateJSON();

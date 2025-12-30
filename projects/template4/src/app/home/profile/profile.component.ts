@@ -89,7 +89,6 @@ export class ProfileComponent implements OnInit {
   spConsumer;
   profilePicture: any;
   filesToUpload: any = [];
-  salutation: any;
   config: any;
   preferredCountries = ['in', 'uk', 'us'];
   separateDialCode = true;
@@ -133,19 +132,12 @@ export class ProfileComponent implements OnInit {
   }
   ngOnInit() {
     this.onResize();
-    // this.account = this.accountService.getAccountInfo();
-    // this.wordProcessor.setTerminologies(this.accountService.getTerminologies());
-    // this.accountProfile = this.accountService.getJson(this.account['businessProfile']);
     this.config = this.sharedService.getTemplateJSON();
     if (this.config.theme) {
       this.theme = this.config.theme;
     }
-    // this.customId = this.accountProfile['customId'] ? this.accountProfile['customId'] : this.accountProfile['accEncUid'];
     const user = this.groupService.getitemFromGroupStorage('jld_scon');
     this.domain = user.sector;
-    this.storageService.getSalutations().then((data: any) => {
-      this.salutation = data;
-    });
     this.editProfileForm = this.fb.group({
       titles: [''],
       first_name: ['', Validators.compose([Validators.required, Validators.pattern(projectConstantsLocal.VALIDATOR_CHARONLY)])],

@@ -5,21 +5,8 @@
         <div class="mt-2">
             <label class="p-0 pt-1 m-0 form-text-light">{{'First Name' |
                 translate}}</label>
-            <div class="d-flex">
-                <!-- <div class="salutation">
-                    <p-dropdown class="text-capitalize" [options]="salutation" (onChange)="valuechange($event)"
-                        [(ngModel)]="title" placeholder="Select" ropdownIcon="fa fa-caret-down" optionLabel="name"
-                        optionValue="displayName">
-                        <ng-template let-item pTemplate="salutation">
-                            {{item.displayName}}
-                        </ng-template>
-                    </p-dropdown>
-                </div> -->
-                <div class="flex-grow-1  p-0">
-                    <input pInputText type="text" class="form-control" id="first_name" placeholder=""
+            <input pInputText type="text" class="form-control" id="first_name" placeholder=""
                         [(ngModel)]="firstname" autocomplete="off" (keyup)="valuechange($event)" />
-                </div>
-            </div>
         </div>
         <div class="mt-2">
             <label class="p-0 pt-1 m-0 form-text-light">{{'Last Name' | translate}} </label>

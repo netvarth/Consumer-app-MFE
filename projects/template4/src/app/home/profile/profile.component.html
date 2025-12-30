@@ -6,12 +6,13 @@
                     <div (click)="goBack()"><i class="fa fa-arrow-left Backsection"></i> </div>
                     <div (click)="goBack()" class="clrChangeHeader">Back</div>
                     </div> -->
-                    <div class="back-section">
-                        <button type="button" class="back-link" (click)="goBack()">
-                            <i class="fa fa-arrow-left" aria-hidden="true"></i>
-                            <span class="back-label">Back</span>
-                        </button>
-                    </div>  <div class="customCard">
+                <div class="back-section">
+                    <button type="button" class="back-link" (click)="goBack()">
+                        <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                        <span class="back-label">Back</span>
+                    </button>
+                </div>
+                <div class="customCard">
                     <div>
                         <div class="p-2">
                             <div class="myAcText">My Account</div>
@@ -21,19 +22,22 @@
                             <div class="fullWidthLinks" *ngIf="!smallDevice">
                                 <div class="tabText tabTextCstmClr" *ngIf="user_profile_cap">
                                     <span>
-                                        <img class="tabImgCustom" src="{{cdnPath}}assets/images/myjaldee/accountSettings.png" />
+                                        <img class="tabImgCustom"
+                                            src="{{cdnPath}}assets/images/myjaldee/accountSettings.png" />
                                     </span>
                                     <span> {{user_profile_cap| capitalizeFirst}}</span>
                                 </div>
                                 <div class="tabText" *ngIf="family_members_cap" (click)="redirectto('members')">
                                     <span>
-                                        <img class="tabImgCustom" src="{{cdnPath}}assets/images/myjaldee/familyMembers.png" />
+                                        <img class="tabImgCustom"
+                                            src="{{cdnPath}}assets/images/myjaldee/familyMembers.png" />
                                     </span>
                                     <span> {{family_members_cap | capitalizeFirst}}</span>
                                 </div>
                                 <div class="tabText" *ngIf="dashboard_cap" (click)="redirectto('dashboard')">
                                     <span>
-                                        <img class="tabImgCustom" src="{{cdnPath}}assets/images/myjaldee/accountSettings.png" />
+                                        <img class="tabImgCustom"
+                                            src="{{cdnPath}}assets/images/myjaldee/accountSettings.png" />
                                     </span>
                                     <span> {{dashboard_cap | capitalizeFirst}}</span>
                                 </div>
@@ -78,16 +82,17 @@
                                         <img class="userImg" *ngIf="profilePicture" src="{{profilePicture}}" />
                                     </div>
                                     <div *ngIf="!profilePicture">
-                                        <button id="btnSelectFile" mat-button type="submit" class="newImgUpload cursor-pointer"
-                                            (click)="imagefile.click()">
+                                        <button id="btnSelectFile" mat-button type="submit"
+                                            class="newImgUpload cursor-pointer" (click)="imagefile.click()">
                                             <input #imagefile type="file" accept="/*;capture=camera"
                                                 style="display:none;" (change)="filesSelected($event)">
                                             <span class="btntxt">{{'Upload New Image' | translate}}</span>
                                         </button>
                                     </div>
                                     <div *ngIf="profilePicture">
-                                        <button id="btnRemoveUser" mat-button type="submit" class="deleteBtn cursor-pointer"
-                                            (click)="removeUser()"><span class="btntxtClr">{{'Delete' |
+                                        <button id="btnRemoveUser" mat-button type="submit"
+                                            class="deleteBtn cursor-pointer" (click)="removeUser()"><span
+                                                class="btntxtClr">{{'Delete' |
                                                 translate}}</span></button>
                                     </div>
                                 </div>
@@ -104,14 +109,14 @@
                                                 </h3>
                                                 <ul class="social-links">
                                                     <li *ngIf="profilePicture">
-                                                        <button type="submit" class="deleteBtn cursor-pointer" id="btnRemove"
-                                                            (click)="removeUser()">
+                                                        <button type="submit" class="deleteBtn cursor-pointer"
+                                                            id="btnRemove" (click)="removeUser()">
                                                             <i class="fa fa-trash" aria-hidden="true"></i>
                                                         </button>
                                                     </li>
                                                     <li *ngIf="!profilePicture">
-                                                        <button type="submit" class="newImgUpload cursor-pointer" id="btnFileSelect"
-                                                            (click)="imagefile.click()">
+                                                        <button type="submit" class="newImgUpload cursor-pointer"
+                                                            id="btnFileSelect" (click)="imagefile.click()">
                                                             <input #imagefile type="file" accept="/*;capture=camera"
                                                                 style="display:none;" (change)="filesSelected($event)">
                                                             <i class="fa fa-upload edit_1"></i>
@@ -130,23 +135,8 @@
                                                 <div class="mt-2">
                                                     <label class="p-0 pt-1 m-0 form-text-light">{{'First Name' |
                                                         translate}}</label>
-                                                    <div class="input-group d-flex">
-                                                        <div class="field-width">
-                                                            <mat-select pInputText class="form-control" id="titles"
-                                                                formControlName="titles" placeholder="Select">
-                                                                <mat-option [value]="salutation.displayName"
-                                                                    *ngFor="let salutation of salutation">
-                                                                    <div *ngIf="salutation && salutation.name">
-                                                                        {{salutation.displayName}}</div>
-                                                                </mat-option>
-                                                            </mat-select>
-                                                        </div>
-                                                        <div class="flex-grow-1 p-0">
-                                                            <input pInputText type="text" class="form-control"
-                                                                id="first_name" formControlName="first_name"
-                                                                autocomplete="off">
-                                                        </div>
-                                                    </div>
+                                                    <input pInputText type="text" class="form-control" id="first_name"
+                                                        formControlName="first_name" autocomplete="off">
                                                 </div>
                                                 <div class="mt-2">
                                                     <label class="p-0 pt-1 m-0 form-text-light">{{'Last Name' |
@@ -197,7 +187,7 @@
                                                         <app-phone-input formControlName="phoneNo" name="phoneNo"
                                                             [initialCountry]="'in'"
                                                             [preferredCountries]="preferredCountries"
-                                                            [nationalMode]="false"                                                            
+                                                            [nationalMode]="false"
                                                             [separateDialCode]="true"></app-phone-input>
                                                     </div>
                                                     <!-- (phoneNumberChange)="onPhoneNumberChanged($event)" -->
@@ -208,11 +198,10 @@
                                                     <div class="mb-3">
                                                         <app-phone-input [initialCountry]="'in'"
                                                             [preferredCountries]="preferredCountries"
-                                                            [nationalMode]="false"
-                                                            
-                                                            [separateDialCode]="true" name="whatsappnumber"
+                                                            [nationalMode]="false" [separateDialCode]="true"
+                                                            name="whatsappnumber"
                                                             formControlName="whatsappnumber"></app-phone-input>
-                                                            <!-- (phoneNumberChange)="onWhatsappChanged($event)" -->
+                                                        <!-- (phoneNumberChange)="onWhatsappChanged($event)" -->
                                                     </div>
                                                 </div>
                                                 <div class="mt-2">
@@ -221,11 +210,10 @@
                                                     <div class="mb-3">
                                                         <app-phone-input [initialCountry]="'in'"
                                                             [preferredCountries]="preferredCountries"
-                                                            [nationalMode]="false"
-                                                            
-                                                            [separateDialCode]="true" name="telegramnumber"
+                                                            [nationalMode]="false" [separateDialCode]="true"
+                                                            name="telegramnumber"
                                                             formControlName="telegramnumber"></app-phone-input>
-                                                            <!-- (phoneNumberChange)="onTelegramChanged($event)" -->
+                                                        <!-- (phoneNumberChange)="onTelegramChanged($event)" -->
                                                     </div>
                                                 </div>
                                                 <div class="mt-2">
@@ -252,8 +240,9 @@
                                         </form>
                                     </div>
                                     <div class="ps-3 mt-4 updateBtnInfo">
-                                        <button id="btnUpdate" mat-button (click)="onSubmit(editProfileForm.value)" type="submit"
-                                            [disabled]="isFormInvalid()" class="activityBtn cursor-pointer">
+                                        <button id="btnUpdate" mat-button (click)="onSubmit(editProfileForm.value)"
+                                            type="submit" [disabled]="isFormInvalid()"
+                                            class="activityBtn cursor-pointer">
                                             <span class="updateBtnText"
                                                 *ngIf="update_btn">{{update_btn.toUpperCase()}}</span>
                                         </button>

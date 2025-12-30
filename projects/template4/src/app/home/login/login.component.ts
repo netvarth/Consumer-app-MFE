@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthService, ErrorMessagingService, GroupStorageService, LocalStorageService, OrderService, SharedService, StorageService, SubscriptionService, ToastService } from 'jconsumer-shared';
+import { AuthService, ErrorMessagingService, GroupStorageService, LocalStorageService, OrderService, SharedService, SubscriptionService, ToastService } from 'jconsumer-shared';
 import { interval as observableInterval, Subscription } from 'rxjs';
 import { jwtDecode } from "jwt-decode";
 import { TranslateService } from '@ngx-translate/core';
@@ -56,7 +56,6 @@ export class LoginComponent implements OnInit, OnDestroy {
   resend_otp_opt_active_cap = 'Resend OTP option will be active in';
   seconds_cap = 'seconds'
   title = 'Mr.';
-  salutation: any;
   private subscriptions = new Subscription();
   textLabels = {
     mainLabel: null,
@@ -86,15 +85,11 @@ export class LoginComponent implements OnInit, OnDestroy {
     private lStorageService: LocalStorageService,
     private renderer: Renderer2,
     private toastService: ToastService,
-    // private accountService: AccountService,
     private sharedService: SharedService,
     public translate: TranslateService,
     private authService: AuthService,
     private subscriptionService: SubscriptionService,
-    // private ngZone: NgZone,
-    // private snackbarService: SnackbarService,
     private groupService: GroupStorageService,
-    private storageService: StorageService,
     private errorService: ErrorMessagingService,
     private orderService: OrderService
   ) {
@@ -122,10 +117,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.isIOSApp = this.lStorageService.getitemfromLocalStorage('ios');
     console.log('isIOS app : '+this.isIOSApp);
     const _this = this;
-    this.storageService.getSalutations().then((data: any) => {
-      console.log('accountStorageService123', data)
-      this.salutation = data;
-    });
     this.lStorageService.removeitemfromLocalStorage('logout');
     // this.account = this.accountService.getAccountInfo();
     // this.accountProfile = this.accountService.getJson(this.account['businessProfile']);

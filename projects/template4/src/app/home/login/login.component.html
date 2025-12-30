@@ -78,23 +78,10 @@
               </div>
               <div *ngIf="step===2" class="p-2 mb-3">
                 <h1>{{'Let\'s get to know you' | translate}}...</h1>
-                <label for="phone">{{'First Name' | translate}}</label>
-                <div class="input-group d-flex">
-                  <div class="salutation-field">
-                    <mat-select class="form-control field-size form-group otp" id="titles" [(ngModel)]="title"
-                      placeholder="Select">
-                      <mat-option [value]="salutation.displayName" *ngFor="let salutation of salutation">
-                        <div *ngIf="salutation && salutation.name">
-                          {{salutation.displayName}}</div>
-                      </mat-option>
-                    </mat-select>
-                  </div>
-                  <div class="flex-grow-1 p-0 mgn-lt-1">
-                    <div class="form-group otp">
-                      <input type="text" class="form-control" id="first_name" [(ngModel)]="firstName"
+                <div class="form-group otp mb-3">
+                  <label for="phone">{{'First Name' | translate}}</label>
+                  <input type="text" class="form-control" id="first_name" [(ngModel)]="firstName"
                         autocomplete="off" />
-                    </div>
-                  </div>
                 </div>
                 <div class="form-group otp mb-3">
                   <label for="phone">{{'Last Name' | translate}}</label>
