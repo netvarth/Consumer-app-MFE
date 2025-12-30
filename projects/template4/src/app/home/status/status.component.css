@@ -190,3 +190,18 @@
   font-size: 14px !important;
   padding-top: 15px;
 }
+.back-section{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+   padding: 18px 7px 14px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    gap: 8px;
+    margin-bottom: 5px;
+}
+.back-btn{
+  font-size: 15px;
+  font-weight: 600;
+  color: #000;
+  text-decoration: none;
+}

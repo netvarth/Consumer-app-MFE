@@ -1,4 +1,8 @@
 <section class="container p-0" [ngClass]="theme">
+   <div class="back-section" (click)="goBack()">
+    <i class="fa fa-arrow-left" aria-hidden="true"></i>
+    <span class="back-btn" >Back</span>
+  </div>
   <div class="content status-page">
     <div class="card no-padding-small">
       <div class="copy locd" *ngIf="!apiloading">

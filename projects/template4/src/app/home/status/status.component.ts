@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { ConsumerService, DateTimeProcessor, projectConstantsLocal, SharedService, WordProcessor } from "jconsumer-shared";
 import { Subscription } from "rxjs";
 
@@ -58,7 +58,8 @@ export class StatusComponent implements OnInit, OnDestroy {
     private wordProcessor: WordProcessor,
     private consumerService: ConsumerService,
     private dateTimeProcessor: DateTimeProcessor,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    public router: Router,
   ) {
     this.cdnPath = this.sharedService.getCDNPath();
     const subs = this.activatedRoute.params.subscribe(qparams => {
@@ -287,5 +288,10 @@ export class StatusComponent implements OnInit, OnDestroy {
       return this.dateTimeProcessor.convert24HourtoAmPm(slots[0]);
     }
     return '';
+  }
+  goBack() {
+
+    this.router.navigate([this.sharedService.getRouteID()]);
+
   }
 }
