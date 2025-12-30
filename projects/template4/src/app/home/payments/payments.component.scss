@@ -753,11 +753,15 @@
 .back-section{
   display: flex;
   flex-direction: row;
-  padding: 17px 3px;
+  padding: 18px 7px 14px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
-.back-label{
-  font-size: 16px;
+.back-label {
   color: #000000;
-  font-weight: 700;
+  font-size: 15px;
+  font-weight: 600;
   margin-left: 8px;
 }
+// .fa-arrow-left {
+//     font-size: 12px !important;
+// }

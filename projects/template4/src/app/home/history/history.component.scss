@@ -13,7 +13,9 @@
     display: flex;
     align-items: center;
     gap: 16px;
-    margin-bottom: 24px;
+    margin-bottom: 5px;
+    padding: 18px 7px 14px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .history-back {
@@ -23,15 +25,15 @@
     padding: 0;
     border: none;
     background: transparent;
-    color: #111827;
-    font-size: 14px;
-    font-weight: 500;
+    // color: #111827;
+    font-size: 15px;
+    font-weight: 600;
     cursor: pointer;
 }
 
-.history-back i {
-    font-size: 18px;
-}
+// .history-back i {
+//     font-size: 18px;
+// }
 
 :host ::ng-deep h1 {
     margin: 0;
@@ -68,9 +70,8 @@
     padding: 14px 18px;
     color: #ffffff;
 }
-
 .history-card__header.appointment {
-    background: #FD7029
+    background: linear-gradient(45deg, #f57737 0%, #bb3f00 100%);
 }
 
 .history-card__header.waitlist {

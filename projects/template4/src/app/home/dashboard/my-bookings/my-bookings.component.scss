@@ -215,10 +215,18 @@ a:hover {
     padding: 2.5px;
     border-radius: 3px;
 }
+.back-section {
+    padding: 18px 7px 14px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    align-items: center;
+    margin-bottom: 5px;
+}
 
-.goBack {
+// .goBack {
 
-padding: 14px 0px;}
+//     padding: 18px 5px 14px;
+//     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+// }
 
 .Back {
     margin: 0 !important;

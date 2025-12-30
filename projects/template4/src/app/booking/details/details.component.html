@@ -2,13 +2,20 @@
 
 <section class="booking-redesign">
   <ng-container *ngIf="api_loading && booking['info']; else loadingState">
-    <header class="booking-header">
+    <!-- <header class="booking-header"> -->
+    
+      <div class="back-section">
+        <button type="button" class="back-link" (click)="gotoPrev()">
+          <i class="fa fa-arrow-left" aria-hidden="true"></i>
+          <span class="back-label">Back</span>
+        </button>
+      </div>
       <!-- <div class="brand-mini" *ngIf="booking['logo']" (click)="gotoHome()">
         <img [src]="booking['logo']" alt="Brand logo" />
       </div> -->
-      <div class="header-actions">
+      <!-- <div class="header-actions"> -->
         
-          <i class="fa fa-arrow-left" (click)="gotoPrev()" aria-hidden="true"></i>
+          <!-- <i class="fa fa-arrow-left" (click)="gotoPrev()" aria-hidden="true"></i> -->
        
         <!-- <button type="button" class="icon-btn" *ngIf="hasActionMenuItems()" (click)="toggleActionMenu($event)">
           <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
@@ -42,8 +49,8 @@
             <span>{{'Cancel Booking' | translate}}</span>
           </button> -->
         <!-- </div> -->
-      </div>
-    </header>
+      <!-- </div> -->
+    <!-- </header> -->
 
     <div class="booking-body">
       <div class="card booking-card">

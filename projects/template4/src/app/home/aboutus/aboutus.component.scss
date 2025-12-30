@@ -9,8 +9,8 @@
 .aboutus__header {
   display: flex;
   align-items: center;
-  padding: 16px 5px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 18px 5px 14px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   margin-bottom: 13px;
 }
 
@@ -20,14 +20,14 @@
   gap: 8px;
   background: none;
   border: 0;
-  color: #0f172a;
-  font-size: 14px;
+  color: #000000;
+  font-size: 15px;
   font-weight: 600;
 }
 
-.aboutus__back i {
-  font-size: 18px;
-}
+// .aboutus__back i {
+//   font-size: 18px;
+// }
 
 .aboutus__content {
   display: flex;
@@ -121,4 +121,7 @@
     padding: 24px 24px;
     border-radius: 24px;
   }
+}
+.fa-arrow-left {
+    font-size: 12px !important;
 }

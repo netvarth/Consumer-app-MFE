@@ -1,15 +1,18 @@
+<div class="history-header">
+  <button type="button" class="history-back" (click)="goback()">
+    <i class="fa fa-arrow-left" aria-hidden="true"></i>
+    <span>Back</span>
+  </button>
+
+</div>
 <section class="history-page" [ngClass]="theme">
   <div class="history-container">
-    <div class="history-header">
-      <button type="button" class="history-back" (click)="goback()">
-        <i class="fa fa-arrow-left" aria-hidden="true"></i>
-        <span>Back</span>
-      </button>
 
-    </div>
 
     <app-common-innerloading-spinner *ngIf="loading"></app-common-innerloading-spinner>
-    <div><h1>{{ 'History' | translate }}</h1></div>
+    <div>
+      <h1>{{ 'History' | translate }}</h1>
+    </div>
     <div class="history-login" *ngIf="!loading && !loggedIn">
       <div class="history-login__card">
         <app-authentication (actionPerformed)="actionPerformed($event)" [accountId]="accountId"></app-authentication>

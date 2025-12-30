@@ -2,11 +2,16 @@
     <div class="content p0 see-pages cons-members">
         <div class="panel panel-default">
             <div class="panel-body p-0">
-                <div class="customCard title-gb headerBorder">
-                    <div (click)="goBack()"><i class="fa fa-arrow-left clrChangeHeader"></i> </div>
+                <!-- <div class="BackCard title-gb headerBorder">
+                    <div (click)="goBack()"><i class="fa fa-arrow-left Backsection"></i> </div>
                     <div (click)="goBack()" class="clrChangeHeader">Back</div>
-                </div>
-                <div class="customCard">
+                    </div> -->
+                    <div class="back-section">
+                        <button type="button" class="back-link" (click)="goBack()">
+                            <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                            <span class="back-label">Back</span>
+                        </button>
+                    </div>  <div class="customCard">
                     <div>
                         <div class="p-2">
                             <div class="myAcText">My Account</div>

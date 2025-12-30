@@ -1,3 +1,7 @@
+<div class="d-flex back-section" *ngIf="loggedIn" (click)="goBack()">
+  <i class="fa fa-arrow-left me-2"></i>
+  <p class="Back">Back</p>
+</div>
 <div class="panel container mt-1" [ngClass]="theme">
   <div class="loading-hgt my-1 login-form_custom" *ngIf="!api_loading && !loggedIn">
     <div class="card card-custom no-margin hgt-adjust">
@@ -8,14 +12,8 @@
   </div>
   <div *ngIf="loggedIn">
     <section class="container consumer-dashhome p-0 no-padding-small" [ngClass]="theme">
-      <div class="card shadow d-flex flex-row header goBack" *ngIf="loggedIn">
-        <div class="my-auto d-flex" (click)="goBack()">
-          <i class="fa fa-arrow-left me-2"></i>
-          <p class="Back">Back</p>
-        </div>
-      </div>
-      <div class="content consumer-dash spinner" *ngIf="api_loading">
-        <app-common-innerloading-spinner>
+  
+      <div class="content consumer-dash spinner" *ngIf="api_loading"> <app-common-innerloading-spinner>
         </app-common-innerloading-spinner>
       </div>
       <div class="content consumer-dash" *ngIf="!api_loading && loggedIn && !ivrEnabled ">
