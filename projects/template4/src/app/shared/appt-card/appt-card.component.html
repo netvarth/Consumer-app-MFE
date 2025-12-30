@@ -1,34 +1,36 @@
-
 <div class="omg-card my-3" *ngIf="booking" [ngClass]="theme">
   <!-- top bar: notice + kebab -->
   <div class="omg-top">
     <div class="omg-notice" *ngIf="booking?.videoCallMessage">
-        <!-- Status (virtual active) -->
-    <div *ngIf="booking.service.serviceType==='virtualService' && booking.apptStatus!=='Cancelled' && booking.apptStatus!=='Completed'">
+      <!-- Status (virtual active) -->
+      <div
+        *ngIf="booking.service.serviceType==='virtualService' && booking.apptStatus!=='Cancelled' && booking.apptStatus!=='Completed'">
 
-      <div class="val line-clamp">
-        <span *ngIf="booking.apptStatus!=='Requested' && booking.apptStatus!=='RequestRejected'"
-              [class.dis]="booking.videoCallButton==='DISABLED'"
-              [class.en]="booking.videoCallButton==='ENABLED'">
-          {{ booking.videoCallMessage | translate }}
-        </span>
-        <span *ngIf="booking.apptStatus==='Requested' || booking.apptStatus==='RequestRejected'"
-              [class]="getBookingStatusClass(booking.apptStatus)">
-          {{ booking.apptStatus==='RequestRejected' ? 'Request Rejected' : booking.apptStatus }}
-        </span>
+        <div class="val line-clamp">
+          <span *ngIf="booking.apptStatus!=='Requested' && booking.apptStatus!=='RequestRejected'"
+            [class.dis]="booking.videoCallButton==='DISABLED'" [class.en]="booking.videoCallButton==='ENABLED'">
+            {{ booking.videoCallMessage | translate }}
+          </span>
+          <span *ngIf="booking.apptStatus==='Requested' || booking.apptStatus==='RequestRejected'"
+            [class]="getBookingStatusClass(booking.apptStatus)">
+            {{ booking.apptStatus==='RequestRejected' ? 'Request Rejected' : booking.apptStatus }}
+          </span>
+        </div>
       </div>
-    </div>
 
-    <!-- Status (others) -->
-    <div *ngIf="booking.service.serviceType!=='virtualService' || booking.apptStatus==='Cancelled' || booking.apptStatus==='Completed'">
-      <div class="lbl">{{ 'Status' | translate }}</div>
-      <div class="val">
-        <span [class]="getBookingStatusClass(booking.apptStatus)"
-              *ngIf="booking.service.serviceType==='virtualService' && booking.apptStatus!=='Arrived'">{{ booking.apptStatus }}</span>
-        <span [class]="getBookingStatusClass(booking.apptStatus)"
-              *ngIf="booking.service.serviceType!=='virtualService'">{{ booking.apptStatus==='RequestRejected' ? 'Request Rejected' : booking.apptStatus }}</span>
+      <!-- Status (others) -->
+      <div
+        *ngIf="booking.service.serviceType!=='virtualService' || booking.apptStatus==='Cancelled' || booking.apptStatus==='Completed'">
+        <div class="lbl">{{ 'Status' | translate }}</div>
+        <div class="val">
+          <span [class]="getBookingStatusClass(booking.apptStatus)"
+            *ngIf="booking.service.serviceType==='virtualService' && booking.apptStatus!=='Arrived'">{{
+            booking.apptStatus }}</span>
+          <span [class]="getBookingStatusClass(booking.apptStatus)"
+            *ngIf="booking.service.serviceType!=='virtualService'">{{ booking.apptStatus==='RequestRejected' ? 'Request
+            Rejected' : booking.apptStatus }}</span>
+        </div>
       </div>
-    </div>
     </div>
 
     <button mat-icon-button [matMenuTriggerFor]="appMenu" (click)="stopprop($event)" class="omg-kebab">
@@ -47,7 +49,8 @@
       <button mat-menu-item (click)="cardActionPerformed('appt','sendAttachment',booking,$event)">
         <i class="material-icons">attach_file</i>{{ 'Send Attachments' | translate }}
       </button>
-      <button mat-menu-item *ngIf="showViewAttachBtn" (click)="cardActionPerformed('appt','viewAttachment',booking,$event)">
+      <button mat-menu-item *ngIf="showViewAttachBtn"
+        (click)="cardActionPerformed('appt','viewAttachment',booking,$event)">
         <i class="material-icons">attach_file</i>{{ 'View Attachments' | translate }}
       </button>
       <button mat-menu-item *ngIf="showRateBtn" (click)="cardActionPerformed('appt','rating',booking,$event)">
@@ -60,14 +63,14 @@
   <div class="omg-main">
     <!-- LEFT: flat date column (exact like screenshot) -->
     <div class="cal-card">
-  <div class="cal-top calbg-top">
-    <span class="cal-month">{{ booking.appmtDate | date:'MMM' }}</span>
-  </div>
-  <div class="cal-body">
-    <span class="cal-day">{{ booking.appmtDate | date:'d' }}</span>
-    <span class="cal-dow">{{ booking.appmtDate | date:'EEE' }}</span>
-  </div>
-</div>
+      <div class="cal-top calbg-top">
+        <span class="cal-month">{{ booking.appmtDate | date:'MMM' }}</span>
+      </div>
+      <div class="cal-body">
+        <span class="cal-day">{{ booking.appmtDate | date:'d' }}</span>
+        <span class="cal-dow">{{ booking.appmtDate | date:'EEE' }}</span>
+      </div>
+    </div>
     <!-- RIGHT: info -->
     <div class="omg-info">
       <h3 class="title wrap_txt" (click)="cardActionPerformed('appt','providerDetails',booking,$event)">
@@ -109,91 +112,80 @@
 
         <span *ngIf="booking?.appmtFor?.[0]?.title">{{ booking.appmtFor[0].title }}</span>
         {{ booking?.appmtFor?.[0]?.firstName }} {{ booking?.appmtFor?.[0]?.lastName }}
-</div>
+      </div>
     </div>
 
     <div *ngIf="booking.provider">
       <div class="lbl">{{ 'Provider' | translate }}
-      <div class="val">
-        {{ booking.provider.businessName ? booking.provider.businessName
-           : (booking.provider.firstName + ' ' + booking.provider.lastName) }}
-      </div>
+        <div class="val">
+          {{ booking.provider.businessName ? booking.provider.businessName
+          : (booking.provider.firstName + ' ' + booking.provider.lastName) }}
+        </div>
       </div>
     </div>
 
 
   </div>
-<div class="button-container"
-     *ngIf="booking.service.serviceType==='virtualService'
+  <div class="button-container">
+
+    <!-- LEFT: inline, fixed-size content -->
+    <div class="left-inline">
+      <span *ngIf="showReceiptBtn && showPaidInfo && !booking.invoiceCreated" class="rupee-font paid">
+        {{ 'Paid' | translate }} {{ booking.amountPaid | currency:'&#8377;' }}
+      </span>
+
+      <button *ngIf="showPayBtn && !booking.invoiceCreated" class="btn-outline rupee-font"
+        (click)="cardActionPerformed('appt','viewBill',booking,$event)">
+        {{ 'Pay' | translate }}
+      </button>
+
+      <div *ngIf="showInvoiceBtn && booking.invoiceCreated" class="btn-outline rupee-font btn-invoices"
+        (click)="cardActionPerformed('appt','viewBill',booking,$event)">
+        {{ 'Invoice' | translate }}
+      </div>
+    </div>
+
+    <!-- RIGHT: flexible; grows to take remaining width -->
+    <div class="video-flex" *ngIf="booking.service.serviceType==='virtualService'
             && booking.apptStatus!=='Cancelled'
             && booking.apptStatus!=='Completed'">
+      <!-- keep only one of these visible at a time in your logic; if both can show, the first one will fill -->
+      <div class="grow" *ngIf="showJoinOtherVideoBtn && booking.service.virtualCallingModes?.length">
+        <a class="btn-primary fill" [href]="booking.service.virtualCallingModes[0].value" target="_blank"
+          (click)="stopprop($event)">
+          {{ videoBtnCaption | translate }}
+        </a>
+      </div>
 
-  <!-- LEFT: inline, fixed-size content -->
-  <div class="left-inline">
-    <span *ngIf="showReceiptBtn && showPaidInfo && !booking.invoiceCreated"
-          class="rupee-font paid">
-      {{ 'Paid' | translate }} {{ booking.amountPaid | currency:'&#8377;' }}
-    </span>
 
-    <button *ngIf="showPayBtn && !booking.invoiceCreated"
-            
-            class="btn-outline rupee-font"
-            (click)="cardActionPerformed('appt','viewBill',booking,$event)">
-      {{ 'Pay' | translate }}
-    </button>
-
-    <div *ngIf="showInvoiceBtn && booking.invoiceCreated"
-
-            class="btn-outline rupee-font btn-invoices"
-            (click)="cardActionPerformed('appt','viewBill',booking,$event)">
-      {{ 'Invoice' | translate }}
+      <div *ngIf="showJoinJaldeeVideoBtn" class="grow">
+        <button class="btn-primary fill btn-joinvideo" (click)="cardActionPerformed('appt','joinVideo',booking,$event)">
+          {{ videoBtnCaption | translate }}
+        </button>
+      </div>
     </div>
   </div>
 
-  <!-- RIGHT: flexible; grows to take remaining width -->
-  <div class="video-flex">
-    <!-- keep only one of these visible at a time in your logic; if both can show, the first one will fill -->
-    <div class="grow" *ngIf="showJoinOtherVideoBtn && booking.service.virtualCallingModes?.length">
-      <a class="btn-primary fill"
-         [href]="booking.service.virtualCallingModes[0].value"
-         target="_blank" (click)="stopprop($event)">
-        {{ videoBtnCaption | translate }}
-      </a>
-    </div>
-
-
-    <div *ngIf="showJoinJaldeeVideoBtn" class="grow" >
-    <button   class="btn-primary fill btn-joinvideo"
-              (click)="cardActionPerformed('appt','joinVideo',booking,$event)">
-        {{ videoBtnCaption | translate }}
+  <!-- others (unchanged) -->
+  <div *ngIf="booking.service.serviceType!=='virtualService'
+            || booking.apptStatus==='Cancelled'
+            || booking.apptStatus==='Completed'">
+    <div *ngIf="showViewPrescritionBtn" class="presc">
+      <button mat-flat-button class="btn-ghost" (click)="cardActionPerformed('appt','viewPrescription',booking,$event)">
+        {{ 'View Prescription' | translate }}
       </button>
     </div>
   </div>
-</div>
 
-<!-- others (unchanged) -->
-<div *ngIf="booking.service.serviceType!=='virtualService'
-            || booking.apptStatus==='Cancelled'
-            || booking.apptStatus==='Completed'">
-  <div *ngIf="showViewPrescritionBtn" class="presc">
-    <button mat-flat-button class="btn-ghost"
-            (click)="cardActionPerformed('appt','viewPrescription',booking,$event)">
-      {{ 'View Prescription' | translate }}
-    </button>
-  </div>
-</div>
-
-<!-- Invoice fallback for completed/other bookings -->
-<div class="button-container"
-     *ngIf="showInvoiceBtn && booking.invoiceCreated
+  <!-- Invoice fallback for completed/other bookings -->
+  <div class="button-container" *ngIf="showInvoiceBtn && booking.invoiceCreated
             && (booking.service.serviceType!=='virtualService' || booking.apptStatus==='Completed')">
-  <div class="left-inline">
-    <div class="btn-outline rupee-font btn-invoices"
-         (click)="cardActionPerformed('appt','viewBill',booking,$event)">
-      {{ 'Invoice' | translate }}
+    <div class="left-inline">
+      <div class="btn-outline rupee-font btn-invoices" (click)="cardActionPerformed('appt','viewBill',booking,$event)">
+        {{ 'Invoice' | translate }}
+      </div>
     </div>
   </div>
-</div>
 
 
 </div>

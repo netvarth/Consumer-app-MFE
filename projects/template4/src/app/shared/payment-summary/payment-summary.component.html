@@ -32,6 +32,10 @@
                 <span class="payment-summary__label">{{'Net Total' | translate}}</span>
                 <span class="payment-summary__value">{{paymentDetails.netTotal | currency:'&#8377; '}}</span>
             </div>
+            <div class="payment-summary__row" *ngIf="paymentDetails.roundOffAmount != 0">
+                <span class="payment-summary__label">Round Off</span>
+                <span class="payment-summary__value">{{ paymentDetails.roundOffAmount > 0 ? '+₹' : '₹' }}{{ paymentDetails.roundOffAmount | number: '1.2-2' }}</span>
+            </div>
         </ng-container>
 
         <div class="payment-summary__row" *ngIf="paymentDetails['amountToPay'] > 0 && convenientFee > 0">
