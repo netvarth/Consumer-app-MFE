@@ -307,3 +307,30 @@ header .lgin button {
         margin-top: 20px;
     }
 }
+
+.bnps .inbx .ot-bx {
+    width: 35px;
+    height: 35px;
+    border-radius: 50px;
+    background-clip: padding-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    background: #f2f2f2;
+}
+
+.bnps .inbx .ot-bx i {
+    font-size: 1.25rem;
+    display: flex;
+    align-items: center;
+    width: 18px;
+    height: 17px;
+}
+
+.bnps {
+    display: flex;
+    color: #666;
+    margin-left: auto;
+    margin-right: 15px;
+}

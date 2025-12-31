@@ -283,6 +283,9 @@ export class HeaderComponent implements OnInit {
       }
     );
   }
+   inboxiconClick() {
+    this.redirectto('inbox');
+  }
   redirectto(mod: string) {
     switch (mod) {
       case 'profile':

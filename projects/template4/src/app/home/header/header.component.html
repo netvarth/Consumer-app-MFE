@@ -41,6 +41,17 @@
                             </button>
                         </mat-menu>
                     </span>
+                     <ng-container *ngIf="isLoggedIn">
+                                <div class="bnps">
+                                    <div class="inbx pointer-cursor" (click)="inboxiconClick()"
+                                        [matTooltipClass]="tooltipcls" [matTooltip]="inboxiconTooltip">
+                                        <div class="ot-bx">
+                                            <i data-icon="H"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </ng-container>
+
                     <div class="d-flex align-items-center cart-section" *ngIf="!isLoggedIn"
                         (click)="dashboardClicked()">
                         <div class="d-flex justify-content-end align-items-center">

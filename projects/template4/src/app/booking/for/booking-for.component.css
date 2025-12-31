@@ -140,7 +140,7 @@
 }
 
 :host-context(.consumerAppt) .booking-card {
-  padding: 14px 16px;
+  padding: 12px 13px;
   gap: 12px;
   box-shadow: 0 8px 24px rgba(15, 35, 95, 0.05);
 }

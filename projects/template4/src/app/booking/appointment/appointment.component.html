@@ -1,6 +1,7 @@
 <div class="luma-page-spinner" *ngIf="showLumaSpinner">
   <div class="luma-page-spinner__backdrop" (click)="lumaOverlayDismissible && dismissLumaOverlay()"></div>
-  <div class="luma-page-spinner__content" [ngClass]="{'luma-page-spinner__content--message': lumaOverlayMode === 'message'}">
+  <div class="luma-page-spinner__content"
+    [ngClass]="{'luma-page-spinner__content--message': lumaOverlayMode === 'message'}">
     <ng-container *ngIf="lumaOverlayMode === 'loading'">
       <div class="luma-page-spinner__visual">
         <div class="luma-page-spinner__fallback"></div>
@@ -14,34 +15,32 @@
           <span class="luma-page-message-card__secured">Secured by</span>
           <span class="luma-page-message-card__brand">Jaldee</span>
         </div>
-        <button type="button" class="luma-page-spinner__close" (click)="dismissLumaOverlay()">{{'Close' | translate}}</button>
+        <button type="button" class="luma-page-spinner__close" (click)="dismissLumaOverlay()">{{'Close' |
+          translate}}</button>
       </div>
     </ng-container>
   </div>
 </div>
-<div class="card shadow d-flex flex-row header">
-  <div class="my-auto">
-    <a class="" (click)="goBack('back')"><i class="fa fa-arrow-left"></i>&emsp;</a>
-  </div>
-  <div class="text-center mx-auto">
-    <app-booking-accountinfo [businessInfo]="businessInfo" [smallDevice]="smallDevice" *ngIf="smallDevice" [accountConfig]="accountConfig">
-    </app-booking-accountinfo>
-  </div>
+<div class="back-section">
+  <button type="button" class="back-link" (click)="goBack('back')">
+    <i class="fa fa-arrow-left" aria-hidden="true"></i>
+    <span class="back-label">Back</span>
+  </button>
 </div>
 <section #consumer_appointment class="consumerAppt no-padding"
   [ngClass]="[smallDevice?'container':'container-fluid', theme?theme:'']">
   <!-- <button #membersModalTrigger type="button" class="d-none" data-bs-toggle="modal" data-bs-target="#exampleModalCenter"></button> -->
   <div [ngClass]="{'loadingpaytm': loadingPaytm}"></div>
   <!-- <div class="customLoader" *ngIf="loadingPaytm">
-    <app-common-innerloading-spinner></app-common-innerloading-spinner>
-  </div> -->
+              <app-common-innerloading-spinner></app-common-innerloading-spinner>
+            </div> -->
   <div class="my-1 login-form_custom" *ngIf="!loggedIn || loading || !slotLoaded">
     <div class="card card-custom no-margin hgt-adjust">
       <div class="card-body p-0">
         <app-authentication *ngIf="!loggedIn" (actionPerformed)="actionPerformed($event)" [accountId]="accountId"
           [accountConfig]="accountConfig"></app-authentication>
         <!-- <app-common-innerloading-spinner *ngIf="loggedIn && (loading || !slotLoaded) ">
-        </app-common-innerloading-spinner> -->
+                  </app-common-innerloading-spinner> -->
       </div>
     </div>
   </div>
@@ -49,7 +48,8 @@
   <div class="col-12 d-flex no-padding" *ngIf="loggedIn">
     <div class="col-md-4 col-lg-4 col-sm-12 col-12s-stretch desktop-only p-1" *ngIf="!smallDevice">
       <div class="card shadow">
-        <app-booking-accountinfo [businessInfo]="businessInfo" [smallDevice]="smallDevice" [accountConfig]="accountConfig">
+        <app-booking-accountinfo [businessInfo]="businessInfo" [smallDevice]="smallDevice"
+          [accountConfig]="accountConfig">
         </app-booking-accountinfo>
         <div class="booking-img"></div>
       </div>
@@ -68,8 +68,8 @@
           <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 p-1">
             <div *ngIf="serviceOptionApptt">
               <!-- <span class="form-level-settings">Customize your services</span><br><br> -->
-              <app-questionnaire [questionnaireList]="serviceOptionQuestionnaireList" [accountId]="accountId" [service]="selectedService"
-                [questionAnswers]="serviceOPtionInfo" [source]="'serviceOptionAppt'"
+              <app-questionnaire [questionnaireList]="serviceOptionQuestionnaireList" [accountId]="accountId"
+                [service]="selectedService" [questionAnswers]="serviceOPtionInfo" [source]="'serviceOptionAppt'"
                 (returnAnswers)="getserviceOptionQuestionAnswers($event)">
               </app-questionnaire>
             </div>
@@ -92,8 +92,8 @@
           <ng-container *ngIf="smallDevice; else consumerApptDesktopSlots">
             <div class="appt-mobile">
               <div class="appt-mobile__card appt-mobile__card--service" *ngIf="selectedService">
-                <app-service-info-display [selectedService]="selectedService"
-                  [userInfo]="selectedUser" [theme]="theme"></app-service-info-display>
+                <app-service-info-display [selectedService]="selectedService" [userInfo]="selectedUser"
+                  [theme]="theme"></app-service-info-display>
               </div>
 
               <div class="appt-mobile__card appt-mobile__card--calendar"
@@ -123,19 +123,16 @@
                     </app-slot-picker>
                   </div>
                 </ng-container>
-                <div class="appt-mobile__empty"
-                  *ngIf="allSlots && allSlots.length <= 0 && slotLoaded">
+                <div class="appt-mobile__empty" *ngIf="allSlots && allSlots.length <= 0 && slotLoaded">
                   {{'No slots available on selected date. Please choose other date' | translate}}.
                 </div>
               </div>
 
-              <button type="button" class="appt-mobile__cta"
-                (click)="confirmClicked(allSlots && allSlots.length === 0)"
-                [class.disabled]="allSlots && allSlots.length === 0"
-                [disabled]="allSlots && allSlots.length === 0">
+              <button type="button" class="appt-mobile__cta" (click)="confirmClicked(allSlots && allSlots.length === 0)"
+                [class.disabled]="allSlots && allSlots.length === 0" [disabled]="allSlots && allSlots.length === 0">
                 <i class="fa fa-calendar-o"></i>&nbsp; {{ (this.appointmentType === 'reschedule')
-                   ? ('Reschedule Appointment' | translate)
-                    : ('Book an Appointment' | translate) }}
+                ? ('Reschedule Appointment' | translate)
+                : ('Book an Appointment' | translate) }}
               </button>
             </div>
           </ng-container>
@@ -156,8 +153,8 @@
 
           </div>
           <div class="col-12 mgn-bt-20 no-padding" *ngIf="selectedService">
-            <app-service-info-display [selectedService]="selectedService"
-              [userInfo]="selectedUser" [theme]="theme"></app-service-info-display>
+            <app-service-info-display [selectedService]="selectedService" [userInfo]="selectedUser"
+              [theme]="theme"></app-service-info-display>
           </div>
           <div class="col-12 no-padding"
             *ngIf="selectedService && !selectedService.date && !selectedService.noDateTime">
@@ -168,7 +165,8 @@
           <ng-container *ngIf="selectedService && !selectedService.date && !selectedService.noDateTime">
             <div class="col-12 no-padding" *ngIf="allSlots && allSlots.length > 0 && multipleSelection">
               <app-slot-picker (slotSelected)="slotSelected($event)" [selectedSlot]="selectedSlots" [slots]="allSlots"
-                [mode]="'appt'" [multiple]="multipleSelection" [criteria]="selectedService.showOnlyAvailableSlots" [theme]="theme">
+                [mode]="'appt'" [multiple]="multipleSelection" [criteria]="selectedService.showOnlyAvailableSlots"
+                [theme]="theme">
               </app-slot-picker>
             </div>
           </ng-container>
@@ -181,7 +179,8 @@
           <div class="col-sm-12 col-md-12 col-lg-12 col-12 col-sm-12 d-flex justify-content-between">
             <button type="button"
               class="mx-auto text-center next-button btn btn-primary font-weight-bold text-capitalize px-12"
-              (click)="confirmClicked(allSlots && allSlots.length === 0)" [class.disabled]="allSlots && allSlots.length === 0">
+              (click)="confirmClicked(allSlots && allSlots.length === 0)"
+              [class.disabled]="allSlots && allSlots.length === 0">
               {{'Next' | translate}}
             </button>
           </div>
@@ -263,8 +262,7 @@
             <div class="mr-2">
               <button type="button"
                 class="mx-auto text-center next-button btn btn-light-primary font-weight-bold text-capitalize px-9 py-4"
-                style="border-radius: 14px !important;"
-                (click)="goToStep('prev')">
+                style="border-radius: 14px !important;" (click)="goToStep('prev')">
                 {{'Previous' | translate}}
               </button>
             </div>
@@ -307,7 +305,7 @@
                     [commObj]="commObj" (editEvent)="handleSideScreen('members')"></app-booking-for>
 
                   <div class="detail-list booking-summary-details"
-                       *ngIf="selectedService?.name || appmtDate || selectedApptsTime">
+                    *ngIf="selectedService?.name || appmtDate || selectedApptsTime">
 
 
                     <div class="detail-row" *ngIf="appmtDate">
@@ -331,7 +329,7 @@
                         <i class="fa fa-clock-o"></i>
                       </div>
                     </div>
-                     <div class="detail-row" *ngIf="selectedService?.name">
+                    <div class="detail-row" *ngIf="selectedService?.name">
 
                       <div class="detail-content">
                         <p class="detail-label">{{'Service' | translate}}</p>
@@ -344,7 +342,7 @@
                     </div>
                   </div>
                 </div>
-               <!--  <div class="booking-block booking-block--service">
+                <!--  <div class="booking-block booking-block--service">
                   <app-service-info-display [selectedService]="selectedService" [appmtDate]="appmtDate"
                     [userInfo]="selectedUser" [selectedApptsTime]="selectedApptsTime"
                     [isFutureDate]="isFutureDate" [datePresent]="datePresent">
@@ -357,8 +355,8 @@
                   <div class="booking-preinfo" (click)="showSpec()">
                     <div class="booking-preinfo__limited" *ngIf="!showmoreSpec"
                       [innerHTML]="selectedService.preInfoText"></div>
-                    <div class="booking-preinfo__full" *ngIf="showmoreSpec"
-                      [innerHTML]="selectedService.preInfoText"></div>
+                    <div class="booking-preinfo__full" *ngIf="showmoreSpec" [innerHTML]="selectedService.preInfoText">
+                    </div>
                   </div>
                 </div>
                 <div class="booking-block booking-block--notes" *ngIf="!questionnaireList.labels">
@@ -370,7 +368,8 @@
                       *ngIf="!consumerNote && selectedService.consumerNoteMandatory && appointmentType != 'reschedule'">*</span>
                   </div>
                   <ng-template #notePlaceholder>
-                    <span class="booking-note__placeholder">{{'Any specific concerns or symptoms...' | translate}}</span>
+                    <span class="booking-note__placeholder">{{'Any specific concerns or symptoms...' |
+                      translate}}</span>
                   </ng-template>
                   <div class="booking-upload">
                     <button type="button" class="booking-upload__trigger" (click)="imagefile1.click()">
@@ -425,7 +424,8 @@
               </div>
             </section>
 
-            <section class="booking-card booking-card--payment" *ngIf="appointmentType !=='reschedule' && selectedService.isPrePayment">
+            <section class="booking-card booking-card--payment"
+              *ngIf="appointmentType !=='reschedule' && selectedService.isPrePayment">
               <header class="booking-card__header">
                 <div class="booking-card__icon booking-card__icon--payment">
                   <i class="fa fa-credit-card" aria-hidden="true"></i>
@@ -451,7 +451,8 @@
 
                 <div #paymentModeSection id="booking-payment-mode-section" class="booking-payment-modes"
                   *ngIf="paymentDetails.amountRequiredNow > 0">
-                  <div class="booking-section-title booking-section-title--compact">{{'Select Payment Mode' | translate}}</div>
+                  <div class="booking-section-title booking-section-title--compact">{{'Select Payment Mode' |
+                    translate}}</div>
                   <ng-container *ngIf="!shownonIndianModes && loadedConvenientfee">
                     <app-payment-modes [paymentModes]="indian_payment_modes" [selectedMode]="paymentMode"
                       (modeSelected)="indian_payment_mode_onchange($event)">
@@ -468,7 +469,8 @@
                       <a class="refund_policy">
                         <span *ngIf="!shownonIndianModes && paymentmodes && paymentmodes.internationalPay">
                           {{'Non Indian Payment' | translate}} ? {{'Click here'| translate}}</span>
-                        <span *ngIf="shownonIndianModes && paymentmodes && paymentmodes.indiaPay">{{'Indian' | translate}}
+                        <span *ngIf="shownonIndianModes && paymentmodes && paymentmodes.indiaPay">{{'Indian' |
+                          translate}}
                           {{'Payment' | translate}} ? {{'Click here' | translate}}</span>
                       </a>
                     </span>
@@ -481,8 +483,8 @@
                   </a>
                 </div>
               </div>
-              <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
-                aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
                 <app-refundpolicy></app-refundpolicy>
               </div>
             </section>
@@ -494,19 +496,19 @@
                 (click)="scrollToPaymentModeSection()" tabindex="0">
                 <span class="booking-review__sticky-mode-info">
                   <span class="first-section">
-                  <span class="booking-review__sticky-mode-label">Payment Mode </span>
+                    <span class="booking-review__sticky-mode-label">Payment Mode </span>
                     <span class="first-sub">
-                   <img *ngIf="paymentMode" class="booking-review__sticky-mode-icon" [src]="getImageSrc(paymentMode)"
-                    alt="Selected payment mode icon">
-                  <span class="booking-review__sticky-mode-value">
-                   &nbsp;{{ getSelectedPaymentModeLabel() }}  </span>
-                  </span>
+                      <img *ngIf="paymentMode" class="booking-review__sticky-mode-icon" [src]="getImageSrc(paymentMode)"
+                        alt="Selected payment mode icon">
+                      <span class="booking-review__sticky-mode-value">
+                        &nbsp;{{ getSelectedPaymentModeLabel() }} </span>
+                    </span>
                   </span>
 
-                    <span class="booking-review__sticky-mode-subinfo">
+                  <span class="booking-review__sticky-mode-subinfo">
 
-                   <i class="fa fa-arrow-circle-down" aria-hidden="true"></i>
-                   </span>
+                    <i class="fa fa-arrow-circle-down" aria-hidden="true"></i>
+                  </span>
                 </span>
               </button>
               <button type="button" [class.disabled]="confirmButton['disabled']" [disabled]="confirmButton['disabled']"
@@ -607,13 +609,14 @@
                       <div class="pull-left"> {{'Booking For' | translate}} </div>
                       <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button> -->
                       <div class="close-btn">
-                        <button type="button" class="member-modal__close" aria-label="{{'Close' | translate}}" #closebutton data-bs-dismiss="modal">
+                        <button type="button" class="member-modal__close" aria-label="{{'Close' | translate}}"
+                          #closebutton data-bs-dismiss="modal">
                           <span aria-hidden="true">&times;</span>
                         </button>
                       </div>
                     </div>
                   </div>
-                  <div class="col-md-12 col-sm-12 col-12 no-padding-small">   <ng-container *ngIf="action==='members'">
+                  <div class="col-md-12 col-sm-12 col-12 no-padding-small"> <ng-container *ngIf="action==='members'">
                       <app-consumer-members (memberSelected)="memberSelected($event)" [maxSelection]="1"
                         [selectedMember]="appmtFor" [familyMembers]="familyMembers" [multiple]="false"
                         [allowSelection]="true" [parentCustomer]="parentCustomer">
@@ -621,25 +624,28 @@
                       <!-- <app-communications (setCommunications)="setCommunications" [commObj]="commObj"
                         [selectedService]="selectedService" [mode]="'write'">
                       </app-communications> -->
-                       <a class="lnk pointer-cursoraction mgn-lt-20 addmbr-btn" (click)="addMember()"><i class="fa fa-user-plus"></i>
-                      {{add_member_cap | translate}}</a>
+                      <a class="lnk pointer-cursoraction mgn-lt-20 addmbr-btn" (click)="addMember()"><i
+                          class="fa fa-user-plus"></i>
+                        {{add_member_cap | translate}}</a>
                     </ng-container>
                   </div>
                 </div>
-                   <div class="member-modal__footer">
-                    <button type="button" class="member-modal__confirm" [class.disabled]="disable" [disabled]="disable" (click)="actionCompleted()">
-                      {{'Yes, Confirm Member' | translate}}
-                    </button>
-                  </div>
+                <div class="member-modal__footer">
+                  <button type="button" class="member-modal__confirm" [class.disabled]="disable" [disabled]="disable"
+                    (click)="actionCompleted()">
+                    {{'Yes, Confirm Member' | translate}}
+                  </button>
+                </div>
               </ng-container>
               <div class="modal-footer" *ngIf="action !='members'">
                 <button type="button" class="disp-none cancel btn btn-light-primary mat-button font-weight-bold"
                   data-bs-dismiss="modal">{{'Cancel' | translate}}</button>
                 <button type="button" class="btn btn-primary mat-button font-weight-bold hf-btn"
-                  [class.disabled]="disable" [disabled]="disable" (click)="actionCompleted()">{{'Ok' | translate}}</button>
+                  [class.disabled]="disable" [disabled]="disable" (click)="actionCompleted()">{{'Ok' |
+                  translate}}</button>
               </div>
 
-              
+
               <div class="error-section" *ngIf="apiError !== ''">
                 {{apiError}}
               </div>
