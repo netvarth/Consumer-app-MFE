@@ -172,7 +172,7 @@
 .qnrDisableState .card,
 .qnrDisableState .dropzone-default,
 .qnrDisableState .dz-image-preview {
-  background: #ededed !important;
+  background: #ffffff !important;
 }
 
 .qnr-section {
@@ -238,7 +238,7 @@
 .form-group.card {
   border: 1px solid #dadce063 !important;
   border-radius: 8px !important;
-  padding: 20px 5px !important;
+  padding: 17px 18px !important;
 }
 
 .docname {
@@ -388,7 +388,7 @@ label {
   flex-direction: column;
   min-width: 0;
   word-wrap: break-word;
-  background-color: #fff;
+  background-color: #ededed;
   background-clip: border-box;
   border: 1px solid #EBEDF3;
   border-radius: 0.42rem;
