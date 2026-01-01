@@ -45,8 +45,8 @@
     </div>
   </div>
   <div class="clearfix"></div>
-  <div class="col-12 Booking-section-main d-flex no-padding" *ngIf="loggedIn">
-    <div class="col-md-4 col-lg-4 col-sm-12 col-12s-stretch desktop-only p-1" *ngIf="!smallDevice">
+    <div class="col-12 Booking-section-main d-flex no-padding" *ngIf="loggedIn">
+    <div class="col-md-4 col-lg-4 col-sm-12 col-12s-stretch desktop-only p-1" *ngIf="showSidebarImage">
       <div class="card shadow">
         <app-booking-accountinfo [businessInfo]="businessInfo" [smallDevice]="smallDevice"
           [accountConfig]="accountConfig">

@@ -198,6 +198,7 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
     lumaOverlayMode: 'loading' | 'message' = 'loading';
     lumaOverlayMessage = '';
     lumaOverlayDismissible = false;
+    showSidebarImage = false;
     paymentmodescroll = true;
     pendingScrollToTop = false;
     constructor(
@@ -263,11 +264,9 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
 
     @HostListener('window:resize', ['$event'])
     onResize() {
-        if (window.innerWidth <= 880) {
-            this.smallDevice = true;
-        } else {
-            this.smallDevice = false;
-        }
+        const width = window.innerWidth;
+        this.smallDevice = width <= 1024;
+        this.showSidebarImage = width >= 880;
     }
 
     ngOnDestroy(): void {
