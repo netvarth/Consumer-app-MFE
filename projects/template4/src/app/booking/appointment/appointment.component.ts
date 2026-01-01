@@ -265,7 +265,7 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
     @HostListener('window:resize', ['$event'])
     onResize() {
         const width = window.innerWidth;
-        this.smallDevice = width <= 1024;
+        this.smallDevice = width <= 1366;
         this.showSidebarImage = width >= 880;
     }
 
