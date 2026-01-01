@@ -760,7 +760,7 @@
                                                                 </ul>
                                                             </div>
                                                         </div>
-                                                        <div class="section-three other-section no-padding-small"
+                                                        <div class="section-three other-section no-padding-small payment-section no-print"
                                                             *ngIf="booking['invoice'].billStatus !== 'Cancel' && booking['invoice'].billStatus !== 'Settled' && (booking['invoice'].amountDue > 0)">
                                                             <div class="col-md-12 col-sm-12 col-12 no-padding" *ngIf="this.couponList.OWN.length >0 && booking['invoice'].billPaymentStatus!='FullyPaid' && booking['invoice'].billStatus != 'Settled'
                                                          && paymode && (booking['invoice'].amountDue > 0)">

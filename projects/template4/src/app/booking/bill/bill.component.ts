@@ -1,5 +1,5 @@
 import { DOCUMENT, Location } from "@angular/common";
-import { Component, ElementRef, HostListener, Inject, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { Component, ElementRef, HostListener, Inject, OnDestroy, OnInit, ViewChild, ChangeDetectorRef } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, NavigationExtras, Router } from "@angular/router";
 import { ConsumerService, DateFormatPipe, ErrorMessagingService, Messages, PaytmService, projectConstantsLocal, RazorpayService, SharedService, ToastService, WordProcessor } from "jconsumer-shared";
@@ -103,6 +103,7 @@ export class BillComponent implements OnInit, OnDestroy {
         private printService: PrintService,
         private dateFormat: DateFormatPipe,
         private bookingService: BookingService,
+        private cdRef: ChangeDetectorRef,
         @Inject(DOCUMENT) public document,
     ) {
         this.onResize();
@@ -158,11 +159,13 @@ export class BillComponent implements OnInit, OnDestroy {
         if (window.innerWidth <= 500) {
             this.smallmobileDevice = true;
             this.tabDeviceDisplay = false;
-            this.desktopDeviceDisplay = false;            
+            this.desktopDeviceDisplay = false;
+            this.booking['isDesktop'] = false;
         } else if (window.innerWidth > 500 && window.innerWidth <= 767) {
             this.smallmobileDevice = false;
             this.tabDeviceDisplay = true;
             this.desktopDeviceDisplay = false;
+            this.booking['isDesktop'] = false;
         } else if (window.innerWidth > 767) {
             this.booking['isDesktop'] = true;
             this.smallmobileDevice = false;
@@ -424,12 +427,27 @@ export class BillComponent implements OnInit, OnDestroy {
                 return;
             }
 
+            const prevWidth = target.style.width;
+            const prevMaxWidth = target.style.maxWidth;
+            target.style.width = '794px'; // approximate A4 width
+            target.style.maxWidth = '100%';
+
             const options = {
                 scale: 2,
                 useCORS: true,
-                backgroundColor: '#FFFFFF'
+                backgroundColor: '#FFFFFF',
+                ignoreElements: (element: Element) => {
+                    const classList = (element as HTMLElement)?.classList;
+                    return !!classList && (classList.contains('no-print') || classList.contains('payment-section'));
+                }
             };
-            const canvas = await html2canvas(target, options);
+            let canvas;
+            try {
+                canvas = await html2canvas(target, options);
+            } finally {
+                target.style.width = prevWidth;
+                target.style.maxWidth = prevMaxWidth;
+            }
             const marginPx = 100;
             const zoomedOutCanvas = doc.createElement('canvas');
             zoomedOutCanvas.width = canvas.width + marginPx * 2;

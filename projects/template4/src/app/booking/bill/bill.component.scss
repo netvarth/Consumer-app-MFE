@@ -193,8 +193,20 @@ a:hover {
 .bill-section .bill-section-content .bill-wrapper .section-three {
   border: none;
 }
+.print-hidden {
+  display: none !important;
+}
 .other-section {
   border-top: 1px solid #ccc!important;
+}
+.no-print {
+  // visible in UI; hide only when printing or during canvas capture
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
 }
 .mt-3 {
   margin-top: 1rem!important;
