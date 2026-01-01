@@ -7,6 +7,7 @@ import { MatCalendarCellCssClasses } from "@angular/material/datepicker";
 import { Subscription } from "rxjs";
 import { AccountService, AuthService, ConsumerService, DateTimeProcessor, ErrorMessagingService, FileService, GroupStorageService, LocalStorageService, Messages, PaytmService, projectConstantsLocal, QuestionaireService, RazorpayService, SharedService, StorageService, SubscriptionService, WordProcessor } from "jconsumer-shared";
 import { CouponsComponent } from "../../shared/coupons/coupons.component";
+import { ApplyCouponComponent } from "../../shared/apply-coupon/apply-coupon.component";
 import { ConsumerEmailComponent } from "../../shared/consumer-email/consumer-email.component";
 
 @Component({
@@ -119,6 +120,7 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
     @ViewChild('membersModalTrigger') membersModalTrigger: ElementRef;
     @ViewChild('closebutton') closebutton;
     @ViewChild('paymentModeSection') paymentModeSection: ElementRef;
+    @ViewChild(ApplyCouponComponent) applyCouponComp: ApplyCouponComponent;
     action = ''; // To navigate between different actions like note/upload/add familymember/members etc
     loadedConvenientfee;
     checkPolicy = true;
@@ -295,11 +297,15 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
             disableClose: true,
             data: {
                 couponsList: this.s3CouponsList,
+                selectedCoupons: this.selectedCoupons,
                 type: type,
                 theme: this.theme
             }
         });
-        this.coupondialogRef.afterClosed().subscribe(() => {
+        this.coupondialogRef.afterClosed().subscribe((result: any) => {
+            if (result?.couponCode && this.applyCouponComp) {
+                this.applyCouponComp.applySelectedCoupon(result.couponCode);
+            }
         });
     }
     ngOnInit(): void {

@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { CurrencyService, DateTimeProcessor } from 'jconsumer-shared';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { CurrencyService, DateTimeProcessor, SharedService } from 'jconsumer-shared';
 
 
 @Component({
@@ -14,10 +14,15 @@ export class CouponsComponent implements OnInit {
   tempCouponList: any = [];
   providerCouponList: any = [];
   ownCoupons: any = [];
+  cdnPath = '';
+  appliedCodes: Set<string> = new Set();
   constructor(
     private dateTimeProcessor: DateTimeProcessor,
     private currencyService: CurrencyService,
+    private sharedService: SharedService,
+    private dialogRef: MatDialogRef<CouponsComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
+      this.cdnPath = this.sharedService.getCDNPath();
   }
   ngOnInit() {
     console.log("theme",this.data.theme)
@@ -27,6 +32,11 @@ export class CouponsComponent implements OnInit {
     if (this.data.couponsList.OWN) {
       this.ownCoupons = this.data.couponsList.OWN;
     }
+    if (this.data.selectedCoupons && Array.isArray(this.data.selectedCoupons)) {
+      this.data.selectedCoupons.forEach(code => this.appliedCodes.add(code));
+    }
+    this.syncAppliedState(this.tempCouponList, false);
+    this.syncAppliedState(this.ownCoupons, true);
     this.showCoupons();
   }
   showCoupons() {
@@ -77,5 +87,56 @@ export class CouponsComponent implements OnInit {
     let tooltip: any = document.getElementById(basetooltipid + mainid);
     tooltip.innerHTML = "Copy";
     tooltip.classList.remove("copied-text");
+  }
+  applyCoupon(coupon: any, isProvider: boolean = false) {
+    const code = isProvider ? coupon?.couponCode : coupon?.jaldeeCouponCode;
+    if (!code) {
+      return;
+    }
+    this.appliedCodes.add(code);
+    if (coupon) {
+      coupon.applied = true;
+    }
+    this.dialogRef.close({ couponCode: code, source: isProvider ? 'OWN' : 'JC' });
+  }
+  getDiscountLabel(coupon: any, isProvider: boolean = false): string {
+    if (!coupon) {
+      return '';
+    }
+    const type = isProvider ? (coupon.calculationType || '') : (coupon.discountType || '');
+    const value = isProvider ? coupon.amount : coupon.discountValue;
+    if (typeof type === 'string' && type.toUpperCase().includes('PERCENT')) {
+      return `${value}% OFF`;
+    }
+    return `${this.currencyService.print_PricewithCurrency(value)} OFF`;
+  }
+  isCouponApplied(coupon: any): boolean {
+    const code = coupon ? (coupon.couponCode || coupon.jaldeeCouponCode) : null;
+    if (code && this.appliedCodes.has(code)) {
+      return true;
+    }
+    return !!(coupon?.applied || coupon?.isApplied || coupon?.status === 'APPLIED');
+  }
+  getApplyLabel(coupon: any): string {
+    return this.isCouponApplied(coupon) ? 'APPLIED' : 'APPLY';
+  }
+
+  private syncAppliedState(list: any[], isProvider: boolean) {
+    if (!Array.isArray(list)) {
+      return;
+    }
+    list.forEach(coupon => {
+      const code = coupon ? (isProvider ? coupon.couponCode : coupon.jaldeeCouponCode) : null;
+      const applied = code ? this.appliedCodes.has(code) : false;
+      coupon.applied = applied;
+      coupon.isApplied = applied;
+      if (coupon && typeof coupon.status === 'string') {
+        if (applied) {
+          coupon.status = 'APPLIED';
+        } else if (coupon.status === 'APPLIED') {
+          coupon.status = '';
+        }
+      }
+    });
   }
 }

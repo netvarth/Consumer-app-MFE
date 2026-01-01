@@ -1,120 +1,88 @@
 <form [ngClass]="this.data.theme">
-<h1 class="mat-dialog-title coupon-title">Available Coupons
-  <button #queue mat-dialog-close class="modal_close" tabindex="-1" id="btnClose">
-    <i class="fa fa-window-close" aria-hidden="true"></i>
-  </button>
-</h1>
-<mat-dialog-content>
-  <ng-container *ngIf="couponsList.length>0">
-    <div *ngFor="let coupon of couponsList let i=index">
-      <div class="coupon">
-        <div class="coupon-container">
-          <div class="servicedet_outer">
-            <div class="outer">
-              <h6 class="coupon-name"><b>{{coupon.couponName}}</b></h6>
-              <span class="coupon-desc"> {{coupon.couponDescription}}</span>
-              <div class="t-and-c" *ngIf="coupon.consumerTermsAndconditions">
-                <div class="t-and-c-title">T & C:&nbsp;</div>
-                <div class="t-and-c-text" [innerHTML]="coupon.consumerTermsAndconditions | nl2br"></div>
+  <h1 class="mat-dialog-title coupon-title">
+    Available Coupons
+    <button #queue mat-dialog-close class="modal_close" tabindex="-1" id="btnClose">
+      <i class="fa fa-window-close" aria-hidden="true"></i>
+    </button>
+  </h1>
+  <div class="page">
+  <mat-dialog-content class="coupon-dialog">
+    <ng-container *ngIf="couponsList.length > 0">
+      <div *ngFor="let coupon of couponsList; let i = index" class="coupon-card-wrapper">
+        <div class="coupon-card">
+          <div class="coupon-ribbon">
+            <span class="discount-label">{{ getDiscountLabel(coupon) }}</span>
+          </div>
+          <div class="coupon-body">
+            <div class="coupon-header">
+              <img class="coupontitle-left-img" src="{{cdnPath}}customapp/assets/images/myjaldee/couponicon.png" loading="lazy" decoding="async">
+              <div>
+                <div class="coupon-name">{{ coupon.couponName }}</div>
+                <div class="coupon-desc">{{ coupon.couponDescription }}</div>
               </div>
-              <div class="coupon-valid-through d-flex">
-                <div class="coupon-valid-through-title">Valid Through:&nbsp;</div>
-                <div class="coupon-valid-through-text d-flex">
-                  <div>{{coupon.startDate | date: 'mediumDate' }}</div>
-                  -
-                  <div>{{coupon.endDate | date: 'mediumDate' }}</div>
-                </div>
+            </div>
+            <div class="coupon-validity">
+              Valid Through:
+              <span>{{ coupon.startDate | date: 'dd MMM yyyy' }}</span>
+              -
+              <span>{{ coupon.endDate | date: 'dd MMM yyyy' }}</span>
+            </div>
+            <div class="coupon-footer">
+              <div class="coupon-code pointer-cursor ttip"
+                (click)="copyText('jaldee-cc-', 'jaldee-cc-tooltip-', coupon.jaldeeCouponCode)"
+                (mouseout)="resetTooltip('jaldee-cc-tooltip-', coupon.jaldeeCouponCode)">
+                <span [id]="'jaldee-cc-' + coupon.jaldeeCouponCode">{{ coupon.jaldeeCouponCode }}</span>
+                <i class="fa fa-clone" aria-hidden="true"></i>
+                <span class="tooltiptext" [id]="'jaldee-cc-tooltip-' + coupon.jaldeeCouponCode">Copy</span>
               </div>
-              <div class="coupon-max-discount" *ngIf="coupon.discountType == 'PERCENTAGE'">
-                <div class="coupon-max-discount-title">Max. Discount:&nbsp;</div>
-                <div class="coupon-max-discount-text">
-                  <b><i class="fa fa-inr"></i>&nbsp;{{coupon.maxDiscountValue | currency:'':''}}</b>
-                </div>
-              </div>
-              <div class="coupon-main d-flex d-flex justify-content-between">
-                <div>
-                  <div class="d-flex" *ngIf="coupon.discountType == 'PERCENTAGE'">
-                    <div class="coupon-discount-title">Discount Value:&nbsp;</div>
-                    <div class="coupon-discount-text">{{coupon.discountValue}}%</div>
-                  </div>
-                  <div class="d-flex" *ngIf="coupon.discountType == 'AMOUNT'">
-                    <div class="coupon-discount-title">Discount Value:&nbsp;</div>
-                    <div class="coupon-discount-text"><i class="fa fa-inr"></i>&nbsp;{{coupon.discountValue |
-                      currency:'':''}}</div>
-                  </div>
-                </div>
-                <div class="pointer-cursor ttip d-flex"
-                  (click)="copyText('jaldee-cc-', 'jaldee-cc-tooltip-', coupon.jaldeeCouponCode)"
-                  (mouseout)="resetTooltip('jaldee-cc-tooltip-', coupon.jaldeeCouponCode)">
-                  <div [id]="'jaldee-cc-'+ coupon.jaldeeCouponCode" class="jaldee-coupon-code">
-                    {{coupon.jaldeeCouponCode}}</div>
-                  <div>
-                    <i class="fa fa-clone" aria-hidden="true"></i>
-                  </div>
-                  <span class="tooltiptext" [id]="'jaldee-cc-tooltip-'+ coupon.jaldeeCouponCode">Copy</span>
-                </div>
-              </div>
+              <button type="button" class="apply-chip" [ngClass]="{ 'applied': isCouponApplied(coupon) }"
+                (click)="applyCoupon(coupon, false)">
+                {{ getApplyLabel(coupon) }}
+              </button>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <hr>
-  </ng-container>
-  <ng-container *ngIf="providerCouponList.length>0">
-    <div *ngFor="let coupon of providerCouponList let i=index">
-      <div class="coupon">
-        <div class="coupon-container">
-          <div class="servicedet_outer">
-            <div class="outer">
-              <h6 class="coupon-name"><b>{{coupon.name}}</b></h6>
-              <span class="coupon-desc"> {{coupon.description}}</span>
-              <div class="t-and-c" *ngIf="coupon.termsConditions">
-                <div class="t-and-c-title">T & C:&nbsp;</div>
-                <div class="t-and-c-text" [innerHTML]="coupon.termsConditions | nl2br"></div>
-              </div>
-              <div class="coupon-valid-through d-flex">
-                <div class="coupon-valid-through-title">Valid Through:&nbsp;</div>
-                <div class="coupon-valid-through-text d-flex">
-                  <div>{{coupon.couponRules.startDate | date: 'mediumDate' }}</div>
-                  -
-                  <div>{{coupon.couponRules.endDate | date: 'mediumDate' }}</div>
+    </ng-container>
+
+    <ng-container *ngIf="providerCouponList.length > 0">
+      <div *ngFor="let coupon of providerCouponList; let i = index" class="coupon-card-wrapper">
+        <div class="coupon-card">
+          <div class="coupon-ribbon">
+            <span>{{ getDiscountLabel(coupon, true) }}</span>
+          </div>
+          <div class="coupon-body">
+            <div class="coupon-header">
+               <div class="coupon-main-title">
+               <img class="coupontitle-left-img" src="{{cdnPath}}customapp/assets/images/myjaldee/couponicon.png" loading="lazy" decoding="async">
+             
+                <div class="coupon-name">{{ coupon.name }}</div>
                 </div>
+                <div class="coupon-desc">{{ coupon.description }}</div>
+              
+            </div>
+            <div class="coupon-validity">
+              Valid Through:
+              <span>{{ coupon.couponRules.startDate | date: 'dd MMM yyyy' }}</span>
+              -
+              <span>{{ coupon.couponRules.endDate | date: 'dd MMM yyyy' }}</span>
+            </div>
+            <div class="coupon-footer">
+              <div class="coupon-code pointer-cursor ttip" (click)="copyText('cc-', 'cc-tooltip-', coupon.couponCode)"
+                (mouseout)="resetTooltip('cc-tooltip-', coupon.couponCode)">
+                <span [id]="'cc-' + coupon.couponCode">{{ coupon.couponCode }}</span>
+                <i class="fa fa-clone" aria-hidden="true"></i>
+                <span class="tooltiptext" [id]="'cc-tooltip-' + coupon.couponCode">Copy</span>
               </div>
-              <div class="coupon-max-discount" *ngIf="coupon.calculationType == 'Percentage'">
-                <div class="coupon-max-discount-title">Max. Discount:&nbsp;</div>
-                <div class="coupon-max-discount-text">
-                  <b><i class="fa fa-inr"></i>&nbsp;{{coupon.couponRules.maxDiscountValue | currency:'':''}}</b>
-                </div>
-              </div>
-              <div class="coupon-main d-flex justify-content-between">
-                <div>
-                  <div class="d-flex" *ngIf="coupon.calculationType == 'Percentage'">
-                    <div class="coupon-discount-title">Discount Value:&nbsp;</div>
-                    <div class="coupon-discount-text">
-                      {{coupon.amount}}%
-                    </div>
-                  </div>
-                  <div class="d-flex" *ngIf="coupon.calculationType == 'Fixed'">
-                    <div class="coupon-discount-title">Discount Value:&nbsp;</div>
-                    <div class="coupon-discount-text"><i class="fa fa-inr"></i>&nbsp;{{coupon.amount | currency:'':''}}
-                    </div>
-                  </div>
-                </div>
-                <div (click)="copyText('cc-', 'cc-tooltip-', coupon.couponCode)"
-                  (mouseout)="resetTooltip('cc-tooltip-', coupon.couponCode)" class="pointer-cursor ttip d-flex">
-                  <div [id]="'cc-'+ coupon.couponCode" class="jaldee-coupon-code">{{coupon.couponCode}}</div>
-                  <div>
-                    <i class="fa fa-clone" aria-hidden="true"></i>
-                  </div>
-                  <span class="tooltiptext" [id]="'cc-tooltip-'+ coupon.couponCode">Copy</span>
-                </div>
-              </div>
+              <button type="button" class="apply-chip" [ngClass]="{ 'applied': isCouponApplied(coupon) }"
+                (click)="applyCoupon(coupon, true)">
+                {{ getApplyLabel(coupon) }}
+              </button>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </ng-container>
-</mat-dialog-content>
+    </ng-container>
+  </mat-dialog-content>
+  </div>
 </form>

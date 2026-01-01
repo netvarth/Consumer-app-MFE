@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { SharedService } from 'jconsumer-shared';
 
 @Component({
   selector: 'app-apply-coupon',
@@ -15,10 +16,16 @@ export class ApplyCouponComponent implements OnInit {
   couponValid = true;
   couponError = null;
   couponsList: any = [];
-  couponChecked: any;
+  couponChecked: any = true;
   selectedCoupons: any = [];
+  cdnPath = '';
 
-  constructor(public translate: TranslateService) { }
+  constructor(
+    public translate: TranslateService,
+    private sharedService: SharedService,
+  ) {
+    this.cdnPath = this.sharedService.getCDNPath();
+   }
 
   ngOnInit(): void {
   }
@@ -56,6 +63,27 @@ export class ApplyCouponComponent implements OnInit {
   clearCouponErrors() {
     this.couponValid = true;
     this.couponError = null;
+  }
+  applySelectedCoupon(code: string) {
+    if (!code) {
+      return;
+    }
+    this.couponChecked = true;
+    this.selectedCoupon = code;
+    this.clearCouponErrors();
+    this.applyCoupons();
+  }
+  isCurrentCodeApplied(): boolean {
+    const code = (this.selectedCoupon || '').trim();
+    return code ? this.checkCouponExists(code) : false;
+  }
+  getApplyButtonLabel(): string {
+    return this.isCurrentCodeApplied() ? 'APPLIED' : 'APPLY';
+  }
+  getCouponsCount(): number {
+    const jc = this.s3CouponsList?.JC?.length || 0;
+    const own = this.s3CouponsList?.OWN?.length || 0;
+    return jc + own;
   }
   applyCoupons() {
     this.couponError = null;

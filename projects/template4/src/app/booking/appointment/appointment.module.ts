@@ -9,7 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { AppointmentComponent } from './appointment.component';
 import { CheckinAddMemberModule } from '../../shared/checkin-add-member/checkin-add-member.module';
-import { CapitalizeFirstPipeModule, DateFormatPipeModule, DateTimeProcessor, FileService, I8nModule, PaytmService, QuestionnaireModule, RazorpayService } from 'jconsumer-shared';
+import { CapitalizeFirstPipeModule, CurrencyService, DateFormatPipeModule, DateTimeProcessor, FileService, I8nModule, PaytmService, QuestionnaireModule, RazorpayService } from 'jconsumer-shared';
 import { ConsumerEmailModule } from '../../shared/consumer-email/consumer-email.module';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -82,6 +82,7 @@ const routes: Routes = [
         RazorpayService,
         PaytmService,
         FileService,
+        CurrencyService,
         DateTimeProcessor
     ],
     exports: [AppointmentComponent]
