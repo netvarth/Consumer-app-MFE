@@ -28,7 +28,7 @@
   </button>
 </div>
 <section #consumer_appointment class="consumerAppt no-padding"
-  [ngClass]="[smallDevice?'container':'container-fluid', theme?theme:'']">
+  [ngClass]="[ theme?theme:'']">
   <!-- <button #membersModalTrigger type="button" class="d-none" data-bs-toggle="modal" data-bs-target="#exampleModalCenter"></button> -->
   <div [ngClass]="{'loadingpaytm': loadingPaytm}"></div>
   <!-- <div class="customLoader" *ngIf="loadingPaytm">
@@ -45,7 +45,7 @@
     </div>
   </div>
   <div class="clearfix"></div>
-  <div class="col-12 d-flex no-padding" *ngIf="loggedIn">
+  <div class="col-12 Booking-section-main d-flex no-padding" *ngIf="loggedIn">
     <div class="col-md-4 col-lg-4 col-sm-12 col-12s-stretch desktop-only p-1" *ngIf="!smallDevice">
       <div class="card shadow">
         <app-booking-accountinfo [businessInfo]="businessInfo" [smallDevice]="smallDevice"
@@ -55,7 +55,7 @@
       </div>
     </div>
 
-    <div class="col-md-8 col-lg-8 col-sm-12 col-12 d-flex align-items-stretch p-1 pt-3" *ngIf="!loading">
+    <div class="col-md col-lg-8 col-sm-12 col-12 d-flex align-items-stretch p-1 pt-3" *ngIf="!loading">
       <div class="card1 hgt-adjust">
         <!-- Wizard Started -->
         <div class="wizard wizard-1" id="kt_wizard_v1" data-wizard-state="step-first" data-wizard-clickable="false"

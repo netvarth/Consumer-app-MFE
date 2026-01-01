@@ -4,7 +4,7 @@
   min-height: 100vh;
   display: flex;
   justify-content: center;
-  padding: 120px 16px 64px;
+  padding: 12px 16px 64px;
   background: linear-gradient(180deg, #edffee 0%, #ffffff 60%);
 }
 
@@ -18,7 +18,7 @@
 .confirm-appointment-card {
   position: relative;
   width: 100%;
-  max-width: 360px;
+  // max-width: 360px;
   padding: 148px 26px 36px;
   border-radius: 12px;
   background: #ffffff;
@@ -276,11 +276,11 @@
 
 @media (min-width: 768px) {
   .confirm-appointment-page {
-    padding: 140px 0 80px;
+    padding: 14px 0 80px;
   }
 
   .confirm-appointment-card {
-    max-width: 420px;
+    // max-width: 420px;
     padding: 160px 40px 40px;
   }
 

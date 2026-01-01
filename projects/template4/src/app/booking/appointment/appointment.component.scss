@@ -1576,6 +1576,7 @@ mat-chip {
   background-clip: padding-box;
   border: none !important;
   width: 100%;
+  margin: 0px 5px;
 }
 .header-sec{
     display: flex;
@@ -1717,4 +1718,7 @@ font-weight: 600;
 .fa-arrow-left {
   font-size: 15px !important;
   
+}
+.Booking-section-main{
+    margin: 0;
 }
