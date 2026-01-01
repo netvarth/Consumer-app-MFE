@@ -12,6 +12,7 @@ import { RateServicePopupComponent } from '../../shared/rate-service-popup/rate-
 import { TeleBookingService } from '../../shared/tele-bookings-service';
 import { GalleryImportComponent } from '../../shared/gallery/import/gallery-import.component';
 import { AttachmentPopupComponent } from '../../shared/attachment-popup/attachment-popup.component';
+import { GalleryService } from '../../shared/gallery/galery-service';
 @Component({
   selector: 'app-root',
   templateUrl: './root.component.html',
@@ -109,6 +110,7 @@ export class RootComponent implements OnInit, OnDestroy {
     private subscriptionService: SubscriptionService,
     private sharedService: SharedService,
     private jGalleryService: JGalleryService,
+    private galleryService: GalleryService,
     private errorService: ErrorMessagingService,
     private toastService: ToastService,
     private teleService: TeleBookingService,
@@ -185,6 +187,35 @@ export class RootComponent implements OnInit, OnDestroy {
     if (this.callback === 'communicate') {
       this.communicateHandler();
     }
+    this.subscriptions.add(this.galleryService.getMessage().subscribe(input => {
+      if (input && input.accountId && input.uuid && input.type) {
+        if (input.type === 'appt') {
+          this.consumerService.addAppointmentAttachment(input.accountId, input.uuid, input.value)
+            .subscribe(
+              () => {
+                this.toastService.showSuccess(Messages.ATTACHMENT_SEND);
+                this.galleryService.sendMessage({ ttype: 'upload', status: 'success' });
+              },
+              error => {
+                this.toastService.showError(error.error);
+                this.galleryService.sendMessage({ ttype: 'upload', status: 'failure' });
+              }
+            );
+        } else if (input.type === 'checkin') {
+          this.consumerService.addWaitlistAttachment(input.accountId, input.uuid, input.value)
+            .subscribe(
+              () => {
+                this.toastService.showSuccess(Messages.ATTACHMENT_SEND);
+                this.galleryService.sendMessage({ ttype: 'upload', status: 'success' });
+              },
+              error => {
+                this.toastService.showError(error.error);
+                this.galleryService.sendMessage({ ttype: 'upload', status: 'failure' });
+              }
+            );
+        }
+      }
+    }));
   }
   private fetchFutureAppointments() {
     const params: any = { 'apptStatus-neq': 'failed,prepaymentPending,Cancelled,Rejected' };

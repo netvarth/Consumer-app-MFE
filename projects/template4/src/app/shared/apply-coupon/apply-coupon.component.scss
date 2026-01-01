@@ -34,7 +34,7 @@
     width: 35px;
     display: flex;
     height: 35px;
-    background: #f16a13;
+    background: var(--booking-accent-primary, #fff5eb) !important;
     border-radius: 11px;
     align-items: center;
     justify-content: center;

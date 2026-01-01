@@ -87,7 +87,7 @@
                     </div>
 
                     <div *ngIf="!loading && payments && payments.length && smallDevice" class="payments-cards">
-                        <div class="payment-card" *ngFor="let payment of payments; let i=index">
+                        <div class="payment-card" (click)="gotoInvoice($event,payment)" *ngFor="let payment of payments; let i=index">
                             <div class="card-top">
                                 <div class="invoice-link" *ngIf="payment && payment.invoiceId && payment.invoiceUid"
                                     (click)="gotoInvoice($event,payment)">
@@ -109,6 +109,7 @@
 
                             <div class="card-row" *ngIf="payment && payment.amount">
                                 <div class="label">{{'Amount' | translate}}</div>
+                                <!-- <div class="value amount-value" (click)="gotoPayment(payment['id'])"> -->
                                 <div class="value amount-value" (click)="gotoPayment(payment['id'])">
                                     {{payment.amount |currency:'&#8377; ' }}
                                     <span class="txnTypeCust" *ngIf="payment && payment.txnType && payment.txnType==='Appointment'">({{'Appointment' | translate}})</span>
