@@ -628,6 +628,7 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
                   _this.setProviderConsumer().then(
                     () => {
                       _this.lStorageService.removeitemfromLocalStorage('googleToken');
+                      
                       // const token = _this.lStorageService.getitemfromLocalStorage('c_authorizationToken');
                       // _this.lStorageService.setitemonLocalStorage('refreshToken', token);
                       _this.lStorageService.removeitemfromLocalStorage('c_authorizationToken');

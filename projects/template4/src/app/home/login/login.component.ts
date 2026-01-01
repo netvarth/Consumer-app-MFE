@@ -250,6 +250,7 @@ export class LoginComponent implements OnInit, OnDestroy {
             () => {
               _this.authService.login(credentials).then((response: any) => {
                 _this.lStorageService.setitemonLocalStorage('refreshToken', response.token);
+                
                 // const token = _this.lStorageService.getitemfromLocalStorage('c_authorizationToken');
                 // _this.lStorageService.setitemonLocalStorage('refreshToken', token);
                 _this.lStorageService.removeitemfromLocalStorage('c_authorizationToken');
