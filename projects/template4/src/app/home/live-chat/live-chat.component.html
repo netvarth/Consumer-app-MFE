@@ -72,23 +72,23 @@
                 </span>
                 <span class="pull-right signal" *ngIf="twilioMainClass.signalStrength==1">
                     <img [src]="getImageUrl('signal-1')" alt="Signal Strength" />
-                    <br /><span class="record-text">Bad network</span>.
+                    <span class="record-text">Bad network</span>
                 </span>
                 <span class="pull-right signal" *ngIf="twilioMainClass.signalStrength==2">
                     <img [src]="getImageUrl('signal-2')" alt="Signal Strength" />
-                    <br /><span class="record-text">Below average</span>
+                    <span class="record-text">Below average</span>
                 </span>
                 <span class="pull-right signal" *ngIf="twilioMainClass.signalStrength==3" >
                     <img [src]="getImageUrl('signal-3')" alt="Signal Strength" />
-                    <br /><span class="record-text">Average</span>
+                    <span class="record-text">Average</span>
                 </span>
                 <span class="pull-right signal" *ngIf="twilioMainClass.signalStrength==4" >
                     <img [src]="getImageUrl('signal-4')" alt="Signal Strength" />
-                    <br /><span class="record-text">Good</span>
+                    <span class="record-text">Good</span>
                 </span>
                 <span class="pull-right signal" *ngIf="twilioMainClass.signalStrength==5" >
                     <img [src]="getImageUrl('signal-5')" alt="Signal Strength" />
-                    <br /><span class="record-text">Excellent</span>
+                    <span class="record-text">Excellent</span>
                 </span>
                 <span class="pull-right" *ngIf="recordingFlag">
                     <i class="fa fa-circle record red blink pull-right"></i>

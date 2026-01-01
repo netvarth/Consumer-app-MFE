@@ -10,10 +10,11 @@
 <section id="busPageId" class="content bus-page no-padding loginpg" [ngClass]="theme">
     <div class="bus-page-header" *ngIf="!loginRequired">
         <div class="panel panel-default">
-            <div class="header-container">
+
+            <div class="header-container" *ngIf="header">
                 <app-header [locations]="locations" *ngIf="locations && locations.length > 0"></app-header>
             </div>
-            <div class="panel-body no-padding" *ngIf="locations">
+            <div class="panel-body no-padding" *ngIf="locations" [class.header-visible]="!header">
                 <div class="col-12 no-padding">
                     <router-outlet></router-outlet>
                 </div>

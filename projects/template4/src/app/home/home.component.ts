@@ -41,6 +41,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   welcomePopupStorageKey = 'welcomePopupShown';
   private welcomePopupTimer: any;
   private subscriptions: Subscription = new Subscription();
+  header: boolean = true;
   constructor(
     private orderService: OrderService,
     private sharedService: SharedService,
@@ -194,6 +195,12 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
           this.hideFooter = true;
           console.log("CartCountChanged22:", this.cartCount);
           break;
+        case 'hideHeader':
+          this.header = false;
+          break;
+        case 'showHeader':
+          this.header = true;
+          break;    
       }
     })
     

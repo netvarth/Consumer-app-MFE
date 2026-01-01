@@ -93,6 +93,11 @@
   min-height: calc(100vh - (55px + var(--template4-header-height, 0px)));
 }
 
+.bus-page-header .panel-body.header-visible {
+  margin-top: 0;
+  min-height: calc(100vh - var(--template4-header-height, 0px));
+}
+
 .header-container {
   position: fixed;   /* locks it to the viewport */
   top: 0;            /* sticks to the very top */
