@@ -604,13 +604,14 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
       accountId: _this.accountId
     }
     credentials['mUniqueId'] = this.lStorageService.getitemfromLocalStorage('mUniqueId');
-    _this.authService.login(credentials).then((response) => {
+    _this.authService.login(credentials).then((response: any) => {
+      _this.lStorageService.setitemonLocalStorage('refreshToken', response.token);
       console.log("Login Response:", response);
       _this.lStorageService.removeitemfromLocalStorage('googleToken');
       _this.setProviderConsumer().then(
         () => {
-          const token = _this.lStorageService.getitemfromLocalStorage('c_authorizationToken');
-          _this.lStorageService.setitemonLocalStorage('refreshToken', token);
+          // const token = _this.lStorageService.getitemfromLocalStorage('c_authorizationToken');
+          // _this.lStorageService.setitemonLocalStorage('refreshToken', token);
           _this.lStorageService.removeitemfromLocalStorage('c_authorizationToken');
           _this.actionPerformed.emit('success');
         })
@@ -622,12 +623,13 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
             () => {
               _this.lStorageService.removeitemfromLocalStorage('logout');
               _this.authService.login(credentials).then(
-                () => {
+                (response: any) => {
+                  _this.lStorageService.setitemonLocalStorage('refreshToken', response.token);
                   _this.setProviderConsumer().then(
                     () => {
                       _this.lStorageService.removeitemfromLocalStorage('googleToken');
-                      const token = _this.lStorageService.getitemfromLocalStorage('c_authorizationToken');
-                      _this.lStorageService.setitemonLocalStorage('refreshToken', token);
+                      // const token = _this.lStorageService.getitemfromLocalStorage('c_authorizationToken');
+                      // _this.lStorageService.setitemonLocalStorage('refreshToken', token);
                       _this.lStorageService.removeitemfromLocalStorage('c_authorizationToken');
                       _this.actionPerformed.emit('success');
                     })
