@@ -108,7 +108,7 @@ export class CouponsComponent implements OnInit {
     if (typeof type === 'string' && type.toUpperCase().includes('PERCENT')) {
       return `${value}% OFF`;
     }
-    return `${this.currencyService.print_PricewithCurrency(value)} OFF`;
+    return `${this.normalizeCurrency(this.currencyService.print_PricewithCurrency(value))} OFF`;
   }
   isCouponApplied(coupon: any): boolean {
     const code = coupon ? (coupon.couponCode || coupon.jaldeeCouponCode) : null;
@@ -119,6 +119,14 @@ export class CouponsComponent implements OnInit {
   }
   getApplyLabel(coupon: any): string {
     return this.isCouponApplied(coupon) ? 'APPLIED' : 'APPLY';
+  }
+
+  private normalizeCurrency(val: any): string {
+    if (val === null || val === undefined) {
+      return '';
+    }
+    const str = val.toString();
+    return str.replace(/â‚¹|&#8377;/g, '₹');
   }
 
   private syncAppliedState(list: any[], isProvider: boolean) {
