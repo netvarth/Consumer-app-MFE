@@ -435,11 +435,7 @@ export class BillComponent implements OnInit, OnDestroy {
             const options = {
                 scale: 2,
                 useCORS: true,
-                backgroundColor: '#FFFFFF',
-                ignoreElements: (element: Element) => {
-                    const classList = (element as HTMLElement)?.classList;
-                    return !!classList && (classList.contains('no-print') || classList.contains('payment-section'));
-                }
+                backgroundColor: '#FFFFFF'
             };
             let canvas;
             try {
