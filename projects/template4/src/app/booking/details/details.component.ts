@@ -89,7 +89,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
   meetingDetails: any;
   cdnPath: string = '';
   activeUser: any;
-
+   hideLocationGlobal: boolean = false;
   constructor(
     private sharedService: SharedService,
     private activatedRoute: ActivatedRoute,
@@ -148,13 +148,15 @@ export class DetailsComponent implements OnInit, OnDestroy {
     }
   }
   ngOnInit(): void {
-    // this.subscriptionService.sendMessage({ ttype: 'showLocation' });
     let account = this.sharedService.getAccountInfo();
     let businessProfile = this.sharedService.getJson(account['businessProfile']);
     this.setAccountInfo(businessProfile);
     let accountConfig = this.sharedService.getAccountConfig();
     if (accountConfig && accountConfig['theme']) {
       this.theme = accountConfig['theme'];
+    }
+    if (accountConfig?.locationVisible) {
+      this.hideLocationGlobal = accountConfig?.locationVisible;
     }
     this.activeUser = this.groupService.getitemFromGroupStorage('jld_scon');
     this.accountID = this.sharedService.getAccountID();

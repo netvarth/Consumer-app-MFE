@@ -93,7 +93,7 @@
         <span *ngIf="booking.timezone" class="tz-chip">{{ booking.timezone }}</span>
       </div>
 
-      <p class="loc" *ngIf="booking?.location?.place">
+      <p class="loc" *ngIf="!hideLocationGlobal && booking?.location?.place">
         <i class="fa fa-map-marker"></i>
         <span>{{ booking.location.place | capitalizeFirst }}</span>
       </p>

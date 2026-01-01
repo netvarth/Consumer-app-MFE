@@ -2,56 +2,13 @@
 
 <section class="booking-redesign">
   <ng-container *ngIf="api_loading && booking['info']; else loadingState">
-    <!-- <header class="booking-header"> -->
-    
       <div class="back-section">
         <button type="button" class="back-link" (click)="gotoPrev()">
           <i class="fa fa-arrow-left" aria-hidden="true"></i>
           <span class="back-label">Back</span>
         </button>
       </div>
-      <!-- <div class="brand-mini" *ngIf="booking['logo']" (click)="gotoHome()">
-        <img [src]="booking['logo']" alt="Brand logo" />
-      </div> -->
-      <!-- <div class="header-actions"> -->
-        
-          <!-- <i class="fa fa-arrow-left" (click)="gotoPrev()" aria-hidden="true"></i> -->
-       
-        <!-- <button type="button" class="icon-btn" *ngIf="hasActionMenuItems()" (click)="toggleActionMenu($event)">
-          <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-        </button>
-        <button type="button" class="icon-btn profile">
-          <i class="fa fa-user" aria-hidden="true"></i>
-        </button>
-        <div class="action-menu" *ngIf="actionMenuOpen" (click)="onMenuClick($event)">
-          <button type="button" class="action-menu-item" (click)="sendMessage(); closeActionMenu()">
-            <i class="fa fa-comments" aria-hidden="true"></i>
-            <span>{{'Message to Provider' | translate}}</span>
-          </button>
-          <button type="button" class="action-menu-item" *ngIf="booking['actions']['reschedule']"
-            (click)="rescheduleBooking(); closeActionMenu()">
-            <i class="fa fa-calendar" aria-hidden="true"></i>
-            <span>{{'Reschedule' | translate}}</span>
-          </button>
-          <button type="button" class="action-menu-item" *ngIf="booking['actions']['sendAttachment']"
-            (click)="sendAttachmentBooking(); closeActionMenu()">
-            <i class="fa fa-paperclip" aria-hidden="true"></i>
-            <span>{{'Send Attachment' | translate}}</span>
-          </button>
-          <button type="button" class="action-menu-item" *ngIf="booking['actions']['hasAttachment']"
-            (click)="viewAttachment(); closeActionMenu()">
-            <i class="fa fa-folder-open" aria-hidden="true"></i>
-            <span>{{'View Attachments' | translate}}</span>
-          </button>
-          <button type="button" class="action-menu-item danger" *ngIf="booking['actions']['cancel']"
-            (click)="cancelBooking(); closeActionMenu()">
-            <i class="fa fa-ban" aria-hidden="true"></i>
-            <span>{{'Cancel Booking' | translate}}</span>
-          </button> -->
-        <!-- </div> -->
-      <!-- </div> -->
-    <!-- </header> -->
-
+      
     <div class="booking-body">
       <div class="card booking-card">
         <div class="card-top">
@@ -66,7 +23,7 @@
             <div class="provider-name" *ngIf="booking['info']?.providerAccount?.businessName">
               {{booking['info'].providerAccount.businessName}}
             </div>
-            <div class="provider-location" *ngIf="booking['location']">
+            <div class="provider-location" *ngIf="!hideLocationGlobal && booking['location']">
               {{booking['location']}}
             </div>
           </div>
@@ -156,29 +113,9 @@
 
       <div class="more-info-row" *ngIf="this.booking['questionnaires']?.length > 0" >
         <a class="more-info" href="javascript:void(0)">{{'More Info' | translate}}</a>
-        <!-- <button class="ghost-btn" type="button" disabled>
-          <i class="fa fa-pencil" aria-hidden="true"></i>
-          <span>{{'Edit' | translate}}</span>
-        </button> -->
       </div>
 
-      <!-- <div class="card pet-card">
-        <div class="info-row">
-          <span class="info-label">{{'Pet Breed' | translate}}:</span>
-          <span class="info-value">{{booking['info']?.petDetails?.breed || booking?.bookingFor?.[0]?.breed || '-'}}</span>
-        </div>
-        <div class="info-row">
-          <span class="info-label">{{'Age' | translate}}:</span>
-          <span class="info-value bold">{{booking['info']?.petDetails?.age || booking?.bookingFor?.[0]?.age || '-'}}</span>
-        </div>
-        <div class="info-row">
-          <span class="info-label">{{'Weight' | translate}}:</span>
-          <span class="info-value bold">{{booking['info']?.petDetails?.weight || booking?.bookingFor?.[0]?.weight || '-'}}</span>
-        </div>
-      </div> -->
-
-      <div class="" *ngIf="this.booking['questionnaires']?.length > 0">
-        
+      <div class="" *ngIf="this.booking['questionnaires']?.length > 0">        
         <ng-container *ngIf="this.booking['questionnaires']?.length > 1">
           <mat-accordion class="qnr-accord p-0" *ngFor="let qnr of this.booking['questionnaires']">
             <mat-expansion-panel>

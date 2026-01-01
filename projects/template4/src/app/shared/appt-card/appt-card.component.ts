@@ -59,6 +59,8 @@ export class ApptCardComponent implements OnInit, OnChanges {
   showInvoiceBtn= false;
   provider_label: any;
   cdnPath: string = '';
+  hideLocationGlobal: boolean = false;
+
   constructor(
     private wordProcessor: WordProcessor, 
     private dateTimeProcessor: DateTimeProcessor, 
@@ -71,6 +73,10 @@ export class ApptCardComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.provider_label = this.wordProcessor.getTerminologyTerm('provider');
+    let accountConfig = this.sharedService.getAccountConfig();
+      if (accountConfig?.locationVisible) {
+        this.hideLocationGlobal = accountConfig?.locationVisible;
+      }
   }
   ngOnChanges() {
     if(this.booking !==undefined){

@@ -6,7 +6,7 @@
       <div class="providerName" *ngIf="booking && booking.providerAccount && booking.providerAccount.businessName"
         (click)="cardActionPerformed('wl', 'providerDetails', booking, $event)">
         {{booking.providerAccount.businessName || '' | capitalizeFirst}}</div>
-      <div class="providerLoc" *ngIf="booking && booking.location && booking.location.place">
+      <div class="providerLoc" *ngIf="!hideLocationGlobal && booking && booking.location && booking.location.place">
         {{booking.location.place
         | capitalizeFirst}}</div>
       <div *ngIf="booking.token" class="ribbon">&nbsp;&nbsp;{{'Token' | translate}}
@@ -215,7 +215,7 @@
       <div class="providerName" *ngIf="booking && booking.providerAccount && booking.providerAccount.businessName"
         (click)="cardActionPerformed('wl', 'providerDetails', booking, $event)">
         {{booking.providerAccount.businessName || '' | capitalizeFirst}}</div>
-      <div class="providerLoc" *ngIf="booking && booking.location && booking.location.address">
+      <div class="providerLoc" *ngIf="!hideLocationGlobal && booking && booking.location && booking.location.address">
         {{booking.location.place
         | capitalizeFirst}}</div>
       <div *ngIf="booking.token" class="ribbon">&nbsp;&nbsp;{{'Token' | translate}}
@@ -416,7 +416,7 @@
       <div class="providerName" *ngIf="history && history.providerAccount && history.providerAccount.businessName"
         (click)="cardActionPerformed('wl', 'providerDetails', history, $event)">
         {{history.providerAccount.businessName || '' | capitalizeFirst}}</div>
-      <div class="providerLoc" *ngIf="history && history.location && history.location.address">
+      <div class="providerLoc" *ngIf="!hideLocationGlobal && history && history.location && history.location.address">
         {{history.location.address
         | capitalizeFirst}}</div>
       <div *ngIf="history.token" class="ribbon">&nbsp;&nbsp;{{'Token' | translate}}
@@ -600,7 +600,7 @@
       <div class="providerName" *ngIf="history && history.providerAccount && history.providerAccount.businessName"
         (click)="cardActionPerformed('wl', 'providerDetails', history, $event)">
         {{history.providerAccount.businessName || '' | capitalizeFirst}}</div>
-      <div class="providerLoc" *ngIf="history && history.location && history.location.address">
+      <div class="providerLoc" *ngIf="!hideLocationGlobal && history && history.location && history.location.address">
         {{history.location.place
         | capitalizeFirst}}</div>
       <div *ngIf="history.token" class="ribbon">&nbsp;&nbsp;{{'Token' | translate}}

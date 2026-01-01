@@ -54,6 +54,7 @@ export class WlCardComponent implements OnInit, OnChanges {
   account: any;
   provider_label: any;
   cdnPath: string = '';
+  hideLocationGlobal: boolean = false;
   constructor( 
     private dateTimeProcessor: DateTimeProcessor,
     public translate: TranslateService,
@@ -64,8 +65,11 @@ export class WlCardComponent implements OnInit, OnChanges {
     }
 
   ngOnInit(): void {
-    // this.wordProcessor.setTerminologies(this.accountService.getTerminologies());
     this.provider_label = this.wordProcessor.getTerminologyTerm('provider');
+    let accountConfig = this.sharedService.getAccountConfig();
+      if (accountConfig?.locationVisible) {
+        this.hideLocationGlobal = accountConfig?.locationVisible;
+      }
   }
   ngOnChanges() {
     if(this.booking !==undefined){
