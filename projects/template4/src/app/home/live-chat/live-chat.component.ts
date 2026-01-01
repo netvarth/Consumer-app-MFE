@@ -65,12 +65,6 @@ export class LiveChatComponent implements OnInit, OnDestroy, AfterViewInit {
     countryCode: string;
     loggedUser;
     linkExpired: boolean = false;
-    interactionLocked = false;
-
-    private startInteractionDelay(duration: number = 800) {
-        this.interactionLocked = true;
-        setTimeout(() => { this.interactionLocked = false; }, duration);
-    }
     @HostListener('window:beforeunload', ['$event'])
     public doSomething($event) {
         this.ngOnDestroy();
@@ -98,76 +92,6 @@ export class LiveChatComponent implements OnInit, OnDestroy, AfterViewInit {
         _this.renderer = rendererFactory.createRenderer(null, null);
         this.subscriptionService.sendMessage({ ttype: 'hideHeader' });
     }
-
-    /**
-     * Init method
-     */
-    ngOnInit() {
-        this.screenWidth = window.innerWidth;
-        this.screenHeight = window.innerHeight;
-        const isMobile = {
-            Android: function () {
-                return navigator.userAgent.match(/Android/i);
-            },
-            BlackBerry: function () {
-                return navigator.userAgent.match(/BlackBerry/i);
-            },
-            iOS: function () {
-                return navigator.userAgent.match(/iPhone|iPad|iPod/i);
-            },
-            Opera: function () {
-                return navigator.userAgent.match(/Opera Mini/i);
-            },
-            Windows: function () {
-                return navigator.userAgent.match(/IEMobile/i);
-            },
-            any: function () {
-                return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
-            }
-        };
-    }
-
-    /**
-     * Calls after the view initialization
-     */
-    ngAfterViewInit() {
-        const _this = this;
-        this.accountID = this.sharedService.getAccountID();
-        this.accountConfig = this.sharedService.getAccountConfig();
-        if (this.accountConfig && this.accountConfig['theme']) {
-            this.theme = this.accountConfig['theme'];
-        }
-        if (this.accountConfig && this.accountConfig['theme']) {
-            this.theme = this.accountConfig['theme'];
-        }
-        let subs = this.activateRoute.queryParams.subscribe(
-            (qParams) => {
-                if (qParams['src']) {
-                    this.source = qParams['src'];
-                }
-                if (qParams['phonenumber'] !== 'new') {
-                    this.authService.goThroughLogin().then(
-                        (status) => {
-                            if (status) {
-                                const activeUser = this.groupService.getitemFromGroupStorage('jld_scon');
-                                this.isLoggedIn = true;
-                                this.loggedUser = activeUser;
-                                this.initMeeting();
-                            } else {
-                                this.isLoggedIn = false;
-                            }
-                        }
-                    )
-                }
-            }
-        )
-        this.subscriptions.add(subs);
-    }
-
-    getImageUrl(key: string): string {
-        return this.sharedService.getCDNPath() + imageConstants[key];
-    }
-
     async getTeleBooking(encID: string, account?: string): Promise<void> {
         const isAppointment = encID.startsWith('a-');
         try {
@@ -236,6 +160,25 @@ export class LiveChatComponent implements OnInit, OnDestroy, AfterViewInit {
     addPreviewTrackToDom(previewTrack) {
         const _this = this;
         const element = previewTrack.attach();
+        if (element instanceof HTMLVideoElement) {
+            // Remove controls
+            element.removeAttribute('controls');
+            element.style.pointerEvents = 'auto';
+
+            // Ensure autoplay and inline playback
+            element.autoplay = true;
+            element.playsInline = true;
+
+            // Disable picture-in-picture
+            (element as any).disablePictureInPicture = true;
+
+            // Prevent context menu
+            element.oncontextmenu = () => false;
+
+            // iOS specific attributes
+            element.setAttribute('webkit-playsinline', 'webkit-playsinline');
+            element.setAttribute('playsinline', 'playsinline');
+        }
         _this.renderer.addClass(element, 'rem-video');
         _this.renderer.appendChild(_this.previewContainer.nativeElement, element);
     }
@@ -299,6 +242,46 @@ export class LiveChatComponent implements OnInit, OnDestroy, AfterViewInit {
         }
         this.initMeeting();
     }
+    /**
+     * Calls after the view initialization
+     */
+    ngAfterViewInit() {
+        const _this = this;
+        // this.account = this.accountService.getAccountInfo();
+        // let accountProfile = this.accountService.getJson(this.account['businessProfile']);
+        this.accountConfig = this.sharedService.getAccountConfig();
+        this.accountID = this.sharedService.getAccountID();
+        if (this.accountConfig && this.accountConfig['theme']) {
+            this.theme = this.accountConfig['theme'];
+        }
+        let subs = this.activateRoute.queryParams.subscribe(
+            (qParams) => {
+                if (qParams['src']) {
+                    this.source = qParams['src'];
+                }
+                if (qParams['phonenumber'] !== 'new') {
+                    this.authService.goThroughLogin().then(
+                        (status) => {
+                            if (status) {
+                                const activeUser = this.groupService.getitemFromGroupStorage('jld_scon');
+                                this.isLoggedIn = true;
+                                this.loggedUser = activeUser;
+                                this.initMeeting();
+                            } else {
+                                this.isLoggedIn = false;
+                            }
+                        }
+                    )
+                }
+            }
+        )
+        this.subscriptions.add(subs);
+    }
+    
+    getImageUrl(key: string): string {
+        return this.sharedService.getCDNPath() + imageConstants[key];
+    }
+
     initMeeting() {
         const _this = this;
         let subs1 = this.activateRoute.params.subscribe(async (params) => {
@@ -312,7 +295,7 @@ export class LiveChatComponent implements OnInit, OnDestroy, AfterViewInit {
                 console.log("Booking is completed. Skipping preview setup.");
                 // this.toastService.showError("Meeting link is expired");
                 this.linkExpired = true;
-                this.subscriptionService.sendMessage({ ttype: 'showHeader' });
+                // this.subscriptionService.sendMessage({ ttype: 'showHeader' });
             }
             // this.twilioService.preview = true;
         }
@@ -383,25 +366,29 @@ export class LiveChatComponent implements OnInit, OnDestroy, AfterViewInit {
             setTimeout(() => { this.actionLocks[key] = false; }, delay);
         }
     }
-
+    onAudioDeviceSelect(deviceId: string) {
+        this.guardAction('audioSwitch', () =>
+            this.twilioService.switchAudioDevice(this.twilioService.activeRoom.localParticipant, deviceId),
+            800
+        );
+    }
     // Wrappers for template (avoid arrow functions in template)
-    onMuteClick() { this.guardAction('mute', () => this.mute(), 1000); }
-    onUnmuteClick() { this.guardAction('unmute', () => this.unmute(), 1000); }
+    onMuteClick() { this.guardAction('mute', () => this.mute()); }
+    onUnmuteClick() { this.guardAction('unmute', () => this.unmute()); }
+    // onVideoToggleClick() {
+    //     this.guardAction('videoToggle', () => (this.twilioService.video ? this.stopVideo() : this.startVideo()));
+    // }
     onVideoToggleClick() {
-        if (this.interactionLocked) { return; }
-        this.startInteractionDelay();
         this.guardAction('videoToggle', () => {
             if (this.twilioService.video) {
                 this.stopVideo();
             } else {
                 this.startVideo();
             }
-        }, 1000); // 600ms timeout between toggles
+        }, 800); // 600ms timeout between toggles
     }
     onSwitchCameraClick() {
-        if (this.interactionLocked) { return; }
-        this.startInteractionDelay();
-        this.guardAction('switchCamera', () => this.switchCamera(this.media && this.media['videoDevices']), 1000);
+        this.guardAction('switchCamera', () => this.switchCamera(this.media && this.media['videoDevices']));
     }
     onDisconnectClick() { this.guardAction('disconnect', () => this.disconnect()); }
     onJoinClick() {
@@ -570,7 +557,33 @@ export class LiveChatComponent implements OnInit, OnDestroy, AfterViewInit {
             });
         _this.subscriptions.add(subs);
     }
-
+    /**
+     * Init method
+     */
+    ngOnInit() {
+        this.screenWidth = window.innerWidth;
+        this.screenHeight = window.innerHeight;
+        const isMobile = {
+            Android: function () {
+                return navigator.userAgent.match(/Android/i);
+            },
+            BlackBerry: function () {
+                return navigator.userAgent.match(/BlackBerry/i);
+            },
+            iOS: function () {
+                return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+            },
+            Opera: function () {
+                return navigator.userAgent.match(/Opera Mini/i);
+            },
+            Windows: function () {
+                return navigator.userAgent.match(/IEMobile/i);
+            },
+            any: function () {
+                return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
+            }
+        };
+    }
     /**
      * Method to exit from the video call
      */

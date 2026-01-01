@@ -159,12 +159,7 @@ export class TwilioService {
             this.stopTracks(tracks);
         }
         if (_this.localVideo) {
-            const localElement = _this.localVideo.nativeElement;
-            while (localElement.firstChild) {
-                localElement.removeChild(localElement.firstChild);
-            }
-            _this.removeLocalParticipantDetails(localElement);
-            // _this.removeLocalParticipantDetails(_this.localVideo.nativeElement);
+            _this.removeLocalParticipantDetails(_this.localVideo.nativeElement);
         }
 
         Video.createLocalVideoTrack({
@@ -249,7 +244,6 @@ export class TwilioService {
             });
             return;
         }
-        _this.recreateVideoTrackAfterSwitch(localParticipant, false, undefined, currentDeviceId);
     }
     connectToRoom(accessToken, options, tracks?) {
         const _this = this;

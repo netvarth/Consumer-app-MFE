@@ -1,6 +1,4 @@
 <p-toast class="p-toast-container" [breakpoints]="{'920px': {width: '100%', right: '0', left: '0'}}"></p-toast>
-<app-authentication *ngIf="!isLoggedIn" (actionPerformed)="actionPerformed($event)"
-    [accountId]="accountID"></app-authentication>
 <section class="full-height" *ngIf="isLoggedIn">
     <div class="videocontainer p-0" *ngIf="!linkExpired" [ngClass]="{'preview-mode': twilioService.preview}">
         <div class="container previewDiv" [ngClass]="{'hide': !twilioService.preview}">
@@ -25,14 +23,14 @@
                     </div>
                     <app-common-innerloading-spinner *ngIf="loading"></app-common-innerloading-spinner>
                     <app-common-innerloading-spinner
-                        *ngIf="!loading && twilioService.loading"></app-common-innerloading-spinner>                    
+                        *ngIf="!loading && twilioService.loading"></app-common-innerloading-spinner>
 
                     <div class="centeralign join-vid-btn mb-3 p-0" *ngIf="!loading">
                         <button class="startshare" [disabled]="!providerReady || btnClicked"
                             (click)="onJoinClick()">Start Sharing Video
                         </button> <button class="ms-1 exit" [disabled]="btnClicked"
                             (click)="onExitClick()">Exit</button>
-                        <br><br>                        
+                        <br><br>
                     </div>
                 </div>
             </div>
@@ -95,7 +93,6 @@
                 <span class="pull-right" *ngIf="recordingFlag">
                     <i class="fa fa-circle record red blink pull-right"></i>
                 </span>
-
             </div>
         </div>
         <select id="video-devices" hidden></select>
@@ -103,3 +100,5 @@
     </div>
     <app-link-expired *ngIf="linkExpired"></app-link-expired>
 </section>
+<app-authentication *ngIf="!isLoggedIn" (actionPerformed)="actionPerformed($event)"
+    [accountId]="accountID"></app-authentication>

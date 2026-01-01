@@ -8,8 +8,7 @@
 /* Responsive flex layout for preview section */
 .previewDiv {
   display: flex;
-  flex-direction: column;
-  /* small screens: stack */
+  flex-direction: column; /* small screens: stack */
   gap: 16px;
   margin-left: auto;
   margin-right: auto;
@@ -26,21 +25,16 @@
 }
 
 @media screen and (min-width: 992px) {
-
   .videocontainer,
   .previewDiv {
     display: flex;
     align-items: center;
   }
-
   .previewDiv {
-    flex-direction: row;
-    /* desktop: side-by-side */
+    flex-direction: row; /* desktop: side-by-side */
     align-items: stretch;
-    justify-content: center;
-    /* center content horizontally */
+    justify-content: center; /* center content horizontally */
   }
-
   /* Desktop: center preview vertically and horizontally */
   .videocontainer.preview-mode {
     display: flex;
@@ -48,19 +42,15 @@
     align-items: center;
     min-height: 100vh;
   }
-
   .preview-left {
     flex: 1 1 65%;
     max-width: 65%;
-    min-width: 480px;
-    /* ensure stable video column width */
+    min-width: 480px; /* ensure stable video column width */
   }
-
   .preview-right {
     flex: 1 1 35%;
     max-width: 35%;
-    min-width: 360px;
-    /* avoid text column collapsing */
+    min-width: 360px; /* avoid text column collapsing */
   }
 }
 
@@ -73,12 +63,9 @@
   margin-top: 0px;
   margin-bottom: 0px;
   width: 100%;
-  max-width: none;
-  /* allow it to grow with column */
-  min-width: 320px;
-  /* keep stable width during load */
-  aspect-ratio: 16 / 9;
-  /* reserve height smoothly */
+  max-width: none; /* allow it to grow with column */
+  min-width: 320px; /* keep stable width during load */
+  aspect-ratio: 16 / 9; /* reserve height smoothly */
 }
 
 .previewSubDiv {
@@ -87,9 +74,7 @@
 }
 
 /* Let preview content define its own height */
-.previewSubDiv {
-  min-height: auto;
-}
+.previewSubDiv { min-height: auto; }
 
 ::ng-deep .local video,
 /* ::ng-deep .remote video, */
@@ -98,19 +83,15 @@
   transform: scaleX(-1);
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  /* fill box; meet-like */
+  object-fit: cover; /* fill box; meet-like */
 }
 
 /* Mobile: make preview video taller relative to screen */
 @media screen and (max-width: 991px) {
   .previewContainer {
-    height: 55vh;
-    /* show more height on small devices */
-    aspect-ratio: auto;
-    /* let explicit height take effect */
-    min-width: 0;
-    /* allow it to shrink on small screens */
+    height: 55vh; /* show more height on small devices */
+    aspect-ratio: auto; /* let explicit height take effect */
+    min-width: 0; /* allow it to shrink on small screens */
   }
 }
 
@@ -134,8 +115,7 @@
   width: 100%;
   text-align: center;
   background: #000 !important;
-  height: auto;
-  /* size to video */
+  height: auto; /* size to video */
 }
 
 .remote-hide {
@@ -154,8 +134,7 @@
 .local-zeroPs {
   width: 100%;
   text-align: center;
-  height: auto;
-  /* size to video */
+  height: auto; /* size to video */
 }
 
 .round {
@@ -191,12 +170,10 @@
 
 /* In-call layout: make video full and controls sticky */
 .video-container-org.in-call {
-  height: 100vh;
-  /* lock to viewport */
+  height: 100vh; /* lock to viewport */
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-  /* prevent page scroll */
+  overflow: hidden; /* prevent page scroll */
 }
 
 .video-container-org.in-call .remote {
@@ -220,9 +197,10 @@
   position: absolute;
   top: 16px;
   right: 16px;
-  width: clamp(120px, 24vw, 240px);
+  width: clamp(88px, 18vw, 150px);
   height: auto;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 9 / 16; /* portrait preview */
+  max-height: 28vh;
   margin: 0;
   border-radius: 8px;
   overflow: hidden;
@@ -232,8 +210,7 @@
 ::ng-deep .video-container-org.in-call .local video {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  /* PiP fills its box */
+  object-fit: cover; /* PiP fills its box */
   transform: scaleX(-1);
 }
 
@@ -242,9 +219,9 @@
   .video-container-org.in-call .local {
     top: 10px;
     right: 10px;
-    width: clamp(80px, 28vw, 140px);
+    width: clamp(54px, 18vw, 84px);
+    aspect-ratio: 9 / 16;
   }
-
   /* Scale avatar inside local PiP */
   ::ng-deep .video-container-org.in-call .local #localImg {
     display: flex;
@@ -252,16 +229,13 @@
     justify-content: center;
     height: 100%;
   }
-
   ::ng-deep .video-container-org.in-call .local #localImg .avatar-img {
     width: 56px;
     height: 56px;
     font-size: 22px;
   }
-
   ::ng-deep .video-container-org.in-call .local #localImg .avatar-text {
-    display: none;
-    /* hide name to keep PiP compact */
+    display: none; /* hide name to keep PiP compact */
   }
 }
 
@@ -276,8 +250,7 @@
   gap: 12px;
   padding: 8px 12px;
   border-radius: 999px;
-  background: rgba(0, 0, 0, 0.8) !important;
-  /* stronger contrast */
+  background: rgba(0, 0, 0, 0.8) !important; /* stronger contrast */
   border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
   color: #fff;
@@ -286,27 +259,19 @@
   max-width: min(92vw, 960px);
 }
 
-.icons span.pull-right {
-  /* network status cluster */
-  margin-left: auto;
-  /* push cluster to right end */
+.icons span.pull-right { /* network status cluster */
+  margin-left: auto; /* push cluster to right end */
   display: flex;
   align-items: center;
   flex-direction: column;
   gap: 6px;
 }
 
-.icons i.pull-right {
-  /* record dot */
-  margin-left: 8px;
-  /* sits to the right of status */
+.icons i.pull-right { /* record dot */
+  margin-left: 8px; /* sits to the right of status */
 }
 
-.icons .record-text {
-  color: #fff;
-  margin: 0 6px;
-  font-size: 12px;
-}
+.icons .record-text { color: #fff; margin: 0 6px; font-size: 12px; }
 
 .icons .round {
   background: transparent;
@@ -315,8 +280,7 @@
   color: #fff;
   width: 44px;
   height: 44px;
-  padding: 0;
-  /* normalize button size for all icons */
+  padding: 0; /* normalize button size for all icons */
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -327,60 +291,23 @@
 }
 
 /* Normalize stacked no‑video icon alignment */
-.icons .round.novideo {
-  width: 44px;
-  height: 44px;
-}
-
-.icons .fa-stack {
-  line-height: 1;
-  vertical-align: middle;
-  font-size: 1.1em;
-  display: inline-block;
-  width: 1.1em;
-  height: 1.1em;
-}
-
-.icons .round.novideo .fa-stack {
-  width: 1.1em;
-  height: 1.1em;
-}
-
-.icons .round {
-  transition: none;
-}
-
-.icons .round.novideo .fa-stack .fa {
-  line-height: 1;
-}
-
-.icons .round.novideo .stack-ban {
-  color: #ff4d4f;
-  font-size: 1.15em;
-}
-
+.icons .round.novideo { width: 44px; height: 44px; }
+.icons .fa-stack { line-height: 1; vertical-align: middle; font-size: 1.1em; display: inline-block; width: 1.1em; height: 1.1em; }
+.icons .round.novideo .fa-stack { width: 1.1em; height: 1.1em; }
+.icons .round { transition: none; }
+.icons .round.novideo .fa-stack .fa { line-height: 1; }
+.icons .round.novideo .stack-ban { color: #ff4d4f; font-size: 1.15em; }
 /* Unified video toggle button (stacked) */
-.icons .video-toggle .fa-stack {
-  width: 1.1em;
-  height: 1.1em;
-}
-
-.icons .video-toggle .stack-ban {
-  color: #ff4d4f;
-  font-size: 1.15em;
-}
-
-.fa-invisible {
-  opacity: 0 !important;
-}
+.icons .video-toggle .fa-stack { width: 1.1em; height: 1.1em; }
+.icons .video-toggle .stack-ban { color: #ff4d4f; font-size: 1.15em; }
+.fa-invisible { opacity: 0 !important; }
 
 /* On small devices, place controls below the video so they remain visible */
 @media screen and (max-width: 991px) {
   .icons {
     position: static;
     transform: none;
-    background: rgba(0, 0, 0, 0.85) !important;
-    /* keep visible on avatars */
+    background: rgba(0, 0, 0, 0.85) !important; /* keep visible on avatars */
     color: #fff;
     border-radius: 8px;
     justify-content: center;
@@ -388,18 +315,13 @@
     border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
   }
-
   .icons .round {
     color: #fff;
   }
 }
 
 /* Ensure avatar containers stay below controls */
-::ng-deep #remoteImg,
-::ng-deep #localImg {
-  position: relative;
-  z-index: 1;
-}
+::ng-deep #remoteImg, ::ng-deep #localImg { position: relative; z-index: 1; }
 
 /* In-call: sticky bottom bar for controls (all sizes) */
 /* In-call controls overlay: keep on top without affecting layout */
@@ -411,7 +333,7 @@
   width: auto;
   justify-content: center;
   border-radius: 999px;
-  background: rgba(0, 0, 0, 0.55) !important;
+  background: rgba(0,0,0,0.55) !important;
   color: #fff;
   padding: 8px 12px;
 }
@@ -430,26 +352,16 @@
     color: #fff;
     justify-content: center;
     align-items: center;
-    flex-wrap: nowrap;
-    /* single line */
-    white-space: nowrap;
-    /* prevent text wrapping */
+    flex-wrap: nowrap; /* single line */
+    white-space: nowrap; /* prevent text wrapping */
     padding: 10px 14px;
     margin-top: 0;
     z-index: 1002;
   }
-
   /* Slightly smaller icon buttons on mobile */
-  .icons .round {
-    width: 40px;
-    height: 40px;
-  }
-
+  .icons .round { width: 40px; height: 40px; }
   /* Do not push status cluster to the far right on mobile; keep inline */
-  .icons span.pull-right {
-    margin-left: 12px;
-  }
-
+  .icons span.pull-right { margin-left: 12px; }
   /* Show status text but keep single line */
   .icons .record-text {
     display: inline-block;
@@ -462,21 +374,16 @@
 /* Desktop: on hover, present same single-line centered pill behavior */
 @media screen and (min-width: 992px) {
   .video-container-org.in-call:hover .icons {
-    flex-wrap: nowrap;
-    /* single line */
-    white-space: nowrap;
-    /* prevent wrapping */
+    flex-wrap: nowrap; /* single line */
+    white-space: nowrap; /* prevent wrapping */
     align-items: center;
     padding: 10px 14px;
     max-width: 70vw;
   }
-
   /* Keep status inline like mobile when hovered */
   .video-container-org.in-call:hover .icons span.pull-right {
-    margin-left: 12px;
-    /* inline spacing, not pushed far right */
+    margin-left: 12px; /* inline spacing, not pushed far right */
   }
-
   .video-container-org.in-call:hover .icons .record-text {
     display: inline-block;
     font-size: 12px;
@@ -531,8 +438,7 @@ header {
 
 .rem-video {
   width: 100% !important;
-  height: auto !important;
-  /* follow intrinsic video height */
+  height: auto !important; /* follow intrinsic video height */
 }
 
 /* Ensure video elements keep aspect ratio and size by width */
@@ -546,7 +452,6 @@ header {
   font-size: 10px;
   margin: 25px;
 }
-
 .signal img {
   top: 10px;
   position: relative;
@@ -558,6 +463,15 @@ header {
   padding: 14px 5px 14px 0;
 }
 
+.rec-check {
+  font-weight: normal;
+  font-size: small;
+}
+
+.split-ln-brd {
+  border: 1px;
+  border-style: dotted;
+}
 
 .exit {
   background: red;
@@ -609,13 +523,10 @@ header {
 }
 
 @keyframes blink {
-
-  0%,
-  100% {
+  0%, 100% {
     opacity: 1;
     transform: scale(1);
   }
-
   50% {
     opacity: 0.45;
     transform: scale(0.975);
@@ -623,13 +534,10 @@ header {
 }
 
 @-webkit-keyframes blink {
-
-  0%,
-  100% {
+  0%, 100% {
     opacity: 1;
     -webkit-transform: scale(1);
   }
-
   50% {
     opacity: 0.45;
     -webkit-transform: scale(0.975);
