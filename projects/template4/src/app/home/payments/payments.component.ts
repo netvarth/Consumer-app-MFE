@@ -73,12 +73,13 @@ export class PaymentsComponent implements OnInit, OnDestroy {
         private consumerService: ConsumerService,
         private sharedService: SharedService,
         public translate: TranslateService,
-        private activated_route: ActivatedRoute,
-        private toastService:ToastService,
-        private groupStorageService: GroupStorageService,
-        private wordProcessor: WordProcessor,
-        private errorService: ErrorMessagingService
-        ) {
+    private activated_route: ActivatedRoute,
+    private toastService:ToastService,
+    private groupStorageService: GroupStorageService,
+    private wordProcessor: WordProcessor,
+    private errorService: ErrorMessagingService
+    ) {
+            this.cdnPath = this.sharedService.getCDNPath();
             const subs = this.activated_route.queryParams.subscribe(qparams => {
                 console.log('qparams',qparams);
                 if(qparams && qparams['type']){
@@ -108,7 +109,7 @@ export class PaymentsComponent implements OnInit, OnDestroy {
         if(this.type && this.type==='payments'){
             this.getPayments();
         }
-        else if(this.type && this.type==='documents'){
+        else if(this.isDocumentsView()){
             this.getDocument();
         }
         console.log('this.accountId',this.accountId);
@@ -192,6 +193,9 @@ export class PaymentsComponent implements OnInit, OnDestroy {
             this.smallDevice = false;
         }
     }
+    isDocumentsView(): boolean {
+        return this.type === 'documents' || this.type === 'Prescriptions';
+    }
     getDocument(){
         const _this=this;
         this.loading=true;
@@ -203,7 +207,12 @@ export class PaymentsComponent implements OnInit, OnDestroy {
                 if(res){
                     resolve(res);
                     console.log('document List',res);
-                    this.documentList = res.filter(document => document.prescriptionAttachments && document.prescriptionAttachments.length > 0);
+                    const normalizedList = (Array.isArray(res) ? res : []).map((document) => {
+                        // Normalize attachments field to the key used in the template
+                        document.prescriptionAttachments = document.prescriptionAttachments || document.attachments || document.documents || [];
+                        return document;
+                    });
+                    this.documentList = normalizedList.filter(document => document.prescriptionAttachments && document.prescriptionAttachments.length > 0);
                     this.documentList.reverse();
                     this.loading=false;
                 }
@@ -228,20 +237,44 @@ export class PaymentsComponent implements OnInit, OnDestroy {
             this.selectedDoc=doc;
         }
         console.log('selectedDoc',this.selectedDoc);
-        if(doc && doc['s3path'] && action==='Download'){
-            this.download(doc['s3path']);
+        if(action === 'Download'){
+            event?.stopPropagation();
+            const downloadUrl = doc?.s3path || doc?.url;
+            const fileName = doc?.fileName || doc?.name;
+            if (downloadUrl) {
+                this.download(downloadUrl, fileName);
+            } else {
+                this.toastService.showError('File not available');
+            }
         }
     }
     download(url, filename?) {
-        const downloadURI = (uri, name) => {
-            const link = document.createElement("a");
+        if (!url) { return; }
+        const name = filename || url.split('/').pop() || 'document';
+        // Try fetching to handle download headers/CORS, fall back to opening the URL
+        fetch(url).then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.blob();
+        }).then(blob => {
+            const blobUrl = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = blobUrl;
             link.download = name;
-            link.href = uri;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-        }
-        downloadURI(url, filename)
+            window.URL.revokeObjectURL(blobUrl);
+        }).catch(() => {
+            const link = document.createElement('a');
+            link.href = url;
+            link.target = '_blank';
+            link.rel = 'noopener';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
     }
     downloadtemp(filename, text) {
         var element = document.createElement('a');

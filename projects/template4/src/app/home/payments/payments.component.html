@@ -16,7 +16,7 @@
                         <div class="accountEditText">{{'Your payment transaction history' |
                             translate}}</div>
                     </div>
-                    <div *ngIf="type && type==='documents'">
+                    <div *ngIf="type && (type==='documents' || type==='Prescriptions')">
                         <div>
                             <div class="myAcText">{{'My Documents' | translate}}</div>
                             <div class="accountEditText">{{'Your document history' | translate}}</div>
@@ -134,7 +134,7 @@
                         </div>
                     </div>
                 </div>
-                <div *ngIf="type && type==='documents'" class="customCard">
+                <div *ngIf="type && (type==='documents' || type==='Prescriptions')" class="customCard">
                     <div>
                         <app-common-innerloading-spinner *ngIf="loading"></app-common-innerloading-spinner>
                         <div class="mainFlex" *ngIf="!loading && !smallDevice">
