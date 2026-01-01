@@ -242,11 +242,24 @@ export class PaymentsComponent implements OnInit, OnDestroy {
             const downloadUrl = doc?.s3path || doc?.url;
             const fileName = doc?.fileName || doc?.name;
             if (downloadUrl) {
+                if (this.isMobileWebView()) {
+                    // Mobile webviews ignore the download attribute; open the file instead
+                    const target = ((window as any).cordova || (window as any).Capacitor) ? '_system' : '_blank';
+                    window.open(downloadUrl, target);
+                    return;
+                }
                 this.download(downloadUrl, fileName);
             } else {
                 this.toastService.showError('File not available');
             }
         }
+    }
+    private isMobileWebView(): boolean {
+        const userAgent = navigator.userAgent || '';
+        const isIosWebView = /\b(iPhone|iPad|iPod)\b/.test(userAgent) && !/Safari/i.test(userAgent);
+        const hasCordova = !!(window as any).cordova;
+        const hasCapacitor = !!(window as any).Capacitor;
+        return this.smallDevice || isIosWebView || hasCordova || hasCapacitor;
     }
     download(url, filename?) {
         if (!url) { return; }
