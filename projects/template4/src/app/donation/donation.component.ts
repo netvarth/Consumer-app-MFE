@@ -208,7 +208,7 @@ export class DonationComponent implements OnInit, OnDestroy {
         if (_this.lStorageService.getitemfromLocalStorage('ios')) {
             _this.from_iOS = true;
         }
-        _this.services = _this.accountService.getJson(_this.account['donationServices']);
+        _this.services = _this.sharedService.getJson(_this.account['donationServices']);
         if (_this.services.length > 0) {
             if (!_this.selectedServiceId) {
                 _this.selectedServiceId = _this.services[0].id;

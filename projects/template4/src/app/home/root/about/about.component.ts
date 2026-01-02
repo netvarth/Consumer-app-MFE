@@ -49,12 +49,12 @@ export class AboutComponent implements OnInit {
     this.translate.setDefaultLang(language);
     this.translate.use(language);
     this.account = this.sharedService.getAccountInfo();
-    this.accountConfig = this.accountService.getAccountConfig();
+    this.accountConfig = this.sharedService.getAccountConfig();
     if (this.accountConfig && this.accountConfig['theme']) {
       this.theme = this.accountConfig['theme'];
     }
-    this.accountProfile = this.accountService.getJson(this.account['businessProfile']);
-    let virtualFields = this.accountService.getJson(this.account['virtualFields']);
+    this.accountProfile = this.sharedService.getJson(this.account['businessProfile']);
+    let virtualFields = this.sharedService.getJson(this.account['virtualFields']);
     this.setAccountVirtualFields(virtualFields);
     this.setBasicProfile();
     this.selectedLocation = this.accountService.getActiveLocation();

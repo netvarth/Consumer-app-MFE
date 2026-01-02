@@ -118,8 +118,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     console.log('isIOS app : '+this.isIOSApp);
     const _this = this;
     this.lStorageService.removeitemfromLocalStorage('logout');
-    // this.account = this.accountService.getAccountInfo();
-    // this.accountProfile = this.accountService.getJson(this.account['businessProfile']);
     this.accountConfig = this.sharedService.getAccountConfig();
     this.templateConfig = this.sharedService.getTemplateJSON();
     console.log("this.templateConfig", this.templateConfig)
@@ -250,7 +248,7 @@ export class LoginComponent implements OnInit, OnDestroy {
             () => {
               _this.authService.login(credentials).then((response: any) => {
                 _this.lStorageService.setitemonLocalStorage('refreshToken', response.token);
-                
+
                 // const token = _this.lStorageService.getitemfromLocalStorage('c_authorizationToken');
                 // _this.lStorageService.setitemonLocalStorage('refreshToken', token);
                 _this.lStorageService.removeitemfromLocalStorage('c_authorizationToken');

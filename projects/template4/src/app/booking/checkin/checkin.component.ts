@@ -428,7 +428,7 @@ export class CheckinComponent implements OnInit, OnDestroy {
         }
         this.account = this.sharedService.getAccountInfo();
         this.settingsjson = this.sharedService.getJson(this.account['settings']);
-        this.accountConfig = this.accountService.getAccountConfig();
+        this.accountConfig = this.sharedService.getAccountConfig();
         if (this.accountConfig && this.accountConfig['theme']) {
             this.theme = this.accountConfig['theme'];
         }
@@ -444,22 +444,22 @@ export class CheckinComponent implements OnInit, OnDestroy {
         }
         this.wordProcessor.setTerminologies(this.sharedService.getTerminologies());
         this.consumer_label = this.wordProcessor.getTerminologyTerm('customer');
-        this.accountProfile = this.accountService.getJson(this.account['businessProfile']);
+        this.accountProfile = this.sharedService.getJson(this.account['businessProfile']);
         this.setBasicProfile();
 
-        if (this.accountService.getJson(this.account['coupon'])) {
-            this.s3CouponsList.JC = this.accountService.getJson(this.account['coupon']);
+        if (this.sharedService.getJson(this.account['coupon'])) {
+            this.s3CouponsList.JC = this.sharedService.getJson(this.account['coupon']);
             if (this.s3CouponsList.JC.length > 0) {
                 this.showCouponWB = true;
             }
         }
-        if (this.accountService.getJson(this.account['providerCoupon'])) {
-            this.s3CouponsList.OWN = this.accountService.getJson(this.account['providerCoupon']);
+        if (this.sharedService.getJson(this.account['providerCoupon'])) {
+            this.s3CouponsList.OWN = this.sharedService.getJson(this.account['providerCoupon']);
             if (this.s3CouponsList.OWN.length > 0) {
                 this.showCouponWB = true;
             }
         }
-        const deptUsers = this.accountService.getJson(this.account['departmentProviders']);
+        const deptUsers = this.sharedService.getJson(this.account['departmentProviders']);
         if (!this.departmentEnabled) {
             this.users = deptUsers;
         } else {

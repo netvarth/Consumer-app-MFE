@@ -146,29 +146,29 @@ export class RootComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.serverDate = this.lStorageService.getitemfromLocalStorage('sysdate');
     this.account = this.sharedService.getAccountInfo();
-    this.settings = this.accountService.getJson(this.account['settings']);
+    this.settings = this.sharedService.getJson(this.account['settings']);
     this.showDepartments = this.settings.filterByDept;
-    this.apptSettings = this.accountService.getJson(this.account['appointmentsettings']);
-    this.accountProfile = this.accountService.getJson(this.account['businessProfile']);
+    this.apptSettings = this.sharedService.getJson(this.account['appointmentsettings']);
+    this.accountProfile = this.sharedService.getJson(this.account['businessProfile']);
     this.accountId = this.accountProfile.id;
-    this.donationServicesJson = this.accountService.getJson(this.account['donationServices']);
+    this.donationServicesJson = this.sharedService.getJson(this.account['donationServices']);
     if (this.accountProfile.cover) {
       this.bgCover = this.accountProfile.cover.url;
     }
     this.terminologiesjson = this.account['terminologies'];
     this.setBasicProfile();
-    this.accountConfig = this.accountService.getAccountConfig();
+    this.accountConfig = this.sharedService.getAccountConfig();
     if (this.accountConfig && this.accountConfig['theme']) {
       this.theme = this.accountConfig['theme'];
     }
-    this.deptUsers = this.accountService.getJson(this.account['departmentProviders']);
+    this.deptUsers = this.sharedService.getJson(this.account['departmentProviders']);
     if (this.showDepartments) {
       this.setDepartments(this.deptUsers);
     }
     this.selectedLocation = this.accountService.getActiveLocation();
     this.templateJson = this.sharedService.getTemplateJSON();
     this.hydrateTemplateContent();
-    this.galleryJson = this.accountService.getJson(this.account['gallery']);
+    this.galleryJson = this.sharedService.getJson(this.account['gallery']);
     this.loadImages(this.galleryJson);
     this.subscriptionService.sendMessage({ ttype: 'showLocation' });
     if (this.templateJson.section1.blog) {
@@ -328,8 +328,8 @@ export class RootComponent implements OnInit, OnDestroy {
 
   setDepartments(depts) {
     let departmentsS3 = [];
-    let checkinServices = this.accountService.getJson(this.account['services']);
-    let apptServices = this.accountService.getJson(this.account['apptServices']);
+    let checkinServices = this.sharedService.getJson(this.account['services']);
+    let apptServices = this.sharedService.getJson(this.account['apptServices']);
     for (let dIndex = 0; dIndex < depts.length; dIndex++) {
       let curDeptServices = [];
       if (checkinServices && checkinServices.length > 0) {
@@ -870,7 +870,7 @@ export class RootComponent implements OnInit, OnDestroy {
       if (this.deptUsers && this.deptUsers.length > 0) {
         this.users_loaded = false;
         this.getUsersByLocation().then((response: any) => {
-          _this.deptUsers = _this.accountService.getJson(response['departmentProviders']);
+          _this.deptUsers = _this.sharedService.getJson(response['departmentProviders']);
           _this.setUserWaitTime();
         })
       }

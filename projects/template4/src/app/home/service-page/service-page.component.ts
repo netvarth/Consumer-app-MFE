@@ -105,9 +105,9 @@ export class ServicePageComponent implements OnInit, OnDestroy {
       this.theme = this.accountConfig['theme'];
     }
     this.settings = this.sharedService.getJson(this.account['settings']);
-    this.apptSettings = this.accountService.getJson(this.account['appointmentsettings']);
-    this.accountProfile = this.accountService.getJson(this.account['businessProfile']);
-    let donationServicesList = this.accountService.getJson(this.account['donationServices'])
+    this.apptSettings = this.sharedService.getJson(this.account['appointmentsettings']);
+    this.accountProfile = this.sharedService.getJson(this.account['businessProfile']);
+    let donationServicesList = this.sharedService.getJson(this.account['donationServices'])
     console.log("Donation Services:", donationServicesList);
     if (donationServicesList) {
       let donationServices = donationServicesList.filter(service => service.id == this.serviceId);
@@ -126,7 +126,7 @@ export class ServicePageComponent implements OnInit, OnDestroy {
     this.accountId = this.accountProfile.id;
     this.uniqueId = this.accountProfile['uniqueId'];
     this.customId = this.accountProfile['customId'] ? this.accountProfile['customId'] : this.accountProfile['accEncUid'];
-    this.setAccountCoupons(this.accountService.getJson(this.account['coupon']));
+    this.setAccountCoupons(this.sharedService.getJson(this.account['coupon']));
   }
 
   setAccountCoupons(res) {
@@ -385,7 +385,7 @@ export class ServicePageComponent implements OnInit, OnDestroy {
       this.userId = servicedetails.provider.id;
       this.accountService.getUserInformation(this.uniqueId, this.userId).then(
         (userAccountInfo: any) => {
-          let userProfile = _this.accountService.getJson(userAccountInfo['providerBusinessProfile']);
+          let userProfile = _this.sharedService.getJson(userAccountInfo['providerBusinessProfile']);
           _this.setBasicProfile(userProfile);
         }
       );

@@ -247,8 +247,6 @@ export class LiveChatComponent implements OnInit, OnDestroy, AfterViewInit {
      */
     ngAfterViewInit() {
         const _this = this;
-        // this.account = this.accountService.getAccountInfo();
-        // let accountProfile = this.accountService.getJson(this.account['businessProfile']);
         this.accountConfig = this.sharedService.getAccountConfig();
         this.accountID = this.sharedService.getAccountID();
         if (this.accountConfig && this.accountConfig['theme']) {

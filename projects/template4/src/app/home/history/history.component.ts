@@ -93,14 +93,15 @@ export class ConsumerHistoryComponent implements OnInit, OnDestroy {
   }
   ngOnInit() {
     this.account = this.sharedService.getAccountInfo();
-    this.accountConfig = this.accountService.getAccountConfig();
+    this.accountConfig = this.sharedService.getAccountConfig();
     if (this.accountConfig && this.accountConfig['theme']) {
       this.theme = this.accountConfig['theme'];
     }
+    console.log("Account Config:", this.accountConfig);
     if (this.accountConfig?.locationVisible) {
       this.hideLocationGlobal = this.accountConfig?.locationVisible;
     }
-    this.accountProfile = this.accountService.getJson(this.account['businessProfile']);
+    this.accountProfile = this.sharedService.getJson(this.account['businessProfile']);
     this.accountId = this.accountProfile.id;
     this.customId = this.accountProfile['customId'] ? this.accountProfile['customId'] : this.accountProfile['accEncUid'];
     let language = this.lStorageService.getitemfromLocalStorage('translatevariable');

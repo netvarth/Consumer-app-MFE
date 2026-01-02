@@ -319,7 +319,7 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
             this.isFutureDate = this.dateTimeProcessor.isFutureDate(this.serverDate, this.appmtDate);
         }
         this.account = this.sharedService.getAccountInfo();
-        this.accountConfig = this.accountService.getAccountConfig();
+        this.accountConfig = this.sharedService.getAccountConfig();
         this.selectedLocation = this.accountService.getActiveLocation();
         this.lStorageService.setitemonLocalStorage('c-location', this.selectedLocation.id);
         if (this.accountConfig && this.accountConfig['theme']) {
@@ -337,10 +337,10 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
         }
         this.wordProcessor.setTerminologies(this.sharedService.getTerminologies());
         this.consumer_label = this.wordProcessor.getTerminologyTerm('customer');
-        this.accountProfile = this.accountService.getJson(this.account['businessProfile']);
+        this.accountProfile = this.sharedService.getJson(this.account['businessProfile']);
         this.setBasicProfile();
-        const deptUsers = this.accountService.getJson(this.account['departmentProviders']);
-        const settings = this.accountService.getJson(this.account['settings']);
+        const deptUsers = this.sharedService.getJson(this.account['departmentProviders']);
+        const settings = this.sharedService.getJson(this.account['settings']);
         this.departmentEnabled = settings.filterByDept;
         if (!this.departmentEnabled) {
             this.users = deptUsers;
