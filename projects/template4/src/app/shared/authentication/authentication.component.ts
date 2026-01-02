@@ -485,8 +485,10 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
                 loginId: loginId,
                 accountId: this.accountId
               }
-              this.authService.login(credentials).then((response) => {
-                console.log("Login Response:", response);
+              const token = _this.lStorageService.getitemfromLocalStorage('c_authorizationToken');
+
+              this.authService.login(credentials).then((loginResponse) => {
+                console.log("Login Response:", loginResponse);
                 const token = _this.lStorageService.getitemfromLocalStorage('c_authorizationToken');
                 _this.lStorageService.setitemonLocalStorage('refreshToken', token);
                 _this.lStorageService.removeitemfromLocalStorage('c_authorizationToken');
@@ -502,6 +504,8 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
                   if (!activeUser) {
                     _this.authService.doLogout().then(
                       () => {
+                        console.log("logout 1");
+                         this.lStorageService.setitemonLocalStorage('c_authorizationToken', token);
                         _this.lStorageService.removeitemfromLocalStorage('logout');
                         _this.authService.login(credentials).then(
                           () => {
@@ -520,6 +524,7 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
                   } else {
                     _this.authService.doLogout().then(
                       () => {
+                        console.log("logout 2");
                         _this.actionPerformed.emit('success');
                         this.btnClicked = false;
                       });
@@ -621,6 +626,7 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
         if (!activeUser) {
           _this.authService.doLogout().then(
             () => {
+              console.log("logout 3");
               _this.lStorageService.removeitemfromLocalStorage('logout');
               _this.authService.login(credentials).then(
                 (response: any) => {
