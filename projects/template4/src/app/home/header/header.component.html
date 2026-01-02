@@ -30,7 +30,7 @@
                     </div>
                 </div> -->
                 <div class="d-flex align-items-center me-2 ms-2">
-                    <span class="lgin cust location me-2" *ngIf="showLocation && locations?.length >1">
+                    <span class="lgin cust location me-2" *ngIf="!hideLocationGlobal && showLocation && locations?.length >1">
                         <button mat-icon-button [matMenuTriggerFor]="menu">
                             <i class="fa fa-map-marker"></i>
                         </button>
@@ -184,7 +184,7 @@
             </div>
             <div class="right d-flex cart justify-content-end ">
                 <div class="me-2 ms-2">
-                    <span class="lgin cust location me-2" *ngIf="showLocation && locations?.length >1">
+                    <span class="lgin cust location me-2" *ngIf="!hideLocationGlobal && showLocation && locations?.length >1">
                         <button mat-icon-button [matMenuTriggerFor]="menu">
                             <i class="fa fa-map-marker"></i>
                         </button>
@@ -293,7 +293,7 @@
                 </div> -->
 
                 <div class="me-2 ms-2">
-                    <span class="lgin cust location me-2" *ngIf="showLocation && locations?.length >1">
+                    <span class="lgin cust location me-2" *ngIf="!hideLocationGlobal && showLocation && locations?.length >1">
                         <button mat-icon-button [matMenuTriggerFor]="menu">
                             <i class="fa fa-map-marker"></i>
                         </button>

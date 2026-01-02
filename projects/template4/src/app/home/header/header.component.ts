@@ -13,7 +13,6 @@ export class HeaderComponent implements OnInit {
   restrictNavigation: boolean = false;
   isLoggedIn: boolean = false;
   loggedUser: any;
-  accountConfig: any;
   logo: any;
   valueToSearch: any;
   categorySelected: any;
@@ -44,6 +43,9 @@ export class HeaderComponent implements OnInit {
   private subscriptions: Subscription = new Subscription();
   selectedLocation: any;
   activeMenuItem = '';
+  hideLocationGlobal: boolean = false;
+
+
   constructor(
     private lStorageService: LocalStorageService,
     private subscriptionService: SubscriptionService,
@@ -119,6 +121,10 @@ export class HeaderComponent implements OnInit {
     this.headerName = this.config.header?.name ? this.config.header.name : 'header1';
     if (this.config && this.config['theme']) {
       this.theme = this.config['theme'];
+    }
+    let accountConfig = this.sharedService.getAccountConfig();
+    if (accountConfig?.locationVisible) {
+      this.hideLocationGlobal = accountConfig?.locationVisible;
     }
     this.accountID = this.sharedService.getAccountID();
     if (this.config?.extras?.selectedCatalogs?.length > 0) {
