@@ -760,101 +760,7 @@
                                                                 </ul>
                                                             </div>
                                                         </div>
-                                                        <div class="section-three other-section no-padding-small payment-section no-print"
-                                                            *ngIf="booking['invoice'].billStatus !== 'Cancel' && booking['invoice'].billStatus !== 'Settled' && (booking['invoice'].amountDue > 0)">
-                                                            <div class="col-md-12 col-sm-12 col-12 no-padding" *ngIf="this.couponList.OWN.length >0 && booking['invoice'].billPaymentStatus!='FullyPaid' && booking['invoice'].billStatus != 'Settled'
-                                                         && paymode && (booking['invoice'].amountDue > 0)">
-                                                                <div
-                                                                    class="title-sec col-md-12 col-sm-12 col-12 no-padding">
-                                                                    <span class="">Coupon</span>
-                                                                </div>
-                                                                <div
-                                                                    class="col-md-12 col-sm-12 col-12 no-padding jc-sec-bill">
-                                                                    <div class="section-two">
-                                                                        <div class="add-j-coupon edit-row service">
-                                                                            <div
-                                                                                class="spl col-md-3 col-sm-4 col-lg-3 col-5 no-padding">
-                                                                                <div class="item selectbox">
-                                                                                    <input class="coupon-text-bill"
-                                                                                        type="text" #jcoupon
-                                                                                        placeholder="Enter Your Coupon Code"
-                                                                                        [(ngModel)]="jCoupon">
-                                                                                </div>
-                                                                            </div>
-                                                                            <div
-                                                                                class="spr col-md-9 col-sm-8 col-lg-9 col-7 no-padding">
-                                                                                <button class="cs-btn bt1" id="btnApply"
-                                                                                    (click)="applyJCoupon()">Apply</button>
-                                                                                <button class="cs-btn bt2" id="btnClear"
-                                                                                    (click)="clearJCoupon()">Clear</button>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div
-                                                                *ngIf="!booking['isPaid'] && booking['invoice'].billPaymentStatus!='FullyPaid' && booking['invoice'].billStatus != 'Settled'  && (booking['invoice'].amountDue > 0)">
-
-                                                                <div class="clearfix"></div>
-                                                                <div class="col-12 d-flex justify-content-center">
-                                                                    <div class="col-12 col-md-6">
-                                                                        <div class="title-sec">
-                                                                            <span class="">Choose any Payment
-                                                                                Option</span>
-                                                                        </div>
-                                                                        <ng-container *ngIf="!shownonIndianModes">
-                                                                            <app-payment-modes
-                                                                                [paymentModes]="indianPaymentModes"
-                                                                                [cashPay]="false"
-                                                                                (modeSelected)="indian_payment_mode_onchange($event)">
-                                                                            </app-payment-modes>
-                                                                        </ng-container>
-                                                                        <ng-container *ngIf="shownonIndianModes">
-                                                                            <app-payment-modes
-                                                                                [paymentModes]="internationalPaymentModes"
-                                                                                [cashPay]="false"
-                                                                                (modeSelected)="non_indian_modes_onchange($event)">
-                                                                            </app-payment-modes>
-                                                                        </ng-container>
-                                                                    </div>
-                                                                </div>
-                                                                <br><br>
-                                                            </div>
-                                                            <div class="clearfix"></div>
-                                                            <div>
-                                                                <div class="txt-align-center pad_link mgn-up-10">
-                                                                    <span [class.disabled]="isClickedOnce"
-                                                                        (click)="togglepaymentMode()"
-                                                                        class="pointer-cursor"><a class="refund_policy">
-                                                                            <span
-                                                                                *ngIf="!shownonIndianModes && paymentModes && paymentModes.internationalPay">Non
-                                                                                Indian Payment ? Click
-                                                                                here</span>
-                                                                            <span
-                                                                                *ngIf="shownonIndianModes && paymentModes && paymentModes.indiaPay">Indian
-                                                                                Payment ? Click
-                                                                                here</span>
-                                                                        </a></span>
-                                                                </div>
-                                                                <div
-                                                                    class="col-md-12 col-sm-12 col-12 cc-dc-nb no-padding text-center mr-auto mt-3">
-                                                                    <button type="button" id="btnPayment"
-                                                                        class=" next-button btn btn-primary font-weight-bold text-uppercase "
-                                                                        [class.disabled]="isClickedOnce"
-                                                                        *ngIf="booking['invoice'].amountDue > 0"
-                                                                        (click)="!isClickedOnce && payuPayment()">
-                                                                        MaKe Payment
-                                                                    </button> &nbsp;&nbsp;
-                                                                    <button id="btnConfirm"
-                                                                        class="next-button btn btn-primary font-weight-bold text-uppercase"
-                                                                        (click)="payuPayment()"
-                                                                        *ngIf="booking['invoice'].amountDue <= 0">
-                                                                        Confirm
-                                                                    </button>&nbsp;&nbsp;
-                                                                </div>
-                                                                <br> <br>
-                                                            </div>
-                                                        </div>
+                                                        <!-- Payment section moved below outside receipt for printing -->
                                                     </div>
                                                 </div>
                                             </div>
@@ -888,4 +794,70 @@
         </div>
     </div>
 </section>
+<ng-container *ngIf="booking['invoice'].billStatus !== 'Cancel' && booking['invoice'].billStatus !== 'Settled' && (booking['invoice'].amountDue > 0)" class="payment-section no-print" data-html2canvas-ignore="true">
+    <div class="section-three other-section no-padding-small">
+        <div class="col-md-12 col-sm-12 col-12 no-padding" *ngIf="this.couponList.OWN.length >0 && booking['invoice'].billPaymentStatus!='FullyPaid' && booking['invoice'].billStatus != 'Settled'
+                     && paymode && (booking['invoice'].amountDue > 0)">
+            <div class="title-sec col-md-12 col-sm-12 col-12 no-padding">
+                <span class="">Coupon</span>
+            </div>
+            <div class="col-md-12 col-sm-12 col-12 no-padding jc-sec-bill">
+                <div class="section-two">
+                    <div class="add-j-coupon edit-row service">
+                        <div class="spl col-md-3 col-sm-4 col-lg-3 col-5 no-padding">
+                            <div class="item selectbox">
+                                <input class="coupon-text-bill" type="text" #jcoupon placeholder="Enter Your Coupon Code" [(ngModel)]="jCoupon">
+                            </div>
+                        </div>
+                        <div class="spr col-md-9 col-sm-8 col-lg-9 col-7 no-padding">
+                            <button class="cs-btn bt1" id="btnApply" (click)="applyJCoupon()">Apply</button>
+                            <button class="cs-btn bt2" id="btnClear" (click)="clearJCoupon()">Clear</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="!booking['isPaid'] && booking['invoice'].billPaymentStatus!='FullyPaid' && booking['invoice'].billStatus != 'Settled'  && (booking['invoice'].amountDue > 0)">
+            <div class="clearfix"></div>
+            <div class="col-12 d-flex justify-content-center">
+                <div class="col-12 col-md-6">
+                    <div class="title-sec">
+                        <span class="">Choose any Payment Option</span>
+                    </div>
+                    <ng-container *ngIf="!shownonIndianModes">
+                        <app-payment-modes [paymentModes]="indianPaymentModes" [cashPay]="false" (modeSelected)="indian_payment_mode_onchange($event)">
+                        </app-payment-modes>
+                    </ng-container>
+                    <ng-container *ngIf="shownonIndianModes">
+                        <app-payment-modes [paymentModes]="internationalPaymentModes" [cashPay]="false" (modeSelected)="non_indian_modes_onchange($event)">
+                        </app-payment-modes>
+                    </ng-container>
+                </div>
+            </div>
+            <br><br>
+        </div>
+        <div class="clearfix"></div>
+        <div>
+            <div class="txt-align-center pad_link mgn-up-10">
+                <span [class.disabled]="isClickedOnce" (click)="togglepaymentMode()" class="pointer-cursor"><a class="refund_policy">
+                        <span *ngIf="!shownonIndianModes && paymentModes && paymentModes.internationalPay">Non
+                            Indian Payment ? Click
+                            here</span>
+                        <span *ngIf="shownonIndianModes && paymentModes && paymentModes.indiaPay">Indian
+                            Payment ? Click
+                            here</span>
+                    </a></span>
+            </div>
+            <div class="col-md-12 col-sm-12 col-12 cc-dc-nb no-padding text-center mr-auto mt-3">
+                <button type="button" id="btnPayment" class=" next-button btn btn-primary font-weight-bold text-uppercase " [class.disabled]="isClickedOnce" *ngIf="booking['invoice'].amountDue > 0" (click)="!isClickedOnce && payuPayment()">
+                    MaKe Payment
+                </button> &nbsp;&nbsp;
+                <button id="btnConfirm" class="next-button btn btn-primary font-weight-bold text-uppercase" (click)="payuPayment()" *ngIf="booking['invoice'].amountDue <= 0" [class.disabled]="isClickedOnce || booking['invoice'].amountDue == 0">
+                    Confirm
+                </button>&nbsp;&nbsp;
+            </div>
+            <br> <br>
+        </div>
+    </div>
+</ng-container>
 <div [innerHTML]="payment_popup" #div [style.display]="'none'"></div>

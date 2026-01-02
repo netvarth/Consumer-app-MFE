@@ -20,7 +20,7 @@
         <h3>Call Our Support Team</h3>
          <span *ngFor="let phoneNo of accountProfile.phoneNumbers"><a class="support-card__link" href="tel:{{phoneNo.instance}}"
                                 target="_blank">
-                                {{accountProfile.countryCode}} {{phoneNo.instance}}
+                                 {{phoneNo.instance}}
                             </a></span>
         <ng-template #phoneText>
           <span class="support-card__link">{{ phoneDisplay }}</span>

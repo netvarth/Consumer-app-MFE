@@ -498,6 +498,22 @@ a:hover {
   white-space: nowrap;
 }
 
+.print-capture .payment-section {
+  display: none !important;
+}
+
+.print-capture .bill-breakup .c-row {
+  white-space: normal;
+}
+
+.print-capture .bill-section-content,
+.print-capture .bill-wrapper,
+.print-capture .bill-breakup-wrapper,
+.print-capture .bill-section {
+  overflow: visible !important;
+  height: auto !important;
+}
+
 /* Style scrollbar (optional) */
 .bill-breakup-wrapper::-webkit-scrollbar {
   height: 6px;

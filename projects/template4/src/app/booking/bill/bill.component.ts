@@ -418,36 +418,49 @@ export class BillComponent implements OnInit, OnDestroy {
         try {
             this.fileDownloading = true;
             const doc: Document = (this.document as Document) || document;
-            const target =
+            const source =
                 this.shareview?.nativeElement ||
-                doc.getElementById('shareview');
-            if (!target) {
+                doc.getElementById('receipt');
+            if (!source) {
                 console.error('Element not found');
                 this.fileDownloading = false;
                 return;
             }
+            const body = doc.body as HTMLBodyElement;
+            body.classList.add('print-capture');
 
-            const prevWidth = target.style.width;
-            const prevMaxWidth = target.style.maxWidth;
-            target.style.width = '794px'; // approximate A4 width
-            target.style.maxWidth = '100%';
+            const prevOverflow = source.style.overflow;
+            const prevWidth = source.style.width;
+            const prevMaxWidth = source.style.maxWidth;
+            source.style.overflow = 'visible';
+            source.style.width = '794px';
+            source.style.maxWidth = '100%';
 
+            const bounds = source.getBoundingClientRect();
             const options = {
                 scale: 2,
                 useCORS: true,
-                backgroundColor: '#FFFFFF'
+                backgroundColor: '#FFFFFF',
+                width: source.scrollWidth || bounds.width,
+                height: source.scrollHeight || bounds.height,
+                windowWidth: source.scrollWidth || bounds.width,
+                windowHeight: source.scrollHeight || bounds.height,
+                scrollX: 0,
+                scrollY: 0
             };
             let canvas;
             try {
-                canvas = await html2canvas(target, options);
+                canvas = await html2canvas(source, options);
             } finally {
-                target.style.width = prevWidth;
-                target.style.maxWidth = prevMaxWidth;
+                source.style.overflow = prevOverflow;
+                source.style.width = prevWidth;
+                source.style.maxWidth = prevMaxWidth;
+                body.classList.remove('print-capture');
             }
-            const marginPx = 100;
+            const marginPx = 24;
             const zoomedOutCanvas = doc.createElement('canvas');
             zoomedOutCanvas.width = canvas.width + marginPx * 2;
-            zoomedOutCanvas.height = canvas.height + marginPx * 1;
+            zoomedOutCanvas.height = canvas.height + marginPx * 2;
 
             const ctx = zoomedOutCanvas.getContext('2d');
             if (ctx) {
