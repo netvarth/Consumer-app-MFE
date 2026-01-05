@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { AccountService, AuthService, ConsumerService, GroupStorageService, LocalStorageService, OrderService, SharedService, SubscriptionService, ThemeService } from 'jconsumer-shared';
+import { AccountService, AuthService, ConsumerService, DateTimeProcessor, GroupStorageService, LocalStorageService, OrderService, SharedService, SubscriptionService, ThemeService } from 'jconsumer-shared';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -53,11 +53,17 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     private themeService: ThemeService,
     private authService: AuthService,
     private consumerService: ConsumerService,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private dateTimeProcessor: DateTimeProcessor
   ) {
     this.onResize();
     this.activatedRoute.queryParams.subscribe(qparams => {
-       if (qparams && qparams['cl_dt']) {
+      if (!lStorageService.getitemfromLocalStorage('sysdate')) {
+        this.dateTimeProcessor.getSystemDate().subscribe((sysDate) => {
+          this.lStorageService.setitemonLocalStorage('sysdate', sysDate);
+        })
+      }
+      if (qparams && qparams['cl_dt']) {
         console.log(qparams['cl_dt']);
         if ((qparams['cl_dt'] == "true" || qparams['cl_dt'] == true) && !this.lStorageService.getitemfromLocalStorage('cleared')) {
           this.clearStorage();
@@ -99,7 +105,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     // };
   }
   ngOnDestroy(): void {
-     if (this.welcomePopupTimer) {
+    if (this.welcomePopupTimer) {
       clearTimeout(this.welcomePopupTimer);
     }
     this.subscriptions.unsubscribe();
@@ -118,7 +124,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
 
   setLoginProperties() {
     console.log(this.accountConfig);
-    
+
     if (this.accountConfig && this.accountConfig['login']) {
       if (this.accountConfig['login'] && this.accountConfig['login']['backgroundImage']) {
         this.loginBackground = this.accountConfig['login']['backgroundImage'];
@@ -200,24 +206,24 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
           break;
         case 'showHeader':
           this.header = true;
-          break;    
+          break;
       }
     })
-    
-      const alreadyLoggedIn = this.checkLogin && this.checkLogin();
-      this.templateJson = this.sharedService.getTemplateJSON();
-      console.log("this.templateJson", this.templateJson)
-      const welcomePopupState = this.lStorageService.getitemfromLocalStorage(this.welcomePopupStorageKey) || {};
-      const hasSeenWelcomePopup = welcomePopupState && welcomePopupState[this.accountId];
-      if (!alreadyLoggedIn && this.accountConfig?.welcomePageEnabled && this.templateJson?.welcomePage && !hasSeenWelcomePopup) {
-        this.welcomeImageUrl = this.templateJson.welcomePage;
-        this.showWelcomePopup = true;
-        welcomePopupState[this.accountId] = true;
-        this.lStorageService.setitemonLocalStorage(this.welcomePopupStorageKey, welcomePopupState);
-        this.welcomePopupTimer = setTimeout(() => {
-          this.showWelcomePopup = false;
-        }, 10000);
-      }
+
+    const alreadyLoggedIn = this.checkLogin && this.checkLogin();
+    this.templateJson = this.sharedService.getTemplateJSON();
+    console.log("this.templateJson", this.templateJson)
+    const welcomePopupState = this.lStorageService.getitemfromLocalStorage(this.welcomePopupStorageKey) || {};
+    const hasSeenWelcomePopup = welcomePopupState && welcomePopupState[this.accountId];
+    if (!alreadyLoggedIn && this.accountConfig?.welcomePageEnabled && this.templateJson?.welcomePage && !hasSeenWelcomePopup) {
+      this.welcomeImageUrl = this.templateJson.welcomePage;
+      this.showWelcomePopup = true;
+      welcomePopupState[this.accountId] = true;
+      this.lStorageService.setitemonLocalStorage(this.welcomePopupStorageKey, welcomePopupState);
+      this.welcomePopupTimer = setTimeout(() => {
+        this.showWelcomePopup = false;
+      }, 10000);
+    }
 
     this.subscriptions.add(
       this.router.events.subscribe((event) => {
