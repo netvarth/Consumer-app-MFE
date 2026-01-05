@@ -320,6 +320,7 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
   }
   goBack() {
     this.step = 1;
+    console.log("Go Back to Step 1");
     setTimeout(() => {
       if (this.googleIntegration && !this.isAndroidBridgeAvailable) {
         this.initGoogleButton();
@@ -352,7 +353,7 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
           let credentials = {
             accountId: _this.accountId
           }
-          _this.authService.login(credentials).then(
+          _this.authService.consumerLogin(credentials).then(
             () => {
               const token = _this.lStorageService.getitemfromLocalStorage('c_authorizationToken');
               _this.lStorageService.setitemonLocalStorage('refreshToken', token);
@@ -385,15 +386,15 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
             countryCode: _this.dialCode,
             loginId: phoneNum
           }
-          _this.authService.login(credentials).then((response) => {
+          _this.authService.consumerLogin(credentials).then((response) => {
 
             _this.authService.setLoginData(response, credentials);
+            const token = _this.lStorageService.getitemfromLocalStorage('c_authorizationToken');
+            _this.lStorageService.setitemonLocalStorage('refreshToken', token);
+            _this.lStorageService.removeitemfromLocalStorage('c_authorizationToken');
             console.log("Login Response:", response);
             _this.setProviderConsumer().then(
-              () => {
-                const token = _this.lStorageService.getitemfromLocalStorage('c_authorizationToken');
-                _this.lStorageService.setitemonLocalStorage('refreshToken', token);
-                _this.lStorageService.removeitemfromLocalStorage('c_authorizationToken');
+              () => {                
                 _this.actionPerformed.emit('success');
                 _this.cd.detectChanges();
               }
@@ -487,8 +488,8 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
               }
               const token = _this.lStorageService.getitemfromLocalStorage('c_authorizationToken');
 
-              this.authService.login(credentials).then((loginResponse) => {
-                console.log("Login Response:", loginResponse);
+              this.authService.consumerLogin(credentials).then((loginResponse: any) => {
+                console.log("Login Response1:", loginResponse);
                 const token = _this.lStorageService.getitemfromLocalStorage('c_authorizationToken');
                 _this.lStorageService.setitemonLocalStorage('refreshToken', token);
                 _this.lStorageService.removeitemfromLocalStorage('c_authorizationToken');
@@ -499,22 +500,23 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
                   });
               }, (error: any) => {
                 this.btnClicked = false;
+                console.log("Error in Login After OTP:", error);
                 if (error.status === 401 && error.error === 'Session Already Exist') {
                   const activeUser = _this.lStorageService.getitemfromLocalStorage('jld_scon');
                   if (!activeUser) {
                     _this.authService.doLogout().then(
                       () => {
-                        console.log("logout 1");
-                         this.lStorageService.setitemonLocalStorage('c_authorizationToken', token);
+                        console.log("401 DoLogout");
+                         _this.lStorageService.setitemonLocalStorage('c_authorizationToken', token);
                         _this.lStorageService.removeitemfromLocalStorage('logout');
-                        _this.authService.login(credentials).then(
-                          () => {
-
+                        _this.authService.consumerLogin(credentials).then(
+                          (loginResponse) => {
+                            console.log("Login Response2:", loginResponse);
+                            const token = _this.lStorageService.getitemfromLocalStorage('c_authorizationToken');
+                            _this.lStorageService.setitemonLocalStorage('refreshToken', token);
+                            _this.lStorageService.removeitemfromLocalStorage('c_authorizationToken');
                             _this.setProviderConsumer().then(
-                              () => {
-                                const token = _this.lStorageService.getitemfromLocalStorage('c_authorizationToken');
-                                _this.lStorageService.setitemonLocalStorage('refreshToken', token);
-                                _this.lStorageService.removeitemfromLocalStorage('c_authorizationToken');
+                              () => {                                
                                 _this.actionPerformed.emit('success');
                               }
                             );
@@ -530,17 +532,18 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
                       });
                   }
                 } else if (error.status === 401) {
-                  _this.ngZone.run(
-                    () => {
+                  // _this.ngZone.run(
+                  //   () => {
                       // _this.step = 2;
+                      console.log("401 Error");
                       this.btnClicked = false;
                       let errorObj = this.errorService.getApiError(error);
                       this.toastService.showError(errorObj);
                       _this.loading = false;
                       _this.goBack();
                     }
-                  )
-                }
+                //   )
+                // }
               })
             }
           },
@@ -609,15 +612,13 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
       accountId: _this.accountId
     }
     credentials['mUniqueId'] = this.lStorageService.getitemfromLocalStorage('mUniqueId');
-    _this.authService.login(credentials).then((response: any) => {
+    _this.authService.consumerLogin(credentials).then((response: any) => {
       _this.lStorageService.setitemonLocalStorage('refreshToken', response.token);
       console.log("Login Response:", response);
       _this.lStorageService.removeitemfromLocalStorage('googleToken');
+      _this.lStorageService.removeitemfromLocalStorage('c_authorizationToken');
       _this.setProviderConsumer().then(
-        () => {
-          // const token = _this.lStorageService.getitemfromLocalStorage('c_authorizationToken');
-          // _this.lStorageService.setitemonLocalStorage('refreshToken', token);
-          _this.lStorageService.removeitemfromLocalStorage('c_authorizationToken');
+        () => {          
           _this.actionPerformed.emit('success');
         })
     }, (error: any) => {
@@ -628,16 +629,13 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
             () => {
               console.log("logout 3");
               _this.lStorageService.removeitemfromLocalStorage('logout');
-              _this.authService.login(credentials).then(
+              _this.authService.consumerLogin(credentials).then(
                 (response: any) => {
                   _this.lStorageService.setitemonLocalStorage('refreshToken', response.token);
+                  _this.lStorageService.removeitemfromLocalStorage('googleToken');
+                  _this.lStorageService.removeitemfromLocalStorage('c_authorizationToken');
                   _this.setProviderConsumer().then(
                     () => {
-                      _this.lStorageService.removeitemfromLocalStorage('googleToken');
-                      
-                      // const token = _this.lStorageService.getitemfromLocalStorage('c_authorizationToken');
-                      // _this.lStorageService.setitemonLocalStorage('refreshToken', token);
-                      _this.lStorageService.removeitemfromLocalStorage('c_authorizationToken');
                       _this.actionPerformed.emit('success');
                     })
                 });

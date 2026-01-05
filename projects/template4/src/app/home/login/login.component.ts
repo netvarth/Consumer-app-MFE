@@ -233,7 +233,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       accountId: _this.sharedService.getAccountID()
     }
     credentials['mUniqueId'] = this.lStorageService.getitemfromLocalStorage('mUniqueId');
-    _this.authService.login(credentials).then((response: any) => {
+    _this.authService.consumerLogin(credentials).then((response: any) => {
       // const token = _this.lStorageService.getitemfromLocalStorage('c_authorizationToken');
       _this.lStorageService.setitemonLocalStorage('refreshToken', response.token);
       console.log("Login Response:", response);
@@ -246,11 +246,8 @@ export class LoginComponent implements OnInit, OnDestroy {
           console.log("55557");
           _this.authService.doLogout().then(
             () => {
-              _this.authService.login(credentials).then((response: any) => {
+              _this.authService.consumerLogin(credentials).then((response: any) => {
                 _this.lStorageService.setitemonLocalStorage('refreshToken', response.token);
-
-                // const token = _this.lStorageService.getitemfromLocalStorage('c_authorizationToken');
-                // _this.lStorageService.setitemonLocalStorage('refreshToken', token);
                 _this.lStorageService.removeitemfromLocalStorage('c_authorizationToken');
                 _this.lStorageService.removeitemfromLocalStorage('googleToken');
                 _this.performAction();
@@ -401,7 +398,7 @@ export class LoginComponent implements OnInit, OnDestroy {
             }
             console.log(this.lStorageService.getitemfromLocalStorage('c_authorizationToken'));
             console.log(credentials);
-            this.authService.login(credentials).then((response) => {
+            this.authService.consumerLogin(credentials).then((response) => {
               console.log("Login Response:", response);
               this.btnClicked = false;
               const token = _this.lStorageService.getitemfromLocalStorage('c_authorizationToken');
@@ -419,7 +416,7 @@ export class LoginComponent implements OnInit, OnDestroy {
                   _this.authService.doLogout().then(
                     () => {                      
                       this.lStorageService.setitemonLocalStorage('c_authorizationToken', authToken);
-                      _this.authService.login(credentials).then(
+                      _this.authService.consumerLogin(credentials).then(
                         () => {
                           const token = _this.lStorageService.getitemfromLocalStorage('c_authorizationToken');
                           _this.lStorageService.setitemonLocalStorage('refreshToken', token);
@@ -551,7 +548,7 @@ export class LoginComponent implements OnInit, OnDestroy {
             accountId: _this.sharedService.getAccountID()
           }
           credentials['mUniqueId'] = this.lStorageService.getitemfromLocalStorage('mUniqueId');
-          this.authService.login(credentials).then((response) => {
+          this.authService.consumerLogin(credentials).then((response) => {
             console.log("Login Response:", response);
             const token = _this.lStorageService.getitemfromLocalStorage('c_authorizationToken');
             _this.lStorageService.setitemonLocalStorage('refreshToken', token);
@@ -573,7 +570,7 @@ export class LoginComponent implements OnInit, OnDestroy {
             loginId: phoneNum
           }
           credentials['mUniqueId'] = this.lStorageService.getitemfromLocalStorage('mUniqueId');
-          this.authService.login(credentials).then((response) => {
+          this.authService.consumerLogin(credentials).then((response) => {
             const token = _this.lStorageService.getitemfromLocalStorage('c_authorizationToken');
             _this.lStorageService.setitemonLocalStorage('refreshToken', token);
             _this.lStorageService.removeitemfromLocalStorage('c_authorizationToken');
