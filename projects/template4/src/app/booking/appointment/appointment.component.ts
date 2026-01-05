@@ -9,6 +9,7 @@ import { AccountService, AuthService, ConsumerService, DateTimeProcessor, ErrorM
 import { CouponsComponent } from "../../shared/coupons/coupons.component";
 import { ApplyCouponComponent } from "../../shared/apply-coupon/apply-coupon.component";
 import { ConsumerEmailComponent } from "../../shared/consumer-email/consumer-email.component";
+import { BookingService } from "../../booking/booking.service";
 
 @Component({
     selector: 'app-appointment',
@@ -57,7 +58,7 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
     loggedIn = true;  // To check whether user logged in or not
     loading = true;
     consumer_label: any;
-
+    loggedUser: any;
     loadingService = true;   // To check whether service details is fetched or not
     isPaymentRequired;
     services: any;    // To store services json
@@ -224,12 +225,13 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
         private accountService: AccountService,
         public translate: TranslateService,
         private storageService: StorageService,
+        private bookingService: BookingService,
         private sharedService: SharedService
     ) {
         this.moment = this.dateTimeProcessor.getMoment();
         this.serverDate = this.lStorageService.getitemfromLocalStorage('sysdate');
         this.subscriptionService.sendMessage({ ttype: 'hideBookingsAndLocations' });
-
+        this.loggedUser = this.groupService.getitemFromGroupStorage('jld_scon');
         this.subs.add(this.activatedRoute.queryParams.subscribe(
             params => {
                 if(params['ad_loc']) {
@@ -290,13 +292,14 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
         })
     }
     openCoupons(type?: any) {
+        const appliedCodes = this.getAppliedCouponsFromPayment(this.paymentDetails);
         this.coupondialogRef = this.dialog.open(CouponsComponent, {
             width: '50%',
             panelClass: ['commonpopupmainclass', 'popup-class', 'specialclass'],
             disableClose: true,
             data: {
                 couponsList: this.s3CouponsList,
-                selectedCoupons: this.selectedCoupons,
+                selectedCoupons: appliedCodes && appliedCodes.length ? appliedCodes : this.selectedCoupons,
                 type: type,
                 theme: this.theme
             }
@@ -1695,10 +1698,15 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
                 this.setConvenientFee();
             }
             this.setConfirmButton();
-        }, error => {
+            const invalidCoupons = this.getInvalidCouponsFromPayment(this.paymentDetails);
+            if (invalidCoupons.length) {
+                this.applyCouponComp?.markCouponsNotApplicable(invalidCoupons);
+            }
+            this.selectedCoupons = [];
+         }, error => {
             let errorObj = this.errorService.getApiError(error);
             // this.snackbarService.openSnackBar(this.wordProcessor.getProjectErrorMesssages(errorObj, this.accountService.getTerminologies()), { 'panelClass': 'snackbarerror' });
-        }));
+         }));
     }
     togglepaymentMode() {
         this.shownonIndianModes = !this.shownonIndianModes;
@@ -1820,6 +1828,11 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
                     this.setConvenientFee();
                 }
                 this.setConfirmButton();
+                const invalidCoupons = this.getInvalidCouponsFromPayment(this.paymentDetails);
+                if (invalidCoupons.length) {
+                    this.applyCouponComp?.markCouponsNotApplicable(invalidCoupons);
+                }
+                this.selectedCoupons = [];
             }, error => {
                 this.isClickedOnce = false;
                 let errorObj = this.errorService.getApiError(error);
@@ -2691,7 +2704,8 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
     getCoupons() {
         const _this = this;
         return new Promise(function (resolve, reject) {
-            _this.consumerService.getApptCoupons(_this.selectedServiceId, _this.locationId)
+            _this.bookingService.getApptCoupons(_this.selectedServiceId, _this.locationId , _this.loggedUser?.providerConsumer)
+
                 .subscribe((res: any) => {
                     resolve(res);
                 }, (error) => {
@@ -2771,6 +2785,48 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
         } else {
             this.confirmButton['disabled'] = false;
         }
+    }
+    private isCouponAppliedForSummary(entry: any): boolean {
+        if (!entry) {
+            return false;
+        }
+        const systemNote = entry.systemNote || [];
+        const appliedNoteOnly = Array.isArray(systemNote) && systemNote.length === 1 && systemNote.includes('COUPON_APPLIED');
+        return entry.value !== '0.0' || appliedNoteOnly;
+    }
+
+    private getInvalidCouponsFromPayment(details: any): string[] {
+        const codes: string[] = this.selectedCoupons || [];
+        if (!details || !codes.length) {
+            return [];
+        }
+        return codes.filter(code => {
+            const entry = (details.jCouponList && details.jCouponList[code]) ||
+                          (details.proCouponList && details.proCouponList[code]);
+            return !this.isCouponAppliedForSummary(entry);
+        });
+    }
+
+    private getAppliedCouponsFromPayment(details: any): string[] {
+        if (!details) {
+            return [];
+        }
+        const applied: string[] = [];
+        if (details.jCouponList) {
+            Object.keys(details.jCouponList).forEach(code => {
+                if (this.isCouponAppliedForSummary(details.jCouponList[code])) {
+                    applied.push(code);
+                }
+            });
+        }
+        if (details.proCouponList) {
+            Object.keys(details.proCouponList).forEach(code => {
+                if (this.isCouponAppliedForSummary(details.proCouponList[code])) {
+                    applied.push(code);
+                }
+            });
+        }
+        return applied;
     }
      scrollToPaymentModeSection(): void {
         if (this.paymentModeSection && this.paymentModeSection.nativeElement) {

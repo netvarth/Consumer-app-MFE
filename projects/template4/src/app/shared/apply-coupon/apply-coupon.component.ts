@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { SharedService } from 'jconsumer-shared';
+import { SharedService, ToastService } from 'jconsumer-shared';
 
 @Component({
   selector: 'app-apply-coupon',
@@ -19,10 +19,12 @@ export class ApplyCouponComponent implements OnInit {
   couponChecked: any = true;
   selectedCoupons: any = [];
   cdnPath = '';
+  invalidCoupons: Set<string> = new Set();
 
   constructor(
     public translate: TranslateService,
     private sharedService: SharedService,
+    private toastService: ToastService,
   ) {
     this.cdnPath = this.sharedService.getCDNPath();
    }
@@ -48,8 +50,18 @@ export class ApplyCouponComponent implements OnInit {
     return found;
   }
   removeJCoupon(i) {
+    const code = this.couponsList[i]?.couponCode;
     this.selectedCoupons.splice(i, 1);
     this.couponsList.splice(i, 1);
+    if (code) {
+      this.invalidCoupons.delete(code);
+      const currentCode = (this.selectedCoupon || '').trim();
+      if (currentCode && currentCode.toUpperCase() === code.toUpperCase()) {
+        this.selectedCoupon = '';
+        this.clearCouponErrors();
+      }
+    }
+    this.clearCouponErrors();
     this.actionPerformed.emit({ttype:'validate', value: this.selectedCoupons});
   }
 
@@ -97,6 +109,8 @@ export class ApplyCouponComponent implements OnInit {
       if (this.checkCouponExists(jaldeeCoupn)) {
         this.couponError = 'Coupon already applied';
         this.couponValid = false;
+        this.toastService.showError(this.couponError);
+        this.selectedCoupon = '';
         return false;
       }
       this.couponValid = false;
@@ -109,6 +123,7 @@ export class ApplyCouponComponent implements OnInit {
           this.couponsList.push(couponInfo);
           found = true;
           this.selectedCoupon = '';
+          this.invalidCoupons.delete(jaldeeCoupn);
           break;
         }
       }
@@ -122,6 +137,7 @@ export class ApplyCouponComponent implements OnInit {
           this.couponsList.push(couponInfo);
           found = true;
           this.selectedCoupon = '';
+          this.invalidCoupons.delete(jaldeeCoupn);
           break;
         }
       }
@@ -132,5 +148,29 @@ export class ApplyCouponComponent implements OnInit {
         this.couponError = 'Coupon invalid';
       }
     }
+  }
+
+  removeCouponByCode(code: string) {
+    const idx = this.selectedCoupons.findIndex(c => c === code);
+    if (idx > -1) {
+      this.removeJCoupon(idx);
+    }
+  }
+
+  removeInvalidCoupons(codes: string[] = []) {
+    (codes || []).forEach(code => this.removeCouponByCode(code));
+  }
+
+  markCouponsNotApplicable(codes: string[] = []) {
+    (codes || []).forEach(code => {
+      if (code) {
+        this.invalidCoupons.add(code);
+      }
+    });
+  }
+
+  isCouponNotApplicable(coupon: any): boolean {
+    const code = coupon?.couponCode;
+    return code ? this.invalidCoupons.has(code) : false;
   }
 }

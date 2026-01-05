@@ -191,6 +191,10 @@
     font-weight: 700;
     font-size: 9px;
 }
+.coupon-pill__status.not-applicable {
+    background: #ffe5e5;
+    color: #d61f1f;
+}
 
 .coupon-pill__remove {
     background: none;

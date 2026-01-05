@@ -32,7 +32,9 @@
       <div class="coupon-pill__left">
         <i class="fa fa-tag coupon-pill__tag" aria-hidden="true"></i>
         <span class="coupon-pill__code">{{coupon.couponCode}}</span>
-        <span class="coupon-pill__status">APPLIED</span>
+        <span class="coupon-pill__status" [ngClass]="{'not-applicable': isCouponNotApplicable(coupon)}">
+          {{ isCouponNotApplicable(coupon) ? 'COUPON NOT APPLICABLE' : 'APPLIED' }}
+        </span>
       </div>
       <button type="button" class="coupon-pill__remove" (click)="removeJCoupon(i)"
         [matTooltipClass]="tooltipcls" [matTooltip]="'Remove Coupon'">
