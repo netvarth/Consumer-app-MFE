@@ -89,20 +89,21 @@
           <app-appt-card [booking]="nextBooking" [type]="nextBookingType || 'today'" [smallDevice]="smallDevice"
             (actionPerformed)="cardClicked($event)"></app-appt-card>
         </ng-container>
-
+  
       </mat-grid-tile>
     </mat-grid-list>
   </div>
-
   <div class="ratingcard-wrap" *ngIf="templateJson?.trustFeatures">
     <img class="ratingcard-img" [src]="templateJson?.trustFeatures" loading="lazy" decoding="async">
   </div>
-
-
+  <div class="offercard-wrap" *ngIf="templateJson?.offerBanner">
+    <img class="ratingcard-img" [src]="templateJson?.offerBanner" loading="lazy" decoding="async">
+  </div>
+  
+  
   <div class="ratingcard-wrap" *ngIf="templateJson?.ratingcard">
     <img class="ratingcard-img" [src]="templateJson?.ratingcard" loading="lazy" decoding="async">
   </div>
-
 
   <!-- Coming soon section -->
   <section class="section-block coming-soon-section">
