@@ -240,8 +240,8 @@
   .mat-mdc-unelevated-button.btn-outline,
   .mat-flat-button.btn-outline {
     background: transparent !important;
-    border: 1px solid var(--omg-accent, var(--accent, var(--_accent))) !important;
-    color: var(--omg-accent, var(--accent, var(--_accent))) !important;
+    border: 1px solid linear-gradient(90deg, #FF5C1A 0%, #FF4A0F 100%);
+    color: linear-gradient(90deg, #FF5C1A 0%, #FF4A0F 100%) !important;
     height: 33px !important;
     padding: 6px 16px !important;
     border-radius: 10px !important;

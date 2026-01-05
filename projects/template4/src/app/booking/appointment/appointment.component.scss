@@ -577,7 +577,7 @@ hr {
     }
 }
 
-.card {
+.card2 {
     word-wrap: break-word;
 
 }
@@ -1722,3 +1722,8 @@ font-weight: 600;
 .Booking-section-main{
     margin: 0;
 }
+:host ::ng-deep app-questionnaire .form-group.card,
+:host ::ng-deep app-questionnaire .card {
+  background-color: #fff !important;
+}
+

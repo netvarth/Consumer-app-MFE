@@ -14,7 +14,7 @@
     [class.p-0]="uuid && (source === 'consCheckin' || source === 'consAppt' || source === 'consOrder' || source === 'paper' || source === 'consDonationDetails' || source === 'ivr')">
     <div class="col-xl-12 force_center" [class.p-0]="uuid" [class.no-padding-small]="source && source=='ivr'">
       <div class="">
-        <div class="qnrsec" *ngFor="let qnr of groupedQnr | keyvalue: asIsOrder"
+        <div class="" *ngFor="let qnr of groupedQnr | keyvalue: asIsOrder"
           [class.section-shadow]="getSectionCount() > 1" [class.no-padding-small]="source && source=='ivr'">
           <div class="form-group card mgn-0" *ngFor="let question of qnr.value">
             <label class="col-12 quest">{{getQuestion(question).label}}

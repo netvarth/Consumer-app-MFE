@@ -1211,19 +1211,23 @@ $serviceIconBGheight: 60px !important;
 }
 
 .status-line {
-  font-weight: 700;
-  color: #08b675;
-  display: flex;
-  gap: 6px;
+    font-weight: 700;
+    color: #08b675;
+    display: flex;
+    gap: 6px;
   align-items: center;
   margin-bottom: 4px;
   font-size: 13px;
 }
 
-.status-line .label {
-  color: #444;
-  font-weight: 600;
-}
+  .status-line .label {
+    color: #444;
+    font-weight: 600;
+  }
+  
+  .status-line .status-cancelled {
+    color: #d32f2f;
+  }
 
 .provider-name {
   font-size: 20px;

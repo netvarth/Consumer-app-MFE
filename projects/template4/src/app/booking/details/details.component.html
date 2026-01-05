@@ -15,10 +15,10 @@
           <div class="logo-block" *ngIf="booking['logo']">
             <img [src]="booking['logo']" alt="Provider logo" />
           </div>
-          <div class="summary">
+            <div class="summary">
             <div class="status-line" *ngIf="booking['status']">
               <span class="label">{{'Status :' | translate}}</span>
-              <span class="value">{{booking['status']}}</span>
+              <span class="value" [ngClass]="{'status-cancelled': booking['status'] === 'Cancelled'}">{{booking['status']}}</span>
             </div>
             <div class="provider-name" *ngIf="booking['info']?.providerAccount?.businessName">
               {{booking['info'].providerAccount.businessName}}
@@ -99,7 +99,7 @@
         </button>
         
       </ng-container>
-      <ng-template #joinWithHandler>
+      <ng-template *ngIf="booking['actions']['joinJaldeeVideo'] && meetingDetails?.joiningUrl;" #joinWithHandler>
         <a class="cta-button" id="btnJoinJaldeeVideo" [href]="meetingDetails.joiningUrl" target="_blank">
           <i class="fa fa-video-camera" aria-hidden="true"></i>
           <span>{{'Join Video Consultation' | translate}}</span>
