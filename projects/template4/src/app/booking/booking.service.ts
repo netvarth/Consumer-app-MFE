@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ServiceMeta } from 'jconsumer-shared';
+import { LocalStorageService, ServiceMeta } from 'jconsumer-shared';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +25,8 @@ export class BookingService {
   selectedApptsTime: any;
 
   constructor(
-    private servicemeta: ServiceMeta
+    private servicemeta: ServiceMeta,
+    private lStorageService: LocalStorageService
   ) { }
   setAccountId(accountId) {
     this.accountId = accountId;
@@ -388,12 +389,26 @@ export class BookingService {
     const url = 'consumer/payment/modes/convenienceFee/' + provid;
     return this.servicemeta.httpPut(url, data);
   }
-  getApptCoupons(servId, locId) {
-    const url = 'consumer/appointment/service/' + servId + '/location/' + locId + '/coupons';
+  getApptCoupons(servId, locId, id?) {
+    let url;
+    if (this.checkLogin()) {
+      url = 'consumer/appointment/service/' + servId + '/location/' + locId + '/coupons?providerConsumerId=' + id;
+    } else {
+      url = 'consumer/appointment/service/' + servId + '/location/' + locId + '/coupons';
+    }
     return this.servicemeta.httpGet(url);
   }
-  getCheckinCoupons(servId, locId) {
-    const url = 'consumer/waitlist/service/' + servId + '/location/' + locId + '/coupons';
+  checkLogin() {
+    const login = (this.lStorageService.getitemfromLocalStorage('ynw-credentials')) ? true : false;
+    return login;
+  }
+  getCheckinCoupons(servId, locId, id?) {
+    let url;
+    if (this.checkLogin()) {
+      url = 'consumer/waitlist/service/' + servId + '/location/' + locId + '/coupons?providerConsumerId=' + id;
+    } else {
+      url = 'consumer/waitlist/service/' + servId + '/location/' + locId + '/coupons';
+    }
     return this.servicemeta.httpGet(url);
   }
   getServiceById(serviceId, type) {

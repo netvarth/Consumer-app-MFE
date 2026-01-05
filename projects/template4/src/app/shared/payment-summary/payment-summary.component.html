@@ -10,20 +10,24 @@
                 <span class="payment-summary__label">JDN</span>
                 <span class="payment-summary__value">-{{paymentDetails.jdnDiscount | currency:'&#8377; '}}</span>
             </div>
+            <ng-container *ngFor="let jcoupon of paymentDetails.jCouponList | keyvalue">
             <div class="payment-summary__row payment-summary__row--discount"
-                *ngFor="let jcoupon of paymentDetails.jCouponList | keyvalue">
+                 *ngIf="isCouponApplied(jcoupon)">
                 <span class="payment-summary__label">{{jcoupon.key}}</span>
                 <span class="payment-summary__value"
                     [class.payment-summary__value--zero]="jcoupon.value.value === '0.0'">-{{jcoupon.value.value |
                     currency:'&#8377; '}}</span>
             </div>
+        </ng-container>
+            <ng-container *ngFor="let coupon of paymentDetails.proCouponList | keyvalue">
             <div class="payment-summary__row payment-summary__row--discount"
-                *ngFor="let coupon of paymentDetails.proCouponList | keyvalue">
+                 *ngIf="isCouponApplied(coupon)">
                 <span class="payment-summary__label">{{coupon.key}}</span>
                 <span class="payment-summary__value"
                     [class.payment-summary__value--zero]="coupon.value.value === '0.0'">-{{coupon.value.value |
                     currency:'&#8377; '}}</span>
             </div>
+        </ng-container>
             <div class="payment-summary__row" *ngIf="paymentDetails.netTaxAmount">
                 <span class="payment-summary__label">{{'Tax' | translate}}</span>
                 <span class="payment-summary__value">+{{paymentDetails.netTaxAmount | currency:'&#8377; '}}</span>

@@ -16,7 +16,7 @@
 
 .coupon-ribbon {
     width: 14%;
-    height: 159px;
+    /* height: 159px; */
     background-color: #FD7029;
     border-radius: 9px 0px 0px 9px !important;
     position: relative;
@@ -200,4 +200,7 @@
 }
 .page{
     background-color: #F0F2F6;
+}
+:host ::ng-deep .mat-mdc-dialog-content{
+    max-height: none !important;
 }
