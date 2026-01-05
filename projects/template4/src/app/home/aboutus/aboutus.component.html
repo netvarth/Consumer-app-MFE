@@ -56,7 +56,11 @@
             rel="noopener"
             [href]="soc.value"
             target="_blank">
-            <i [class]="getSocialdet(soc.resource, 'iconClass')" aria-hidden="true"></i>
+            <img
+              *ngIf="getSocialIcon(soc.resource)"
+              [src]="getSocialIcon(soc.resource)"
+              [alt]="soc.resource"
+              class="aboutus__social-icon" />
           </a>
         </div>
       </div>

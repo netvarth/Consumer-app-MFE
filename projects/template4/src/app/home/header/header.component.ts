@@ -134,6 +134,12 @@ export class HeaderComponent implements OnInit {
     }
     let account = this.sharedService.getAccountInfo();
     this.locations = this.sharedService.getJson(account['location']);
+    let accountProfile = this.accountService.getJson(account['businessProfile']);
+    if (accountProfile.businessLogo && accountProfile.businessLogo.length > 0) {
+      this.logo = accountProfile.businessLogo[0].s3path;
+    } else {
+      this.logo = accountProfile.logo?.url;
+    }
     this.initSubscriptions();
     this.initHeader(null);
     const activeLoc = this.accountService.getActiveLocation();

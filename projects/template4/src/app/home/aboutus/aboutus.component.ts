@@ -2,6 +2,7 @@ import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { AccountService, CommonService, LocalStorageService, projectConstantsLocal, SharedService, WordProcessor } from 'jconsumer-shared';
+import { imageConstants } from '../../shared/image-constants';
 
 @Component({
   selector: 'app-aboutus',
@@ -30,6 +31,7 @@ export class AboutusComponent implements OnInit {
   virtualfieldsCombinedjson: any[];
   virtualfieldsSubdomainjson: any[];
   orgsocial_list = projectConstantsLocal.SOCIAL_MEDIA_CONSUMER;
+  cdnPath: string;
 
   constructor(
     private lStorageService: LocalStorageService,
@@ -56,6 +58,7 @@ export class AboutusComponent implements OnInit {
     this.setAccountVirtualFields(virtualFields);
     this.setBasicProfile();
     this.selectedLocation = this.accountService.getActiveLocation();
+    this.cdnPath = this.sharedService.getCDNPath();
   }
   goBack() {
     this.location.back();
@@ -113,6 +116,13 @@ export class AboutusComponent implements OnInit {
       returndet = 'bizyGlobe';
     }
     return returndet;
+  }
+
+  getSocialIcon(key: string) {
+    if (!this.cdnPath || !imageConstants[key]) {
+      return '';
+    }
+    return this.cdnPath + imageConstants[key];
   }
 
   actionPerformed(action) {
