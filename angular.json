@@ -70,7 +70,7 @@
 					"builder": "@angular-devkit/build-angular:application",
 					"options": {
 						"outputPath": "dist/root",
-						"baseHref": "/capp/",
+						"baseHref": "/",
 						"index": "projects/root/src/index.html",
 						"browser": "projects/root/src/main.ts",
 						"polyfills": [
