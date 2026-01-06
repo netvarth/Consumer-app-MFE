@@ -8,8 +8,11 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { QuestionnaireComponent } from './questionnaire.component';
 import { MatIconModule } from '@angular/material/icon';
+import { MatDialogModule } from '@angular/material/dialog';
 import { CapitalizeFirstPipeModule, FileService, JGalleryModule, LoadingSpinnerModule, SafeHtmlModule } from 'jconsumer-shared';
+
 import { SharedModule } from 'primeng/api';
+import { AttachmentPopupModule } from '../../attachment-popup/attachment-popup.module';
 @NgModule({
     declarations: [
         QuestionnaireComponent
@@ -28,7 +31,9 @@ import { SharedModule } from 'primeng/api';
         MatSelectModule,
         SafeHtmlModule,
         SharedModule,
-        MatIconModule
+        MatIconModule,
+        MatDialogModule,
+        AttachmentPopupModule
     ],
     providers:[FileService],
     exports: [QuestionnaireComponent]

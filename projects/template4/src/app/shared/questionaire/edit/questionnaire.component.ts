@@ -3,8 +3,10 @@ import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, 
 import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
+import { DomSanitizer } from '@angular/platform-browser';
 import { CommonService, DateTimeProcessor, ErrorMessagingService, FileService, JGalleryService, LocalStorageService, projectConstantsLocal, SharedService, ShowuploadfileComponent, ToastService, WordProcessor } from 'jconsumer-shared';
 import { QuestionaireService } from '../questionaire-service';
+import { AttachmentPopupComponent } from '../../attachment-popup/attachment-popup.component';
 
 @Component({
   selector: 'app-questionnaire',
@@ -88,6 +90,7 @@ export class QuestionnaireComponent implements OnInit, OnChanges {
     private dateProcessor: DateTimeProcessor,
     public dialog: MatDialog,
     private fileService: FileService,
+    private sanitizer: DomSanitizer,
     private commonService: CommonService,
     private sharedService: SharedService,
     private galleryService: JGalleryService,
@@ -1246,28 +1249,24 @@ export class QuestionnaireComponent implements OnInit, OnChanges {
     return true;
   }
   openAttachmentGallery(question, document) {
-    this.image_list_popup = [];
-    let count = 0;
     let imagePath;
     let caption = '';
     if (this.filestoUpload[question.labelName] && this.filestoUpload[question.labelName][document]) {
-      let type = this.filestoUpload[question.labelName][document].type.split('/');
+      const fileObj = this.filestoUpload[question.labelName][document];
+      let type = fileObj.type.split('/');
       if (type[0] === 'video' || type[0] === 'audio') {
-        const indx = this.audioVideoFiles.indexOf(this.filestoUpload[question.labelName][document]);
+        const indx = this.audioVideoFiles.indexOf(fileObj);
         this.showAudioVideoFile(this.audioVideoFiles[indx]);
       } else {
-        const indx = this.selectedMessage.indexOf(this.filestoUpload[question.labelName][document]);
-        if (indx !== -1) {
-          if (type[1] === 'pdf' || type[1] === 'docx' || type[1] === 'txt' || type[1] === 'doc') {
-            if (this.selectedMessage[indx].s3path) {
-              window.open(this.selectedMessage[indx].s3path, '_blank');
-            } else {
-              window.open(this.selectedMessage[indx].path, '_blank');
-            }
+        if (type[1] === 'pdf' || type[1] === 'docx' || type[1] === 'txt' || type[1] === 'doc') {
+          if (fileObj.s3path) {
+            window.open(fileObj.s3path, '_blank');
           } else {
-            imagePath = this.uploadedImages[indx].path;
-            caption = this.comments[question.labelName + '=' + document];
+            window.open(fileObj.path, '_blank');
           }
+        } else {
+          imagePath = this.getPreviewPath(fileObj);
+          caption = this.comments[question.labelName + '=' + document];
         }
       }
     } else if (this.uploadedFiles[question.labelName] && this.uploadedFiles[question.labelName][document]) {
@@ -1287,7 +1286,7 @@ export class QuestionnaireComponent implements OnInit, OnChanges {
             window.open(this.uploadedFiles[question.labelName][document].s3path, '_blank');
           }
           else {
-            imagePath = this.uploadedImages[indx].s3path;
+            imagePath = this.getPreviewPath(this.uploadedImages[indx]);
             caption = this.uploadedImages[indx].comments;
           }
 
@@ -1295,18 +1294,23 @@ export class QuestionnaireComponent implements OnInit, OnChanges {
       }
     }
     if (imagePath) {
-      const imgobj = {
-        src: imagePath,
-        thumb: imagePath,
-        alt: caption
-      }
-      this.image_list_popup.push(imgobj);
-      count++;
-    }
-    if (count > 0) {
-      setTimeout(() => {
-        this.openGallery(this.image_list_popup[0]);
-      }, 200);
+      const targetFile = this.filestoUpload[question.labelName]?.[document] || this.uploadedFiles[question.labelName]?.[document];
+      const s3path = targetFile?.s3path || targetFile?.path || imagePath;
+      const resolvedName = targetFile?.fileName || targetFile?.name || targetFile?.keyName || document || caption || 'attachment';
+      const resolvedType = targetFile?.fileType || targetFile?.type || targetFile?.mimeType || this.inferMimeFromName(resolvedName) || '';
+      const attachments = [{
+        ...targetFile,
+        s3path,
+        fileName: resolvedName,
+        fileType: resolvedType,
+        type: resolvedType
+      }];
+      this.dialog.open(AttachmentPopupComponent, {
+        width: '50%',
+        panelClass: ['popup-class', 'commonpopupmainclass'],
+        disableClose: true,
+        data: { attachments, theme: this.questionnaireList?.theme }
+      });
     }
   }
   openGallery(image): void {
@@ -1455,6 +1459,46 @@ export class QuestionnaireComponent implements OnInit, OnChanges {
   }
   reverse(s) {
     return s.split("-").reverse().join("-");
+  }
+  private getPreviewPath(fileObj: any): any {
+    if (!fileObj) {
+      return '';
+    }
+    const fromService = this.fileService.getImage(null, fileObj);
+    if (fromService) {
+      return fromService;
+    }
+    if (fileObj.s3path) {
+      return this.sanitizer.bypassSecurityTrustUrl(fileObj.s3path);
+    }
+    if (fileObj instanceof Blob) {
+      const blobUrl = URL.createObjectURL(fileObj);
+      return blobUrl;
+    }
+    return '';
+  }
+  private inferMimeFromName(name: string): string | null {
+    if (!name || typeof name !== 'string') {
+      return null;
+    }
+    const ext = name.split('.').pop()?.toLowerCase();
+    if (!ext) {
+      return null;
+    }
+    const map: { [key: string]: string } = {
+      jpg: 'image/jpeg',
+      jpeg: 'image/jpeg',
+      png: 'image/png',
+      gif: 'image/gif',
+      bmp: 'image/bmp',
+      svg: 'image/svg+xml',
+      webp: 'image/webp',
+      pdf: 'application/pdf',
+      txt: 'text/plain',
+      doc: 'application/msword',
+      docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    };
+    return map[ext] || null;
   }
 
   getItemQuantity(item) {

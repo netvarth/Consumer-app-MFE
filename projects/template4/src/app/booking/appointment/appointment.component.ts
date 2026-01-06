@@ -1553,7 +1553,8 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
 
     filesSelected(event, type) {
 
-        let loggedUser = this.groupService.getitemFromGroupStorage('ynw-user');
+        // use same storage key as other booking flows so owner id is set correctly
+        let loggedUser = this.groupService.getitemFromGroupStorage('jld_scon') || this.groupService.getitemFromGroupStorage('ynw-user');
         const input = event.target.files;
         let fileUploadtoS3 = [];
         if (input.length > 0) {
@@ -1933,9 +1934,6 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
                     }
                 }
             }
-            if (this.selectedMessage.files.length > 0) {
-                post_Data['attachments'] = this.filesToUpload;
-              }
             if (this.commObj['communicationEmail'] !== '' && this.appmtFor && this.appmtFor[0]) {
                 this.appmtFor[0]['email'] = this.commObj['communicationEmail'];
             }
@@ -1976,9 +1974,6 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
                 post_Data['useCredit'] = this.isJCreditSelected;
                 post_Data['useJcash'] = this.isJCashSelected;
             }
-            if (this.selectedMessage.files.length > 0) {
-                post_Data['attachments'] = this.filesToUpload;
-              }
             if (this.scheduledAppointment) {
                 post_Data['appmtFor'] = this.scheduledAppointment['appmtFor'];
             } else {
@@ -2072,15 +2067,27 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
                                 }
                                 parentUid = retData['parent_uuid'];
                             });
-                            _this.submitQuestionnaire(parentUid).then(
-                                () => {
+                            const continueWithServiceOptions = () => {
+                                if (_this.serviceOPtionInfo && _this.serviceOPtionInfo.answers) {
+                                    _this.submitserviceOptionQuestionnaire(parentUid).then(
+                                        () => {
+                                            resolve(true);
+                                        }
+                                    );
+                                } else {
                                     resolve(true);
                                 }
-                            );
-                            if (_this.serviceOPtionInfo && _this.serviceOPtionInfo.answers) {
-                                _this.submitserviceOptionQuestionnaire(parentUid).then(
+                            };
+                            if (_this.filesToUpload && _this.filesToUpload.length > 0) {
+                                _this.consumerNoteAndFileSave(parentUid).then(
                                     () => {
-                                        resolve(true);
+                                        continueWithServiceOptions();
+                                    }
+                                );
+                            } else {
+                                _this.submitQuestionnaire(parentUid).then(
+                                    () => {
+                                        continueWithServiceOptions();
                                     }
                                 );
                             }
@@ -2110,15 +2117,27 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
                                 }
                                 parentUid = retData['parent_uuid'];
                             });
-                            _this.submitQuestionnaire(parentUid).then(
-                                () => {
+                            const continueWithServiceOptions = () => {
+                                if (_this.serviceOPtionInfo && _this.serviceOPtionInfo.answers) {
+                                    _this.submitserviceOptionQuestionnaire(parentUid).then(
+                                        () => {
+                                            resolve(true);
+                                        }
+                                    );
+                                } else {
                                     resolve(true);
                                 }
-                            );
-                            if (_this.serviceOPtionInfo && _this.serviceOPtionInfo.answers) {
-                                _this.submitserviceOptionQuestionnaire(parentUid).then(
+                            };
+                            if (_this.filesToUpload && _this.filesToUpload.length > 0) {
+                                _this.consumerNoteAndFileSave(parentUid).then(
                                     () => {
-                                        resolve(true);
+                                        continueWithServiceOptions();
+                                    }
+                                );
+                            } else {
+                                _this.submitQuestionnaire(parentUid).then(
+                                    () => {
+                                        continueWithServiceOptions();
                                     }
                                 );
                             }
@@ -2132,6 +2151,14 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
             }
         })
     }
+    private getAttachmentsPayload() {
+        // Strip heavy File/base64 refs before sending to API
+        return (this.filesToUpload || []).map((file: any) => {
+            const { fileName, fileSize, caption, fileType, action, order, driveId, owner, ownerType, s3path, uid } = file;
+            return { fileName, fileSize, caption, fileType, action, order, driveId, owner, ownerType, s3path, uid };
+        });
+    }
+
     consumerNoteAndFileSave(uuid) {
         const _this = this;
         const dataToSend = {
@@ -2142,7 +2169,7 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
               telegram: false,
               whatsApp: false
             },
-            attachments: this.filesToUpload,
+            attachments: this.getAttachmentsPayload(),
           };
         return new Promise(function (resolve, reject) {
 
@@ -2560,9 +2587,9 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
             for (let index = 0; index < this.currentAttachment.length; index++) {
               this.filesToUpload.push(this.currentAttachment[index]);
             }
-            post_Data['attachments'] = this.filesToUpload;
+            post_Data['attachments'] = this.getAttachmentsPayload();
           } else if (this.selectedMessage.files.length > 0 && !this.currentAttachment ) {
-            post_Data['attachments'] = this.filesToUpload;
+            post_Data['attachments'] = this.getAttachmentsPayload();
 
           }
         this.subs.add(this.consumerService.rescheduleConsumerApptmnt(this.accountId, post_Data)

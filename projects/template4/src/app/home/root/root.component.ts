@@ -538,6 +538,8 @@ export class RootComponent implements OnInit, OnDestroy {
       .then(
         data => {
           if (data === 'reloadlist') {
+             _this.loadTodayBookings();
+            _this.loadFutureBookings();
           }
         }, error => {
           let errorObj = this.errorService.getApiError(error);
