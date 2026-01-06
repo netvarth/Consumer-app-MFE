@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { AccountService, AuthService, ConsumerService, DateTimeProcessor, GroupStorageService, LocalStorageService, OrderService, SharedService, SubscriptionService, ThemeService } from 'jconsumer-shared';
+import { AccountService, AuthService, ConsumerService, GroupStorageService, LocalStorageService, OrderService, SharedService, SubscriptionService, ThemeService } from 'jconsumer-shared';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -53,16 +53,10 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     private themeService: ThemeService,
     private authService: AuthService,
     private consumerService: ConsumerService,
-    private activatedRoute: ActivatedRoute,
-    private dateTimeProcessor: DateTimeProcessor
+    private activatedRoute: ActivatedRoute
   ) {
     this.onResize();
     this.activatedRoute.queryParams.subscribe(qparams => {
-      if (!lStorageService.getitemfromLocalStorage('sysdate')) {
-        this.dateTimeProcessor.getSystemDate().subscribe((sysDate) => {
-          this.lStorageService.setitemonLocalStorage('sysdate', sysDate);
-        })
-      }
       if (qparams && qparams['cl_dt']) {
         console.log(qparams['cl_dt']);
         if ((qparams['cl_dt'] == "true" || qparams['cl_dt'] == true) && !this.lStorageService.getitemfromLocalStorage('cleared')) {
