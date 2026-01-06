@@ -1,6 +1,7 @@
 import { AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, ElementRef, HostListener, NgZone, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute, NavigationExtras, Router } from "@angular/router";
 import { MatDialog } from "@angular/material/dialog";
+import { MatSnackBar } from "@angular/material/snack-bar";
 import { Location } from "@angular/common";
 import { TranslateService } from "@ngx-translate/core";
 import { MatCalendarCellCssClasses } from "@angular/material/datepicker";
@@ -214,6 +215,7 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
         private authService: AuthService,
         private groupService: GroupStorageService,
         private dialog: MatDialog,
+        private snackBar: MatSnackBar,
         private router: Router,
         private paytmService: PaytmService,
         private razorpayService: RazorpayService,
@@ -1834,9 +1836,9 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
                 }
                 this.selectedCoupons = [];
             }, error => {
-                this.isClickedOnce = false;
+                this.resetConfirmState();
                 let errorObj = this.errorService.getApiError(error);
-                // this.snackbarService.openSnackBar(this.wordProcessor.getProjectErrorMesssages(errorObj, this.accountService.getTerminologies()), { 'panelClass': 'snackbarerror' });
+                this.showErrorToast(this.wordProcessor.getProjectErrorMesssages(errorObj, this.sharedService.getTerminologies()));
             }));
     }
     getServiceQuestionaireAnswers() {
@@ -2008,7 +2010,7 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
         const _this = this;
         if (this.selectedService && this.selectedService.isPrePayment && !this.paymentMode && this.paymentDetails.amountRequiredNow > 0) {
             // this.snackbarService.openSnackBar('Please select one payment mode', { 'panelClass': 'snackbarerror' });
-            this.isClickedOnce = false;
+            this.resetConfirmState();
             return false;
         }
         let count = 0;
@@ -2084,11 +2086,9 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
                             }
 
                         }, error => {
-                            _this.isClickedOnce = false;
-                            _this.confirmButton['disabled'] = false;
+                            _this.resetConfirmState();
                             let errorObj = _this.errorService.getApiError(error);
-                            _this.apiError = _this.wordProcessor.getProjectErrorMesssages(errorObj, _this.sharedService.getTerminologies());
-                            _this.wordProcessor.apiErrorAutoHide(_this, error);
+                            _this.showErrorToast(_this.wordProcessor.getProjectErrorMesssages(errorObj, _this.sharedService.getTerminologies()));
                             resolve(false);
 
                         }));
@@ -2123,11 +2123,9 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
                                 );
                             }
                         }, error => {
-                            _this.isClickedOnce = false;
-                            _this.confirmButton['disabled'] = false;
+                            _this.resetConfirmState();
                             let errorObj = _this.errorService.getApiError(error);
-                            _this.apiError = _this.wordProcessor.getProjectErrorMesssages(errorObj, _this.sharedService.getTerminologies());
-                            _this.wordProcessor.apiErrorAutoHide(_this, error);
+                            _this.showErrorToast(_this.wordProcessor.getProjectErrorMesssages(errorObj, _this.sharedService.getTerminologies()));
                             resolve(false);
                         }));
                 }
@@ -2527,6 +2525,7 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
         const _this = this;
         console.log("selected Member :", selectedMembers);
         _this.appmtFor = selectedMembers;
+        _this.resetPaymentStateOnMemberChange();
         console.log(_this.appmtFor);
         if (_this.selectedService && _this.selectedService.minPrePaymentAmount) {
             _this.prepaymentAmount = _this.appmtFor.length * _this.selectedService.minPrePaymentAmount || 0;
@@ -2785,6 +2784,16 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
         } else {
             this.confirmButton['disabled'] = false;
         }
+    }
+    private resetPaymentStateOnMemberChange() {
+        this.paymentRequestId = null;
+        this.trackUuid = null;
+    }
+    private showErrorToast(message: string) {
+        const msg = message || this.translate.instant('Something went wrong') || 'Something went wrong';
+        this.apiError = msg;
+        this.snackBar?.open(msg, '', { duration: 4000, panelClass: 'snackbarerror' });
+        setTimeout(() => { this.apiError = ''; }, 4000);
     }
     private isCouponAppliedForSummary(entry: any): boolean {
         if (!entry) {

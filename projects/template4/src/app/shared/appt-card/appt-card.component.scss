@@ -224,37 +224,36 @@
     box-shadow: none !important;
   }
 
-  .btn-ghost,
-  .mat-mdc-unelevated-button.btn-ghost,
-  .mat-flat-button.btn-ghost {
-    background: #F8FAFC !important;
-    border: 1px solid var(--border, var(--_border)) !important;
-    color: var(--_fg) !important;
-    height: 33px !important;
-    padding: 0 14px !important;
-    border-radius: 10px !important;
-    font-weight: 600 !important;
-  }
-
-  .btn-outline,
-  .mat-mdc-unelevated-button.btn-outline,
-  .mat-flat-button.btn-outline {
-    background: transparent !important;
-    border: 1px solid linear-gradient(90deg, #FF5C1A 0%, #FF4A0F 100%);
-    color: linear-gradient(90deg, #FF5C1A 0%, #FF4A0F 100%) !important;
-    height: 33px !important;
-    padding: 6px 16px !important;
-    border-radius: 10px !important;
-    font-weight: 700 !important;
-  }
-
-  .omg-foot {
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    gap: 12px !important;
-  }
-
+    .btn-ghost,
+    .mat-mdc-unelevated-button.btn-ghost,
+    .mat-flat-button.btn-ghost {
+      background: #F8FAFC !important;
+      border: 1px solid var(--border, var(--_border)) !important;
+      color: var(--_fg) !important;
+      height: 33px !important;
+      padding: 0 14px !important;
+      border-radius: 10px !important;
+      font-weight: 600 !important;
+    }
+  
+    .btn-outline,
+    .mat-mdc-unelevated-button.btn-outline,
+    .mat-flat-button.btn-outline {
+      background: transparent !important;
+      border: 1px solid #FF5C1A !important;
+      color: #FF5C1A !important;
+      height: 33px !important;
+      padding: 6px 16px !important;
+      border-radius: 10px !important;
+      font-weight: 700 !important;
+    }
+  
+    .omg-foot {
+      display: flex !important;
+      justify-content: space-between !important;
+      align-items: center !important;
+      gap: 12px !important;
+    }
   .paid {
     font-size: 13px !important;
     color: var(--_fg) !important;
