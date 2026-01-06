@@ -1355,7 +1355,6 @@ export class QuestionnaireComponent implements OnInit, OnChanges {
     if (!this.type) {
       this.location.back();
     } else {
-      this.filestoUpload = [];
       this.editQnr();
       this.returnAnswers.emit('reload');
       if (this.type !== 'qnr-link') {
@@ -1486,17 +1485,17 @@ export class QuestionnaireComponent implements OnInit, OnChanges {
       return null;
     }
     const map: { [key: string]: string } = {
-      jpg: 'image/jpeg',
-      jpeg: 'image/jpeg',
-      png: 'image/png',
-      gif: 'image/gif',
-      bmp: 'image/bmp',
-      svg: 'image/svg+xml',
-      webp: 'image/webp',
-      pdf: 'application/pdf',
-      txt: 'text/plain',
-      doc: 'application/msword',
-      docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      jpg: 'jpeg',
+      jpeg: 'jpeg',
+      png: 'png',
+      gif: 'gif',
+      bmp: 'bmp',
+      svg: 'svg',
+      webp: 'webp',
+      pdf: 'pdf',
+      txt: 'text',
+      doc: 'docx',
+      docx: 'document'
     };
     return map[ext] || null;
   }
