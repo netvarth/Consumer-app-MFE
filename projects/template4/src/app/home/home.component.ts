@@ -95,6 +95,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       if (qparams && qparams['notification']) {
         this.lStorageService.setitemonLocalStorage('appNotification', qparams['notification']);
       }
+      
       // if (this.lStorageService.getitemfromLocalStorage('partner')) {
       //   this.categoryType = 'LAB_SYNC';
       //   this.isPartnerLogin = true;

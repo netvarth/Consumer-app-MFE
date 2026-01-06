@@ -347,6 +347,12 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
           countryCode: _this.dialCode
         }
       }
+      credentials['mUniqueId'] = this.lStorageService.getitemfromLocalStorage('mUniqueId');
+      credentials['deviceType'] = this.lStorageService.getitemfromLocalStorage('mode') ? 'IOS' : 'ANDROID';
+      if (this.lStorageService.getitemfromLocalStorage('appId')) {
+        credentials['appId'] = this.lStorageService.getitemfromLocalStorage('appId');
+      }
+
       if (_this.lStorageService.getitemfromLocalStorage('googleToken')) {
         credentials['userProfile']['email'] = _this.email;
         _this.authService.signUp(credentials).then((response) => {
@@ -394,7 +400,7 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
             _this.lStorageService.removeitemfromLocalStorage('c_authorizationToken');
             console.log("Login Response:", response);
             _this.setProviderConsumer().then(
-              () => {                
+              () => {
                 _this.actionPerformed.emit('success');
                 _this.cd.detectChanges();
               }
@@ -486,6 +492,11 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
                 loginId: loginId,
                 accountId: this.accountId
               }
+              credentials['mUniqueId'] = this.lStorageService.getitemfromLocalStorage('mUniqueId');
+              credentials['deviceType'] = this.lStorageService.getitemfromLocalStorage('mode') ? 'IOS' : 'ANDROID';
+              if (this.lStorageService.getitemfromLocalStorage('appId')) {
+                credentials['appId'] = this.lStorageService.getitemfromLocalStorage('appId');
+              }
               const token = _this.lStorageService.getitemfromLocalStorage('c_authorizationToken');
 
               this.authService.consumerLogin(credentials).then((loginResponse: any) => {
@@ -507,7 +518,7 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
                     _this.authService.doLogout().then(
                       () => {
                         console.log("401 DoLogout");
-                         _this.lStorageService.setitemonLocalStorage('c_authorizationToken', token);
+                        _this.lStorageService.setitemonLocalStorage('c_authorizationToken', token);
                         _this.lStorageService.removeitemfromLocalStorage('logout');
                         _this.authService.consumerLogin(credentials).then(
                           (loginResponse) => {
@@ -516,7 +527,7 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
                             _this.lStorageService.setitemonLocalStorage('refreshToken', token);
                             _this.lStorageService.removeitemfromLocalStorage('c_authorizationToken');
                             _this.setProviderConsumer().then(
-                              () => {                                
+                              () => {
                                 _this.actionPerformed.emit('success');
                               }
                             );
@@ -534,14 +545,14 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
                 } else if (error.status === 401) {
                   // _this.ngZone.run(
                   //   () => {
-                      // _this.step = 2;
-                      console.log("401 Error");
-                      this.btnClicked = false;
-                      let errorObj = this.errorService.getApiError(error);
-                      this.toastService.showError(errorObj);
-                      _this.loading = false;
-                      _this.goBack();
-                    }
+                  // _this.step = 2;
+                  console.log("401 Error");
+                  this.btnClicked = false;
+                  let errorObj = this.errorService.getApiError(error);
+                  this.toastService.showError(errorObj);
+                  _this.loading = false;
+                  _this.goBack();
+                }
                 //   )
                 // }
               })
@@ -612,13 +623,17 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
       accountId: _this.accountId
     }
     credentials['mUniqueId'] = this.lStorageService.getitemfromLocalStorage('mUniqueId');
+    credentials['deviceType'] = this.lStorageService.getitemfromLocalStorage('mode') ? 'IOS' : 'ANDROID';
+    if (this.lStorageService.getitemfromLocalStorage('appId')) {
+      credentials['appId'] = this.lStorageService.getitemfromLocalStorage('appId');
+    }
     _this.authService.consumerLogin(credentials).then((response: any) => {
       _this.lStorageService.setitemonLocalStorage('refreshToken', response.token);
       console.log("Login Response:", response);
       _this.lStorageService.removeitemfromLocalStorage('googleToken');
       _this.lStorageService.removeitemfromLocalStorage('c_authorizationToken');
       _this.setProviderConsumer().then(
-        () => {          
+        () => {
           _this.actionPerformed.emit('success');
         })
     }, (error: any) => {

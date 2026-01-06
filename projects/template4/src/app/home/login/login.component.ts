@@ -111,11 +111,11 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.cdnPath = this.sharedService.getCDNPath();
   }
   get isAndroidBridgeAvailable(): boolean {
-  return !!(window as any).Android && typeof (window as any).Android.signInWithGoogle === 'function';
+    return !!(window as any).Android && typeof (window as any).Android.signInWithGoogle === 'function';
   }
   ngOnInit() {
     this.isIOSApp = this.lStorageService.getitemfromLocalStorage('ios');
-    console.log('isIOS app : '+this.isIOSApp);
+    console.log('isIOS app : ' + this.isIOSApp);
     const _this = this;
     this.lStorageService.removeitemfromLocalStorage('logout');
     this.accountConfig = this.sharedService.getAccountConfig();
@@ -233,6 +233,10 @@ export class LoginComponent implements OnInit, OnDestroy {
       accountId: _this.sharedService.getAccountID()
     }
     credentials['mUniqueId'] = this.lStorageService.getitemfromLocalStorage('mUniqueId');
+    credentials['deviceType'] = this.lStorageService.getitemfromLocalStorage('mode') ? 'IOS' : 'ANDROID';
+    if (this.lStorageService.getitemfromLocalStorage('appId')) {
+      credentials['appId'] = this.lStorageService.getitemfromLocalStorage('appId');
+    }
     _this.authService.consumerLogin(credentials).then((response: any) => {
       // const token = _this.lStorageService.getitemfromLocalStorage('c_authorizationToken');
       _this.lStorageService.setitemonLocalStorage('refreshToken', response.token);
@@ -396,6 +400,11 @@ export class LoginComponent implements OnInit, OnDestroy {
               loginId: loginId,
               accountId: this.sharedService.getAccountID()
             }
+            credentials['mUniqueId'] = this.lStorageService.getitemfromLocalStorage('mUniqueId');
+            credentials['deviceType'] = this.lStorageService.getitemfromLocalStorage('mode') ? 'IOS' : 'ANDROID';
+            if (this.lStorageService.getitemfromLocalStorage('appId')) {
+              credentials['appId'] = this.lStorageService.getitemfromLocalStorage('appId');
+            }
             console.log(this.lStorageService.getitemfromLocalStorage('c_authorizationToken'));
             console.log(credentials);
             this.authService.consumerLogin(credentials).then((response) => {
@@ -414,7 +423,7 @@ export class LoginComponent implements OnInit, OnDestroy {
                 if (!isLoggedIn) {
                   let authToken = _this.lStorageService.getitemfromLocalStorage('c_authorizationToken');
                   _this.authService.doLogout().then(
-                    () => {                      
+                    () => {
                       this.lStorageService.setitemonLocalStorage('c_authorizationToken', authToken);
                       _this.authService.consumerLogin(credentials).then(
                         () => {
@@ -431,7 +440,7 @@ export class LoginComponent implements OnInit, OnDestroy {
                   _this.performAction();
                 }
               } else if (error.status === 401) {
-                 _this.btnClicked = false;
+                _this.btnClicked = false;
                 let errorObj = _this.errorService.getApiError(error);
                 _this.toastService.showError(errorObj);
                 this.loading = false;
@@ -443,7 +452,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           let errorObj = _this.errorService.getApiError(error);
           _this.toastService.showError(errorObj);
           this.loading = false;
-          this.initGoogleButton();         
+          this.initGoogleButton();
         }
       ));
     }
@@ -548,6 +557,10 @@ export class LoginComponent implements OnInit, OnDestroy {
             accountId: _this.sharedService.getAccountID()
           }
           credentials['mUniqueId'] = this.lStorageService.getitemfromLocalStorage('mUniqueId');
+          credentials['deviceType'] = this.lStorageService.getitemfromLocalStorage('mode') ? 'IOS' : 'ANDROID';
+          if (this.lStorageService.getitemfromLocalStorage('appId')) {
+            credentials['appId'] = this.lStorageService.getitemfromLocalStorage('appId');
+          }
           this.authService.consumerLogin(credentials).then((response) => {
             console.log("Login Response:", response);
             const token = _this.lStorageService.getitemfromLocalStorage('c_authorizationToken');
