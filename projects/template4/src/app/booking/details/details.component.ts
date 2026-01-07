@@ -669,7 +669,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
     this.location.back();
   }
   gotoHome() {
-    this.router.navigate([this.sharedService.getRouteID()])
+    this.router.navigate([this.sharedService.getRouteID(), 'bookings'])
   }
   rescheduleBooking() {
     let queryParams = {
