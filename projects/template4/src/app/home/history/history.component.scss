@@ -44,6 +44,42 @@
     padding-bottom: 9px;
 }
 
+:host ::ng-deep .action-menu {
+    position: absolute;
+    right: 0;
+    top: 38px;
+    background: #ffffff;
+    border: 1px solid #eaeaea;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+    padding: 6px 0;
+    width: 200px;
+    z-index: 12;
+}
+
+:host ::ng-deep .history-card .action-menu-item {
+    width: 100%;
+    border: none;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    color: #404040;
+    font-weight: 600;
+    text-align: left;
+    line-height: normal !important;
+    border-radius: 0 !important;
+}
+
+:host ::ng-deep .action-menu-item:hover {
+    background: #f7f7f7;
+}
+
+:host ::ng-deep .action-menu-item.danger {
+    color: #e45858;
+}
+
 .history-login {
     margin-top: 16px;
 }
@@ -101,17 +137,19 @@
     display: flex;
     align-items: center;
     gap: 8px;
+    position: relative;
 }
 
-.history-card__header .mat-icon-button {
+.history-card__header-actions .icon-btn {
     width: 30px;
     height: 30px;
+    border-radius: 10px;
+    border: none;
     color: #ffffff;
     background: rgba(255, 255, 255, 0.15);
-}
-
-.history-card__header .mat-icon-button .mat-icon {
-    color: inherit;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .status-pill {

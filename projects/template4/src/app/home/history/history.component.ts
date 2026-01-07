@@ -68,6 +68,7 @@ export class ConsumerHistoryComponent implements OnInit, OnDestroy {
   uuid: any;
   addnotedialogRef;
   hideLocationGlobal: boolean = false;
+  actionMenuOpenIndex: number | null = null;
   constructor(
     private router: Router, private location: Location,
     public dialog: MatDialog, private activateroute: ActivatedRoute,
@@ -89,6 +90,13 @@ export class ConsumerHistoryComponent implements OnInit, OnDestroy {
       this.small_device_display = true;
     } else {
       this.small_device_display = false;
+    }
+  }
+
+  @HostListener('document:click', ['$event'])
+  closeMenuOnOutside(event: Event) {
+    if (this.actionMenuOpenIndex !== null) {
+      this.actionMenuOpenIndex = null;
     }
   }
   ngOnInit() {
@@ -611,6 +619,19 @@ export class ConsumerHistoryComponent implements OnInit, OnDestroy {
   }
   goback() {
     this.location.back();
+  }
+
+  toggleActionMenu(index: number, event: Event) {
+    event.stopPropagation();
+    this.actionMenuOpenIndex = this.actionMenuOpenIndex === index ? null : index;
+  }
+
+  closeActionMenu() {
+    this.actionMenuOpenIndex = null;
+  }
+
+  onMenuClick(event: Event) {
+    event.stopPropagation();
   }
   getOrderHistory() {
     this.loadcomplete.history = false;

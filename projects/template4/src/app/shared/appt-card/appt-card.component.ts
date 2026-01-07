@@ -1,8 +1,7 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { CalendarOptions, GoogleCalendar } from 'datebook'
 import { BookingService, DateTimeProcessor, Messages, projectConstantsLocal, SharedService, WordProcessor } from 'jconsumer-shared';
-import { MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
   selector: 'app-appt-card',
@@ -17,7 +16,7 @@ export class ApptCardComponent implements OnInit, OnChanges {
   @Output() actionPerformed = new EventEmitter<any>();
   @Input() smallDevice;
   @Input() history;
-  @ViewChild(MatMenuTrigger) menuTrigger: MatMenuTrigger;
+  actionMenuOpen = false;
 
   send_msg_cap = Messages.SEND_MSG_CAP;
   rate_visit = Messages.RATE_VISIT;
@@ -70,6 +69,13 @@ export class ApptCardComponent implements OnInit, OnChanges {
     ) { 
       this.cdnPath = this.sharedService.getCDNPath();
     }
+
+  @HostListener('document:click', ['$event'])
+  closeMenuOnOutside(event: Event) {
+    if (this.actionMenuOpen) {
+      this.actionMenuOpen = false;
+    }
+  }
 
   ngOnInit(): void {
     this.provider_label = this.wordProcessor.getTerminologyTerm('provider');
@@ -270,7 +276,7 @@ export class ApptCardComponent implements OnInit, OnChanges {
   }
   cardActionPerformed(type, action, booking, event) {
     event.stopPropagation();
-    this.menuTrigger?.closeMenu(); // keep menu from staying open when triggering actions
+    this.closeActionMenu();
     const actionObj = {};
     actionObj['type'] = type;
     actionObj['action'] = action;
@@ -278,6 +284,19 @@ export class ApptCardComponent implements OnInit, OnChanges {
     actionObj['event'] = event;
     actionObj['timetype'] = this.type;
     this.actionPerformed.emit(actionObj);
+  }
+
+  toggleActionMenu(event: Event) {
+    event.stopPropagation();
+    this.actionMenuOpen = !this.actionMenuOpen;
+  }
+
+  closeActionMenu() {
+    this.actionMenuOpen = false;
+  }
+
+  onMenuClick(event: Event) {
+    event.stopPropagation();
   }
   
   getBookingStatusClass(status) {

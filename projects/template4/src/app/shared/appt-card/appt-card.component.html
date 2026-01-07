@@ -33,30 +33,41 @@
       </div>
     </div>
 
-    <button mat-icon-button [matMenuTriggerFor]="appMenu" (click)="stopprop($event)" class="omg-kebab">
-      <mat-icon>more_horiz</mat-icon>
+    <button type="button" class="icon-btn subtle omg-kebab" (click)="toggleActionMenu($event)">
+      <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
     </button>
-    <mat-menu #appMenu="matMenu">
-      <button mat-menu-item *ngIf="showRescheduleBtn" (click)="cardActionPerformed('appt','reschedule',booking,$event)">
-        <i class="consumer-reschedule-icon"></i>{{ 'Reschedule' | translate }}
+    <div class="action-menu" *ngIf="actionMenuOpen" (click)="onMenuClick($event)">
+      <button type="button" class="action-menu-item"
+        (click)="cardActionPerformed('appt','communicate',booking,$event)">
+        <i class="fa fa-comments" aria-hidden="true"></i>
+        <span>{{ 'Message to Provider' | translate }}</span>
       </button>
-      <button mat-menu-item *ngIf="showCancelBtn" (click)="cardActionPerformed('appt','cancel',booking,$event)">
-        <i class="fa cross-icon"></i>{{ 'Cancel' | translate }}
+      <button type="button" class="action-menu-item" *ngIf="showRescheduleBtn"
+        (click)="cardActionPerformed('appt','reschedule',booking,$event)">
+        <i class="fa fa-calendar" aria-hidden="true"></i>
+        <span>{{ 'Reschedule' | translate }}</span>
       </button>
-      <button mat-menu-item (click)="cardActionPerformed('appt','communicate',booking,$event)">
-        <i class="fa chat-icon"></i>{{ send_msg_cap | translate }}
+      <button type="button" class="action-menu-item"
+        (click)="cardActionPerformed('appt','sendAttachment',booking,$event)">
+        <i class="fa fa-paperclip" aria-hidden="true"></i>
+        <span>{{ 'Send Attachment' | translate }}</span>
       </button>
-      <button mat-menu-item (click)="cardActionPerformed('appt','sendAttachment',booking,$event)">
-        <i class="material-icons">attach_file</i>{{ 'Send Attachments' | translate }}
-      </button>
-      <button mat-menu-item *ngIf="showViewAttachBtn"
+      <button type="button" class="action-menu-item" *ngIf="showViewAttachBtn"
         (click)="cardActionPerformed('appt','viewAttachment',booking,$event)">
-        <i class="material-icons">attach_file</i>{{ 'View Attachments' | translate }}
+        <i class="fa fa-folder-open" aria-hidden="true"></i>
+        <span>{{ 'View Attachments' | translate }}</span>
       </button>
-      <button mat-menu-item *ngIf="showRateBtn" (click)="cardActionPerformed('appt','rating',booking,$event)">
-        <i class="fa fa-star-o"></i>{{ rate_visit | translate }}
+      <button type="button" class="action-menu-item" *ngIf="showRateBtn"
+        (click)="cardActionPerformed('appt','rating',booking,$event)">
+        <i class="fa fa-star-o"></i>
+        <span>{{ rate_visit | translate }}</span>
       </button>
-    </mat-menu>
+      <button type="button" class="action-menu-item danger" *ngIf="showCancelBtn"
+        (click)="cardActionPerformed('appt','cancel',booking,$event)">
+        <i class="fa fa-ban" aria-hidden="true"></i>
+        <span>{{ 'Cancel Booking' | translate }}</span>
+      </button>
+    </div>
   </div>
 
   <!-- main row -->

@@ -18,7 +18,7 @@
 
     <div *ngIf="!loading && loggedIn">
       <ng-container *ngIf="entire_history && entire_history.length; else emptyHistory">
-        <article class="history-card" *ngFor="let entry of entire_history">
+        <article class="history-card" *ngFor="let entry of entire_history; let i = index">
           <header class="history-card__header calbg-top" [ngClass]="getHeaderClass(entry)">
             <div>
               <span class="history-card__eyebrow">{{ getEntryHeaderLabel(entry) }}</span>
@@ -26,9 +26,84 @@
             </div>
             <div class="history-card__header-actions">
               <span [ngClass]="getStatusPillClass(entry)">{{ getEntryStatusText(entry) }}</span>
-              <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="History actions">
-                <mat-icon>more_horiz</mat-icon>
+              <button type="button" class="icon-btn subtle history-kebab" aria-label="History actions"
+                (click)="toggleActionMenu(i, $event)">
+                <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
               </button>
+              <div class="action-menu" *ngIf="actionMenuOpenIndex === i" (click)="onMenuClick($event)">
+                <ng-container *ngIf="isWaitlistEntry(entry)">
+                  <button type="button" class="action-menu-item" (click)="addWaitlistMessage(entry); closeActionMenu()">
+                    <i class="fa fa-comments" aria-hidden="true"></i>
+                    <span>{{ 'Message to Provider' | translate }}</span>
+                  </button>
+                  <button type="button" class="action-menu-item" (click)="showBookingDetails(entry); closeActionMenu()">
+                    <i class="fa fa-file-text"></i>
+                    <span>View Booking</span>
+                  </button>
+                  <button type="button" class="action-menu-item" *ngIf="entry.billStatus"
+                    (click)="getWaitlistBill(entry); closeActionMenu()">
+                    <i class="fa fa-newspaper-o"></i>
+                    <span>Invoice</span>
+                  </button>
+                  <button type="button" class="action-menu-item" *ngIf="entry.prescShared"
+                    (click)="viewprescription(entry); closeActionMenu()">
+                    <i class="mr-rx-icon-customer"></i>
+                    <span>View Prescription</span>
+                  </button>
+                  <button type="button" class="action-menu-item" *ngIf="entry.waitlistStatus === 'done'"
+                    [class.rated]="isRated(entry)" (click)="rateService(entry); closeActionMenu()">
+                    <i class="fa fa-star-o" aria-hidden="true"></i>
+                    <span>{{ rate_your_visit }}</span>
+                  </button>
+                </ng-container>
+
+                <ng-container *ngIf="isAppointmentEntry(entry)">
+                  <button type="button" class="action-menu-item" (click)="addApptMessage(entry); closeActionMenu()">
+                    <i class="fa fa-comments" aria-hidden="true"></i>
+                    <span>{{ 'Message to Provider' | translate }}</span>
+                  </button>
+                  <button type="button" class="action-menu-item" (click)="showBookingDetails(entry); closeActionMenu()">
+                    <i class="fa fa-file-text"></i>
+                    <span>View Booking</span>
+                  </button>
+                  <button type="button" class="action-menu-item" *ngIf="entry.billStatus"
+                    (click)="getApptBill(entry); closeActionMenu()">
+                    <i class="fa fa-newspaper-o"></i>
+                    <span>Invoice</span>
+                  </button>
+                  <button type="button" class="action-menu-item" *ngIf="entry.prescShared"
+                    (click)="viewprescription(entry); closeActionMenu()">
+                    <i class="mr-rx-icon-customer"></i>
+                    <span>View Prescription</span>
+                  </button>
+                  <button type="button" class="action-menu-item" *ngIf="entry.apptStatus === 'Completed'"
+                    [class.rated]="isRated(entry)" (click)="rateApptService(entry); closeActionMenu()">
+                    <i class="fa fa-star-o" aria-hidden="true"></i>
+                    <span>{{ rate_your_visit }}</span>
+                  </button>
+                </ng-container>
+
+                <ng-container *ngIf="isOrderEntry(entry)">
+                  <button type="button" class="action-menu-item" (click)="addordertMessage(entry); closeActionMenu()">
+                    <i class="fa fa-comments" aria-hidden="true"></i>
+                    <span>{{ 'Message to Provider' | translate }}</span>
+                  </button>
+                  <button type="button" class="action-menu-item" (click)="showBookingDetails(entry); closeActionMenu()">
+                    <i class="fa fa-file-text"></i>
+                    <span>View Order</span>
+                  </button>
+                  <button type="button" class="action-menu-item" [class.rated]="isRated(entry)"
+                    (click)="rateOrderService(entry); closeActionMenu()">
+                    <i class="fa fa-star-o" aria-hidden="true"></i>
+                    <span>Rate Your Order</span>
+                  </button>
+                  <button type="button" class="action-menu-item" *ngIf="entry.bill && entry.bill.billViewStatus === 'Show'"
+                    (click)="getOrderBill(entry); closeActionMenu()">
+                    <i class="bill-icon-history"></i>
+                    <span>Invoice</span>
+                  </button>
+                </ng-container>
+              </div>
             </div>
           </header>
 
@@ -144,72 +219,6 @@
             </ng-container>
           </div>
 
-          <mat-menu #menu="matMenu">
-            <ng-container *ngIf="isWaitlistEntry(entry)">
-              <button mat-menu-item (click)="showBookingDetails(entry)">
-                <i class="fa fa-file-text"></i>
-                <span>View Booking</span>
-              </button>
-              <button mat-menu-item (click)="addWaitlistMessage(entry)">
-                <i class="fa chat-icon"></i>
-                <span>{{ send_message_cap }}</span>
-              </button>
-              <button mat-menu-item *ngIf="entry.billStatus" (click)="getWaitlistBill(entry)">
-                <i class="fa fa-newspaper-o"></i>
-                <span>Invoice</span>
-              </button>
-              <button mat-menu-item *ngIf="entry.prescShared" (click)="viewprescription(entry)">
-                <i class="mr-rx-icon-customer"></i>
-                <span>View Prescription</span>
-              </button>
-              <button mat-menu-item *ngIf="entry.waitlistStatus === 'done'" [class.rated]="isRated(entry)" (click)="rateService(entry)">
-                <i class="fa fa-star-o" aria-hidden="true"></i>
-                <span>{{ rate_your_visit }}</span>
-              </button>
-            </ng-container>
-
-            <ng-container *ngIf="isAppointmentEntry(entry)">
-              <button mat-menu-item (click)="showBookingDetails(entry)">
-                <i class="fa fa-file-text"></i>
-                <span>View Booking</span>
-              </button>
-              <button mat-menu-item (click)="addApptMessage(entry)">
-                <i class="fa chat-icon"></i>
-                <span>{{ send_message_cap }}</span>
-              </button>
-              <button mat-menu-item *ngIf="entry.billStatus" (click)="getApptBill(entry)">
-                <i class="fa fa-newspaper-o"></i>
-                <span>Invoice</span>
-              </button>
-              <button mat-menu-item *ngIf="entry.prescShared" (click)="viewprescription(entry)">
-                <i class="mr-rx-icon-customer"></i>
-                <span>View Prescription</span>
-              </button>
-              <button mat-menu-item *ngIf="entry.apptStatus === 'Completed'" [class.rated]="isRated(entry)" (click)="rateApptService(entry)">
-                <i class="fa fa-star-o" aria-hidden="true"></i>
-                <span>{{ rate_your_visit }}</span>
-              </button>
-            </ng-container>
-
-            <ng-container *ngIf="isOrderEntry(entry)">
-              <button mat-menu-item (click)="showBookingDetails(entry)">
-                <i class="fa fa-file-text"></i>
-                <span>View Order</span>
-              </button>
-              <button mat-menu-item (click)="addordertMessage(entry)">
-                <i class="fa chat-icon"></i>
-                <span>{{ send_message_cap }}</span>
-              </button>
-              <button mat-menu-item [class.rated]="isRated(entry)" (click)="rateOrderService(entry)">
-                <i class="fa fa-star-o" aria-hidden="true"></i>
-                <span>Rate Your Order</span>
-              </button>
-              <button mat-menu-item *ngIf="entry.bill && entry.bill.billViewStatus === 'Show'" (click)="getOrderBill(entry)">
-                <i class="bill-icon-history"></i>
-                <span>Invoice</span>
-              </button>
-            </ng-container>
-          </mat-menu>
         </article>
       </ng-container>
     </div>
