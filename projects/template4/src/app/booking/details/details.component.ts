@@ -90,6 +90,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
   cdnPath: string = '';
   activeUser: any;
    hideLocationGlobal: boolean = false;
+  _type: string | null = null;
   constructor(
     private sharedService: SharedService,
     private activatedRoute: ActivatedRoute,
@@ -252,6 +253,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
 
       _this.setVirtualService(booking);
       _this.setStatus(booking);
+      _this.setBookingType(booking);
       _this.generateQR(booking);
       _this.setActions(booking);
       _this.setQuestionaries(booking);
@@ -260,6 +262,16 @@ export class DetailsComponent implements OnInit, OnDestroy {
     })
   }
   setActions(booking: any) {
+    Object.keys(this.booking['actions']).forEach((key) => {
+      this.booking['actions'][key] = false;
+    });
+
+    const apptStatus = (booking?.apptStatus || '').toLowerCase();
+    const waitlistStatus = (booking?.waitlistStatus || '').toLowerCase();
+    const isAppointment = this.booking['isAppointment'];
+    const isVirtual = booking?.service?.serviceType === 'virtualService';
+    const isToday = this._type === 'today';
+
     if (booking.apptStatus === 'Cancelled') {
       this.booking['isCancelled'] = true;
       this.booking['cancelReason'] = this.getCancelledReasonDisplayName(booking.cancelReason);
@@ -268,20 +280,27 @@ export class DetailsComponent implements OnInit, OnDestroy {
     if (booking.hasAttachment) {
       this.booking['actions']['hasAttachment'] = true;
     }
-    if (this.booking['isAppointment']) {
-      if (booking.apptStatus !== 'Cancelled' || booking.apptStatus == 'checkedIn') {
+    if (isAppointment) {
+      if (apptStatus && apptStatus !== 'cancelled' && apptStatus !== 'rejected') {
         this.booking['actions']['sendAttachment'] = true;
       }
-      if (booking.apptStatus !== 'done' && booking.apptStatus !== 'Cancelled' && this.callingChannel == 'VideoCall') {
+
+      const canRescheduleAppt = apptStatus === 'confirmed' || apptStatus === 'arrived';
+      const canCancelAppt = apptStatus === 'confirmed' || apptStatus === 'arrived' || apptStatus === 'prepaymentpending';
+      if (!this.booking['isHistory'] && canRescheduleAppt) {
+        this.booking['actions']['reschedule'] = true;
+      }
+      if (!this.booking['isHistory'] && canCancelAppt) {
+        this.booking['actions']['cancel'] = true;
+      }
+
+      const canJoinAppt = isToday && isVirtual
+        && (apptStatus === 'started' || apptStatus === 'arrived' || apptStatus === 'confirmed');
+      if (canJoinAppt && this.callingChannel === 'VideoCall' && booking?.videoCallButton === 'ENABLED') {
         this.booking['actions']['joinJaldeeVideo'] = true;
       }
-      if (booking.apptStatus !== 'done' && booking.apptStatus !== 'Cancelled'
-        && (this.callingChannel == 'GoogleMeet' || this.callingChannel == 'Zoom')) {
+      if (canJoinAppt && (this.callingChannel === 'GoogleMeet' || this.callingChannel === 'Zoom')) {
         this.booking['actions']['joinMeeting'] = true;
-      }
-      if (!booking['isHistory'] && booking.apptStatus !== 'Completed' && booking.apptStatus !== 'Cancelled') {
-        this.booking['actions']['cancel'] = true;
-        this.booking['actions']['reschedule'] = true;
       }
     } else {
       if (booking.waitlistStatus === 'cancelled') {
@@ -289,19 +308,27 @@ export class DetailsComponent implements OnInit, OnDestroy {
         this.booking['cancelReason'] = this.getCancelledReasonDisplayName(booking.waitlistCancelReason);
         this.booking['cancelMessage'] = booking.cancelReasonMessage;
       }
-      if (booking.waitlistStatus !== 'cancelled' || booking.waitlistStatus == 'checkedIn') {
+
+      if (waitlistStatus && waitlistStatus !== 'cancelled') {
         this.booking['actions']['sendAttachment'] = true;
       }
-      if (booking.waitlistStatus !== 'done' && booking.waitlistStatus !== 'cancelled' && this.callingChannel == 'VideoCall') {
+
+      const canRescheduleWaitlist = waitlistStatus === 'checkedin' || waitlistStatus === 'arrived';
+      const canCancelWaitlist = canRescheduleWaitlist || waitlistStatus === 'prepaymentpending';
+      if (!this.booking['isHistory'] && canRescheduleWaitlist) {
+        this.booking['actions']['reschedule'] = true;
+      }
+      if (!this.booking['isHistory'] && canCancelWaitlist) {
+        this.booking['actions']['cancel'] = true;
+      }
+
+      const canJoinWaitlist = isToday && isVirtual
+        && (waitlistStatus === 'started' || waitlistStatus === 'arrived' || waitlistStatus === 'checkedin');
+      if (canJoinWaitlist && this.callingChannel === 'VideoCall' && booking?.videoCallButton === 'ENABLED') {
         this.booking['actions']['joinJaldeeVideo'] = true;
       }
-      if (booking.waitlistStatus !== 'done' && booking.waitlistStatus !== 'cancelled'
-        && (this.callingChannel == 'GoogleMeet' || this.callingChannel == 'Zoom')) {
+      if (canJoinWaitlist && (this.callingChannel === 'GoogleMeet' || this.callingChannel === 'Zoom')) {
         this.booking['actions']['joinMeeting'] = true;
-      }
-      if (!booking['isHistory'] && booking.waitlistStatus !== 'done' && booking.waitlistStatus !== 'cancelled') {
-        this.booking['actions']['cancel'] = true;
-        this.booking['actions']['reschedule'] = true;
       }
     }
   }
@@ -454,6 +481,39 @@ export class DetailsComponent implements OnInit, OnDestroy {
       if (booking?.service?.serviceType !== 'virtualService' || (booking?.service?.serviceType === 'virtualService' && booking.waitlistStatus !== 'arrived')) {
         this.booking['status'] = this.bookingStatuses[booking.waitlistStatus];
       }
+    }
+  }
+  setBookingType(booking: any) {
+    const dateValue = booking?.appmtDate || booking?.date;
+    if (!dateValue) {
+      this._type = null;
+      return;
+    }
+
+    const moment = this.dateTimeProcessor.getMoment();
+    if (!moment) {
+      this._type = null;
+      return;
+    }
+
+    let todayMoment;
+    let bookingMoment;
+    if (booking?.timezone && moment.tz) {
+      todayMoment = moment().tz(booking.timezone);
+      bookingMoment = moment.tz(dateValue, booking.timezone);
+    } else {
+      todayMoment = moment();
+      bookingMoment = moment(dateValue, 'YYYY-MM-DD');
+    }
+
+    const today = todayMoment.format('YYYY-MM-DD');
+    const bookingDate = bookingMoment.format('YYYY-MM-DD');
+    if (bookingDate === today) {
+      this._type = 'today';
+    } else if (bookingMoment.isAfter(todayMoment)) {
+      this._type = 'future';
+    } else {
+      this._type = 'history';
     }
   }
   setWhatsApp(booking: any) {

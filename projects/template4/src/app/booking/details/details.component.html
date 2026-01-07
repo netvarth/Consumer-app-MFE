@@ -91,20 +91,28 @@
         </div>
       </div>
 
-      <ng-container *ngIf="booking['actions']['joinJaldeeVideo'] && meetingDetails?.joiningUrl; else joinWithHandler">
-        <button type="button" class="cta-button" id="btnJoinVideo" *ngIf="booking['actions']['joinMeeting'] || booking['actions']['joinJaldeeVideo']"
-          (click)="joinMeeting()">
-          <i class="fa fa-video-camera" aria-hidden="true"></i>
-          <span>{{'Join Video Consultation' | translate}}</span>
-        </button>
-        
+      
+      <ng-container *ngIf="booking?.info as bookingInfo">
+        <div *ngIf="booking['actions']['joinMeeting']
+            && bookingInfo.service?.serviceType === 'virtualService'
+            && (bookingInfo.service?.virtualCallingModes?.[0]?.callingMode === 'GoogleMeet'
+              || bookingInfo.service?.virtualCallingModes?.[0]?.callingMode === 'Zoom')">
+          <a class="cta-button" id="btnJoinVideo" *ngIf="meetingDetails?.joiningUrl"
+            [href]="meetingDetails.joiningUrl" target="_blank">
+            <i class="fa fa-video-camera" aria-hidden="true"></i>
+            <span>{{'Join Video Consultation' | translate}}</span>
+          </a>
+        </div>
+
+        <div *ngIf="booking['actions']['joinJaldeeVideo']
+            && bookingInfo.service?.serviceType === 'virtualService'
+            && bookingInfo.service?.virtualCallingModes?.[0]?.callingMode === 'VideoCall'">
+          <button type="button" class="cta-button" id="btnJoinJaldeeVideo" (click)="joinMeeting()">
+            <i class="fa fa-video-camera" aria-hidden="true"></i>
+            <span>{{'Join Video Consultation' | translate}}</span>
+          </button>
+        </div>
       </ng-container>
-      <ng-template *ngIf="booking['actions']['joinJaldeeVideo'] && meetingDetails?.joiningUrl;" #joinWithHandler>
-        <a class="cta-button" id="btnJoinJaldeeVideo" [href]="meetingDetails.joiningUrl" target="_blank">
-          <i class="fa fa-video-camera" aria-hidden="true"></i>
-          <span>{{'Join Video Consultation' | translate}}</span>
-        </a>
-      </ng-template>
 
       <div class="card instructions-card">
         <div class="card-title">{{'Instructions' | translate}}</div>

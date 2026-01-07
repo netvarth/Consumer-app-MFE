@@ -61,7 +61,6 @@
 
   <!-- main row -->
   <div class="omg-main">
-    <!-- LEFT: flat date column (exact like screenshot) -->
     <div class="cal-card">
       <div class="cal-top calbg-top">
         <span class="cal-month">{{ booking.appmtDate | date:'MMM' }}</span>
@@ -73,7 +72,7 @@
     </div>
     <!-- RIGHT: info -->
     <div class="omg-info">
-      <h3 class="title wrap_txt" (click)="cardActionPerformed('appt','providerDetails',booking,$event)">
+      <h3 class="title wrap_txt" >
         {{ booking.service.name | capitalizeFirst }}
       </h3>
 
