@@ -1,11 +1,48 @@
-.addmem-head {
-    font-size: 12px!important;
-
-}
 ::ng-deep .field-ht .p-dropdown .p-inputtext{
     padding: 6.5px !important;
 }
 
 ::ng-deep .p-dropdown-item {
     padding: 10px;
+}
+
+.member-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.member-form__field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.member-form__label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #374151;
+}
+
+.member-form__label .member-form__required {
+    color: #ef4444;
+}
+
+.member-form__input {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 14px;
+    color: #111827;
+    background: #ffffff;
+    outline: none;
+}
+
+.member-form__input::placeholder {
+    color: #9ca3af;
+}
+
+.member-form__input:focus {
+    border-color: #ff7a00;
+    box-shadow: 0 0 0 2px rgba(255, 122, 0, 0.15);
 }

@@ -538,15 +538,34 @@
                 </app-booking-note>
               </ng-container>
               <ng-container *ngIf="action=='addmember'">
-                <div class="modal-body">
-                  <div class="col-md-12 col-12 col-sm-12 lnk mgn-bt-10s">
-                    <i class="fa fa-arrow-left pointer-cursor pt-3" (click)="goBack()"></i>
-                    {{add_member_cap | translate}}
-                  </div>
-                  <div class="col-md-12 col-12 col-sm-12 lnk mgn-up-20 mb-3">
-                    <app-checkin-consumer-add-member [calledFrom]="'checkin'"
-                      (returnDetails)="handleReturnDetails($event)">
-                    </app-checkin-consumer-add-member>
+                <div class="modal-body_addmember">
+                  <div class="member-dialog">
+                    <div class="member-dialog__header">
+                      <div>
+                        <div class="member-dialog__title">{{add_member_cap | translate}}</div>
+                        <div class="member-dialog__subtitle">{{'Please fill the following details' | translate}}</div>
+                      </div>
+                      <!-- <button type="button" class="member-dialog__close" aria-label="{{'Close' | translate}}"
+                        data-bs-dismiss="modal">
+                        &times;
+                      </button> -->
+                    </div>
+                    <div class="member-dialog__body">
+                      <app-checkin-consumer-add-member [calledFrom]="'checkin'"
+                        (returnDetails)="handleReturnDetails($event)">
+                      </app-checkin-consumer-add-member>
+                    </div>
+                    <div class="member-dialog__footer">
+                      <button type="button" class="member-dialog__btn member-dialog__btn--ghost"
+                        data-bs-dismiss="modal">
+                        {{'Cancel' | translate}}
+                      </button>
+                      <button type="button" class="member-dialog__btn member-dialog__btn--primary"
+                        [class.disabled]="disable || !isAddMemberReady()" [disabled]="disable || !isAddMemberReady()"
+                        (click)="actionCompleted()">
+                        {{'Okay' | translate}}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </ng-container>
@@ -624,20 +643,21 @@
                       <!-- <app-communications (setCommunications)="setCommunications" [commObj]="commObj"
                         [selectedService]="selectedService" [mode]="'write'">
                       </app-communications> -->
-                      <a class="lnk pointer-cursoraction mgn-lt-20 addmbr-btn" (click)="addMember()"><i
-                          class="fa fa-user-plus"></i>
-                        {{add_member_cap | translate}}</a>
+                      
                     </ng-container>
                   </div>
                 </div>
+                <div class="lnk pointer-cursoraction mgn-lt-20 addmbr-btn" (click)="addMember()"><i
+                          class="fa fa-user-plus"></i>
+                        {{add_member_cap | translate}}</div>
                 <div class="member-modal__footer">
                   <button type="button" class="member-modal__confirm" [class.disabled]="disable" [disabled]="disable"
                     (click)="actionCompleted()">
-                    {{'Yes, Confirm Member' | translate}}
+                    {{'Confirm' | translate}}
                   </button>
                 </div>
               </ng-container>
-              <div class="modal-footer" *ngIf="action !='members'">
+              <div class="modal-footer" *ngIf="action !='members' && action != 'addmember'">
                 <button type="button" class="disp-none cancel btn btn-light-primary mat-button font-weight-bold"
                   data-bs-dismiss="modal">{{'Cancel' | translate}}</button>
                 <button type="button" class="btn btn-primary mat-button font-weight-bold hf-btn"

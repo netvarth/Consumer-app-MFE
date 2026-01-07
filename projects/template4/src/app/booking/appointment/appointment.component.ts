@@ -2578,6 +2578,9 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
         this.addmemberobj.gender = obj.gender || '';
         this.addmemberobj.dob = obj.dob || '';
     }
+    isAddMemberReady() {
+        return this.safeTrim(this.addmemberobj.fname) !== '' && this.safeTrim(this.addmemberobj.lname) !== '';
+    }
     handleConsumerNote(vale) {
         this.consumerNote = vale;
     }

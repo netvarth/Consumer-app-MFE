@@ -683,8 +683,8 @@ body.modal-open {
 }
 
 .modal-body {
-    max-height: 70vh;
-    overflow: auto;
+    max-height: 43vh;
+    overflow: scroll;
 }
 
 .modal-body {
@@ -1598,6 +1598,86 @@ font-weight: 600;
     cursor: pointer;
 }
 
+/* Add member dialog layout */
+.member-dialog {
+    padding: 8px 4px 0;
+}
+
+.member-dialog__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 4px 12px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.member-dialog__title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.member-dialog__subtitle {
+    margin-top: 4px;
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.member-dialog__close {
+    border: none;
+    background: transparent;
+    font-size: 22px;
+    line-height: 1;
+    color: #111827;
+    cursor: pointer;
+}
+
+.member-dialog__body {
+    padding: 12px 4px 4px;
+}
+
+.member-dialog__footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 14px 4px 6px;
+    margin-bottom: 5px;
+}
+
+.member-dialog__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: 12px;
+    padding: 8px 18px;
+    font-weight: 600;
+    font-size: 14px;
+    border: 1px solid transparent;
+    cursor: pointer;
+}
+
+.member-dialog__btn--ghost {
+    background: #ffffff;
+    border-color: #e5e7eb;
+    color: #374151;
+}
+
+.member-dialog__btn--primary {
+    background: linear-gradient(90deg, #ff7a00 0%, #ff4d0f 100%);
+    color: #ffffff;
+    border: none;
+}
+
+.member-dialog__btn.disabled,
+.member-dialog__btn:disabled {
+    background: #d1d5db;
+    border-color: #d1d5db;
+    color: #6b7280;
+    cursor: not-allowed;
+}
+
 /* Member modal layout */
 .member-modal {
     padding: 6px 10px 18px;
@@ -1661,7 +1741,7 @@ font-weight: 600;
 }
 
 .member-modal__confirm {
-    width: 85%;
+    width: 90%;
     border: none;
     border-radius: 11px;
     padding: 10px 5px;
@@ -1684,12 +1764,26 @@ font-weight: 600;
     box-shadow: none;
     color: #6b7280 !important;
 }
+
+.member-modal__footer--members {
+    justify-content: space-between;
+    gap: 12px;
+    padding: 0 4px 10px;
+    margin-top: 8px;
+}
+
+.member-modal__footer--members .member-dialog__btn {
+    flex: 1 1 auto;
+    justify-content: center;
+}
 .addmbr-btn {
     text-decoration: none;
     border: 1px solid #ff5e00;
     border-radius: 11px;
     padding: 9px;
-    margin-top: 19px;
+    margin: 10px 0px 0px 19px;
+    width: 39%;
+    // margin-top: 19px;
 }
 .back-section {
     // border: 1px solid #e5e7eb;
@@ -1727,3 +1821,8 @@ font-weight: 600;
   background-color: #fff !important;
 }
 
+.modal-body_addmember{
+    position: relative;
+    flex: 1 1 auto;
+    padding: 1px 17px;
+}
