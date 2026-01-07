@@ -242,6 +242,7 @@ export class PaymentsComponent implements OnInit, OnDestroy {
             const downloadUrl = doc?.s3path || doc?.url;
             const fileName = doc?.fileName || doc?.name;
             if (downloadUrl) {
+                console.log('start download')
                 this.download(downloadUrl, fileName);
             } else {
                 this.toastService.showError('File not available');
@@ -255,34 +256,87 @@ export class PaymentsComponent implements OnInit, OnDestroy {
     //     const hasCapacitor = !!(window as any).Capacitor;
     //     return this.smallDevice || isIosWebView || hasCordova || hasCapacitor;
     // }
-    download(url, filename?) {
+    // download(url, filename?) {
+    //     if (!url) { return; }
+    //     const name = filename || url.split('/').pop() || 'document';
+    //     // Try fetching to handle download headers/CORS, fall back to opening the URL
+    //     fetch(url).then(response => {
+    //         if (!response.ok) {
+    //             throw new Error('Network response was not ok');
+    //         }
+    //         return response.blob();
+    //     }).then(blob => {
+    //         const blobUrl = window.URL.createObjectURL(blob);
+    //         const link = document.createElement('a');
+    //         link.href = blobUrl;
+    //         link.download = name;
+    //         document.body.appendChild(link);
+    //         link.click();
+    //         document.body.removeChild(link);
+    //         window.URL.revokeObjectURL(blobUrl);
+    //     }).catch(() => {
+    //         const link = document.createElement('a');
+    //         link.href = url;
+    //         link.target = '_blank';
+    //         link.rel = 'noopener';
+    //         document.body.appendChild(link);
+    //         link.click();
+    //         document.body.removeChild(link);
+    //     });
+    // }
+    download(url: string, filename?: string) {
+        console.log('triger download');
         if (!url) { return; }
+
         const name = filename || url.split('/').pop() || 'document';
-        // Try fetching to handle download headers/CORS, fall back to opening the URL
-        fetch(url).then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.blob();
-        }).then(blob => {
-            const blobUrl = window.URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = blobUrl;
-            link.download = name;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            window.URL.revokeObjectURL(blobUrl);
-        }).catch(() => {
-            const link = document.createElement('a');
-            link.href = url;
-            link.target = '_blank';
-            link.rel = 'noopener';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        });
+        const w: any = window as any;
+
+        // Debug (remove later)
+        console.log('[download] AndroidBridge exists?', !!w.AndroidBridge);
+
+        fetch(url)
+            .then(r => {
+                if (!r.ok) throw new Error('Network response was not ok');
+                return r.blob();
+            })
+            .then(blob => {
+                // ✅ Android WebView path: send dataUrl to native, DO NOT create blob: URL
+                if (w.AndroidBridge?.onBlobToDataUrl) {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        w.AndroidBridge.onBlobToDataUrl(
+                            reader.result as string,                 // data:<mime>;base64,...
+                            blob.type || 'application/octet-stream',
+                            name
+                        );
+                    };
+                    reader.onerror = () => w.AndroidBridge?.onBlobError?.('FileReader error');
+                    reader.readAsDataURL(blob);
+                    return;
+                }
+
+                // ✅ Normal browser path
+                const blobUrl = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = blobUrl;
+                a.download = name;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(blobUrl);
+            })
+            .catch(err => {
+                console.log('[download] fetch failed, opening url', err);
+                const a = document.createElement('a');
+                a.href = url;
+                a.target = '_blank';
+                a.rel = 'noopener';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            });
     }
+
     downloadtemp(filename, text) {
         var element = document.createElement('a');
         element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));

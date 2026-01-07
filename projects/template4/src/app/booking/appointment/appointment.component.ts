@@ -1705,7 +1705,12 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
             if (invalidCoupons.length) {
                 this.applyCouponComp?.markCouponsNotApplicable(invalidCoupons);
             }
-            this.selectedCoupons = [];
+            const appliedCoupons = this.getAppliedCouponsFromPayment(this.paymentDetails);
+            if (appliedCoupons.length) {
+                this.selectedCoupons = appliedCoupons;
+            } else if (invalidCoupons.length) {
+                this.selectedCoupons = (this.selectedCoupons || []).filter(code => !invalidCoupons.includes(code));
+            }
          }, error => {
             let errorObj = this.errorService.getApiError(error);
             // this.snackbarService.openSnackBar(this.wordProcessor.getProjectErrorMesssages(errorObj, this.accountService.getTerminologies()), { 'panelClass': 'snackbarerror' });
@@ -1835,7 +1840,12 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
                 if (invalidCoupons.length) {
                     this.applyCouponComp?.markCouponsNotApplicable(invalidCoupons);
                 }
-                this.selectedCoupons = [];
+                const appliedCoupons = this.getAppliedCouponsFromPayment(this.paymentDetails);
+                if (appliedCoupons.length) {
+                    this.selectedCoupons = appliedCoupons;
+                } else if (invalidCoupons.length) {
+                    this.selectedCoupons = (this.selectedCoupons || []).filter(code => !invalidCoupons.includes(code));
+                }
             }, error => {
                 this.resetConfirmState();
                 let errorObj = this.errorService.getApiError(error);

@@ -175,55 +175,7 @@ export class RootComponent implements OnInit, OnDestroy {
     if (notification) {
       this.handleNotification(notification);
     } else {
-      this.hydrateTemplateContent();
-      this.galleryJson = this.sharedService.getJson(this.account['gallery']);
-      this.loadImages(this.galleryJson);
-      this.subscriptionService.sendMessage({ ttype: 'showLocation' });
-      if (this.templateJson.section1.blog) {
-        this.blogs = this.templateJson.section1.blog;
-      }
-      if (this.templateJson.section1.videos) {
-        this.videos = this.templateJson.section1.videos;
-      }
-      if (this.templateJson.section1.donations || this.templateJson.section2.donations || this.templateJson.section3.donations) {
-        this.getDonationServices();
-      }
-      this.selectedIndex = this.templateJson.section1.title;
-      this.changeLocation(this.accountService.getActiveLocation());
-      this.loadTodayBookings();
-      this.loadFutureBookings();
-      if (this.callback === 'communicate') {
-        this.communicateHandler();
-      }
-      this.subscriptions.add(this.galleryService.getMessage().subscribe(input => {
-        if (input && input.accountId && input.uuid && input.type) {
-          if (input.type === 'appt') {
-            this.consumerService.addAppointmentAttachment(input.accountId, input.uuid, input.value)
-              .subscribe(
-                () => {
-                  this.toastService.showSuccess(Messages.ATTACHMENT_SEND);
-                  this.galleryService.sendMessage({ ttype: 'upload', status: 'success' });
-                },
-                error => {
-                  this.toastService.showError(error.error);
-                  this.galleryService.sendMessage({ ttype: 'upload', status: 'failure' });
-                }
-              );
-          } else if (input.type === 'checkin') {
-            this.consumerService.addWaitlistAttachment(input.accountId, input.uuid, input.value)
-              .subscribe(
-                () => {
-                  this.toastService.showSuccess(Messages.ATTACHMENT_SEND);
-                  this.galleryService.sendMessage({ ttype: 'upload', status: 'success' });
-                },
-                error => {
-                  this.toastService.showError(error.error);
-                  this.galleryService.sendMessage({ ttype: 'upload', status: 'failure' });
-                }
-              );
-          }
-        }
-      }));
+      this.resumeLoadingHome();      
     }
 
   }
@@ -1511,9 +1463,59 @@ export class RootComponent implements OnInit, OnDestroy {
       case "MASSCOMMUNICATION":
       case "INSTANT_VIDEO":
       default:
+        this.resumeLoadingHome();
         break;
     }
   }
-
-
+  resumeLoadingHome() {
+    this.hydrateTemplateContent();
+    this.galleryJson = this.sharedService.getJson(this.account['gallery']);
+    this.loadImages(this.galleryJson);
+    this.subscriptionService.sendMessage({ ttype: 'showLocation' });
+    if (this.templateJson.section1.blog) {
+      this.blogs = this.templateJson.section1.blog;
+    }
+    if (this.templateJson.section1.videos) {
+      this.videos = this.templateJson.section1.videos;
+    }
+    if (this.templateJson.section1.donations || this.templateJson.section2.donations || this.templateJson.section3.donations) {
+      this.getDonationServices();
+    }
+    this.selectedIndex = this.templateJson.section1.title;
+    this.changeLocation(this.accountService.getActiveLocation());
+    this.loadTodayBookings();
+    this.loadFutureBookings();
+    if (this.callback === 'communicate') {
+      this.communicateHandler();
+    }
+    this.subscriptions.add(this.galleryService.getMessage().subscribe(input => {
+      if (input && input.accountId && input.uuid && input.type) {
+        if (input.type === 'appt') {
+          this.consumerService.addAppointmentAttachment(input.accountId, input.uuid, input.value)
+            .subscribe(
+              () => {
+                this.toastService.showSuccess(Messages.ATTACHMENT_SEND);
+                this.galleryService.sendMessage({ ttype: 'upload', status: 'success' });
+              },
+              error => {
+                this.toastService.showError(error.error);
+                this.galleryService.sendMessage({ ttype: 'upload', status: 'failure' });
+              }
+            );
+        } else if (input.type === 'checkin') {
+          this.consumerService.addWaitlistAttachment(input.accountId, input.uuid, input.value)
+            .subscribe(
+              () => {
+                this.toastService.showSuccess(Messages.ATTACHMENT_SEND);
+                this.galleryService.sendMessage({ ttype: 'upload', status: 'success' });
+              },
+              error => {
+                this.toastService.showError(error.error);
+                this.galleryService.sendMessage({ ttype: 'upload', status: 'failure' });
+              }
+            );
+        }
+      }
+    }));
+  }
 }
