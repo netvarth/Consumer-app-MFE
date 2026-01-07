@@ -255,34 +255,84 @@ export class PaymentsComponent implements OnInit, OnDestroy {
     //     const hasCapacitor = !!(window as any).Capacitor;
     //     return this.smallDevice || isIosWebView || hasCordova || hasCapacitor;
     // }
+    // download(url, filename?) {
+    //     if (!url) { return; }
+    //     const name = filename || url.split('/').pop() || 'document';
+    //     // Try fetching to handle download headers/CORS, fall back to opening the URL
+    //     fetch(url).then(response => {
+    //         if (!response.ok) {
+    //             throw new Error('Network response was not ok');
+    //         }
+    //         return response.blob();
+    //     }).then(blob => {
+    //         const blobUrl = window.URL.createObjectURL(blob);
+    //         const link = document.createElement('a');
+    //         link.href = blobUrl;
+    //         link.download = name;
+    //         document.body.appendChild(link);
+    //         link.click();
+    //         document.body.removeChild(link);
+    //         window.URL.revokeObjectURL(blobUrl);
+    //     }).catch(() => {
+    //         const link = document.createElement('a');
+    //         link.href = url;
+    //         link.target = '_blank';
+    //         link.rel = 'noopener';
+    //         document.body.appendChild(link);
+    //         link.click();
+    //         document.body.removeChild(link);
+    //     });
+    // }
     download(url, filename?) {
         if (!url) { return; }
         const name = filename || url.split('/').pop() || 'document';
-        // Try fetching to handle download headers/CORS, fall back to opening the URL
-        fetch(url).then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.blob();
-        }).then(blob => {
-            const blobUrl = window.URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = blobUrl;
-            link.download = name;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            window.URL.revokeObjectURL(blobUrl);
-        }).catch(() => {
-            const link = document.createElement('a');
-            link.href = url;
-            link.target = '_blank';
-            link.rel = 'noopener';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        });
+
+        fetch(url)
+            .then(r => {
+                if (!r.ok) throw new Error('Network response was not ok');
+                return r.blob();
+            })
+            .then(blob => {
+                const w: any = window as any;
+
+                // ✅ Android WebView path: convert to dataURL and pass to native
+                if (w.AndroidBridge?.onBlobToDataUrl) {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        const dataUrl = reader.result as string; // data:<mime>;base64,...
+                        w.AndroidBridge.onBlobToDataUrl(
+                            dataUrl,
+                            blob.type || 'application/octet-stream',
+                            name
+                        );
+                    };
+                    reader.onerror = () => w.AndroidBridge?.onBlobError?.('FileReader error');
+                    reader.readAsDataURL(blob);
+                    return;
+                }
+
+                // ✅ Normal browser path
+                const blobUrl = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = blobUrl;
+                link.download = name;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(blobUrl);
+            })
+            .catch(() => {
+                // fallback
+                const link = document.createElement('a');
+                link.href = url;
+                link.target = '_blank';
+                link.rel = 'noopener';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
     }
+
     downloadtemp(filename, text) {
         var element = document.createElement('a');
         element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
