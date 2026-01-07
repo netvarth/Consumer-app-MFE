@@ -6,11 +6,12 @@ import { Location } from "@angular/common";
 import { TranslateService } from "@ngx-translate/core";
 import { MatCalendarCellCssClasses } from "@angular/material/datepicker";
 import { Subscription } from "rxjs";
-import { AccountService, AuthService, ConsumerService, DateTimeProcessor, ErrorMessagingService, FileService, GroupStorageService, LocalStorageService, Messages, PaytmService, projectConstantsLocal, QuestionaireService, RazorpayService, SharedService, StorageService, SubscriptionService, WordProcessor } from "jconsumer-shared";
+import { AccountService, AuthService, ConsumerService, DateTimeProcessor, ErrorMessagingService, FileService, GroupStorageService, LocalStorageService, Messages, PaytmService, projectConstantsLocal, RazorpayService, SharedService, StorageService, SubscriptionService, WordProcessor } from "jconsumer-shared";
 import { CouponsComponent } from "../../shared/coupons/coupons.component";
 import { ApplyCouponComponent } from "../../shared/apply-coupon/apply-coupon.component";
 import { ConsumerEmailComponent } from "../../shared/consumer-email/consumer-email.component";
 import { BookingService } from "../../booking/booking.service";
+import { QuestionaireService } from "../../shared/questionaire/questionaire-service";
 
 @Component({
     selector: 'app-appointment',
