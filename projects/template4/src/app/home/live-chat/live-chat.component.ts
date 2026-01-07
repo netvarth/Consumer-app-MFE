@@ -88,6 +88,7 @@ export class LiveChatComponent implements OnInit, OnDestroy, AfterViewInit {
     ) {
         const _this = this;
         console.log("In LiveChat Component");
+        _this.twilioService.setToastService(this.toastService);
         _this.twilioService.loading = false;
         _this.renderer = rendererFactory.createRenderer(null, null);
         this.subscriptionService.sendMessage({ ttype: 'hideHeader' });

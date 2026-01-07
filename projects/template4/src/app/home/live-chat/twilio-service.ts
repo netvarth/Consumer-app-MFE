@@ -31,10 +31,14 @@ export class TwilioService {
     activeRoom;
     btnClicked = false;
     loading = false;
+    private toastService: ToastService;
     private deviceCachePromise: Promise<void>;
-    constructor(public rendererFactory: RendererFactory2,
-        private toastService: ToastService) {
+    constructor(public rendererFactory: RendererFactory2) {
         this.renderer = rendererFactory.createRenderer(null, null);
+    }
+
+    setToastService(toastService) {
+        this.toastService = toastService;
     }
 
     activateTimer(timer: any) {
