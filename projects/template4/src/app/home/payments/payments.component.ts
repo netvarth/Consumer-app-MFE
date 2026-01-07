@@ -284,6 +284,7 @@ export class PaymentsComponent implements OnInit, OnDestroy {
     //     });
     // }
     download(url, filename?) {
+        console.log('triggerdownload');
         if (!url) { return; }
         const name = filename || url.split('/').pop() || 'document';
 
