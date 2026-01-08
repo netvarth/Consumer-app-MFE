@@ -255,10 +255,24 @@
     border: none !important;
   }
 
-  .edit {
-    padding: 2px 12px;
-    border-radius: 10px !important;
-  }
+    .edit {
+      padding: 2px 12px;
+      border-radius: 10px !important;
+      color: #f75b1b !important;
+      background-color: #ffffff !important;
+      border: 1px solid #f75b1b !important;
+    }
+    .update {
+      padding: 2px 12px;
+      border-radius: 10px !important;
+      color: #f75b1b !important;
+      background-color: #ffffff !important;
+      border: 1px solid #f75b1b !important;
+    }
+}
+.fa-pencil{
+  font-size: 1.05rem !important;
+    color: #f75b1b !important;
 }
 
 .col-xl-12,

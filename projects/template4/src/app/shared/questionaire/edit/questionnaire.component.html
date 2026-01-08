@@ -8,7 +8,7 @@
   <app-common-innerloading-spinner *ngIf="loading"></app-common-innerloading-spinner>
   <div class="d-flex flex-column-fluid pull-right mgn-rt-10 mgn-bt-20"
     *ngIf="type !== 'qnrLinkProvider' && !buttonDisable && waitlistStatus">
-    <button class="normal-btn edit" mat-flat-button (click)="editQnr()">Edit</button>
+    <button class="normal-btn edit" mat-flat-button (click)="editQnr()"><i class="fa fa-pencil" aria-hidden="true"></i>Edit</button>
   </div>
   <div class="d-flex flex-column-fluid width-100 p-2" [class.qnrDisableState]="disableInput()"
     [class.p-0]="uuid && (source === 'consCheckin' || source === 'consAppt' || source === 'consOrder' || source === 'paper' || source === 'consDonationDetails' || source === 'ivr')">
@@ -266,7 +266,7 @@
       </div>
       <div class="col-md-12 col-12 col-sm-12 col-lg-12 p-0 submit-pad"
         *ngIf="type !== 'qnrLinkProvider' && source!=='proLead' && (uuid || source === 'customer-details' || source === 'proDonation') && !disableInput()">
-        <button class="normal-btn" mat-flat-button [class.spinner]="buttonDisable"
+        <button class="normal-btn update" mat-flat-button [class.spinner]="buttonDisable"
           [class.spinner-darker-success]="buttonDisable" [class.spinner-center]="buttonDisable"
           (click)="!buttonDisable && onSubmit('submit')" [disabled]="buttonDisable"
           [class.disabled]="buttonDisable">{{(type == 'qnr-link') ? 'Submit' : 'Update'}}</button>
@@ -284,6 +284,6 @@
   <app-common-innerloading-spinner *ngIf="loading"></app-common-innerloading-spinner>
   <div class="d-flex flex-column-fluid pull-right mgn-rt-10 mgn-bt-20"
     *ngIf="type !== 'qnrLinkProvider' && !buttonDisable && waitlistStatus">
-    <button class="normal-btn edit" mat-flat-button (click)="editQnr()">Edit</button>
+    <button class="normal-btn edit" mat-flat-button (click)="editQnr()"><i class="fa fa-pencil" aria-hidden="true"></i>Edit</button>
   </div>
 </section>
