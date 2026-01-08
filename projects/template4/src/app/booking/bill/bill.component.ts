@@ -18,7 +18,7 @@ import jsPDF from 'jspdf';
 export class BillComponent implements OnInit, OnDestroy {
 
     @ViewChild('consumer_bill') paytmview;
-    @ViewChild('receipt') shareview?: ElementRef;
+    // @ViewChild('receipt') shareview?: ElementRef;
     loadingPaytm: boolean = false;
     smallmobileDevice: boolean = false;
     tabDeviceDisplay: boolean = false;
@@ -46,6 +46,7 @@ export class BillComponent implements OnInit, OnDestroy {
             billNumber: null,
             invoiceNum:null,
             haveNotes: false,
+            amountPaid: null,
             discounts: [],
             coupons: [],
             services: [],
@@ -87,7 +88,7 @@ export class BillComponent implements OnInit, OnDestroy {
     gstin_cap = Messages.GSTIN_CAP;
     newDateFormat_date = projectConstantsLocal.DATE_MM_DD_YY_FORMAT;
      fileDownloading = false;
-
+    hideLocationGlobal: boolean = false;
     constructor(
         private sharedService: SharedService,
         private activatedRoute: ActivatedRoute,
@@ -139,6 +140,7 @@ export class BillComponent implements OnInit, OnDestroy {
             businessName: null,
             gstNumber: null,
             refundAmount: null,
+            amountPaid: null,
             dueDate: null,
             _dueDate: null,
             billDate: null,
@@ -193,6 +195,9 @@ export class BillComponent implements OnInit, OnDestroy {
         let accountConfig = this.sharedService.getAccountConfig();
         if (accountConfig && accountConfig['theme']) {
             this.theme = accountConfig['theme'];
+        }
+        if (accountConfig?.locationVisible) {
+            this.hideLocationGlobal = accountConfig?.locationVisible;
         }
         this.loadBookingInfo();
         if (!this.booking['isPaid']) {
@@ -415,26 +420,24 @@ export class BillComponent implements OnInit, OnDestroy {
         this.printService.print(this.booking);
     }
   async downloadMe() {
+        let htmlContainer = document.getElementById('payment-receipt') as HTMLElement | null;
+        htmlContainer!.style.visibility = 'visible';
         try {
             this.fileDownloading = true;
             const doc: Document = (this.document as Document) || document;
             const source =
-                this.shareview?.nativeElement ||
-                doc.getElementById('receipt');
+                htmlContainer;//doc.getElementById('payment-receipt');
             if (!source) {
                 console.error('Element not found');
                 this.fileDownloading = false;
                 return;
             }
-            const body = doc.body as HTMLBodyElement;
-            body.classList.add('print-capture');
-
             const prevOverflow = source.style.overflow;
             const prevWidth = source.style.width;
             const prevMaxWidth = source.style.maxWidth;
             source.style.overflow = 'visible';
-            source.style.width = '794px';
-            source.style.maxWidth = '100%';
+            // source.style.width = '794px';
+            // source.style.maxWidth = '100%';
 
             const bounds = source.getBoundingClientRect();
             const options = {
@@ -455,7 +458,6 @@ export class BillComponent implements OnInit, OnDestroy {
                 source.style.overflow = prevOverflow;
                 source.style.width = prevWidth;
                 source.style.maxWidth = prevMaxWidth;
-                body.classList.remove('print-capture');
             }
             const marginPx = 24;
             const zoomedOutCanvas = doc.createElement('canvas');
@@ -469,7 +471,7 @@ export class BillComponent implements OnInit, OnDestroy {
                 ctx.drawImage(canvas, marginPx, marginPx);
             }
 
-            const imgData = zoomedOutCanvas.toDataURL('image/png');
+            const imgData = zoomedOutCanvas.toDataURL('application/pdf');
             const pdf = new jsPDF('p', 'mm', 'a4');
             const pdfWidth = pdf.internal.pageSize.getWidth();
             const pdfHeight = pdf.internal.pageSize.getHeight();
@@ -499,6 +501,8 @@ export class BillComponent implements OnInit, OnDestroy {
             // this.snackbarService?.openSnackBar('Could not generate PDF', { panelClass: 'snackbarerror' });
         } finally {
             this.fileDownloading = false;
+            htmlContainer!.style.visibility = 'hidden';
+            // htmlContainer!.innerHTML = '';
         }
     }
     private getInvoiceFileName(): string {

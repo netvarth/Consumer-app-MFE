@@ -193,20 +193,8 @@ a:hover {
 .bill-section .bill-section-content .bill-wrapper .section-three {
   border: none;
 }
-.print-hidden {
-  display: none !important;
-}
 .other-section {
   border-top: 1px solid #ccc!important;
-}
-.no-print {
-  // visible in UI; hide only when printing or during canvas capture
-}
-
-@media print {
-  .no-print {
-    display: none !important;
-  }
 }
 .mt-3 {
   margin-top: 1rem!important;
@@ -492,26 +480,19 @@ a:hover {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch; /* smooth scroll on iOS */
 }
+.service-name {
+  flex: 0 0 150px !important;
+  max-width: 150px !important; 
+  min-width: 150px !important;
+  width: 150px !important;
 
+  white-space: normal;        /* allow wrapping */
+  word-wrap: break-word;      /* legacy support */
+  overflow-wrap: break-word;  /* modern standard */
+}
 /* Optional: prevent wrapping so columns stay side by side */
 .bill-breakup .c-row {
   white-space: nowrap;
-}
-
-.print-capture .payment-section {
-  display: none !important;
-}
-
-.print-capture .bill-breakup .c-row {
-  white-space: normal;
-}
-
-.print-capture .bill-section-content,
-.print-capture .bill-wrapper,
-.print-capture .bill-breakup-wrapper,
-.print-capture .bill-section {
-  overflow: visible !important;
-  height: auto !important;
 }
 
 /* Style scrollbar (optional) */
@@ -576,7 +557,6 @@ a:hover {
 }.content-stl{
    color: rgb(112, 111, 111);
 }
-
 .btn-dwd {
     border: 1px solid #DADCE0;
     background: #fff;

@@ -7,17 +7,7 @@ export class PrintService {
 
   constructor() { }
 
-  /**
-     * To Print Receipt
-     */
-  print(booking: any) {
-    console.log("booking", booking)
-    const params = [
-      'height=' + screen.height,
-      'width=' + screen.width,
-      'fullscreen=yes'
-    ].join(',');
-    const printWindow = window.open('', '', params);
+  getGenerateBillHTML(booking: any) {
     let bill_html = '';
     bill_html += '<table width="100%">';
     bill_html += '<tr><td	style="text-align:center;font-weight:bold; color:#000000; font-size:11pt; font-family:Ubuntu, Arial,sans-serif; padding-bottom:10px;">' + booking['info'].providerAccount['businessName'] + '</td></tr>';
@@ -138,25 +128,6 @@ export class PrintService {
         bill_html += '	style="text-align:right">' + ' &#x20b9;' + parseFloat(service.netRate).toFixed(2);
         bill_html += '</td>';
         bill_html += '	</tr>';
-        // if (service.discount && service.discount.length > 0) {
-        //   for (const serviceDiscount of service.discount) {
-        //     bill_html += '	<tr style="color:#aaa">';
-        //     bill_html += '<td style="text-align:right;"';
-        //     bill_html += '	colspan="2">' + serviceDiscount.name + '</td>';
-        //     bill_html += '<td style="text-align:right">(-) &#x20b9;' + parseFloat(serviceDiscount.discountValue).toFixed(2);
-        //     bill_html += '</td>';
-        //     bill_html += '	</tr>';
-        //   }
-
-        //   bill_html += '	<tr style="line-height:0;">';
-        //   bill_html += '<td style="text-align:right" colspan="2"></td>';
-        //   bill_html += '<td style="text-align:right; border-bottom:1px dotted #ddd">Â </td>';
-        //   bill_html += '	</tr>';
-        //   bill_html += '	<tr style="font-weight:bold">';
-        //   bill_html += '<td style="text-align:right"colspan="2">Sub Total</td>';
-        //   bill_html += '<td style="text-align:right">&#x20b9;' + parseFloat(service.netRate).toFixed(2) + '</td>';
-        //   bill_html += '	</tr>';
-        // }
         bill_html += '</table>';
         bill_html += '	</td></tr>';
       }
@@ -366,6 +337,21 @@ export class PrintService {
       bill_html += '	</td></tr>';
     }
     bill_html += '</table>';
+    return bill_html;
+  }
+
+  /**
+     * To Print Receipt
+     */
+  print(booking: any) {
+    console.log("booking", booking)
+    const params = [
+      'height=' + screen.height,
+      'width=' + screen.width,
+      'fullscreen=yes'
+    ].join(',');
+    const printWindow = window.open('', '', params);
+    const bill_html = this.getGenerateBillHTML(booking);
     printWindow.document.write('<html><head><title></title>');
     printWindow.document.write('</head><body >');
     printWindow.document.write(bill_html);
