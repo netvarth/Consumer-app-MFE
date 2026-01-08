@@ -59,15 +59,6 @@ export class TemplateComponent implements AfterViewInit {
   }
   ngOnInit() {
     
-    // this.accountId = this.accountProfile.id;
-    // this.storeEncId = this.lStorageService.getitemfromLocalStorage('storeEncId');
-    // if (this.storeEncId) {
-    //   this.getStoreCatalogs();
-    // }
-    // if (this.lStorageService.getitemfromLocalStorage('partner')) {
-    //   this.isPartnerLogin = this.lStorageService.getitemfromLocalStorage('partner')
-    // }
-    // this.loggedUser = this.groupService.getitemFromGroupStorage('ynw-user');
   }
 
   ngAfterViewInit() {
