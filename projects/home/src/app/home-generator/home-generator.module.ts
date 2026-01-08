@@ -7,6 +7,26 @@ import { EnvironmentService, I8nModule, setupInjectionContextForLoadChildren, Sh
 
 const templateId = localStorage.getItem('_tid');
 
+const getVersionedRemoteEntry = (entry: string): string => {
+  if (typeof localStorage === 'undefined') {
+    return entry;
+  }
+  const currentVersion = localStorage.getItem('c_sversion');
+  if (!currentVersion) {
+    return entry;
+  }
+
+  const sanitizedVersion = currentVersion.replace(/^["']+|["']+$/g, '');
+
+  try {
+    const remoteUrl = new URL(entry);
+    remoteUrl.searchParams.set('v', sanitizedVersion);
+    return remoteUrl.toString();
+  } catch (error) {
+    return `${entry}${entry.includes('?') ? '&' : '?'}v=${sanitizedVersion}`;
+  }
+};
+
 const routes: Routes = [];
 console.log("Template ID in Home Generator Module", templateId);
 
@@ -17,8 +37,9 @@ routes.push(
     loadChildren: async () => {
       const environmentService = inject(EnvironmentService);
       const remoteUrl = environmentService.getEnvironment(templateId) + '/remoteEntry.json';
+      //  remoteEntry: getVersionedRemoteEntry(remoteUrl),
       return loadRemoteModule({
-        remoteEntry: remoteUrl,
+        remoteEntry: getVersionedRemoteEntry(remoteUrl),
         exposedModule: './Home'
       }).then(m => m.HomeModule);
     }

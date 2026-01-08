@@ -5,6 +5,27 @@ import { RouterModule, Routes } from '@angular/router';
 import { TemplateGuard } from './template.guard';
 import { EnvironmentService, setupInjectionContextForLoadChildren } from 'jconsumer-shared';
 let remoteEntry = '';
+
+const getVersionedRemoteEntry = (entry: string): string => {
+  if (typeof localStorage === 'undefined') {
+    return entry;
+  }
+  const currentVersion = localStorage.getItem('c_sversion');
+  if (!currentVersion) {
+    return entry;
+  }
+
+  const sanitizedVersion = currentVersion.replace(/^["']+|["']+$/g, '');
+
+  try {
+    const remoteUrl = new URL(entry);
+    remoteUrl.searchParams.set('v', sanitizedVersion);
+    return remoteUrl.toString();
+  } catch (error) {
+    return `${entry}${entry.includes('?') ? '&' : '?'}v=${sanitizedVersion}`;
+  }
+};
+
 const routes: Routes = [
   setupInjectionContextForLoadChildren({
     runGuardsAndResolvers: 'always',
@@ -18,7 +39,7 @@ const routes: Routes = [
       console.log("Template ID:", templateId);
       // 
       return loadRemoteModule({
-        remoteEntry: remoteEntry,
+        remoteEntry: getVersionedRemoteEntry(remoteEntry),
         exposedModule: './DynamicHome'
       }).then(m => m.HomeGeneratorModule)
         .catch(err => {

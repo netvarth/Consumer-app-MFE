@@ -11,7 +11,7 @@ export class VersionService {
     private lStorageService: LocalStorageService) { }
 
   getVersion() {
-    const url = projectConstants.S3ENDPOINT + 'JALDEE/c_version.json?dt=' + new Date();
+    const url = projectConstants.S3ENDPOINT + 'JALDEE/customapp/version.json?dt=' + new Date();
     return this.servicemeta.httpGet(url);
   }
 
