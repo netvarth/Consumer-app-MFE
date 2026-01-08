@@ -420,18 +420,19 @@ export class BillComponent implements OnInit, OnDestroy {
         this.printService.print(this.booking);
     }
   async downloadMe() {
-        let htmlContainer = document.getElementById('payment-receipt') as HTMLElement | null;
-        htmlContainer!.style.visibility = 'visible';
+        this.fileDownloading = true;
+        await new Promise(resolve => setTimeout(resolve, 100));
+        this.cdRef.detectChanges();
+        const doc: Document = (this.document as Document) || document;
+        const htmlContainer = doc.getElementById('payment-receipt') as HTMLElement | null;
+        if (!htmlContainer) {
+            console.error('Element not found');
+            this.fileDownloading = false;
+            return;
+        }
+        htmlContainer.style.visibility = 'visible';
         try {
-            this.fileDownloading = true;
-            const doc: Document = (this.document as Document) || document;
-            const source =
-                htmlContainer;//doc.getElementById('payment-receipt');
-            if (!source) {
-                console.error('Element not found');
-                this.fileDownloading = false;
-                return;
-            }
+            const source = htmlContainer;
             const prevOverflow = source.style.overflow;
             const prevWidth = source.style.width;
             const prevMaxWidth = source.style.maxWidth;
@@ -501,7 +502,7 @@ export class BillComponent implements OnInit, OnDestroy {
             // this.snackbarService?.openSnackBar('Could not generate PDF', { panelClass: 'snackbarerror' });
         } finally {
             this.fileDownloading = false;
-            htmlContainer!.style.visibility = 'hidden';
+            htmlContainer.style.visibility = 'hidden';
             // htmlContainer!.innerHTML = '';
         }
     }
