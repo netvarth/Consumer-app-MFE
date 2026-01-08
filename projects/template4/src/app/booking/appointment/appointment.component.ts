@@ -1555,7 +1555,7 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
     filesSelected(event, type) {
 
         // use same storage key as other booking flows so owner id is set correctly
-        let loggedUser = this.groupService.getitemFromGroupStorage('jld_scon') || this.groupService.getitemFromGroupStorage('ynw-user');
+        let loggedUser = this.groupService.getitemFromGroupStorage('jld_scon');
         const input = event.target.files;
         let fileUploadtoS3 = [];
         if (input.length > 0) {

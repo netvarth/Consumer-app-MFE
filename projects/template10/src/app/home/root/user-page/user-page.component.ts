@@ -174,7 +174,7 @@ export class UserPageComponent implements OnInit, OnDestroy {
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
       return false;
     };
-    const activeUser = this.groupService.getitemFromGroupStorage('ynw-user');
+    const activeUser = this.groupService.getitemFromGroupStorage('jld_scon');
     if (activeUser) {
       this.isLoggedIn = true;
     }

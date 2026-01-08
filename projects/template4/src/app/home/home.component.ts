@@ -312,7 +312,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     if (status) {
       _this.loggedIn = true;
       if (_this.accountConfig['oneTimeQnrEnabled']) {
-        _this.loggedUser = _this.groupService.getitemFromGroupStorage('ynw-user');
+        _this.loggedUser = _this.groupService.getitemFromGroupStorage('jld_scon');
         _this.providerConsumerId = _this.loggedUser.providerConsumer;
         _this.getOneTimeInfo(_this.providerConsumerId, _this.accountId).then(
           (questions) => {

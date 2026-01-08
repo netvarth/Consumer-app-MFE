@@ -1419,7 +1419,7 @@ export class CheckinComponent implements OnInit, OnDestroy {
     }
     filesSelected(event, type) {
 
-        let loggedUser = this.groupService.getitemFromGroupStorage('ynw-user');
+        let loggedUser = this.groupService.getitemFromGroupStorage('jld_scon');
         const input = event.target.files;
         let fileUploadtoS3 = [];
         if (input.length > 0) {
@@ -2563,7 +2563,7 @@ export class CheckinComponent implements OnInit, OnDestroy {
         const _this = this;
         return new Promise(function (resolve, reject) {
             if (_this.onetimeQuestionnaireList && _this.onetimeQuestionnaireList.labels && _this.onetimeQuestionnaireList.labels.length > 0 && _this.onetimeQuestionnaireList.labels[0].questions.length > 0) {
-                const activeUser = _this.groupService.getitemFromGroupStorage('ynw-user');
+                const activeUser = _this.groupService.getitemFromGroupStorage('jld_scon');
                 const dataToSend: FormData = new FormData();
                 if (_this.oneTimeInfo.files) {
                     for (const pic of _this.oneTimeInfo.files) {
