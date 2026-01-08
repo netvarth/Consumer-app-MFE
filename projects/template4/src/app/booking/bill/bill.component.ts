@@ -488,7 +488,7 @@ export class BillComponent implements OnInit, OnDestroy {
             pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeightOnPdf);
             heightLeft -= pdfHeight;
 
-            while (heightLeft > 0) {
+            while (heightLeft > 0) { 
                 position -= pdfHeight;
                 pdf.addPage();
                 pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeightOnPdf);
