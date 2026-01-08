@@ -7,7 +7,7 @@
   </div>
   <app-common-innerloading-spinner *ngIf="loading"></app-common-innerloading-spinner>
   <div class="d-flex flex-column-fluid pull-right mgn-rt-10 mgn-bt-20"
-    *ngIf="type !== 'qnrLinkProvider' && !buttonDisable && waitlistStatus">
+    *ngIf="type !== 'qnrLinkProvider' && !buttonDisable && waitlistStatus && status === 'Confirmed'">
     <button class="normal-btn edit" mat-flat-button (click)="editQnr()"><i class="fa fa-pencil" aria-hidden="true"></i>Edit</button>
   </div>
   <div class="d-flex flex-column-fluid width-100 p-2" [class.qnrDisableState]="disableInput()"
@@ -283,7 +283,7 @@
   </div>
   <app-common-innerloading-spinner *ngIf="loading"></app-common-innerloading-spinner>
   <div class="d-flex flex-column-fluid pull-right mgn-rt-10 mgn-bt-20"
-    *ngIf="type !== 'qnrLinkProvider' && !buttonDisable && waitlistStatus">
+    *ngIf="type !== 'qnrLinkProvider' && !buttonDisable && waitlistStatus && status === 'Confirmed'">
     <button class="normal-btn edit" mat-flat-button (click)="editQnr()"><i class="fa fa-pencil" aria-hidden="true"></i>Edit</button>
   </div>
 </section>

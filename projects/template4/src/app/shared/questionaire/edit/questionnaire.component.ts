@@ -30,6 +30,7 @@ export class QuestionnaireComponent implements OnInit, OnChanges {
   @Output() returnAnswers = new EventEmitter<any>();
   @Input() tempType;
   @Input() bookingType;
+  @Input() status;
   answers: any = {};
   showDataGrid: any = {};
   selectedMessage: any = [];

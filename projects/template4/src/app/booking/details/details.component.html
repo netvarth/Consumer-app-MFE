@@ -137,7 +137,7 @@
                 </mat-panel-title>
               </mat-expansion-panel-header>
               <div class="c-details">
-                <app-questionnaire [questionnaireList]="qnr" [source]="booking['qnrSource']" [uuid]="booking['info'].uid"
+                <app-questionnaire [questionnaireList]="qnr" [source]="booking['qnrSource']" [uuid]="booking['info'].uid" [status]="booking['info']?.apptStatus"
                   [accountId]="booking['info'].providerAccount.id" [type]="'details'"
                   [waitlistStatus]="booking['info']?.apptStatus || booking['info']?.waitlistStatus || booking['info']?.status"
                   (returnAnswers)="getQuestionAnswers($event)">
@@ -149,7 +149,7 @@
         <ng-container *ngIf="this.booking['questionnaires']?.length === 1">
           <div class="c-details" *ngFor="let qnr of this.booking['questionnaires']">
             <app-questionnaire [questionnaireList]="qnr" [source]="booking['qnrSource']"
-              [uuid]="booking['info'].uid" [accountId]="booking['info'].providerAccount.id" [type]="'details'"
+              [uuid]="booking['info'].uid" [accountId]="booking['info'].providerAccount.id" [type]="'details'" [status]="booking['info']?.apptStatus"
               [waitlistStatus]="booking['info']?.apptStatus || booking['info']?.waitlistStatus || booking['info']?.status"
               (returnAnswers)="getQuestionAnswers($event)">
             </app-questionnaire>
