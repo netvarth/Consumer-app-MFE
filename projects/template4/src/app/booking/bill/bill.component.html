@@ -940,7 +940,7 @@
         </div>
     </div>
 </section>
-<div id="payment-receipt" *ngIf="fileDownloading" class="receipt" style="width:210mm; height:auto; padding:10px; visibility: hidden">
+<div id="payment-receipt" *ngIf="fileDownloading" class="receipt" style="width:210mm; height:auto; padding:10px; visibility: hidden"> 
     <div class="bill-section appt-invoice">
         <div class="bill-section-content">
             <div class="col-md-12 col-sm-12 col-lg-12 bill-wrapper viewBill no-padding-small">
@@ -1399,7 +1399,7 @@
                                             <div class="name">Amount Due</div>
                                             <div class="price rupee-font">
                                                 {{booking['invoice'].amountDue |
-                                                currency:'&#8377;'}}</div>
+                                                 currency:'&#8377; '}}</div>
                                         </div>
                                                                                                                   
                                         <div class="c-row one two-col" *ngIf="booking['invoice'].amountDue < 0">

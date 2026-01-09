@@ -98,6 +98,7 @@ font-size: 1.3rem !important;
 }
 .bill-section .bill-section-content .bill-wrapper .section-three .bill-breakup .list .list-content .c-row.one {
   display: flex;
+  justify-content: end !important;
 }
 .bill-section .bill-section-content .bill-wrapper .section-three .bill-breakup .list .list-content .c-row.one .name {
   font-weight: 600;
@@ -106,7 +107,10 @@ font-size: 1.3rem !important;
   position: relative;
 }
 .bill-section .bill-section-content .bill-wrapper .section-three .bill-breakup .list .list-content .c-row.one .quantity {
-  flex-basis: 30% !important;
+  // flex-basis: 30% !important;
+  width: 20% !important;
+    display: flex !important;
+    justify-content: center !important;
 }
 .bill-section .bill-section-content .bill-wrapper .section-three .bill-breakup .list .list-content .c-row.one .services {
   font-weight: 600;
@@ -481,14 +485,14 @@ a:hover {
   -webkit-overflow-scrolling: touch; /* smooth scroll on iOS */
 }
 .service-name {
-  flex: 0 0 150px !important;
-  max-width: 150px !important; 
-  min-width: 150px !important;
-  width: 150px !important;
+  // flex: 0 0 150px !important;
+  // max-width: 150px !important; 
+  // min-width: 150px !important;
+  // width: 150px !important;
 
   white-space: normal;        /* allow wrapping */
-  word-wrap: break-word;      /* legacy support */
-  overflow-wrap: break-word;  /* modern standard */
+  // word-wrap: break-word;      /* legacy support */
+  // overflow-wrap: break-word;  /* modern standard */
 }
 /* Optional: prevent wrapping so columns stay side by side */
 .bill-breakup .c-row {
