@@ -10,7 +10,7 @@
           <img class="logo" *ngIf="booking['account']['logo']" [src]="booking['account']['logo']" width="80"
             height="80">
           <h3 *ngIf="booking['account']['name']">{{booking['account']['name']}}</h3>
-          <h4 class="mb-2" *ngIf="booking['account']['place']">{{booking['account']['place']}}<span
+          <h4 class="mb-2" *ngIf="!locationVisible && booking['account']['place']">{{booking['account']['place']}}<span
               class="icon-location"></span></h4>
         </div>
         <div class="book-head d-flex mt-4" *ngIf="!hasEncId">
@@ -250,7 +250,7 @@
                   </div>
                 </div>
               </div>
-              <div *ngIf="!booking['isOrder']" class="card">
+              <div *ngIf="!booking['isOrder'] && !locationVisible" class="card">
                 <div class="p-heading status-style mt-2"> Provider Details</div>
                 <hr>
                 <div class="d-flex align-items-center mb-3">

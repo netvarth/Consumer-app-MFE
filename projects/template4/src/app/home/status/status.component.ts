@@ -52,6 +52,7 @@ export class StatusComponent implements OnInit, OnDestroy {
   accountProfile: any;
   newDateFormat = projectConstantsLocal.DATE_EE_MM_DD_YY_FORMAT;
   cdnPath: string='';
+  locationVisible: boolean = false;
   constructor(
     private activatedRoute: ActivatedRoute,
     private sharedService: SharedService,
@@ -92,6 +93,9 @@ export class StatusComponent implements OnInit, OnDestroy {
     this.accountConfig = this.sharedService.getAccountConfig();
     if (this.accountConfig && this.accountConfig['theme']) {
       this.theme = this.accountConfig['theme'];
+    }
+    if (this.accountConfig?.locationVisible) {
+      this.locationVisible = this.accountConfig?.locationVisible;
     }
     this.wordProcessor.setTerminologies(this.sharedService.getTerminologies());
     this.provider_label = this.wordProcessor.getTerminologyTerm('provider');
