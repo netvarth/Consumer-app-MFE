@@ -82,7 +82,7 @@ export class TemplateService {
     console.log(this.sharedService.getConfigPath());
     console.log(this.sharedService.getUniqueID());
     
-    const path = this.sharedService.getConfigPath() + this.sharedService.getUniqueID() + '/template.json?t=' + new Date();
+    const path = this.sharedService.getConfigPath() + this.sharedService.getUniqueID() + '/template_CA.json?t=' + new Date();
     return this.servicemeta.httpGet(path);
   }
 
