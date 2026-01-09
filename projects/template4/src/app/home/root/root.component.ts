@@ -428,13 +428,14 @@ export class RootComponent implements OnInit, OnDestroy {
   }
 
   showBookingDetails(booking: any, type?: 'today' | 'future') {
-    const queryParams: any = { type };
+    const queryParams: any = { type, from: 'root' };
     if (booking?.apptStatus) {
       // queryParams['uuid'] = booking.uid;
       // this.router.navigate([ 'apptdetails'], { queryParams });
       // this.router.navigate([this.sharedService.getRouteID(), 'booking/', booking.uid]);
       let bookingID = booking.apptStatus ? booking.uid : booking.uid;
-      this.router.navigate([this.sharedService.getRouteID(), 'booking', bookingID]);
+      const navigationExtras: NavigationExtras = { queryParams };
+      this.router.navigate([this.sharedService.getRouteID(), 'booking', bookingID], navigationExtras);
     }
     // } else if (booking?.waitlistStatus) {
     //   queryParams['uuid'] = booking.ynwUuid;
@@ -450,7 +451,10 @@ export class RootComponent implements OnInit, OnDestroy {
     console.log("booking" + booking);
 
     let bookingID = booking.apptStatus ? booking.uid : booking.uid;
-    this.router.navigate([this.sharedService.getRouteID(), 'booking', bookingID]);
+    const navigationExtras: NavigationExtras = {
+      queryParams: { from: 'root' }
+    };
+    this.router.navigate([this.sharedService.getRouteID(), 'booking', bookingID], navigationExtras);
   }
   rescheduleBooking(booking) {
     let bookingID = booking.apptStatus ? booking.uid : booking.uid;

@@ -658,10 +658,11 @@ export class ConsumerHistoryComponent implements OnInit, OnDestroy {
       let bookingid = booking.uid;
       queryParams['uuid'] = booking.uid;
       queryParams['type'] = type;
+      queryParams['from'] = 'history';
       const navigationExtras: NavigationExtras = {
         queryParams: queryParams
       };
-      this.router.navigate([this.customId, 'booking',bookingid]);
+      this.router.navigate([this.customId, 'booking', bookingid], navigationExtras);
     } else if (booking.waitlistStatus) {
       queryParams['uuid'] = booking.ynwUuid;
       queryParams['type'] = type;

@@ -91,6 +91,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
   activeUser: any;
    hideLocationGlobal: boolean = false;
   _type: string | null = null;
+  fromPage: 'root' | 'history' | null = null;
   constructor(
     private sharedService: SharedService,
     private activatedRoute: ActivatedRoute,
@@ -116,6 +117,10 @@ export class DetailsComponent implements OnInit, OnDestroy {
       }
     })
     this.subscriptions.add(subs);
+    let qparamsSub = this.activatedRoute.queryParams.subscribe((params) => {
+      this.fromPage = params['from'] || null;
+    });
+    this.subscriptions.add(qparamsSub);
     this.customer_label = this.wordProcessor.getTerminologyTerm('customer');
     this.provider_label = this.wordProcessor.getTerminologyTerm('provider');
     this.cust_notes_cap = Messages.CHECK_DET_CUST_NOTES_CAP.replace('[customer]', this.customer_label);
@@ -669,7 +674,11 @@ export class DetailsComponent implements OnInit, OnDestroy {
     this.location.back();
   }
   gotoHome() {
-    this.router.navigate([this.sharedService.getRouteID(), 'bookings'])
+    if (this.fromPage === 'root' || this.fromPage === 'history') {
+      this.location.back();
+      return;
+    }
+    this.router.navigate([this.sharedService.getRouteID(), 'bookings']);
   }
   rescheduleBooking() {
     let queryParams = {
