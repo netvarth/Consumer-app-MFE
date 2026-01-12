@@ -1,5 +1,6 @@
 export const projectConstants = {
     "ROOTUIPATH": "http://localhost:4300",
+    // "ROOTUIPATH": "http://localhost:8080",
     // "ROOTUIPATH": "https://scale.jaldee.com",
     // "TEMPLATE": "https://d38qirwztuxwob.cloudfront.net/template",
     // "HOME": "https://d38qirwztuxwob.cloudfront.net/home",
@@ -17,10 +18,13 @@ export const projectConstants = {
     "template12": "https://d38qirwztuxwob.cloudfront.net/template12", 
     "TEMPLATE": "http://localhost:4201",
     "HOME": "http://localhost:4204",
+    // "TEMPLATE": "http://localhost:8080",
+    // "HOME": "http://localhost:8080"
     // "template1": "http://localhost:4501",
     // "template2": "http://localhost:4502",
     // "template3": "http://localhost:4503",
     "template4": "http://localhost:4504",
+    // "template4": "http://localhost:8080",
     // "template5": "http://localhost:4505",
     // "template6": "http://localhost:4506",
     // "template7": "http://localhost:4507",
@@ -34,6 +38,7 @@ export const projectConstants = {
     "SAPATH": "https://sascale.jaldee.com/superadmin/rest/mgmt/",
     "I8NPATH": "https://d2199iy1o5ikw9.cloudfront.net/",
     "CDNURL": "https://d2199iy1o5ikw9.cloudfront.net/",
+    "INTL_TEL_INPUT_PATH": "global/intl-tel-input-v1/",
     "GOOGLEAPIKEY": "AIzaSyDYIC4RIJNisNqXWDhe8y07EPSy9rHJ3-o",
     "UNIQUEID": null
 }
