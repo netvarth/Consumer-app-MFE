@@ -19,7 +19,7 @@ export const projectConstants = {
     "SAPATH": "https://sa.jaldee.com/superadmin/rest/mgmt/",
     "I8NPATH": "https://d1ygz7jcqi6pzz.cloudfront.net/",
     "CDNURL": "https://d1ygz7jcqi6pzz.cloudfront.net/",
-    "INTL_TEL_INPUT_PATH": "global/intl-tel-input/",
+    "INTL_TEL_INPUT_PATH": "global/intl-tel-input-v1/",
     "GOOGLEAPIKEY": "AIzaSyDYIC4RIJNisNqXWDhe8y07EPSy9rHJ3-o",
     "UNIQUEID": null
 }
