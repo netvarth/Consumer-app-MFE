@@ -184,11 +184,13 @@
                                                     <label class="p-0 pt-1 m-0 form-text-light">{{'Phone Number' |
                                                         translate}}</label>
                                                     <div class="mb-3">
-                                                        <app-phone-input formControlName="phoneNo" name="phoneNo"
+                                                        <app-phone-input *ngIf="(intlTelInputLoader.ready$ | async)" formControlName="phoneNo" name="phoneNo"
                                                             [initialCountry]="'in'"
                                                             [preferredCountries]="preferredCountries"
                                                             [nationalMode]="false"
                                                             [separateDialCode]="true"></app-phone-input>
+                                                        <input *ngIf="!(intlTelInputLoader.ready$ | async)" type="tel" class="form-control"
+                                                            placeholder="Enter your phone number" autocomplete="off" disabled>
                                                     </div>
                                                     <!-- (phoneNumberChange)="onPhoneNumberChanged($event)" -->
                                                 </div>
@@ -196,11 +198,13 @@
                                                     <label class="p-0 pt-1 m-0 form-text-light">{{'WhatsApp Number' |
                                                         translate}}</label>
                                                     <div class="mb-3">
-                                                        <app-phone-input [initialCountry]="'in'"
+                                                        <app-phone-input *ngIf="(intlTelInputLoader.ready$ | async)" [initialCountry]="'in'"
                                                             [preferredCountries]="preferredCountries"
                                                             [nationalMode]="false" [separateDialCode]="true"
                                                             name="whatsappnumber"
                                                             formControlName="whatsappnumber"></app-phone-input>
+                                                        <input *ngIf="!(intlTelInputLoader.ready$ | async)" type="tel" class="form-control"
+                                                            placeholder="Enter your WhatsApp number" autocomplete="off" disabled>
                                                         <!-- (phoneNumberChange)="onWhatsappChanged($event)" -->
                                                     </div>
                                                 </div>
@@ -208,11 +212,13 @@
                                                     <label class="p-0 pt-1 m-0 form-text-light">{{'Telegram Number' |
                                                         translate}} </label>
                                                     <div class="mb-3">
-                                                        <app-phone-input [initialCountry]="'in'"
+                                                        <app-phone-input *ngIf="(intlTelInputLoader.ready$ | async)" [initialCountry]="'in'"
                                                             [preferredCountries]="preferredCountries"
                                                             [nationalMode]="false" [separateDialCode]="true"
                                                             name="telegramnumber"
                                                             formControlName="telegramnumber"></app-phone-input>
+                                                        <input *ngIf="!(intlTelInputLoader.ready$ | async)" type="tel" class="form-control"
+                                                            placeholder="Enter your Telegram number" autocomplete="off" disabled>
                                                         <!-- (phoneNumberChange)="onTelegramChanged($event)" -->
                                                     </div>
                                                 </div>

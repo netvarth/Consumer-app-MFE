@@ -5,9 +5,11 @@
             <h1 class="main-head1">{{heading | translate}}</h1>
             <h2 class="sub-head1" *ngIf="subHeading">{{subHeading | translate}}</h2>
             <div class="form-group mobile-no" [ngClass]="alignClass?'mgn-up-10': 'mgn-up-50'">
-                <app-phone-input [(ngModel)]="phoneNumber" name="phoneNumber" [initialCountry]="'in'"
+                <app-phone-input *ngIf="(intlTelInputLoader.ready$ | async)" [(ngModel)]="phoneNumber" name="phoneNumber" [initialCountry]="'in'"
                     [preferredCountries]="preferredCountries" [nationalMode]="false"
                     (phoneNumberChange)="onPhoneNumberChanged($event)" [separateDialCode]="true"></app-phone-input>
+                <input *ngIf="!(intlTelInputLoader.ready$ | async)" type="tel" class="form-control" placeholder="Enter your mobile number"
+                    autocomplete="off" disabled>
                 <div class="sts-msg error" *ngIf="phoneError">{{phoneError}}</div>
                 <div class="form-group email mgn-up-20"
                     *ngIf="phoneNumber && phoneNumber.dialCode != '+91' && !isLogin">
@@ -65,9 +67,11 @@
                 <input type="text" class="form-control" id="first_name" [(ngModel)]="lastName" autocomplete="off" />
             </div>
             <div class="form-group otp pt-2" *ngIf="googleLogin">
-                <app-phone-input [(ngModel)]="phoneNumber" name="phoneNumber" [initialCountry]="'in'"
+                <app-phone-input *ngIf="(intlTelInputLoader.ready$ | async)" [(ngModel)]="phoneNumber" name="phoneNumber" [initialCountry]="'in'"
                     [preferredCountries]="preferredCountries" [nationalMode]="false"
                     (phoneNumberChange)="onPhoneNumberChanged($event)" [separateDialCode]="true"></app-phone-input>
+                <input *ngIf="!(intlTelInputLoader.ready$ | async)" type="tel" class="form-control" placeholder="Enter your mobile number"
+                    autocomplete="off" disabled>
                 <div class="sts-msg error" *ngIf="phoneError">{{phoneError}}</div>
             </div>
             <div class="form-group otp" style="display: flex !important; justify-content: space-between !important;">

@@ -91,19 +91,9 @@
 							}
 						],
 						"styles": [
-							"node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
-							"node_modules/ngx-owl-carousel-o/lib/styles/prebuilt-themes/owl.carousel.min.css",
-							"node_modules/ngx-owl-carousel-o/lib/styles/prebuilt-themes/owl.theme.default.min.css",
-							"node_modules/bootstrap/dist/css/bootstrap.min.css",
-							"node_modules/primeng/resources/primeng.min.css",
-							"node_modules/primeng/resources/themes/md-light-indigo/theme.css",
-							"node_modules/font-awesome/css/font-awesome.min.css",
-							"node_modules/intl-tel-input/build/css/intlTelInput.min.css",
 							"projects/root/src/styles.scss"
 						],
-						"scripts": [
-							"node_modules/intl-tel-input/build/js/intlTelInput.min.js",
-							"node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
+						"scripts": [							
 						]
 					},
 					"configurations": {

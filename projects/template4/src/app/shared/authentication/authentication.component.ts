@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService, ErrorMessagingService, GroupStorageService, LocalStorageService, SharedService, ToastService } from 'jconsumer-shared';
+import { AuthService, EnvironmentService, ErrorMessagingService, GroupStorageService, LocalStorageService, SharedService, ToastService } from 'jconsumer-shared';
+import { IntlTelInputLoaderService } from '../intl-tel-input-loader.service';
 import { jwtDecode } from "jwt-decode";
 declare var google;
 import { interval as observableInterval, Subscription } from 'rxjs';
@@ -10,7 +11,7 @@ import { interval as observableInterval, Subscription } from 'rxjs';
   templateUrl: './authentication.component.html',
   styleUrls: ['./authentication.component.css']
 })
-export class AuthenticationComponent implements OnInit, OnDestroy {
+export class AuthenticationComponent implements OnInit, OnDestroy, AfterViewInit {
   loading = false;
   public finalResponse;
   @ViewChild('googleBtn') googleButton: ElementRef;
@@ -67,6 +68,7 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
   separateDialCode = true;
   channel = 'SMS'
   google_loading = false;
+  intlTelReady = false;
 
   textLabels = {
     mainLabel: null,
@@ -96,18 +98,70 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
     private toastService: ToastService,
     private cd: ChangeDetectorRef,
     private sharedService: SharedService,
+    private environmentService: EnvironmentService,
+    public intlTelInputLoader: IntlTelInputLoaderService,
     private ngZone: NgZone,
     private errorService: ErrorMessagingService,
     private router: Router,
   ) {
     this.loading = true;
     this.cdnPath = this.sharedService.getCDNPath();
+    this.loadPageScripts();
+  }
+  private ensureTrailingSlash(path: string): string {
+    if (!path) {
+      return '';
+    }
+    return path.endsWith('/') ? path : `${path}/`;
+  }
+
+  loadPageScripts() {
+    const cdnBase = this.ensureTrailingSlash(this.cdnPath || 'https://jaldeeassets-test.s3.ap-south-1.amazonaws.com/');
+    const intlPath = this.ensureTrailingSlash(this.environmentService.getEnvironment('INTL_TEL_INPUT_PATH') || 'global/intl-tel-input/');
+    const basePath = intlPath.startsWith('http') ? intlPath : `${cdnBase}${intlPath}`;
+    const cssUrl = `${basePath}css/intlTelInput.min.css`;
+    const jsUrl = `${basePath}js/intlTelInput.min.js`;
+
+    if (!document.getElementById('intl-tel-input-css')) {
+      const link = this.renderer.createElement('link');
+      link.id = 'intl-tel-input-css';
+      link.rel = 'stylesheet';
+      link.href = cssUrl;
+      this.renderer.appendChild(document.head, link);
+    }
+
+    if ((window as any).intlTelInput) {
+      this.intlTelReady = true;
+      return;
+    }
+
+    if (!document.getElementById('intl-tel-input-js')) {
+      const script = this.renderer.createElement('script');
+      script.id = 'intl-tel-input-js';
+      script.src = jsUrl;
+      script.async = true;
+      script.defer = true;
+      script.onload = () => {
+        this.intlTelReady = true;
+      };
+      this.renderer.appendChild(document.body, script);
+    } else {
+      const existing = document.getElementById('intl-tel-input-js') as HTMLScriptElement | null;
+      if (existing) {
+        existing.addEventListener('load', () => {
+          this.intlTelReady = true;
+        }, { once: true });
+      }
+    }
   }
   get isAndroidBridgeAvailable(): boolean {
     return !!(window as any).Android && typeof (window as any).Android.signInWithGoogle === 'function';
   }
   ngOnDestroy(): void {
     this.lStorageService.removeitemfromLocalStorage('login');
+  }
+  ngAfterViewInit(): void {
+    this.schedulePhoneInputPaddingFix();
   }
   // initGoogleButton() {
   //   console.log("Google Login Button:", this.googleButton);
@@ -212,6 +266,15 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
       this.btnClicked = false;
     };
 
+  }
+  private schedulePhoneInputPaddingFix(): void {
+    setTimeout(() => this.fixPhoneInputPadding(), 0);
+    setTimeout(() => this.fixPhoneInputPadding(), 250);
+  }
+  private fixPhoneInputPadding(): void {
+    const input = document.querySelector('.tel-input-container input[type="tel"]') as HTMLInputElement | null;
+    if (!input) return;
+    this.renderer.setStyle(input, 'padding-left', '52px');
   }
   resetCounter(val) {
     this.resetCounterVal = val;
@@ -325,6 +388,7 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
       if (this.googleIntegration && !this.isAndroidBridgeAvailable) {
         this.initGoogleButton();
       }
+      this.schedulePhoneInputPaddingFix();
     });
   }
   signUpConsumer() {

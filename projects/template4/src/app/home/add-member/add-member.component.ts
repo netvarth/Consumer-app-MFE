@@ -2,6 +2,7 @@ import { Component, Inject, OnInit, Input, Output, EventEmitter } from '@angular
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { CommonService, DateTimeProcessor, Messages, SharedService } from 'jconsumer-shared';
+import { IntlTelInputLoaderService } from '../../shared/intl-tel-input-loader.service';
 
 @Component({
   selector: 'app-consumer-add-member',
@@ -69,7 +70,8 @@ export class AddMemberComponent implements OnInit {
     public translate: TranslateService,
     private commonService: CommonService,
     private dateTimeProcessor: DateTimeProcessor,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    public intlTelInputLoader: IntlTelInputLoaderService
   ) {
     this.cdnPath = this.sharedService.getCDNPath();
     console.log('AddMemberComponent', data)

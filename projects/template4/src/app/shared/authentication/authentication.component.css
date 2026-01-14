@@ -212,6 +212,11 @@ label {
   display: block !important;
 }
 
+:host ::ng-deep .tel-input-container .iti--separate-dial-code input,
+:host ::ng-deep .tel-input-container input[type="tel"] {
+  padding-left: 79px !important;
+}
+
 .flex-center {
   justify-content: center;
   align-items: center;

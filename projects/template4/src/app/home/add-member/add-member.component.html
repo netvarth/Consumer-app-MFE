@@ -31,25 +31,31 @@
         <div class="mt-2">
             <label class="p-0 pt-1 m-0 form-text-light">{{'Mobile #' | translate}}</label>
             <div class="mb-3">
-                <app-phone-input name="mobileNumber" [initialCountry]="'in'" [preferredCountries]="preferredCountries"
+                <app-phone-input *ngIf="(intlTelInputLoader.ready$ | async)" name="mobileNumber" [initialCountry]="'in'" [preferredCountries]="preferredCountries"
                     [nationalMode]="false" [separateDialCode]="true" [(ngModel)]="mobileNumber"
                     [ngModelOptions]="{updateOn: 'blur'}" (ngModelChange)="valuechange($event)"></app-phone-input>
+                <input *ngIf="!(intlTelInputLoader.ready$ | async)" type="tel" class="form-control" placeholder="Enter your mobile number"
+                    autocomplete="off" disabled>
             </div>
         </div>
         <div class="mt-2">
             <label class="p-0 pt-1 m-0 form-text-light">{{'Whatsapp #' | translate}}</label>
             <div class="mb-3">
-                <app-phone-input name="whatsappnumber" [initialCountry]="'in'" [preferredCountries]="preferredCountries"
+                <app-phone-input *ngIf="(intlTelInputLoader.ready$ | async)" name="whatsappnumber" [initialCountry]="'in'" [preferredCountries]="preferredCountries"
                     [nationalMode]="false" [separateDialCode]="true" [(ngModel)]="whatsappnumber"
                     [ngModelOptions]="{updateOn: 'blur'}" (ngModelChange)="valuechange($event)"></app-phone-input>
+                <input *ngIf="!(intlTelInputLoader.ready$ | async)" type="tel" class="form-control" placeholder="Enter your WhatsApp number"
+                    autocomplete="off" disabled>
             </div>
         </div>
         <div class="mt-2">
             <label class="p-0 pt-1 m-0 form-text-light">{{'Telegram # '| translate}}</label>
             <div class="mb-3">
-                <app-phone-input name="telegramnumber" [initialCountry]="'in'" [preferredCountries]="preferredCountries"
+                <app-phone-input *ngIf="(intlTelInputLoader.ready$ | async)" name="telegramnumber" [initialCountry]="'in'" [preferredCountries]="preferredCountries"
                     [nationalMode]="false" [separateDialCode]="true" [(ngModel)]="telegramnumber"
                     [ngModelOptions]="{updateOn: 'blur'}" (ngModelChange)="valuechange($event)"></app-phone-input>
+                <input *ngIf="!(intlTelInputLoader.ready$ | async)" type="tel" class="form-control" placeholder="Enter your Telegram number"
+                    autocomplete="off" disabled>
             </div>
         </div>
         <div class="mt-2">

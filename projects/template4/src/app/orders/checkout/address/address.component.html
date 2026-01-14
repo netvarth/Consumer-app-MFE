@@ -86,8 +86,10 @@
                 </div>
                 <div class="col-lg-6  mt-2">
                     <label class="p-0 m-0 pt-1 form-text-light account-font-small">Mobile<span class="red">&nbsp;*</span></label>
-                    <app-phone-input formControlName="phoneNumber" name="phoneNumber" [initialCountry]="'in'"
-                        [preferredCountries]="preferredCountries" [nationalMode]="false" [separateDialCode]="true"></app-phone-input>
+                      <app-phone-input *ngIf="(intlTelInputLoader.ready$ | async)" formControlName="phoneNumber" name="phoneNumber" [initialCountry]="'in'"
+                          [preferredCountries]="preferredCountries" [nationalMode]="false" [separateDialCode]="true"></app-phone-input>
+                      <input *ngIf="!(intlTelInputLoader.ready$ | async)" type="tel" class="form-control"
+                        placeholder="Enter your mobile number" autocomplete="off" disabled>
                 </div>
             </div>
             <div class="row">

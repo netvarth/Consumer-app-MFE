@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmBoxComponent, ConsumerService, ErrorMessagingService, FormMessageDisplayService, OrderService, projectConstantsLocal, SharedService, ToastService } from 'jconsumer-shared';
+import { IntlTelInputLoaderService } from '../../../shared/intl-tel-input-loader.service';
 
 @Component({
   selector: 'app-address',
@@ -37,7 +38,8 @@ export class AddressComponent implements OnInit {
     private consumerService: ConsumerService,
     public fed_service: FormMessageDisplayService,
     private sharedService: SharedService,
-    private errorService: ErrorMessagingService
+    private errorService: ErrorMessagingService,
+    public intlTelInputLoader: IntlTelInputLoaderService
   ) { }
 
   ngOnInit(): void {

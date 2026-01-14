@@ -16,10 +16,12 @@
                     Phone#</div>
                 <div class="codenumber">
                     <div class="mb-3">
-                        <app-phone-input name="mobileNumber" formControlName="mobileNumber"
+                        <app-phone-input *ngIf="(intlTelInputLoader.ready$ | async)" name="mobileNumber" formControlName="mobileNumber"
                             [initialCountry]="'in'" [preferredCountries]="preferredCountries"
                             [nationalMode]="false" [separateDialCode]="true" (phoneNumberChange)="setCommFields()">
                         </app-phone-input>
+                        <input *ngIf="!(intlTelInputLoader.ready$ | async)" type="tel" class="form-control"
+                          placeholder="Enter your mobile number" autocomplete="off" disabled>
                     </div>
                 </div>
                 <div class="sts-msg error" *ngIf="phoneError">{{phoneError}}</div>
@@ -32,10 +34,12 @@
                 <div class="number-caption"> WhatsApp#</div>
                 <div class="codenumber">
                     <div class="mb-3">
-                        <app-phone-input name="whatsAppNumber" formControlName="whatsAppNumber"
+                        <app-phone-input *ngIf="(intlTelInputLoader.ready$ | async)" name="whatsAppNumber" formControlName="whatsAppNumber"
                             [initialCountry]="'in'" [preferredCountries]="preferredCountries"
                             [nationalMode]="false" [separateDialCode]="true" (phoneNumberChange)="setCommFields()">
                         </app-phone-input>
+                        <input *ngIf="!(intlTelInputLoader.ready$ | async)" type="tel" class="form-control"
+                          placeholder="Enter your WhatsApp number" autocomplete="off" disabled>
                     </div>
                 </div>
                 <div class="sts-msg error" *ngIf="whatsapperror">{{whatsapperror}}</div>

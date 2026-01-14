@@ -7,10 +7,16 @@
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- href="favicon.ico" -->
-  <link rel="icon" type="image/x-icon"  id="dynamic-favicon">
+  <link rel="icon" type="image/x-icon" id="dynamic-favicon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="preconnect" href="https://d2199iy1o5ikw9.cloudfront.net" crossorigin>
   <link rel="preconnect" href="https://d34s9pj4wr6ijb.cloudfront.net" crossorigin>
+  <link rel="preload" as="style" href="https://d2199iy1o5ikw9.cloudfront.net/global/bootstrap-v5/bootstrap.min.css"
+    onload="this.rel='stylesheet'">
+  <link rel="preload" as="style" href="https://d2199iy1o5ikw9.cloudfront.net/global/material-v18/indigo-pink.css"
+    onload="this.rel='stylesheet'">
   <meta name="description" content=".">
   <style>
     :root {
@@ -185,6 +191,10 @@
   </div>
   <app-root></app-root>
   <noscript>Please enable JavaScript to continue using this application.</noscript>
+  <noscript>
+    <link rel="stylesheet" href="https://d2199iy1o5ikw9.cloudfront.net/global/bootstrap-v5/bootstrap.min.css">
+    <link rel="stylesheet" href="https://d2199iy1o5ikw9.cloudfront.net/global/material-v18/indigo-pink.css">
+  </noscript>
   <script>
     var DEBUG_MODE_ON = true;
     // hide browser console in production
@@ -193,6 +203,8 @@
       console.log = function () { };
     }
   </script>
+  <script defer
+    src="https://d2199iy1o5ikw9.cloudfront.net/global/bootstrap-v5/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

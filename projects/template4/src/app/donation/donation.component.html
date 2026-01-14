@@ -420,7 +420,7 @@
                                                                         <div
                                                                             class="col-md-12 col-12 col-sm-12 mb-2 resMobileNum p-0-large">
                                                                             <div class="codenumber mb-2">
-                                                                                <app-phone-input name="mobileNumber"
+                                                                                <app-phone-input *ngIf="(intlTelInputLoader.ready$ | async)" name="mobileNumber"
                                                                                     [initialCountry]="'in'"
                                                                                     [preferredCountries]="preferredCountries"
                                                                                     [nationalMode]="false"
@@ -428,6 +428,8 @@
                                                                                     [(ngModel)]="selectedPhone"
                                                                                     [ngModelOptions]="{updateOn: 'blur'}"
                                                                                     (phoneNumberChange)="onPhoneNumberChanged($event)"></app-phone-input>
+                                                                                <input *ngIf="!(intlTelInputLoader.ready$ | async)" type="tel" class="form-control"
+                                                                                  placeholder="Enter your mobile number" autocomplete="off" disabled>
                                                                             </div>
                                                                             <div class="sts-msg error" style="background: white !important;
                                                                         color: #f24949 !important;

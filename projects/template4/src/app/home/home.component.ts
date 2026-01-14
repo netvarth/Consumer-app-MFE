@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, Renderer2, ViewChild } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { AccountService, AuthService, ConsumerService, GroupStorageService, LocalStorageService, OrderService, SharedService, SubscriptionService, ThemeService } from 'jconsumer-shared';
 import { Subscription } from 'rxjs';
@@ -53,9 +53,11 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     private themeService: ThemeService,
     private authService: AuthService,
     private consumerService: ConsumerService,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private renderer: Renderer2
   ) {
     this.onResize();
+    this.loadFontAwesome();
     this.activatedRoute.queryParams.subscribe(qparams => {
       if (qparams && qparams['cl_dt']) {
         console.log(qparams['cl_dt']);
@@ -229,6 +231,28 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     );
 
   }
+
+  private ensureTrailingSlash(path: string): string {
+    if (!path) {
+      return '';
+    }
+    return path.endsWith('/') ? path : `${path}/`;
+  }
+
+  private loadFontAwesome() {
+    if (document.getElementById('font-awesome-css')) {
+      return;
+    }
+    const cdnBase = this.ensureTrailingSlash(this.sharedService.getCDNPath() || 'https://jaldeeassets-test.s3.ap-south-1.amazonaws.com/');
+    const href = `${cdnBase}global/font-awesome-v4.7/css/font-awesome.min.css`;
+    const link = this.renderer.createElement('link');
+    link.id = 'font-awesome-css';
+    link.rel = 'stylesheet';
+    link.href = href;
+    this.renderer.appendChild(document.head, link);
+  }
+
+
 
   finishLoading() {
     if (this.accountService.getStores().length == 0) {

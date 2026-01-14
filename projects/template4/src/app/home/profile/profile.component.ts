@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Renderer2 } from '@angular/core';
 import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
@@ -21,6 +21,7 @@ import {
   ToastService,
   WordProcessor
 } from 'jconsumer-shared';
+import { IntlTelInputLoaderService } from '../../shared/intl-tel-input-loader.service';
 import { AddMemberComponent } from '../add-member/add-member.component';
 
 @Component({
@@ -122,10 +123,34 @@ export class ProfileComponent implements OnInit {
     private groupService: GroupStorageService,
     private fileService: FileService,
     private storageService: StorageService,
-    private subscriptionService: SubscriptionService
+    private subscriptionService: SubscriptionService,
+    public intlTelInputLoader: IntlTelInputLoaderService,
+    private renderer: Renderer2
   ) {
     this.cdnPath = this.sharedService.getCDNPath();
     this.moment = this.dateTimeProcessor.getMoment();
+    this.loadPrimeNgStyles();
+  }
+
+  private loadPrimeNgStyles() {
+    const primengHref = 'https://jaldeeassets-test.s3.ap-south-1.amazonaws.com/global/primeng/primeng.min.css';
+    const themeHref = 'https://jaldeeassets-test.s3.ap-south-1.amazonaws.com/global/primeng/md-light-indigo/theme.css';
+
+    if (!document.getElementById('primeng-css')) {
+      const primengLink = this.renderer.createElement('link');
+      primengLink.id = 'primeng-css';
+      primengLink.rel = 'stylesheet';
+      primengLink.href = primengHref;
+      this.renderer.appendChild(document.head, primengLink);
+    }
+
+    if (!document.getElementById('primeng-theme-css')) {
+      const themeLink = this.renderer.createElement('link');
+      themeLink.id = 'primeng-theme-css';
+      themeLink.rel = 'stylesheet';
+      themeLink.href = themeHref;
+      this.renderer.appendChild(document.head, themeLink);
+    }
   }
   goBack() {
     this.location.back();

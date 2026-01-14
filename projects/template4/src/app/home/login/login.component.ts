@@ -1,6 +1,7 @@
 import { Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthService, ErrorMessagingService, GroupStorageService, LocalStorageService, OrderService, SharedService, SubscriptionService, ToastService } from 'jconsumer-shared';
+import { AuthService, EnvironmentService, ErrorMessagingService, GroupStorageService, LocalStorageService, OrderService, SharedService, SubscriptionService, ToastService } from 'jconsumer-shared';
+import { IntlTelInputLoaderService } from '../../shared/intl-tel-input-loader.service';
 import { interval as observableInterval, Subscription } from 'rxjs';
 import { jwtDecode } from "jwt-decode";
 import { TranslateService } from '@ngx-translate/core';
@@ -18,16 +19,12 @@ export class LoginComponent implements OnInit, OnDestroy {
   step: any = 1; //
   account: any;
   accountConfig: any;
-  // accountProfile: any;
   target: any; //Proceed to this target after login 
   phoneError: any;
   phoneNumber: any;
   isLogin = true;
   dialCode: any;
   otpSuccessMessage = 'OTP has been sent successfully';
-  // SearchCountryField = SearchCountryField;
-  // selectedCountry = CountryISO.India;
-  // PhoneNumberFormat = PhoneNumberFormat;
   preferredCountries = ['in', 'uk', 'us'];
   separateDialCode = true;
   otpError: string = '';
@@ -86,6 +83,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     private renderer: Renderer2,
     private toastService: ToastService,
     private sharedService: SharedService,
+    private environmentService: EnvironmentService,
+    public intlTelInputLoader: IntlTelInputLoaderService,
     public translate: TranslateService,
     private authService: AuthService,
     private subscriptionService: SubscriptionService,
@@ -109,6 +108,38 @@ export class LoginComponent implements OnInit, OnDestroy {
     )
     this.translate.use(JSON.parse(localStorage.getItem('translatevariable')));
     this.cdnPath = this.sharedService.getCDNPath();
+    this.loadPageScripts();
+  }
+  private ensureTrailingSlash(path: string): string {
+    if (!path) {
+      return '';
+    }
+    return path.endsWith('/') ? path : `${path}/`;
+  }
+
+  loadPageScripts() {
+    const cdnBase = this.ensureTrailingSlash(this.cdnPath || 'https://jaldeeassets-test.s3.ap-south-1.amazonaws.com/');
+    const intlPath = this.ensureTrailingSlash(this.environmentService.getEnvironment('INTL_TEL_INPUT_PATH') || 'global/intl-tel-input/');
+    const basePath = intlPath.startsWith('http') ? intlPath : `${cdnBase}${intlPath}`;
+    const cssUrl = `${basePath}css/intlTelInput.min.css`;
+    const jsUrl = `${basePath}js/intlTelInput.min.js`;
+
+    if (!document.getElementById('intl-tel-input-css')) {
+      const link = this.renderer.createElement('link');
+      link.id = 'intl-tel-input-css';
+      link.rel = 'stylesheet';
+      link.href = cssUrl;
+      this.renderer.appendChild(document.head, link);
+    }
+
+    if (!document.getElementById('intl-tel-input-js')) {
+      const script = this.renderer.createElement('script');
+      script.id = 'intl-tel-input-js';
+      script.src = jsUrl;
+      script.async = true;
+      script.defer = true;
+      this.renderer.appendChild(document.body, script);
+    }
   }
   get isAndroidBridgeAvailable(): boolean {
     return !!(window as any).Android && typeof (window as any).Android.signInWithGoogle === 'function';
@@ -679,3 +710,4 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
   }
 }
+
