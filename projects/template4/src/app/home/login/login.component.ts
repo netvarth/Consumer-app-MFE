@@ -193,7 +193,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.googleIntegration = false;
     } else {
       this.googleIntegration = true;
-      if (this.googleIntegration && (!this.isAndroidBridgeAvailable || !this.isIOSBridgeAvailable)) {
+      if (this.googleIntegration && !(this.isAndroidBridgeAvailable || this.isIOSBridgeAvailable)) {
         // Render after Angular finishes the first pass; handles *ngIf async DOM
         setTimeout(() => {
           this.initGoogleButton();
@@ -565,7 +565,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   goBack() {
     this.step = 1;
     setTimeout(() => {
-      if (this.googleIntegration && (!this.isAndroidBridgeAvailable || !this.isIOSBridgeAvailable)) {
+      if (this.googleIntegration && !(this.isAndroidBridgeAvailable || this.isIOSBridgeAvailable)) {
         this.initGoogleButton();
       }
     });

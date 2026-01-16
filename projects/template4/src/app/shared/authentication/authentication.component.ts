@@ -235,7 +235,7 @@ export class AuthenticationComponent implements OnInit, OnDestroy, AfterViewInit
       this.googleIntegration = false;
     } else {
       this.googleIntegration = true;
-      if (this.googleIntegration && (!this.isAndroidBridgeAvailable || !this.isIOSBridgeAvailable)) {
+      if (this.googleIntegration && !(this.isAndroidBridgeAvailable || this.isIOSBridgeAvailable)) {
         // Render after Angular finishes the first pass; handles *ngIf async DOM
         setTimeout(() => {
           this.initGoogleButton();
@@ -399,7 +399,7 @@ export class AuthenticationComponent implements OnInit, OnDestroy, AfterViewInit
     this.step = 1;
     console.log("Go Back to Step 1");
     setTimeout(() => {
-      if (this.googleIntegration && (!this.isAndroidBridgeAvailable || !this.isIOSBridgeAvailable)) {
+      if (this.googleIntegration && !(this.isAndroidBridgeAvailable || this.isIOSBridgeAvailable)) {
         this.initGoogleButton();
       }
       this.schedulePhoneInputPaddingFix();
