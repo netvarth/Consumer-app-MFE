@@ -268,11 +268,11 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.lStorageService.removeitemfromLocalStorage('authorization');
     this.lStorageService.removeitemfromLocalStorage('c_authorizationToken');
     this.lStorageService.removeitemfromLocalStorage('googleToken');
-    console.log(tokenOrObj);
+    console.log(idToken);
     this.googleLogin = true;
-    const payLoad: any = jwtDecode(tokenOrObj);
+    const payLoad: any = jwtDecode(idToken);
     console.log(payLoad);
-    _this.lStorageService.setitemonLocalStorage('googleToken', 'googleToken-' + tokenOrObj);
+    _this.lStorageService.setitemonLocalStorage('googleToken', 'googleToken-' + idToken);
     const credentials: any = {
       accountId: _this.sharedService.getAccountID()
     }
