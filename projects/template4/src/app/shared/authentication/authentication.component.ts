@@ -412,7 +412,7 @@ export class AuthenticationComponent implements OnInit, OnDestroy, AfterViewInit
         }
       }
       credentials['mUniqueId'] = this.lStorageService.getitemfromLocalStorage('mUniqueId');
-      credentials['deviceType'] = this.lStorageService.getitemfromLocalStorage('mode') ? 'IOS' : 'ANDROID';
+      credentials['deviceType'] = this.lStorageService.getitemfromLocalStorage('ios') ? 'IOS' : 'ANDROID';
       if (this.lStorageService.getitemfromLocalStorage('appId')) {
         credentials['appId'] = this.lStorageService.getitemfromLocalStorage('appId');
       }
@@ -557,7 +557,7 @@ export class AuthenticationComponent implements OnInit, OnDestroy, AfterViewInit
                 accountId: this.accountId
               }
               credentials['mUniqueId'] = this.lStorageService.getitemfromLocalStorage('mUniqueId');
-              credentials['deviceType'] = this.lStorageService.getitemfromLocalStorage('mode') ? 'IOS' : 'ANDROID';
+              credentials['deviceType'] = this.lStorageService.getitemfromLocalStorage('ios') ? 'IOS' : 'ANDROID';
               if (this.lStorageService.getitemfromLocalStorage('appId')) {
                 credentials['appId'] = this.lStorageService.getitemfromLocalStorage('appId');
               }
@@ -687,7 +687,7 @@ export class AuthenticationComponent implements OnInit, OnDestroy, AfterViewInit
       accountId: _this.accountId
     }
     credentials['mUniqueId'] = this.lStorageService.getitemfromLocalStorage('mUniqueId');
-    credentials['deviceType'] = this.lStorageService.getitemfromLocalStorage('mode') ? 'IOS' : 'ANDROID';
+    credentials['deviceType'] = this.lStorageService.getitemfromLocalStorage('ios') ? 'IOS' : 'ANDROID';
     if (this.lStorageService.getitemfromLocalStorage('appId')) {
       credentials['appId'] = this.lStorageService.getitemfromLocalStorage('appId');
     }

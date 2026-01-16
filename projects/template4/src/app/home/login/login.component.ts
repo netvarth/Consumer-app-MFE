@@ -264,7 +264,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       accountId: _this.sharedService.getAccountID()
     }
     credentials['mUniqueId'] = this.lStorageService.getitemfromLocalStorage('mUniqueId');
-    credentials['deviceType'] = this.lStorageService.getitemfromLocalStorage('mode') ? 'IOS' : 'ANDROID';
+    credentials['deviceType'] = this.lStorageService.getitemfromLocalStorage('ios') ? 'IOS' : 'ANDROID';
     if (this.lStorageService.getitemfromLocalStorage('appId')) {
       credentials['appId'] = this.lStorageService.getitemfromLocalStorage('appId');
     }
@@ -432,7 +432,7 @@ export class LoginComponent implements OnInit, OnDestroy {
               accountId: this.sharedService.getAccountID()
             }
             credentials['mUniqueId'] = this.lStorageService.getitemfromLocalStorage('mUniqueId');
-            credentials['deviceType'] = this.lStorageService.getitemfromLocalStorage('mode') ? 'IOS' : 'ANDROID';
+            credentials['deviceType'] = this.lStorageService.getitemfromLocalStorage('ios') ? 'IOS' : 'ANDROID';
             if (this.lStorageService.getitemfromLocalStorage('appId')) {
               credentials['appId'] = this.lStorageService.getitemfromLocalStorage('appId');
             }
@@ -588,7 +588,7 @@ export class LoginComponent implements OnInit, OnDestroy {
             accountId: _this.sharedService.getAccountID()
           }
           credentials['mUniqueId'] = this.lStorageService.getitemfromLocalStorage('mUniqueId');
-          credentials['deviceType'] = this.lStorageService.getitemfromLocalStorage('mode') ? 'IOS' : 'ANDROID';
+          credentials['deviceType'] = this.lStorageService.getitemfromLocalStorage('ios') ? 'IOS' : 'ANDROID';
           if (this.lStorageService.getitemfromLocalStorage('appId')) {
             credentials['appId'] = this.lStorageService.getitemfromLocalStorage('appId');
           }
