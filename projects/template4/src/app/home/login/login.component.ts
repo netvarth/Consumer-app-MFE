@@ -144,6 +144,19 @@ export class LoginComponent implements OnInit, OnDestroy {
   get isAndroidBridgeAvailable(): boolean {
     return !!(window as any).Android && typeof (window as any).Android.signInWithGoogle === 'function';
   }
+/*************  ✨ Windsurf Command ⭐  *************/
+/**
+ * Checks if the iOS bridge is available or not.
+ * This function is used to determine whether the iOS app is running and
+ * whether the signInWithGoogle function is available on the window object.
+ * @returns {boolean} True if the iOS bridge is available, false otherwise.
+ */
+/*******  ec18a9a0-b30e-4c74-b853-2cc5fa1ec81a  *******/
+  get isIOSBridgeAvailable(): boolean {
+    return !!(window as any).webkit
+      && !!(window as any).webkit.messageHandlers
+      && !!(window as any).webkit.messageHandlers.signInWithGoogle;
+  }
   ngOnInit() {
     this.isIOSApp = this.lStorageService.getitemfromLocalStorage('ios');
     console.log('isIOS app : ' + this.isIOSApp);
@@ -180,7 +193,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.googleIntegration = false;
     } else {
       this.googleIntegration = true;
-      if (this.googleIntegration && !this.isAndroidBridgeAvailable) {
+      if (this.googleIntegration && (!this.isAndroidBridgeAvailable || !this.isIOSBridgeAvailable)) {
         // Render after Angular finishes the first pass; handles *ngIf async DOM
         setTimeout(() => {
           this.initGoogleButton();
@@ -552,7 +565,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   goBack() {
     this.step = 1;
     setTimeout(() => {
-      if (this.googleIntegration && !this.isAndroidBridgeAvailable) {
+      if (this.googleIntegration && (!this.isAndroidBridgeAvailable || !this.isIOSBridgeAvailable)) {
         this.initGoogleButton();
       }
     });
@@ -697,6 +710,8 @@ export class LoginComponent implements OnInit, OnDestroy {
 
       if (this.isAndroidBridgeAvailable) {
         w.Android.signInWithGoogle();
+      } else if (this.isIOSBridgeAvailable) {
+        w.webkit.messageHandlers.signInWithGoogle.postMessage({});
       } else {
         // Not running inside Android WebView
         this.google_loading = false;
