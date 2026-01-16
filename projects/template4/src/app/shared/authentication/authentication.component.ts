@@ -424,9 +424,8 @@ export class AuthenticationComponent implements OnInit, OnDestroy, AfterViewInit
             accountId: _this.accountId
           }
           _this.authService.consumerLogin(credentials).then(
-            () => {
-              const token = _this.lStorageService.getitemfromLocalStorage('c_authorizationToken');
-              _this.lStorageService.setitemonLocalStorage('refreshToken', token);
+            (response: any) => {
+              _this.lStorageService.setitemonLocalStorage('refreshToken', response.token);
               _this.lStorageService.removeitemfromLocalStorage('c_authorizationToken');
               _this.lStorageService.removeitemfromLocalStorage('googleToken');
               _this.ngZone.run(() => {
