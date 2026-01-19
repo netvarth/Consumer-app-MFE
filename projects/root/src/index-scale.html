@@ -5,11 +5,19 @@
   <meta charset="utf-8">
   <title>Loading...</title>
   <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Jaldee">
+  <meta name="keywords" content="Jaldee, Avoid waiting">
+  <meta name="author" content="Jaldee Soft Private Limited">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="expires" content="0">
+  <meta http-equiv="Cache-control" content="no-cache, no-store, must-revalidate, post-check=0, pre-check=0">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
   <!-- href="favicon.ico" -->
   <link rel="icon" type="image/x-icon" id="dynamic-favicon">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link rel="preconnect" href="https://d2199iy1o5ikw9.cloudfront.net" crossorigin> <!-- Jaldee Static Assets for Scale/Local Includes Images, Css etc. -->
+  <link rel="preconnect" href="https://d2199iy1o5ikw9.cloudfront.net" crossorigin>
+  <!-- Jaldee Static Assets for Scale/Local Includes Images, Css etc. -->
   <link rel="preconnect" href="https://d34s9pj4wr6ijb.cloudfront.net" crossorigin> <!-- Jaldee UI Scale Bucket-->
   <meta name="description" content=".">
   <style>
@@ -30,8 +38,9 @@
 </head>
 
 <body class="hold-transition sidebar-mini" style="height: auto;min-height: 100%;">
-    <div id="globalLoading" style="background-color: white; width: 100%; height: 100vh; display: flex; align-items: center;justify-content: center;">
-     <img src="https://d34s9pj4wr6ijb.cloudfront.net/{UNIQUEID}/site_assets/logo.webp"
+  <div id="globalLoading"
+    style="background-color: white; width: 100%; height: 100vh; display: flex; align-items: center;justify-content: center;">
+    <img src="https://d34s9pj4wr6ijb.cloudfront.net/{UNIQUEID}/site_assets/logo.webp"
       style="width: 200px; height: auto;animation: zoomInOut 2s ease-in-out infinite;" />
   </div>
   <app-root></app-root>
