@@ -291,9 +291,13 @@ export class LoginComponent implements OnInit, OnDestroy {
       if (error.status === 401 && error.error === 'Session Already Exist') {
         const activeUser = _this.lStorageService.getitemfromLocalStorage('jld_scon');
         if (!activeUser) {
+          let googleToken = _this.lStorageService.getitemfromLocalStorage('googleToken'); //googleToken keep because in some case logout getting 401 response
+          _this.lStorageService.removeitemfromLocalStorage('googleToken');//googleToken remove before doLogout because in some case logout getting 401 response
           console.log("55557");
           _this.authService.doLogout().then(
             () => {
+              _this.lStorageService.setitemonLocalStorage('googleToken', googleToken);//googleToken set before after doLogout because in some case logout getting 401 response
+              console.log("logout 3");
               _this.authService.consumerLogin(credentials).then((response: any) => {
                 _this.lStorageService.setitemonLocalStorage('refreshToken', response.token);
                 _this.lStorageService.removeitemfromLocalStorage('c_authorizationToken');
