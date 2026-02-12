@@ -1,0 +1,187 @@
+/* === robust viewport height utility (from previous step) === */
+.h-viewport { min-height: 100vh; }
+@supports (min-height: 100svh) { .h-viewport { min-height: 100svh; } }
+@supports (min-height: 100dvh) { .h-viewport { min-height: 100dvh; } }
+
+/* the main column fills the viewport */
+.login.wizard {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0; /* allow children to scroll */
+}
+
+/* --- TOP HALF --- */
+.hero {
+  /* half the visible viewport */
+  height: 50vh;
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+}
+@supports (height: 50svh) { .hero { height: 50svh; } }
+@supports (height: 50dvh) { .hero { height: 50dvh; } }
+
+/* optional inner hero content (center mascot/logo if used) */
+.hero-content {
+  height: 100%;
+  display: flex;
+  align-items: flex-end; /* push mascot towards bottom if you like */
+  justify-content: center;
+  padding: 16px;
+}
+
+/* --- BOTTOM HALF --- */
+.form-area {
+  /* fill the remaining half */
+  flex: 1 1 auto;
+  min-height: 0;   /* critical so card can scroll */
+  display: flex;
+  align-items: flex-start;  /* card sticks to top of the bottom section */
+  justify-content: center;
+  padding: 16px 16px max(env(safe-area-inset-bottom, 0px), 16px);
+  background: #fff; /* keep background white like your mock */
+}
+
+/* white rounded card for the form */
+.form-card {
+  width: 100%;
+  max-width: 420px;                 /* adjust as needed */
+  background: #fff;
+  border-radius: 24px;              /* softer on mobile */
+  box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+  padding: 20px 16px 24px;
+  max-height: 100%;                 /* never exceed form-area */
+  overflow: auto;                   /* scroll inside if content is tall */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* keep your existing helpers if you still use them elsewhere */
+.bottomFlexAlign { align-items: flex-end !important; }
+
+/* if you still have a different .login-form somewhere */
+.login-form {
+  background: white;
+  border-top-left-radius: 50px !important;
+  border-top-right-radius: 50px !important;
+  padding-top: 40px !important;
+}
+
+/* **Important**: this replaces the old 100% background stretch */
+.bg-cover-app { background-size: cover !important; }
+
+/* questionnaire uses safe viewport too */
+.qnr-form { min-height: 100vh !important; }
+@supports (min-height: 100svh) { .qnr-form { min-height: 100svh !important; } }
+@supports (min-height: 100dvh) { .qnr-form { min-height: 100dvh !important; } }
+
+/* Tablet+ can give a bit more hero room if you want */
+@media (min-width: 768px) {
+  .hero {
+    height: 45vh;
+  }
+  @supports (height: 45svh) { .hero { height: 45svh; } }
+  @supports (height: 45dvh) { .hero { height: 45dvh; } }
+}
+.loginpg{
+  width: 100%;
+  height: 100vh;
+}
+
+.bus-page-header .panel-body {
+  margin-top: calc(55px + var(--template12-header-height, 0px));
+  min-height: calc(100vh - (55px + var(--template12-header-height, 0px)));
+}
+
+.bus-page-header .panel-body.header-visible {
+  margin-top: 0;
+  min-height: calc(100vh - var(--template12-header-height, 0px));
+}
+
+.header-container {
+  position: fixed;   /* locks it to the viewport */
+  top: 0;            /* sticks to the very top */
+  left: 0;           /* align to the left edge */
+  width: 100%;       /* span across the viewport */
+  z-index: 1000;     /* keep it above other elements */
+  height: 60px;
+}
+/* welcome popup overlay */
+.welcome-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1050;
+  display: grid;
+  place-items: center;
+  pointer-events: auto;
+  animation: welcome-fade-in 300ms ease;
+}
+
+.welcome-overlay__backdrop {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 20%, rgba(255, 122, 0, 0.18), transparent 35%),
+              radial-gradient(circle at 80% 80%, rgba(255, 77, 15, 0.18), transparent 40%),
+              rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(3px);
+  animation: welcome-backdrop 600ms ease;
+}
+
+.welcome-overlay__content {
+  position: relative;
+  width: min(90vw, 533px);
+  max-width: 533px;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22), 0 12px 30px rgba(0, 0, 0, 0.18);
+  transform-origin: center;
+  animation: welcome-zoom 420ms cubic-bezier(0.21, 1, 0.32, 1);
+}
+
+.welcome-overlay__image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.welcome-overlay__close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  border: none;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: transform 160ms ease, background 160ms ease;
+}
+
+.welcome-overlay__close:hover,
+.welcome-overlay__close:focus {
+  transform: scale(1.05);
+  background: rgba(0, 0, 0, 0.7);
+  outline: none;
+}
+
+@keyframes welcome-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes welcome-zoom {
+  0% { transform: scale(0.9) translateY(12px); opacity: 0; }
+  60% { transform: scale(1.02) translateY(0); opacity: 1; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+@keyframes welcome-backdrop {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

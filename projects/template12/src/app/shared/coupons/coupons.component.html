@@ -1,0 +1,88 @@
+<form [ngClass]="this.data.theme">
+  <h1 class="mat-dialog-title coupon-title">
+    Available Coupons
+    <button #queue mat-dialog-close class="modal_close" tabindex="-1" id="btnClose">
+      <i class="fa fa-window-close" aria-hidden="true"></i>
+    </button>
+  </h1>
+  <div class="page">
+  <mat-dialog-content class="coupon-dialog">
+    <ng-container *ngIf="couponsList.length > 0">
+      <div *ngFor="let coupon of couponsList; let i = index" class="coupon-card-wrapper">
+        <div class="coupon-card">
+          <div class="coupon-ribbon">
+            <span class="discount-label">{{ getDiscountLabel(coupon) }}</span>
+          </div>
+          <div class="coupon-body">
+            <div class="coupon-header">
+              <img class="coupontitle-left-img" src="{{cdnPath}}customapp/assets/images/myjaldee/couponicon.png" loading="lazy" decoding="async">
+              <div>
+                <div class="coupon-name">{{ coupon.couponName }}</div>
+                <div class="coupon-desc">{{ coupon.couponDescription }}</div>
+              </div>
+            </div>
+            <div class="coupon-validity">
+              Valid Through:
+              <span>{{ coupon.startDate | date: 'dd MMM yyyy' }}</span>
+              -
+              <span>{{ coupon.endDate | date: 'dd MMM yyyy' }}</span>
+            </div>
+            <div class="coupon-footer">
+              <div class="coupon-code pointer-cursor ttip"
+                (click)="copyText('jaldee-cc-', 'jaldee-cc-tooltip-', coupon.jaldeeCouponCode)"
+                (mouseout)="resetTooltip('jaldee-cc-tooltip-', coupon.jaldeeCouponCode)">
+                <span [id]="'jaldee-cc-' + coupon.jaldeeCouponCode">{{ coupon.jaldeeCouponCode }}</span>
+                <i class="fa fa-clone" aria-hidden="true"></i>
+                <span class="tooltiptext" [id]="'jaldee-cc-tooltip-' + coupon.jaldeeCouponCode">Copy</span>
+              </div>
+              <button type="button" class="apply-chip" [ngClass]="{ 'applied': isCouponApplied(coupon) }"
+                (click)="applyCoupon(coupon, false)">
+                {{ getApplyLabel(coupon) }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="providerCouponList.length > 0">
+      <div *ngFor="let coupon of providerCouponList; let i = index" class="coupon-card-wrapper">
+        <div class="coupon-card">
+          <div class="coupon-ribbon">
+            <span>{{ getDiscountLabel(coupon, true) }}</span>
+          </div>
+          <div class="coupon-body">
+            <div class="coupon-header">
+               <div class="coupon-main-title">
+               <img class="coupontitle-left-img" src="{{cdnPath}}customapp/assets/images/myjaldee/couponicon.png" loading="lazy" decoding="async">
+             
+                <div class="coupon-name">{{ coupon.name }}</div>
+                </div>
+                <div class="coupon-desc">{{ coupon.description }}</div>
+              
+            </div>
+            <div class="coupon-validity">
+              Valid Through:
+              <span>{{ coupon.couponRules.startDate | date: 'dd MMM yyyy' }}</span>
+              -
+              <span>{{ coupon.couponRules.endDate | date: 'dd MMM yyyy' }}</span>
+            </div>
+            <div class="coupon-footer">
+              <div class="coupon-code pointer-cursor ttip" (click)="copyText('cc-', 'cc-tooltip-', coupon.couponCode)"
+                (mouseout)="resetTooltip('cc-tooltip-', coupon.couponCode)">
+                <span [id]="'cc-' + coupon.couponCode">{{ coupon.couponCode }}</span>
+                <i class="fa fa-clone" aria-hidden="true"></i>
+                <span class="tooltiptext" [id]="'cc-tooltip-' + coupon.couponCode">Copy</span>
+              </div>
+              <button type="button" class="apply-chip" [ngClass]="{ 'applied': isCouponApplied(coupon) }"
+                (click)="applyCoupon(coupon, true)">
+                {{ getApplyLabel(coupon) }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </mat-dialog-content>
+  </div>
+</form>

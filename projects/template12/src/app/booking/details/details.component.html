@@ -1,0 +1,167 @@
+<p-toast class="p-toast-container" [breakpoints]="{'920px': {width: '100%', right: '0', left: '0'}}"></p-toast>
+
+<section class="booking-redesign">
+  <ng-container *ngIf="api_loading && booking['info']; else loadingState">
+      <div class="back-section">
+        <button type="button" class="back-link" (click)="gotoHome()">
+          <i class="fa fa-arrow-left" aria-hidden="true"></i>
+          <span class="back-label">Back</span>
+        </button>
+      </div>
+      
+    <div class="booking-body">
+      <div class="card booking-card">
+        <div class="card-top">
+          <div class="logo-block" *ngIf="booking['logo']">
+            <img [src]="booking['logo']" alt="Provider logo" />
+          </div>
+            <div class="summary">
+            <div class="status-line" *ngIf="booking['status']">
+              <span class="label">{{'Status :' | translate}}</span>
+              <span class="value" [ngClass]="{'status-cancelled': booking['status'] === 'Cancelled'}">{{booking['status']}}</span>
+            </div>
+            <div class="provider-name" *ngIf="booking['info']?.providerAccount?.businessName">
+              {{booking['info'].providerAccount.businessName}}
+            </div>
+            <div class="provider-location" *ngIf="!hideLocationGlobal && booking['location']">
+              {{booking['location']}}
+            </div>
+          </div>
+          <button type="button" class="icon-btn subtle" *ngIf="hasActionMenuItems()" (click)="toggleActionMenu($event)">
+            <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+          </button>
+          <div class="action-menu" *ngIf="actionMenuOpen" (click)="onMenuClick($event)">
+          <button type="button" class="action-menu-item" (click)="sendMessage(); closeActionMenu()">
+            <i class="fa fa-comments" aria-hidden="true"></i>
+            <span>{{'Message to Provider' | translate}}</span>
+          </button>
+          <button type="button" class="action-menu-item" *ngIf="booking['actions']['reschedule']"
+            (click)="rescheduleBooking(); closeActionMenu()">
+            <i class="fa fa-calendar" aria-hidden="true"></i>
+            <span>{{'Reschedule' | translate}}</span>
+          </button>
+          <button type="button" class="action-menu-item" *ngIf="booking['actions']['sendAttachment']"
+            (click)="sendAttachmentBooking(); closeActionMenu()">
+            <i class="fa fa-paperclip" aria-hidden="true"></i>
+            <span>{{'Send Attachment' | translate}}</span>
+          </button>
+          <button type="button" class="action-menu-item" *ngIf="booking['actions']['hasAttachment']"
+            (click)="viewAttachment(); closeActionMenu()">
+            <i class="fa fa-folder-open" aria-hidden="true"></i>
+            <span>{{'View Attachments' | translate}}</span>
+          </button>
+          <button type="button" class="action-menu-item danger" *ngIf="booking['actions']['cancel']"
+            (click)="cancelBooking(); closeActionMenu()">
+            <i class="fa fa-ban" aria-hidden="true"></i>
+            <span>{{'Cancel Booking' | translate}}</span>
+          </button>
+                 </div> 
+        </div>
+        <div class="meta-grid">
+          <div class="meta-item" *ngIf="booking.encID">
+            <div class="meta-label">{{'Booking Id' | translate}}</div>
+            <div class="meta-value">{{booking.encID}}</div>
+          </div>
+          <div class="meta-item" *ngIf="booking?.bookingFor?.length && (booking.bookingFor[0]?.firstName || booking.bookingFor[0]?.lastName)">
+            <div class="meta-label">{{'Booking For' | translate}}</div>
+            <div class="meta-value">
+              <span *ngIf="booking.bookingFor[0]?.title">{{booking.bookingFor[0].title}}&nbsp;</span>
+              {{booking.bookingFor[0]?.firstName | capitalizeFirst}}
+              {{booking.bookingFor[0]?.lastName | capitalizeFirst}}
+            </div>
+          </div>
+          <div class="meta-item" *ngIf="booking['mobile']">
+            <div class="meta-label">{{'Mobile' | translate}}</div>
+            <div class="meta-value no-wrap">{{booking['mobile']}}</div>
+          </div>
+          <div class="meta-item" *ngIf="booking['email']">
+            <div class="meta-label">{{'Email' | translate}}</div>
+            <div class="meta-value">{{booking['email']}}</div>
+          </div>
+          <div class="meta-item" *ngIf="booking['date']">
+            <div class="meta-label">{{'Date & Time' | translate}}</div>
+            <div class="meta-value">
+              {{booking['date'] | date:'EEEE'}}, {{booking['date'] | date:'d'}}&nbsp;{{booking['date'] | date:'MMM'}}&nbsp;{{booking['date'] | date:'y'}}, {{booking['time']}}
+            </div>
+          </div>
+          <div class="meta-item" *ngIf="booking['info']?.timezone">
+            <div class="meta-label">{{'Timezone' | translate}}</div>
+            <div class="meta-value">{{booking['info']?.timezone}}</div>
+          </div>
+        </div>
+      </div>
+
+      
+      <ng-container *ngIf="booking?.info as bookingInfo">
+        <div *ngIf="booking['actions']['joinMeeting']
+            && bookingInfo.service?.serviceType === 'virtualService'
+            && (bookingInfo.service?.virtualCallingModes?.[0]?.callingMode === 'GoogleMeet'
+              || bookingInfo.service?.virtualCallingModes?.[0]?.callingMode === 'Zoom')">
+          <a class="cta-button" id="btnJoinVideo" *ngIf="meetingDetails?.joiningUrl"
+            [href]="meetingDetails.joiningUrl" target="_blank">
+            <i class="fa fa-video-camera" aria-hidden="true"></i>
+            <span>{{'Join Video Consultation' | translate}}</span>
+          </a>
+        </div>
+
+        <div *ngIf="booking['actions']['joinJaldeeVideo']
+            && bookingInfo.service?.serviceType === 'virtualService'
+            && bookingInfo.service?.virtualCallingModes?.[0]?.callingMode === 'VideoCall'">
+          <button type="button" class="cta-button" id="btnJoinJaldeeVideo" (click)="joinMeeting()">
+            <i class="fa fa-video-camera" aria-hidden="true"></i>
+            <span>{{'Join Video Consultation' | translate}}</span>
+          </button>
+        </div>
+      </ng-container>
+
+      <div class="card instructions-card">
+        <div class="card-title">{{'Instructions' | translate}}</div>
+        <div class="card-text" [innerHTML]="booking['info']?.service?.postInfoText || instructionFallback"></div>
+      </div>
+
+      <div class="more-info-row" *ngIf="this.booking['questionnaires']?.length > 0" >
+        <a class="more-info" href="javascript:void(0)">{{'More Info' | translate}}</a>
+      </div>
+
+      <div class="" *ngIf="this.booking['questionnaires']?.length > 0">        
+        <ng-container *ngIf="this.booking['questionnaires']?.length > 1">
+          <mat-accordion class="qnr-accord p-0" *ngFor="let qnr of this.booking['questionnaires']">
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  {{(qnr.questionnaireName) ? qnr.questionnaireName : qnr.questionnaireId}}
+                  <div class="qnrstatus">
+                    <span class="greenc" *ngIf="getQnrStatus(qnr) === 'submitted'">{{'Submitted' | translate}}</span>
+                    <span class="red" *ngIf="getQnrStatus(qnr) !== 'submitted'">{{'Released' | translate}}</span>
+                  </div>
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <div class="c-details">
+                <app-questionnaire [questionnaireList]="qnr" [source]="booking['qnrSource']" [uuid]="booking['info'].uid" [status]="booking['info']?.apptStatus"
+                  [accountId]="booking['info'].providerAccount.id" [type]="'details'"
+                  [waitlistStatus]="booking['info']?.apptStatus || booking['info']?.waitlistStatus || booking['info']?.status"
+                  (returnAnswers)="getQuestionAnswers($event)">
+                </app-questionnaire>
+              </div>
+            </mat-expansion-panel>
+          </mat-accordion>
+        </ng-container>
+        <ng-container *ngIf="this.booking['questionnaires']?.length === 1">
+          <div class="c-details" *ngFor="let qnr of this.booking['questionnaires']">
+            <app-questionnaire [questionnaireList]="qnr" [source]="booking['qnrSource']"
+              [uuid]="booking['info'].uid" [accountId]="booking['info'].providerAccount.id" [type]="'details'" [status]="booking['info']?.apptStatus"
+              [waitlistStatus]="booking['info']?.apptStatus || booking['info']?.waitlistStatus || booking['info']?.status"
+              (returnAnswers)="getQuestionAnswers($event)">
+            </app-questionnaire>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-template #loadingState>
+    <div class="card loader-card">
+      <app-common-innerloading-spinner></app-common-innerloading-spinner>
+    </div>
+  </ng-template>
+</section>

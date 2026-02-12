@@ -1,0 +1,122 @@
+.payment-modes__group {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.payment-mode-card {
+  margin: 0;
+  width: 100%;
+  --mat-radio-ripple-color: rgba(255, 122, 0, 0.2);
+}
+
+.payment-mode-card .mat-radio-label {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: #ffffff;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 18px;
+  padding: 16px 18px;
+  box-shadow: 0 16px 40px rgba(15, 35, 95, 0.06);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.payment-mode-card.mat-radio-checked .mat-radio-label {
+  border-color: #ff7a00;
+  box-shadow: 0 18px 42px rgba(255, 122, 0, 0.22);
+}
+
+.payment-mode-card .mat-radio-container {
+  margin-right: 12px;
+}
+
+.payment-mode-card .mat-radio-label .mat-radio-label-content {
+  display: flex;
+  flex: 1;
+}
+
+.payment-mode-card__wrapper {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  width: 100%;
+}
+
+.payment-mode-card__visual {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  background: #f7f8fd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.payment-mode-card__icon {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+}
+
+.payment-mode-card__content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.payment-mode-card__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.payment-mode-card__name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.payment-mode-card__badge {
+  background: #d1fae5;
+  color: #047857;
+  border-radius: 12px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.payment-mode-card__subtext {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.payment-mode-card__chevron {
+  margin-left: auto;
+  color: #9ca3af;
+  font-size: 18px;
+}
+
+.payment-mode-card:hover .mat-radio-label {
+  border-color: #ffb26b;
+}
+
+@media (max-width: 575px) {
+  .payment-mode-card .mat-radio-label {
+    flex-wrap: wrap;
+    padding: 14px 16px;
+  }
+
+  .payment-mode-card__wrapper {
+    gap: 14px;
+  }
+
+  .payment-mode-card__chevron {
+    display: none;
+  }
+}

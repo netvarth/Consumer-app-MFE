@@ -1,0 +1,603 @@
+<div class="p-3 d-flex shadow flex-row header container" [ngClass]="theme">
+    <div class="my-auto align-items-center d-flex" (click)="goBack('back')" *ngIf="showBackArrow">
+        <a class=""><i class="fa fa-arrow-left"></i>&emsp;</a>
+        <!-- <div class="ms-2 backHeader">{{'Back' | translate}}</div> -->
+        <div class="ms-4 pointer-cursor">
+            <app-booking-accountinfo [businessInfo]="businessInfo" [smallDevice]="true">
+            </app-booking-accountinfo>
+        </div>
+    </div>
+</div>
+<section #bookingContainer class="booking-container p-0 container">
+    <a #modal data-bs-toggle="modal" data-bs-target="#bookingModal" ></a>
+    <div [ngClass]="{block: (modalOpen)}" class="modal fade" id="bookingModal" tabindex="-1" role="dialog" #bookingModal
+        aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <ng-container *ngIf="action=='coupons'">
+                    <app-coupon-handler></app-coupon-handler>
+                </ng-container>
+                <ng-container *ngIf="action=='note'">
+                    <app-booking-note (noteChanged)="handleConsumerNote($event)" [selectedService]="selectedService"
+                        [businessProfile]="accountProfile" [placeHolder]="note_placeholder" [note]="consumerNote">
+                    </app-booking-note>
+                </ng-container>
+                <ng-container *ngIf="action=='members'">
+                    <div class="modal-body">
+                        <div class="col-md-12 col-12 col-sm-12 lnk mb-2 mt-4">
+                            <div class="pull-left"> {{'Booking for' | translate}} </div>
+                            <a class="lnk pointer-cursoraction ms-4" (click)="addMember()"><i
+                                    class="fa fa-user-plus"></i>
+                                {{add_member_cap | translate}}</a>
+                        </div>
+                        <div class="col-md-12 col-sm-12 col-12 no-padding-small">
+                            <ng-container *ngIf="action=='members'">
+                                <div class="members">
+                                    <app-consumer-members (memberSelected)="memberSelected($event)" [maxSelection]="1" [selectedMember]="bookingFor"
+                                        [familyMembers]="familyMembers" [multiple]="false" [allowSelection]="true" [parentCustomer]="parentCustomer">
+                                    </app-consumer-members>
+                                </div>
+                                <div>
+                                    <app-communications (setCommunications)="setCommunications" [commObj]="commObj" [selectedService]="selectedService"
+                                        [mode]="'write'">
+                                    </app-communications>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="action=='addmember'">
+                    <div class="modal-body">
+                        <div class="col-md-12 col-12 col-sm-12 lnk mb-2">
+                            <i class="fa fa-arrow-left pointer-cursor" (click)="goBack()"></i>
+                            {{add_member_cap | translate}}
+                        </div>
+                        <div class="col-md-12 col-12 col-sm-12 lnk mt-4">
+                            <app-checkin-consumer-add-member [calledFrom]="'checkin'"
+                                (returnDetails)="handleReturnDetails($event)">
+                            </app-checkin-consumer-add-member>
+                        </div>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="action==='attachment'">
+                    <div class="modal-body">
+                        <div class="col-sm-12 col-12 chk-btns-div col-md-12 input_label">
+                            <mat-chip class="upload"><a class="lnk pointer-cursor" (click)="imagefile.click()"><input
+                                        #imagefile type="file" accept="/*;capture=camera" style="display:none;" multiple
+                                        (change)="filesSelected($event)"><i class="fa fa-paperclip mgn-rt-5"
+                                        aria-hidden="true"></i>{{'Upload Files' |
+                                    translate}}</a></mat-chip>
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="img-section mt-4"
+                            *ngIf="(selectedMessage.files && selectedMessage.files.length > 0) || (bookingType=='reschedule' && scheduledBooking && scheduledBooking.attachments && scheduledBooking.attachments.length > 0)">
+                            <div class="galul">
+                                <ng-container
+                                    *ngIf="bookingType=='reschedule' && scheduledBooking && scheduledBooking.attachments && scheduledBooking.attachments.length > 0">
+                                    <ng-container *ngFor="let file of scheduledBooking.attachments;let i = index ">
+                                        <div class="galimg_outer" *ngIf="getThumbUrl(file)">
+                                            <div class="gal_img">
+                                                <img [src]="getThumbUrl(file)" alt="">
+                                            </div>
+                                            <!-- <div class="gal-input">
+                                                <input type="text" readonly value="{{file.caption}}">
+                                            </div> -->
+                                        </div>
+                                    </ng-container>
+                                </ng-container>
+                                <ng-container *ngIf="selectedMessage.files && selectedMessage.files.length > 0">
+                                    <ng-container *ngFor="let file of selectedMessage.files;let i = index ">
+                                        <div class="galimg_outer">
+                                            <div class="gal_img">
+                                                <img [src]="getImage(selectedMessage.base64[i], file)"
+                                                    *ngIf="selectedMessage.base64[i]" alt="">
+                                            </div>
+                                           
+                                            <!-- <div class="gal-input">
+                                                <input type="text" placeholder="Caption" [(ngModel)]="imgCaptions">
+                                            </div> -->
+                                            <div class="gal_action" (click)="deleteTempImage(i,file)">
+                                                <i class="fa fa-times-circle" aria-hidden="true"></i>
+                                            </div>
+                                            <div *ngIf="file?.name"> {{file.name | shortFileName:10}}</div>
+                                        </div>
+                                    </ng-container>
+                                </ng-container>
+                            </div>
+                        </div>
+                        <div class="small-dev-view modal-footer-small pull-right">
+                            <button id="btnClose" type="button" class="btn btn-light-primary mdc-button mat-button font-weight-bold"
+                                data-bs-dismiss="modal" #closebutton>{{'Cancel' | translate}}</button>
+                            <button id="btnOk" type="button" class="btn btn-primary mdc-button mat-button font-weight-bold hf-btn ms-1"
+                                (click)="actionCompleted()">{{'Ok' | translate}}</button>
+                        </div>
+                    </div>
+                </ng-container>
+                <div class="modal-footer">
+                    <button type="button" id="btnFooterClose" class="btn btn-light-primary mdc-button mat-button font-weight-bold"
+                        data-bs-dismiss="modal" #closebutton>{{'Cancel' | translate}}</button>
+                    <button type="button" id="btnFooterOk" class="btn btn-primary mdc-button mat-button font-weight-bold hf-btn ms-1"
+                        (click)="actionCompleted()">{{'Ok' | translate}}</button>
+                </div>
+                <div class="error-section" *ngIf="apiError !== ''">
+                    {{apiError}}
+                </div>
+                <div class="error-section success-section" *ngIf="apiSuccess !== ''">
+                    {{apiSuccess}}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div [ngClass]="{'loadingpaytm': loadingPaytm}"></div>
+    <div class="my-1 login-form_custom" *ngIf="!loggedIn">
+        <div class="card card-custom no-margin hgtadjust">
+            <div class="card-body p-0">
+                <app-authentication *ngIf="!loggedIn" (actionPerformed)="actionPerformed($event)"
+                    [accountId]="accountId" [accountConfig]="accountConfig"></app-authentication>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 p-0 d-flex align-items-stretch" [ngClass]="{flexBasic: !smallDevice}" *ngIf="loggedIn">
+        <div class="col-12 d-flex align-items-stretch p-1">
+            <div class="card hgtadjust no-padding-small">
+                <div class="col-12" *ngIf="!bookStep && bookStep != '0'">
+                    Service is not added to any relevant schedule or queue.
+                  </div>
+                <div class="wizard wizard-1" id="kt_wizard_v1" data-wizard-state="step-first"
+                    data-wizard-clickable="false"
+                    *ngIf="bookStep === 1 && serviceOption && bookingType !== 'reschedule'">
+                    <!-- Service Info -->
+                  
+                    <div class="col-12" *ngIf="selectedService">
+                        <app-service-display [virtualModes]="callingModesDisplayName" [service]="selectedService"
+                            [showVirtualInfo]="bookingType !== 'reschedule'"></app-service-display>
+                    </div>
+                    <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 p-1">
+                        <div class="pad-20 quest-head">
+                        </div>
+                        <div *ngIf="serviceOption">
+                            <span class="form-level-settings">You can add the the item and customize your
+                                services</span><br><br>
+                            <app-questionnaire [questionnaireList]="serviceOptionQuestionnaireList" [service]="selectedService"
+                                [accountId]="accountId" [questionAnswers]="serviceOptionInfo"
+                                [source]="'serviceOptionAppt'"
+                                (returnAnswers)="getserviceOptionQuestionAnswers($event)">
+                            </app-questionnaire>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <hr />
+                    <div class="col-sm-12 col-md-12 col-lg-12 col-12 col-sm-12 d-flex justify-content-between">
+                        <button type="button" mat-button id="btnNext"
+                            class="mx-auto text-center next-button btn btn-primary font-weight-bold text-capitalize px-12"
+                            (click)="goToStep('next');" [class.disabled]="!serviceOptionInfo"
+                            [disabled]="!serviceOptionInfo">
+                            {{'Next' | translate}}
+                        </button>
+                    </div>
+                    <div class="clearfix"></div>
+                    <hr />
+                </div>
+                <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 p-0" data-wizard-type="step-content"
+                    data-wizard-state="current" *ngIf="bookStep === 2">
+                    <app-date-time-selection [paymentRequestId]="paymentRequestId"
+                        (actionPerformed)="bookingActionPerformed($event)"></app-date-time-selection>
+                </div>
+                <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 p-0" data-wizard-type="step-content"
+                    data-wizard-state="current" *ngIf="bookStep === 3">
+                    <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 p-1">
+                        <div class="">
+                            <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 p-1">
+                                <div class="pad-20 quest-head">
+                                    {{'Fill the following one time information' | translate}}
+                                </div>
+                                <app-questionnaire [questionnaireList]="onetimeQuestionnaireList"
+                                    [questionAnswers]="oneTimeInfo" [source]="'onetime'"
+                                    (returnAnswers)="getOneTimeQuestionAnswers($event)">
+                                </app-questionnaire>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <hr>
+                    <div
+                        class="text-center mx-auto col-sm-12 col-md-12 col-lg-12 col-12 col-sm-12 hf-single-btn-container">
+                        <button id="btnNext1" mat-button class="next-button btn btn-primary font-weight-bold text-capitalize px-5"
+                            (click)="goToStep('next')">
+                            {{'Next' | translate}}
+                        </button> &nbsp;
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 col-sm-12 p-0 right-part"
+                    data-wizard-type="step-content" data-wizard-state="current" *ngIf="bookStep === 4">
+                    <div class="pad-20 quest-head">
+                        {{'We need some more information' | translate}}
+                    </div>
+                    <app-questionnaire [questionnaireList]="questionnaireList" [source]="'consAppt'"
+                        [questionAnswers]="questionAnswers" [accountId]="accountId"
+                        (returnAnswers)="getQuestionAnswers($event)">
+                    </app-questionnaire>
+                    <div class="d-flex flex-column-fluid width-100">
+                        <div class="col-12 force_center note-pad">
+                            <div class="form-group card mgn-0">
+                                <label class="col-12 quest">
+                                    {{'Add any other notes to the provider or upload any files for provider view' |
+                                    translate}}
+                                </label>
+                                <div class="col-sm-12 col-12 chk-btns-div col-md-12">
+                                    <a #modal data-bs-toggle="modal" data-bs-target="#bookingModal">
+                                    </a>
+                                    <mat-chip-list class="btns">
+                                        <mat-chip class="me-2"
+                                            [class.mandatoryChip]="selectedService.consumerNoteMandatory && bookingType != 'reschedule'"
+                                            (click)="handleSideScreen('note');modal.click();">
+                                            <a class="lnk action pointer-cursor"><i class="fa fa-file-text-o mgn-rt-5"
+                                                    aria-hidden="true"></i>{{selectedService.consumerNoteTitle}}
+                                                <span
+                                                    *ngIf="selectedService.consumerNoteMandatory && bookingType != 'reschedule'">*</span></a>
+                                        </mat-chip>
+                                        <mat-chip
+                                            [ngClass]="{'br-top-right-0 br-bottom-right-0 margin-right-0': getAttachLength() > 0}">
+                                            <a class="lnk action pointer-cursor" (click)="imagefiles.click();"><input
+                                                    #imagefiles type="file" accept="/*;capture=camera"
+                                                    style="display:none;" multiple
+                                                    (change)="filesSelected($event, 'close')"><i
+                                                    class="fa fa-paperclip mgn-rt-5" aria-hidden="true"></i>{{'Upload
+                                                File' | translate}}
+                                            </a>
+                                        </mat-chip>
+                                        <mat-chip *ngIf="getAttachLength() > 0"
+                                            class="br-top-left-0 br-bottom-left-0 margin-left-0">
+                                            <a class="lnk action pointer-cursor" (click)="viewAttachments()">
+                                                {{'View' | translate}} (<span>{{getAttachLength()}}</span>)
+                                            </a>
+                                        </mat-chip>
+                                    </mat-chip-list>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <hr>
+                    <div
+                        class="col-sm-12 col-md-12 col-lg-12 col-12 col-sm-12 d-flex justify-content-between pt-10 width-100">
+                        <div class="me-2">
+                            <button type="button" mat-button id="btnPrevious"
+                                class="text-center next-button ms-2 mb-2 btn btn-light-primary font-weight-bold text-capitalize px-9 py-4"
+                                (click)="goToStep('prev')">
+                                {{'Previous' | translate}}
+                            </button>
+                        </div>
+                        <div *ngIf="!selectedService.isPrePayment">
+                            <button type="button" mat-button id="btnNext2"
+                                class="mx-auto text-center next-button btn btn-primary font-weight-bold text-capitalize px-9 py-4"
+                                (click)="goToStep('next');actionCompleted()">
+                                {{'Next' | translate}}
+                            </button>
+                        </div>
+                        <div *ngIf="selectedService.isPrePayment">
+                            <button mat-button id="btnProceedPayment"
+                                class="text-center next-button me-2 mb-2 btn btn-primary font-weight-bold text-capitalize px-9 py-4 "
+                                (click)="goToStep('next');actionCompleted()">
+                                {{(selectedService.isPrePayment?'Proceed to Payment':'Next') | translate}}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 col-sm-12 p-0"
+                    data-wizard-type="step-content" data-wizard-state="current" *ngIf="bookStep === 5"
+                    [ngClass]="{'highlight': api_loading_video}">
+                    <div *ngIf="api_loading_video" class="incomplete-msg">
+                        <div style="padding: 0 30px;">
+                            Files are Uploading...
+                        </div>
+                    </div>                   
+                    <div class="col-md-12 col-12 col-sm-12 mb-2 no-padding-small">
+                        <div class="col-md-12 col-lg-12 col-12 col-sm-12 check-new-group p-0">
+                            <div class="hedaerCstm">{{confirm_pageTitle | translate}}</div>
+                            <div class="mainflex cstmMarginConfirmPay">
+                                <div class="cstmWidth cstmWidthSmall">
+                                    <div class="service-group-section  mt-3">
+                                        <!-- text-capitalize -->
+                                        <div class="">
+                                            <div class="m-auto"
+                                                *ngIf="selectedServiceId || bookingType == 'reschedule'">
+                                                <app-service-info-display [selectedService]="selectedService"
+                                                    [userInfo]="selectedUser"></app-service-info-display>
+                                                <div class="clearfix"></div>
+                                                <div class="cstmHeight p5">
+                                                    <div *ngIf="!isFutureDate || isFutureDate && bookingDate || selectedApptsTime"
+                                                        class="doctorDetails mb-2">
+                                                        <div class="dateTime">{{'Date & Time : ' | translate}}</div>
+                                                        <div class="doctorDetails">
+                                                            <!-- <div class="doctorNme" *ngIf="!isFutureDate">
+                                                                {{'Today,' | translate}}
+                                                            </div> -->
+                                                            <!-- *ngIf="isFutureDate && bookingDate" -->
+                                                            <div class="doctorNme" *ngIf="bookingDate">
+                                                                {{bookingDate | date: newDateFormat}},
+                                                            </div>
+                                                            <div class="doctorNme"
+                                                                *ngIf="selectedService['bType']==='Appointment' && selectedApptsTime">
+                                                                {{selectedApptsTime}}
+                                                            </div>
+                                                            <br />
+                                                            <div class="doctorNme dateTimeTemp"
+                                                                *ngIf="selectedService['bType']!=='Appointment' && selectedQTime">
+                                                                {{selectedQTime}}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="service-group-section" *ngIf="!serviceOption">
+                                                        <div class="text-capitalize">
+                                                            <div class="m-auto doctorDetails"
+                                                                style="align-items: flex-start;"
+                                                                *ngIf="selectedService.preInfoEnabled">
+                                                                <label style="width:20%"
+                                                                    class="dateTime"><b>{{selectedService.preInfoTitle |
+                                                                        capitalizeFirst}} :</b></label>
+                                                                <!-- <div class="doctorNme">{{(readMore) ?
+                                                                    selectedService.preInfoText :
+                                                                    selectedService.preInfoText | slice:0:200}}
+                                                                    <a class="changeitem pointer-cursor pull-right"
+                                                                        (click)="showText()"
+                                                                        *ngIf="selectedService.preInfoText.length > 200">
+                                                                        {{(readMore) ? 'less': 'more'}}</a>
+                                                                </div> -->
+                                                                <div class="contact-section text-primary pointer-cursor" >
+                                                                    <div class="col-md-12 col-sm-12 col-12 p-0  module-nomargin line-clamp-ln2" *ngIf="!showmoreSpec"
+                                                                        (click)="showSpec()" [innerHTML] = "selectedService.preInfoText">
+                                                                  </div>
+                                                                    <div class="" *ngIf="showmoreSpec" (click)="showSpec()" [innerHTML] = "selectedService.preInfoText">
+                                                                       
+                                                                    </div>
+                                                                  </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="clearfix"></div>
+                                                    <div class="doctorDetails mb-2"
+                                                        *ngIf="booking_firstName || booking_lastName">
+                                                        <div class="dateTime">{{'Booking For : ' | translate}}</div>
+                                                        <div class="doctorNme doctorDetails">
+                                                            <div *ngIf="booking_title">{{booking_title |
+                                                                capitalizeFirst}}&nbsp;</div>
+                                                            <div *ngIf="booking_firstName">{{booking_firstName |
+                                                                capitalizeFirst}}&nbsp;</div>
+                                                            <div *ngIf="booking_lastName">{{booking_lastName |
+                                                                capitalizeFirst}}</div>
+                                                            <div *ngIf="bookingType !== 'reschedule' && !paymentRequestId"
+                                                                class="pointer-cursor changeitem font-weight-bold text-capitalize px-2 py-1"
+                                                                (click)="handleSideScreen('members')"
+                                                                data-bs-toggle="modal" data-bs-target="#bookingModal">
+                                                                &nbsp; &nbsp;<i class="fa fa-pencil-square-o member"
+                                                                    aria-hidden="true"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="doctorDetails mb-2"
+                                                        *ngIf="selectedService.price && selectedService.showPrice">
+                                                        <div class="dateTime">{{'Service Price :' | translate}}</div>
+                                                        <div class="doctorNme doctorDetails rupee-font">
+                                                            <div
+                                                                *ngIf="parentCustomer?.countryCode === '+91' || (parentCustomer?.countryCode  !== '+91' && !selectedService.supportInternationalConsumer)">
+                                                                {{selectedService.price | currency:'&#8377;'}}</div>
+                                                         
+                                                                <div
+                                                                *ngIf="parentCustomer?.countryCode  !== '+91' && selectedService.supportInternationalConsumer && selectedService.internationalAmount">
+                                                                {{selectedService.internationalAmount |
+                                                                currency:'&#8377;'}}</div>
+                                                        </div>
+                                                        <div *ngIf="selectedService?.paymentDescription && selectedService?.paymentDescription != ''">
+                                                            <mat-icon matTooltip="{{ selectedService.paymentDescription }}" class="info-icon">
+                                                                info_outline
+                                                            </mat-icon>
+                                                        </div>
+                                                    </div>
+                                                    <div class="mt-2">
+                                                        <div class="notificationSendTxt">{{'Status, alerts,
+                                                            communications will be sent to' |
+                                                            translate}}
+                                                        </div>
+                                                        <div class="phoneDEtails"
+                                                            *ngIf="commObj && commObj['communicationPhNo']">
+                                                            <div><i class="fa fa-phone" aria-hidden="true"></i></div>
+                                                            <div class="countryCodeNo">
+                                                                <div class="commText">
+                                                                    {{commObj['communicationPhCountryCode']}}</div>
+                                                                <div class="commText">{{commObj['communicationPhNo']}}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="phoneDEtails" *ngIf="commObj['communicationEmail']">
+                                                            <div><i class="fa fa-envelope" aria-hidden="true"></i></div>
+                                                            <div>
+                                                                <div class="commText">{{commObj['communicationEmail']}}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div *ngIf="!questionnaireList.labels"
+                                                        class="col-sm-12 col-12 chk-btns-div col-md-12 p-0">
+                                                        <div class="cstmMgn mt-2"
+                                                            [class.mandatoryChip]="selectedService.consumerNoteMandatory && bookingType != 'reschedule'">
+                                                            <textarea class="cstmFormField" [(ngModel)]="consumerNote"
+                                                                placeholder="Add {{selectedService.consumerNoteTitle}} you may have..."></textarea>
+                                                        </div>
+                                                        <div class="mt-2 uplaodFile">
+                                                            <div class="imageFile">
+                                                                <div (click)="imagefiles.click();"
+                                                                    class="cstmWithFile pointer-cursor"
+                                                                    style="cursor: pointer">
+                                                                    <input #imagefiles type="file"
+                                                                        accept="/*;capture=camera" style="display:none;"
+                                                                        (change)="filesSelected($event, 'close')" multiple><i
+                                                                        class="fa fa-paperclip fileIcon"
+                                                                        aria-hidden="true"></i><span
+                                                                        class="uploadFileTxt">{{'Upload Files' |
+                                                                        translate}}</span>
+                                                                </div>
+                                                                <div *ngIf="selectedMessage && selectedMessage.files && selectedMessage.files.length && selectedMessage.files.length===0"
+                                                                    class="noattachment">
+                                                                    {{'No File Selected' | translate}}
+                                                                </div>
+                                                                <div *ngIf="getAttachLength() > 0"
+                                                                    class="viewAttchment">
+                                                                    <a data-bs-target="#bookingModal" data-bs-toggle="modal"
+                                                                        class="lnk action pointer-cursor"
+                                                                        (click)="viewAttachments(selectedMessage)">
+                                                                        {{'View' | translate}}
+                                                                        (<span>{{getAttachLength()}}</span>)
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="coupon-section col-md-12 col-12 col-sm-12 "
+                                        *ngIf="isCouponsAvailable">
+                                        <app-apply-coupon [s3CouponsList]="s3CouponsList"
+                                            (actionPerformed)="couponActionPerformed($event)"></app-apply-coupon>
+                                        <app-coupon-status [paymentDetails]="paymentDetails"></app-coupon-status>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                    <div class="col-md-12 col-12 col-sm-12 p-0"
+                                        *ngIf="bookingType !=='reschedule'">
+                                        <app-payment-summary [paymentDetails]="paymentDetails"
+                                            [paymentMode]="paymentMode" [serviceOptions]="serviceOptionApptt"
+                                            [service]="selectedService" [gatewayFee]="gatewayFee"
+                                            [convenientFee]="convenientFee"></app-payment-summary>
+                                    </div>
+                                    <div class="jaldeecredit" *ngIf="jCashInHand > 0">
+                                        <mat-checkbox [(ngModel)]="isJCashSelected" (change)="changeJcashUse($event)">
+                                        </mat-checkbox>
+                                        {{'Use Jaldee cash balance' | translate}} : <span
+                                            class="rupee-font">{{jCashInHand |
+                                            currency:'&#8377; '}}</span>
+                                    </div>
+                                    <div class="creditleft dateError"
+                                        *ngIf="jCashInHand > 0 && (isJCashSelected && jCashInHand < paymentDetails.amountRequiredNow)">
+                                        {{'Balance amount can be paid by other payment methods' | translate}}
+                                    </div>
+                                    <ng-container *ngIf="bookingPolicy">
+                                        <div class="privacy-loc">
+                                            <div class="t-and-c">
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" [checked]="checkPolicy"
+                                                            (change)="privacyCheck($event)">
+                                                        <span>I accept the&nbsp;
+                                                            <a class="Policy-link"
+                                                                (click)="privacyClicked($event)">
+                                                                {{'Terms and Conditions'}}</a></span>
+                                                    </label>
+                                                </div>
+                                                <div class="sts-msg error" *ngIf="!checkPolicy">
+                                                    "Agreement to Terms and Conditions is required"</div>
+                                            </div>
+                                            <div *ngIf="privacy" class="mt-2">
+                                                <app-privacy [path]="bookingPolicyPath"
+                                                    [content]="bookingPolicyContent"></app-privacy>
+                                            </div>
+                                        </div>
+                                    </ng-container>
+                                </div>
+                                <div class="customPaymentcard" *ngIf="paymentDetails.amountRequiredNow > 0 && bookingType !=='reschedule'">
+                                    <div *ngIf="bookingType !=='reschedule'">
+                                        <div class="mx-auto p-0" *ngIf="paymentDetails.amountRequiredNow > 0">
+                                            <div class="resPaymrntDetails">
+                                                <label class="custom resPaymrntDetails">{{'Select Payment Mode' |
+                                                    translate}}</label>
+                                            </div>
+                                            <ng-container *ngIf="!shownonIndianModes  && loadedConvenientfee"
+                                                class="text-center mx-auto">
+                                                <app-payment-modes [paymentModes]="indian_payment_modes"
+                                                    [selectedMode]="paymentMode"
+                                                    (modeSelected)="indian_payment_mode_onchange($event)">
+                                                </app-payment-modes>
+                                            </ng-container>
+                                            <ng-container *ngIf="shownonIndianModes  && loadedConvenientfee"
+                                                class="text-center mx-auto">
+                                                <app-payment-modes [paymentModes]="non_indian_modes"
+                                                    [selectedMode]="paymentMode"
+                                                    (modeSelected)="non_indian_modes_onchange($event)">
+                                                </app-payment-modes>
+                                            </ng-container>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                        <div class="mt-4 col-md-12 col-12 p-0"
+                                            *ngIf="paymentDetails['amountToPay']">
+                                            <div class="col-md-12 txt-align-center pad_link question-header"
+                                                *ngIf="paymentmodes && paymentmodes.internationalPay">
+                                                <span (click)="togglepaymentMode()" class="pointer-cursor">
+                                                    <a class="refund_policy">
+                                                        <span
+                                                            *ngIf="!shownonIndianModes && paymentmodes && paymentmodes.internationalPay">
+                                                            {{'Non Indian Payment' | translate}} ? {{'Click here'|
+                                                            translate}}</span>
+                                                        <span
+                                                            *ngIf="shownonIndianModes && paymentmodes && paymentmodes.indiaPay">{{'Indian'
+                                                            |
+                                                            translate}}
+                                                            {{'Payment' | translate}} ? {{'Click here' |
+                                                            translate}}</span>
+                                                    </a>
+                                                </span>
+                                            </div>
+                                            <div class="clearfix"></div>
+                                            <div class="col-md-12 cancelpolicy mgn-rt-5" *ngIf="showCancellationPolicy">
+                                                <div class="pad_policy">
+                                                    <a data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                                        class="refund_policy">{{'Cancellation Policy'
+                                                        | translate}}</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- modalbox -->
+                                        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+                                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <app-refundpolicy></app-refundpolicy>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="text-center mt-2 small-dev-view">
+                        <button type="button" mat-button [class.disabled]="confirmButton['disabled']"
+                            [disabled]="confirmButton['disabled']" (click)="!isClickedOnce && confirm()"
+                            class="next-button btn btn-primary font-weight-bold px-12" id="btnConfirm">
+                            {{confirmButton['caption'] | translate}}</button>
+                    </div>
+                    <ng-container *ngIf="heartfulnessAccount">
+                        <app-privacy (approvePolicy)="policyApproved($event)"></app-privacy>
+                    </ng-container>
+                </div>
+                <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 p-0" data-wizard-type="step-content"
+                    data-wizard-state="current" *ngIf="bookStep === 6">
+                    <app-service-selection [config]="accountConfig" (serviceSelected)="serviceSelected($event)"
+                        (actionPerformed)="bookingActionPerformed($event)"></app-service-selection>
+                </div>
+                <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 p-0" data-wizard-type="step-content"
+                    data-wizard-state="current" *ngIf="bookStep === 7 && !(target=='service') && !(target=='user')">
+                    <app-department-selection (departmentSelected)="departmentClicked($event)"
+                        (actionPerformed)="bookingActionPerformed($event)"></app-department-selection>
+                </div>
+                <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 p-0" data-wizard-type="step-content"
+                    data-wizard-state="current" *ngIf="bookStep === 8 && !(target=='service') && !(target=='user')">
+                    <app-user-selection (actionPerformed)="bookingActionPerformed($event)"></app-user-selection>
+                </div>
+                <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 p-0" data-wizard-type="step-content"
+                    data-wizard-state="current" *ngIf="bookStep === 0">
+                    <app-location-selection (actionPerformed)="bookingActionPerformed($event)"
+                        (locationSelected)="locationClicked($event)"></app-location-selection>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

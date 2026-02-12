@@ -1,0 +1,133 @@
+.aboutus--new {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #fff4eb 0%, #f7fbff 60%, #ffffff 100%);
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 32px;
+}
+
+.aboutus__header {
+  display: flex;
+  align-items: center;
+  padding: 18px 5px 14px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 13px;
+}
+
+.aboutus__back {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: 0;
+  color: #000000;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+// .aboutus__back i {
+//   font-size: 18px;
+// }
+
+.aboutus__content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 0 16px 32px;
+}
+
+.aboutus__profile {
+  display: block;
+}
+
+.aboutus__card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 20px 18px;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+}
+
+.aboutus__card-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #101828;
+  margin-bottom: 12px;
+}
+
+.aboutus__description {
+  font-size: 14px;
+  line-height: 160%;
+  color: #475467;
+  margin: 0;
+}
+
+.aboutus__contact-grid {
+  display: grid;
+  margin-bottom: 16px;
+  gap: 5px;
+}
+
+.aboutus__contact-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: #f9fafb;
+  color: #1f2937;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.aboutus__contact-icon {
+  color: #ff6900;
+}
+
+.aboutus__social {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.aboutus__social-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #101828;
+}
+
+.aboutus__social-icons {
+  display: flex;
+  gap: 12px;
+}
+
+.aboutus__social-link {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #eef2ff;
+  color: #4f46e5;
+  font-size: 16px;
+}
+
+.aboutus__social-icon {
+  // width: 18px;
+  // height: 18px;
+  object-fit: contain;
+}
+
+@media (min-width: 768px) {
+  .aboutus__content {
+    padding: 0 32px 48px;
+  }
+
+  .aboutus__card {
+    padding: 24px 24px;
+    border-radius: 24px;
+  }
+}
+.fa-arrow-left {
+    font-size: 12px !important;
+}

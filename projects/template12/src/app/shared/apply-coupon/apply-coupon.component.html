@@ -1,0 +1,45 @@
+<div class="coupon-card" [ngClass]="theme ? [theme] : []">
+  <div class="coupon-card__header">
+    <div class="coupon-card__icon">
+    <img class="coupon-card__icon_placeholder-icon" src="{{cdnPath}}customapp/assets/images/myjaldee/couponlogo.png" loading="lazy" decoding="async">
+    </div>
+    <div class="coupon-card__text">
+      <div class="coupon-card__title">Offers & Coupons</div>
+      <div class="coupon-card__subtitle">Unlock exclusive deals</div>
+    </div>
+    <button type="button" class="coupon-card__badge" (click)="openCoupons()">
+      {{getCouponsCount()}} {{getCouponsCount() >1 ? 'Coupons' : 'Coupon'}}
+    </button>
+    <button type="button" class="coupon-card__arrow" (click)="openCoupons()">
+      <i class="fa fa-chevron-right" aria-hidden="true"></i>
+    </button>
+  </div>
+
+  <hr class="coupon-card__divider" />
+
+  <div class="coupon-card__body" *ngIf="!couponsList || couponsList.length === 0">
+    <div class="coupon-card__input-row">
+      <input class="coupon-card__input" [ngClass]="{'invalid': !couponValid}" placeholder="ENTER COUPON CODE"
+        (keydown)="clearCouponErrors()" type="text" [(ngModel)]="selectedCoupon">
+      <button class="coupon-card__apply" [ngClass]="{'applied': isCurrentCodeApplied()}" type="button"
+        (click)="applyCoupons()">{{getApplyButtonLabel() | titlecase}}</button>
+    </div>
+    <div class="coupon-card__error" *ngIf="couponError !== null">{{couponError}}</div>
+  </div>
+
+  <div class="coupon-card__applied" *ngIf="couponsList && couponsList.length>0">
+    <div class="coupon-pill" *ngFor="let coupon of couponsList; let i = index">
+      <div class="coupon-pill__left">
+        <i class="fa fa-tag coupon-pill__tag" aria-hidden="true"></i>
+        <span class="coupon-pill__code">{{coupon.couponCode}}</span>
+        <span class="coupon-pill__status" [ngClass]="{'not-applicable': isCouponNotApplicable(coupon)}">
+          {{ isCouponNotApplicable(coupon) ? 'COUPON NOT APPLICABLE' : 'APPLIED' }}
+        </span>
+      </div>
+      <button type="button" class="coupon-pill__remove" (click)="removeJCoupon(i)"
+        [matTooltipClass]="tooltipcls" [matTooltip]="'Remove Coupon'">
+        <i class="fa fa-times" aria-hidden="true"></i>
+      </button>
+    </div>
+  </div>
+</div>

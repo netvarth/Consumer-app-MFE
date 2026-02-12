@@ -1,0 +1,619 @@
+<section #consumer_orderbill class="container p-0 confirm-aptckn no-padding-small mt-1">
+    <div [ngClass]="{'loadingpaytm': loadingPaytm}"></div>
+    <div class="content p0 comn-cls cons-check-bill">
+        <div class="c-outer" style="margin-bottom: 0px !important;" *ngIf="source == 'provider_history'">
+            <div class="c-body">
+                <div class="bk-ctrl">
+                    <span class="backtoresults" (click)="backtoProviderDetails()">Back to <span
+                            class="strong">history</span></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 p-0">
+            <div class="w-dta">
+                <div class="row">
+                    <div class="c-outer m0">
+                        <div class="c-body">
+                            <div class="card title-gb">
+                                <h5 class="mt-2">{{billTitle}}<a class="pull-left me-4 back-btn"
+                                        (click)="goBack()"><i class="fa fa-arrow-left"></i></a></h5>
+                            </div>
+                            <div class="copy one">
+                                <div class="col-a ps-0 col-md-12 col-lg-12 col-xl-12 col-sm-12 col-12 p-0">
+                                    <div class="card bill-section no-padding-small">
+                                        <div class="bill-section-content">
+                                            <div class="col-md-12 col-sm-12 col-lg-12 bill-wrapper viewBill no-padding-small"
+                                                *ngIf="invoiceDetailsById">
+                                                <div class="global-icons col-md-12 col-sm-12 col-lg-12">
+                                                    <button (click)="printMe()" [matTooltipClass]="tooltipcls"
+                                                        [matTooltip]="'Print'" id="btnPrint">
+                                                        <i class="fa fa-print" aria-hidden="true"></i>
+                                                    </button>
+                                                </div>
+                                                <div id="receipt" class="receipt">
+                                                    <div class="bill-header" *ngIf="!showPaidlist">
+                                                        <div
+                                                            class="section-one d-sm-flex align-items-center justify-content-between">
+                                                            <div class="d-flex gap-4 mb-3 mb-sm-0 align-items-center">
+                                                                <div>
+                                                                    <img *ngIf="storeLogo" [src]="storeLogo"
+                                                                        class="rounded-circle" width="80" height="80">
+                                                                </div>
+                                                                <div class="">
+                                                                    <h3 class="fw-bold"
+                                                                        *ngIf="invoiceDetailsById && invoiceDetailsById.store && invoiceDetailsById.store.details && invoiceDetailsById.store.details.name">
+                                                                        {{invoiceDetailsById.store.details.name |
+                                                                        capitalizeFirst}}
+                                                                    </h3>
+                                                                    <span class="columns rightalign"
+                                                                        *ngIf="invoiceDetailsById && invoiceDetailsById.store && invoiceDetailsById.store.details && invoiceDetailsById.store.details.locationName">
+                                                                        <span
+                                                                            class="dynamic">{{invoiceDetailsById.store.details.locationName}}</span>
+                                                                        <span class="icon-location"></span>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                            <!-- <span class="align-margin">{{splocation}}
+                                                                <span class="icon-location"></span>
+                                                            </span> -->
+                                                            <div class="details">
+                                                                <span *ngIf="invoiceDetailsById.orderFor"
+                                                                    class="columns">
+                                                                    <span class="dynamic">Invoice To: </span>
+                                                                    <span class="fw-bold">
+                                                                        {{invoiceDetailsById.orderFor.title |
+                                                                        capitalizeFirst}}
+                                                                        {{invoiceDetailsById.orderFor.name |
+                                                                        capitalizeFirst}}
+                                                                    </span>
+                                                                </span>
+                                                                <br>
+                                                                <span class="columns rightalign">
+                                                                    <span class="dynamic">Invoice Date: </span>
+                                                                    <span class="dynamic fw-bold">
+                                                                        {{invoiceDetailsById.invoiceDate |
+                                                                        date:newDateFormat_date}}
+                                                                    </span>
+                                                                </span>
+                                                                <br>
+                                                                <span class="columns"
+                                                                    *ngIf="invoiceDetailsById.invoiceNum">
+                                                                    <span class="dynamic">Invoice No: # </span>
+                                                                    <span
+                                                                        class="dynamic fw-bold">{{invoiceDetailsById.invoiceNum}}</span>
+                                                                </span>
+                                                                <span class="columns rightalign" *ngIf="gstnumber">
+                                                                    <span class="dynamic">{{gstin_cap}} </span>
+                                                                    <span class="dynamic">{{gstnumber |
+                                                                        capitalizeFirst}}</span>
+                                                                </span>
+                                                                <div class="col-md-12 col-sm-12 col-lg-12 p-0 red"
+                                                                    *ngIf="invoiceDetailsById.billStatus == 'Cancel'">
+                                                                    Cancelled</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <app-common-innerloading-spinner *ngIf="loadingPaytm">
+                                                    </app-common-innerloading-spinner>
+                                                    <div class="bill-content">
+                                                        <div class="section-three bill-responsive">
+                                                            <div class="bill-breakup">
+                                                                <div *ngIf="invoiceDetailsById.serviceList">
+                                                                    <div class="list"
+                                                                        *ngFor="let service of invoiceDetailsById.serviceList; let i = index">
+                                                                        <div class="list-content">
+                                                                            <div class="c-row one servlist">
+                                                                                <div class="name">
+                                                                                    {{service.serviceName |
+                                                                                    capitalizeFirst}}
+                                                                                    <span
+                                                                                        class="rupee-font">{{service.price
+                                                                                        | currency:'&#8377;
+                                                                                        '}}</span>
+                                                                                    <span [matTooltipClass]="tooltipcls"
+                                                                                        [matTooltip]="'Taxable'"
+                                                                                        *ngIf="service.GSTpercentage > 0"><sup>Tax</sup></span>
+                                                                                </div>
+                                                                                <div class="quantity">{{qnty_cap}}
+                                                                                    {{service.quantity}}</div>
+                                                                                <div class="price rupee-font">
+                                                                                    {{(service.quantity *
+                                                                                    service.price) |
+                                                                                    currency:'&#8377; '}}</div>
+                                                                            </div>
+                                                                            <div class="c-row two section-two">
+                                                                                <div class="discount-row two-col"
+                                                                                    *ngFor="let discount of service.discount">
+                                                                                    <div class="name">
+                                                                                        {{discount.name}}
+                                                                                    </div>
+                                                                                    <div class="price rupee-font">
+                                                                                        (-){{discount.discountValue
+                                                                                        |
+                                                                                        currency:'&#8377; '}}</div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="c-row one three two-col"
+                                                                                *ngIf="service.discount &&service.discount.length > 0">
+                                                                                <div class="name">
+                                                                                    {{sub_tot_cap}}
+                                                                                </div>
+                                                                                <div class="price rupee-font">
+                                                                                    {{service.netRate |
+                                                                                    currency:'&#8377; '}}</div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div
+                                                                    *ngIf="invoiceDetailsById.items && invoiceDetailsById.items.length > 0">
+                                                                    <div class="list">
+                                                                        <div class="list-content">
+                                                                            <div class="c-row one bill-table-head itemlist">
+                                                                                <div class="head-name">Item</div>
+                                                                                <div class="head-quantity">Qty</div>
+                                                                                <div class="head-rate">Price(₹)</div>
+                                                                                <div class="head-rate">Net Total(₹)</div>
+                                                                                <div class="head-rate">GST(₹)</div>
+                                                                                <div class="head-price rupee-font">
+                                                                                    Total Amt(₹)
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>  
+                                                                    </div>                                                                  
+                                                                    <div class="list"
+                                                                        *ngFor="let item of invoiceDetailsById.items; let i = index">
+                                                                        <div class="list-content">
+                                                                            <div class="c-row one itemlist">
+                                                                                <div *ngIf="item.orderItemDetails && item.orderItemDetails.spItem && item.orderItemDetails.spItem.name"
+                                                                                    class="head-name">
+                                                                                    {{item.orderItemDetails.spItem.name
+                                                                                    |
+                                                                                    capitalizeFirst}}
+                                                                                    <!-- <span [matTooltipClass]="tooltipcls"
+                                                                                        [matTooltip]="'Taxable'"
+                                                                                        *ngIf="item.GSTpercentage > 0"><sup>Tax</sup></span> -->
+                                                                                </div>
+                                                                                <div class="head-quantity">
+                                                                                    {{item.quantity}}</div>
+                                                                                <div class="head-rate"
+                                                                                    >
+                                                                                    {{item.price | number: '1.2-2' }}
+                                                                                </div>
+                                                                                <div class="head-rate"
+                                                                                    >
+                                                                                    {{item.totalAmount | number: '1.2-2' }}
+                                                                                </div>
+                                                                                <div *ngIf="!item?.taxAmount" class="head-rate"
+                                                                                    >
+                                                                                    -
+                                                                                </div>
+                                                                                <div *ngIf="item?.taxAmount" class="head-rate"
+                                                                                    >
+                                                                                    {{item.taxAmount}}
+                                                                                </div>
+                                                                                <div class="head-price rupee-font"
+                                                                                    *ngIf="!item.serviceOptions">
+                                                                                    {{item.netRate | number: '1.2-2' }}
+                                                                                </div>
+                                                                                <div class="head-price rupee-font"
+                                                                                    *ngIf="item.serviceOptions">
+                                                                                    {{item.netRate | number: '1.2-2' }}</div>
+                                                                            </div>
+                                                                            <div class="c-row two section-two">
+                                                                                <div class="discount-row two-col"
+                                                                                    *ngFor="let discount of item.discount">
+                                                                                    <div class="name">
+                                                                                        {{discount.name}}
+                                                                                    </div>
+                                                                                    <div class="price rupee-font">
+                                                                                        (-){{discount.discountValue
+                                                                                        |
+                                                                                        currency:'&#8377; '}}</div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="c-row one three two-col"
+                                                                                *ngIf="item.discount && item.discount.length > 0">
+                                                                                <div class="name">
+                                                                                    {{sub_tot_cap}}
+                                                                                </div>
+                                                                                <div class="price rupee-font">
+                                                                                    {{item.netRate |
+                                                                                    currency:'&#8377; '}}</div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="list bill-summary">
+                                                                    <div class="list-content">
+                                                                        <div class="c-row one two-col">
+                                                                            <div class="name">
+                                                                                Subtotal
+                                                                            </div>
+                                                                            <div class="price rupee-font">
+                                                                                {{invoiceDetailsById.netTotal |
+                                                                                currency:'&#8377; '}}
+                                                                            </div>
+                                                                        </div>
+                                                                        <div *ngIf="invoiceDetailsById.taxTotal && invoiceDetailsById.taxTotal > 0" class="c-row one two-col">
+                                                                            <div class="name">
+                                                                                GST
+                                                                            </div>
+                                                                            <div class="price rupee-font">
+                                                                                {{invoiceDetailsById.taxTotal |
+                                                                                currency:'&#8377; '}}
+                                                                            </div>
+                                                                        </div>
+                                                                        <div *ngIf="invoiceDetailsById.netTotalWithTax && invoiceDetailsById.taxTotal && invoiceDetailsById.taxTotal > 0" class="c-row one two-col">
+                                                                            <div class="name">
+                                                                                Net Total With GST
+                                                                            </div>
+                                                                            <div class="price rupee-font">
+                                                                                {{invoiceDetailsById.netTotalWithTax |
+                                                                                currency:'&#8377; '}}
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="c-row two section-two">
+                                                                            <div class="discount-row two-col"
+                                                                                *ngIf="invoiceDetailsById.jdn && invoiceDetailsById.jdn.discount">
+                                                                                <div class="name">JDN</div>
+                                                                                <div class="price rupee-font">
+                                                                                    (-){{invoiceDetailsById.jdn.discount
+                                                                                    |
+                                                                                    currency:'&#8377; '}}</div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="c-row two section-two"
+                                                                            *ngIf="invoiceDetailsById.deliveryCharges > 0">
+                                                                            <div class="discount-row two-col">
+                                                                                <div class="name">
+                                                                                    Delivery Charge
+                                                                                </div>
+                                                                                <div class="price rupee-font">
+                                                                                    (+){{invoiceDetailsById.deliveryCharges
+                                                                                    |
+                                                                                    currency:'&#8377;'}} </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="c-row two section-two"
+                                                                            *ngFor="let discount of invoiceDetailsById.discounts">
+                                                                            <div class="discount-row two-col">
+                                                                                <div class="name">
+                                                                                    {{discount.name}}
+                                                                                </div>
+                                                                                <div class="price rupee-font">
+                                                                                    (-){{discount.discountValue |
+                                                                                    currency:'&#8377; '}}</div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="c-row two section-two"
+                                                                            *ngFor="let coupon of invoiceDetailsById.providerCoupons">
+                                                                            <div class="discount-row two-col">
+                                                                                <div class="name">
+                                                                                    {{coupon.couponCode}}
+                                                                                </div>
+                                                                                <div class="price rupee-font">
+                                                                                    <span>(-)</span>
+                                                                                    <span
+                                                                                        (click)="showJCCouponNote(coupon)"
+                                                                                        [class.couponAmt]="coupon.discount">{{coupon.discount
+                                                                                        |
+                                                                                        currency:'&#8377;
+                                                                                        '}}</span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="c-row two section-two"
+                                                                            *ngFor="let jcoupon of invoiceDetailsById.jaldeeCoupons">
+                                                                            <div class="discount-row two-col">
+                                                                                <div class="name">
+                                                                                    {{jcoupon.couponCode}}
+                                                                                </div>
+                                                                                <div class="price rupee-font">
+                                                                                    <span>(-)</span>
+                                                                                    <span
+                                                                                        (click)="showJCCouponNote(jcoupon)"
+                                                                                        [class.couponAmt]="jcoupon.discount">{{jcoupon.discount
+                                                                                        |
+                                                                                        currency:'&#8377;
+                                                                                        '}}</span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="c-row two section-two"
+                                                                            *ngIf="invoiceDetailsById.taxableTotal">
+                                                                            <div class="discount-row two-col">
+                                                                                <div class="name">
+                                                                                    <span class="tax-top">Tax
+                                                                                        <span class="rupee-font">
+                                                                                            {{invoiceDetailsById.taxPercentage}}%
+                                                                                            of
+                                                                                            {{invoiceDetailsById.taxableTotal
+                                                                                            |
+                                                                                            currency:'&#8377;
+                                                                                            '}}</span>
+                                                                                    </span><br /><span
+                                                                                        class="txn">(CGST-{{invoiceDetailsById.taxPercentage/2}}%,
+                                                                                        SGST-{{invoiceDetailsById.taxPercentage/2}}%)</span>
+                                                                                </div>
+                                                                                <div class="price rupee-font">
+                                                                                    (+){{invoiceDetailsById.netTaxAmount
+                                                                                    |
+                                                                                    currency:'&#8377; '}}</div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="c-row two section-two"
+                                                                            *ngIf="invoiceDetailsById.customerPaidCharges > 0">
+                                                                            <div class="discount-row two-col">
+                                                                                <div class="name">
+                                                                                    Processing Fee
+                                                                                </div>
+                                                                                <div class="price rupee-font">
+                                                                                    {{invoiceDetailsById.customerPaidCharges
+                                                                                    |
+                                                                                    currency:'&#8377;'}} </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="c-row one two-col"
+                                                                            *ngIf="invoiceDetailsById.roundedValue != 0">
+                                                                            <div class="name">
+                                                                                Rounded Value
+                                                                            </div>
+                                                                            <div class="price rupee-font">
+                                                                                {{ invoiceDetailsById.roundedValue > 0 ? '₹+' : '₹' }}{{ invoiceDetailsById.roundedValue | number: '1.2-2' }}
+                                                                                </div>
+                                                                        </div>
+                                                                        <div class="c-row one two-col"
+                                                                            *ngIf="invoiceDetailsById.netRate > 0">
+                                                                            <div class="name">
+                                                                                Net Total
+                                                                            </div>
+                                                                            <div class="price rupee-font">
+                                                                                {{invoiceDetailsById.netRate |
+                                                                                currency:'&#8377; '}}</div>
+                                                                        </div>
+                                                                        <div class="c-row two section-two"
+                                                                            *ngIf="invoiceDetailsById.processingFee > 0">
+                                                                            <div class="discount-row two-col">
+                                                                                <div class="name">
+                                                                                    Processing Fee
+                                                                                </div>
+                                                                                <div class="price rupee-font">
+                                                                                    {{invoiceDetailsById.processingFee
+                                                                                    |
+                                                                                    currency:'&#8377;'}} </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="c-row two section-two"
+                                                                            *ngIf="invoiceDetailsById.amountPaid > 0 && !invoiceDetailsById.amountPaidWithProcessingFee">
+                                                                            <div class="discount-row two-col">
+                                                                                <div class="name">
+                                                                                    Amount Paid
+                                                                                </div>
+                                                                                <div class="price rupee-font">
+                                                                                    {{invoiceDetailsById.amountPaid
+                                                                                    |
+                                                                                    currency:'&#8377; '}}</div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="c-row two section-two"
+                                                                            *ngIf="invoiceDetailsById.amountPaid > 0 && invoiceDetailsById.amountPaidWithProcessingFee > 0">
+                                                                            <div class="discount-row two-col">
+                                                                                <div class="name">
+                                                                                    Amount Paid
+                                                                                </div>
+                                                                                <div class="price rupee-font">
+                                                                                    {{invoiceDetailsById.amountPaidWithProcessingFee
+                                                                                    |
+                                                                                    currency:'&#8377; '}}</div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="c-row one two-col"
+                                                                            *ngIf="invoiceDetailsById.amountDue >= 0">
+                                                                            <div class="name">
+                                                                                Amount Due
+                                                                            </div>
+                                                                            <div class="price rupee-font">
+                                                                                {{checkJcash ?
+                                                                                ((invoiceDetailsById.amountDue -
+                                                                                jcashamount) |
+                                                                                currency:'&#8377;' ):
+                                                                                (invoiceDetailsById.amountDue |
+                                                                                currency:'&#8377;') }} </div>
+                                                                        </div>
+                                                                        <div class="c-row one two-col"
+                                                                            *ngIf="invoiceDetailsById.amountDue < 0">
+                                                                            <div class="name">Refundable Amount
+                                                                            </div>
+                                                                            <div class="price rupee-font">
+                                                                                {{refund_value |
+                                                                                currency:'&#8377; '}}</div>
+                                                                        </div>
+                                                                        <div class="c-row one two-col"
+                                                                            *ngIf="invoiceDetailsById.refundedAmount > 0">
+                                                                            <div class="name">Amount Refunded
+                                                                            </div>
+                                                                            <div class="price rupee-font">
+                                                                                {{invoiceDetailsById.refundedAmount |
+                                                                                currency:'&#8377; '}}</div>
+                                                                        </div>
+                                                                        <div class="amountSaved"
+                                                                            *ngIf="invoiceDetailsById.totalAmountSaved > 0 && invoiceDetailsById.billPaymentStatus != 'FullyPaid'">
+                                                                            <div class="price rupee-font"> You
+                                                                                will save
+                                                                                {{invoiceDetailsById.totalAmountSaved |
+                                                                                currency:'&#8377;'}}
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="amountSaved"
+                                                                            *ngIf="invoiceDetailsById.totalAmountSaved > 0 && invoiceDetailsById.billPaymentStatus == 'FullyPaid'">
+                                                                            <div class="price rupee-font"> You
+                                                                                have saved
+                                                                                {{invoiceDetailsById.totalAmountSaved |
+                                                                                currency:'&#8377;'}}
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="section-three"
+                                                            *ngIf="invoiceDetailsById && billNoteExists">
+                                                            <a class="learnmore-pointer" id="customer-help"
+                                                                (click)="billNotesClicked()">Invoice notes</a>
+                                                            <div class="bill-notes"
+                                                                *ngIf="showBillNotes && billNoteExists">
+                                                                <ul>
+                                                                    <li *ngIf="invoiceDetailsById.displayNotes">
+                                                                        {{invoiceDetailsById.displayNotes.displayNotes}}
+                                                                    </li>
+                                                                    <div class
+                                                                        *ngFor="let discount of invoiceDetailsById.discount">
+                                                                        <li *ngIf="discount.displayNote">
+                                                                            <span style="font-weight: 600">
+                                                                                {{discount.name}} -
+                                                                            </span>
+                                                                            {{discount.displayNote}}
+                                                                        </li>
+                                                                    </div>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- <div class="section-three other-section"
+                                                    *ngIf="invoiceDetailsById.billStatus !== 'Cancel' && invoiceDetailsById.billStatus !== 'Settled'  && (invoiceDetailsById.amountDue > 0)">
+                                                    <div class="col-md-12 col-sm-12 col-12 p-0"
+                                                        *ngIf="this.couponList.JC.length > 0 ||this.couponList.OWN.length >0 && invoiceDetailsById && invoiceDetailsById.billPaymentStatus!='FullyPaid' && invoiceDetailsById.billStatus != 'Settled' && paymode && (invoiceDetailsById.amountDue > 0)">
+                                                        <div class="title-sec col-md-12 col-sm-12 col-12 p-0">
+                                                            <span class="">Jaldee Coupon</span>
+                                                        </div>
+                                                        <div
+                                                            class="col-md-12 col-sm-12 col-12 p-0 jc-sec-bill">
+                                                            <div class="section-two">
+                                                                <div class="add-j-coupon edit-row service">
+                                                                    <div
+                                                                        class="spl col-md-3 col-sm-4 col-lg-3 col-5 p-0">
+                                                                        <div class="item selectbox">
+                                                                            <input class="coupon-text-bill" type="text"
+                                                                                #jcoupon
+                                                                                placeholder="Enter Your Coupon Code"
+                                                                                [(ngModel)]="jCoupon">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div
+                                                                        class="spr col-md-9 col-sm-8 col-lg-9 col-7 p-0">
+                                                                        <button class="cs-btn bt1" id="btnApply"
+                                                                            (click)="applyJCoupon()">Apply</button>
+                                                                        <button class="cs-btn bt2" id="btnClear"
+                                                                            (click)="clearJCoupon()">Clear</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <div *ngIf="jcashamount>0" style="font-size: medium;">
+                                                            <mat-checkbox [(ngModel)]="checkJcash"
+                                                                (change)="changeJcashUse($event)">
+                                                            </mat-checkbox>
+                                                            Use Jaldee cash balance : Rs{{jcashamount}}
+                                                        </div>
+                                                        <div *ngIf="jcashamount>0 && (checkJcash && jcashamount < invoiceDetailsById.amountDue)"
+                                                            style="font-size: small;">
+                                                            Balance amount can be paid by other payment methods
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12 col-sm-12 col-12 p-0"
+                                                        *ngIf=" paidStatus == 'false' && invoiceDetailsById && invoiceDetailsById.billPaymentStatus!='FullyPaid' && invoiceDetailsById.billStatus != 'Settled'  && (invoiceDetailsById.amountDue > 0)">
+                                                        <div class="title-sec col-md-12 col-sm-12 col-12 p-0">
+                                                        </div>
+                                                        <div class="col-md-12 col-sm-12 col-12 cc-dc-nb p-0">
+                                                            <div class="clearfix"></div>
+                                                            <div
+                                                                *ngIf=" ((checkJcash && jcashamount < invoiceDetailsById.amountDue) || (!checkJcash))">
+                                                                <ng-container *ngIf="!shownonIndianModes">
+                                                                    <app-payment-modes
+                                                                        [paymentModes]="indian_payment_modes"
+                                                                        [cashPay]="true"
+                                                                        (modeSelected)="indian_payment_mode_onchange($event)">
+                                                                    </app-payment-modes>
+                                                                </ng-container>
+                                                                <ng-container *ngIf="shownonIndianModes">
+                                                                    <app-payment-modes [paymentModes]="non_indian_modes"
+                                                                        [cashPay]="true"
+                                                                        (modeSelected)="non_indian_modes_onchange($event)">
+                                                                    </app-payment-modes>
+                                                                </ng-container>
+                                                            </div>
+                                                        </div>
+                                                        <div>
+                                                            <div class="clearfix"></div>
+                                                            <div class="txt-align-center pad_link"
+                                                                *ngIf=" ((checkJcash && jcashamount < invoiceDetailsById.amountDue) || (!checkJcash))">
+                                                                <span [class.disabled]="isClickedOnce"
+                                                                    (click)="togglepaymentMode()"
+                                                                    class="pointer-cursor"><a class="refund_policy">
+                                                                        <span
+                                                                            *ngIf="!shownonIndianModes && paymentmodes && paymentmodes.internationalPay">Non
+                                                                            Indian Payment ? Click
+                                                                            here</span>
+                                                                        <span
+                                                                            *ngIf="shownonIndianModes && paymentmodes && paymentmodes.indiaPay">Indian
+                                                                            Payment ? Click
+                                                                            here</span>
+                                                                    </a></span>
+                                                            </div>
+                                                            <div class="txt-align-center">
+                                                                <button type="button" id="btnPayment"
+                                                                    class=" next-button btn btn-primary font-weight-bold text-uppercase mt-3"
+                                                                    [class.disabled]="isClickedOnce"
+                                                                    *ngIf=" ((checkJcash && jcashamount < invoiceDetailsById.amountDue) || (!checkJcash))"
+                                                                    (click)="!isClickedOnce && payuPayment()">
+                                                                    Make Payment
+                                                                </button>
+
+                                                                <button id="btnConfirm"
+                                                                    class=" next-button btn btn-primary font-weight-bold text-uppercase mt-3"
+                                                                    (click)="payuPayment()"
+                                                                    *ngIf="((checkJcash && jcashamount > invoiceDetailsById.amountDue) || ( checkJcash && jcashamount == invoiceDetailsById.amountDue))">
+                                                                    Confirm</button>
+                                                                <br> <br>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <br> <br>
+                                                </div> -->
+                                            </div>
+                                            <div *ngIf="paidStatus == 'true'">
+                                                <i class="fa fa-check-circle" style="color: green;"><span
+                                                        style="font-size: large;">Paid Successfully</span>
+                                                </i><br><br>
+                                                <div class="ivc">
+                                                    <div class="pay-det-row">
+                                                        <span><b>Payment Gateway:</b>
+                                                            <span>{{this.pGateway}}</span></span>
+                                                    </div>
+                                                    <div class="pay-det-row">
+                                                        <span><b> Payment Ref Id:</b>
+                                                            <span>{{razorpay_payment_id}}</span></span>
+                                                    </div>
+                                                    <div class="pay-det-row">
+                                                        <span><b> Transaction Id:</b>
+                                                            <span>{{razorpay_order_id}}</span></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div [innerHTML]="payment_popup" #div [style.display]="'none'"></div>

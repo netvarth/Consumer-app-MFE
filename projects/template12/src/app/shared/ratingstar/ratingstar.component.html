@@ -1,0 +1,59 @@
+<div class="rating-outer" *ngIf="includedFrom !== 'refined' && includedFrom !== 'moreoptions'">
+    <fieldset class="ynwstar-rating">
+        <input type="radio" id="star5" name="rating" [value]="'5'" [(ngModel)]="curratval" /><label class="full"
+            for="star5" title="5 stars" (click)="handle_ratingclick('5')"></label>
+        <input *ngIf="showDecimalVals" type="radio" id="star4half" name="rating" [value]="'4.5'"
+            [(ngModel)]="curratval" /><label *ngIf="showDecimalVals" class="half" for="star4half" title="4.5 stars"
+            (click)="handle_ratingclick('4.5')"></label>
+        <input type="radio" id="star4" name="rating" [value]="'4'" [(ngModel)]="curratval" /><label class="full"
+            for="star4" title="4 stars" (click)="handle_ratingclick('4')"></label>
+        <input *ngIf="showDecimalVals" type="radio" id="star3half" name="rating" [value]="'3.5'"
+            [(ngModel)]="curratval" /><label class="half" *ngIf="showDecimalVals" for="star3half" title="3.5 stars"
+            (click)="handle_ratingclick('3.5')"></label>
+        <input type="radio" id="star3" name="rating" [value]="'3'" [(ngModel)]="curratval" /><label class="full"
+            for="star3" title="3 stars" (click)="handle_ratingclick('3')"></label>
+        <input *ngIf="showDecimalVals" type="radio" id="star2half" name="rating" [value]="'2.5'"
+            [(ngModel)]="curratval" /><label class="half" *ngIf="showDecimalVals" for="star2half" title="2.5 stars"
+            (click)="handle_ratingclick('2.5')"></label>
+        <input type="radio" id="star2" name="rating" [value]="'2'" [(ngModel)]="curratval" /><label class="full"
+            for="star2" title="2 stars" (click)="handle_ratingclick('2')"></label>
+        <input *ngIf="showDecimalVals" type="radio" id="star1half" name="rating" [value]="'1.5'"
+            [(ngModel)]="curratval" /><label class="half" *ngIf="showDecimalVals" for="star1half" title="1.5 stars"
+            (click)="handle_ratingclick('1.5')"></label>
+        <input type="radio" id="star1" name="rating" [value]="'1'" [(ngModel)]="curratval" /><label class="full"
+            for="star1" title="1 star" (click)="handle_ratingclick('1')"></label>
+        <input *ngIf="showDecimalVals" type="radio" id="starhalf" name="rating" [value]="'.5'"
+            [(ngModel)]="curratval" /><label class="half" *ngIf="showDecimalVals" for="starhalf" title="0.5 stars"
+            (click)="handle_ratingclick('.5')"></label>
+    </fieldset>
+</div>
+<div class="ratingSearch" *ngIf="includedFrom === 'refined' || includedFrom === 'moreoptions'">
+    <div class="rating-clear" *ngIf="(includedFrom=='refined' || includedFrom=='moreoptions') && curratval !=''"
+        (click)="handle_ratingclick('')">
+        < Clear </div>
+            <div (click)="handle_ratingclick('4')">
+                <img class="ratingstar" *ngFor="let number of [1,2,3,4]" src="{{cdnPath}}assets/images/star.svg" alt="" />
+                <img class="ratingstar" src="{{cdnPath}}assets/images/star-disabled.svg" alt="" />
+                <input type="hidden" id="star4" name="rating" [value]="'4'" [(ngModel)]="curratval"><label
+                    class="rating-label" [class.selectedVal]="curratval==='4'">& Up </label>
+            </div>
+            <div (click)="handle_ratingclick('3')">
+                <img class="ratingstar" *ngFor="let number of [1,2,3]" src="{{cdnPath}}assets/images/star.svg" alt="" />
+                <img class="ratingstar" *ngFor="let number of [1,2]" src="{{cdnPath}}assets/images/star-disabled.svg" alt="" />
+                <input type="hidden" id="star3" name="rating" [value]="'3'" [(ngModel)]="curratval"><label
+                    class="rating-label" [class.selectedVal]="curratval==='3'">& Up </label>
+            </div>
+            <div (click)="handle_ratingclick('2')">
+                <img class="ratingstar" *ngFor="let number of [1,2]" src="{{cdnPath}}assets/images/star.svg" alt="" />
+                <img class="ratingstar" *ngFor="let number of [1,2,3]" src="{{cdnPath}}assets/images/star-disabled.svg" alt="" />
+                <input type="hidden" id="star2" name="rating" [value]="'2'" [(ngModel)]="curratval"><label
+                    class="rating-label" [class.selectedVal]="curratval==='2'">& Up </label>
+            </div>
+            <div (click)="handle_ratingclick('1')">
+                <img class="ratingstar" src="{{cdnPath}}assets/images/star.svg" alt="" />
+                <img class="ratingstar" *ngFor="let number of [1,2,3,4]" src="{{cdnPath}}assets/images/star-disabled.svg"
+                    alt="" />
+                <input type="hidden" id="star1" name="rating" [value]="'1'" [(ngModel)]="curratval"><label
+                    class="rating-label" [class.selectedVal]="curratval==='1'">& Up </label>
+            </div>
+    </div>

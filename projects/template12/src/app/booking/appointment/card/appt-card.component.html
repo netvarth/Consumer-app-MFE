@@ -1,0 +1,163 @@
+<div class="row fit_in p-0 m-0" *ngIf="booking">
+    <!-- Icon -->
+    <div class="col-2 p-0 mgn-up-10">
+        <div><i style="width: 4rem;" class="fa appt-icon" [matTooltip]="'Appointment'"></i>
+        </div>
+    </div>
+    <!-- more options -->
+    <div class="more_opt">
+        <button mat-icon-button [matMenuTriggerFor]="appMenu" (click)="stopprop($event)">
+            <mat-icon>more_horiz</mat-icon>
+        </button>
+        <mat-menu #appMenu="matMenu">
+            <button mat-menu-item *ngIf="showRescheduleBtn" (click)="cardActionPerformed('appt', 'reschedule' , booking,
+                $event)">
+                <i class="consumer-reschedule-icon"></i>{{ 'Reschedule' | translate }}</button>
+            <button mat-menu-item *ngIf="showCancelBtn"
+                (click)="cardActionPerformed('appt', 'cancel', booking, $event)">
+                <i class="fa cross-icon"></i>{{ 'Cancel' | translate }}</button>
+            <button mat-menu-item (click)="cardActionPerformed('appt', 'communicate', booking, $event)">
+                <i class="fa chat-icon"></i>{{send_msg_cap | translate}}</button>
+            <button mat-menu-item (click)="cardActionPerformed('appt', 'sendAttachment', booking, $event)">
+                <i class="material-icons">attach_file</i>{{ 'Send Attachments' | translate }}</button>
+            <button mat-menu-item *ngIf="showViewAttachBtn"
+                (click)="cardActionPerformed('appt', 'viewAttachment', booking, $event)">
+                <i class="material-icons">attach_file</i>{{'View Attachments' | translate }}</button>
+            <button mat-menu-item *ngIf="showRateBtn" (click)="cardActionPerformed('appt', 'rating', booking, $event)">
+                <i class="fa fa-star-o" aria-hidden="true"></i>{{rate_visit | translate}}</button>
+        </mat-menu>
+    </div>
+    <!-- Basic info -->
+    <div class="col-10 mgn-up-20 pad-lt-40">
+        <div class="ordr_no font-size-9">
+            {{booking.appmtDate | date: monthFormat}}, {{getSingleTime(booking.appmtTime)}}<span
+                *ngIf="booking.timezone" class="timezone">({{booking.timezone}})</span></div>
+        <div class="ordr_no font-size-9" *ngIf="type === 'request' && booking.appmtDate">
+            {{booking.appmtDate | date: monthFormat}} {{getApptTime(booking.appmtTime)}}<span *ngIf="booking.timezone"
+                class="timezone">({{booking.timezone}})</span></div>
+        <div class="sp_name wrap_txt" (click)="cardActionPerformed('appt', 'providerDetails', booking, $event)">
+            {{booking.providerAccount.businessName || '' |
+            capitalizeFirst}}</div>
+        <div *ngIf="booking?.location?.place">
+            <span class="loc-cls">
+                <i class="fa fa-map-marker"></i>
+                {{booking.location.place | capitalizeFirst}}
+            </span>
+        </div>
+    </div>
+    <!-- Extra Info -->
+    <div class="grid-container">
+        <div>
+            <div class="prov_lbl">{{'Service' | translate}}</div>
+            <div class="prov_nme disply-flex">
+                <span class="serv-name">
+                    <span
+                        *ngIf="booking.service.serviceType === 'virtualService' && booking.service.virtualCallingModes && booking.service.virtualCallingModes.length > 0">
+                        <i class="fa phon-icon"
+                            *ngIf="booking.service.virtualCallingModes[0].callingMode === 'Phone'"></i>
+                        <i class="fa meet-icon"
+                            *ngIf="booking.service.virtualCallingModes[0].callingMode === 'GoogleMeet'"></i>
+                        <i class="fa zoom-icon"
+                            *ngIf="booking.service.virtualCallingModes[0].callingMode === 'Zoom'"></i>
+                        <i class="fa jvideo-icon jvideo-icon-s"
+                            *ngIf="booking.service.virtualCallingModes[0].callingMode === 'VideoCall'"></i>
+                        <i class="fa wtsapaud-icon"
+                            *ngIf="booking.service.virtualCallingModes[0].callingMode === 'WhatsApp' && booking.service.virtualServiceType ==='audioService'"></i>
+                        <i class="fa wtsapvid-icon"
+                            *ngIf="booking.service.virtualCallingModes[0].callingMode === 'WhatsApp' && booking.service.virtualServiceType ==='videoService'"></i>
+                    </span>
+                    {{booking.service.name |
+                    capitalizeFirst}}</span>
+            </div>
+        </div>
+        <div>
+            <div class="prov_lbl">{{ 'Appointment for' | translate }} </div>
+            <div class="prov_nme">
+                <span
+                    *ngIf="booking && booking.appmtFor[0] && booking.appmtFor[0].title">{{booking.appmtFor[0].title}}</span>
+                {{booking.appmtFor[0].firstName}}
+                {{booking.appmtFor[0].lastName}}
+            </div>
+        </div>
+        <div *ngIf="booking.provider">
+            <div class="prov_lbl">{{'Provider' | translate}}</div>
+            <div class="prov_nme">
+                {{(booking.provider.businessName) ? booking.provider.businessName : booking.provider.firstName +
+                ' ' + booking.provider.lastName}}
+            </div>
+        </div>
+        <div
+            *ngIf="booking.service.serviceType === 'virtualService' && booking.apptStatus!=='Cancelled' && booking.apptStatus!=='Completed'">
+            <div class="prov_lbl">{{ 'Status' | translate }}</div>
+            <div class="prov_nme line-clamp book_stats">
+                <span *ngIf="(booking.apptStatus !== 'Requested' && booking.apptStatus !== 'RequestRejected')"
+                    [class.red]="booking.videoCallButton==='DISABLED'"
+                    [class.green]="booking.videoCallButton==='ENABLED'">{{booking.videoCallMessage |
+                    translate}}</span>
+                <span *ngIf="(booking.apptStatus==='Requested' || booking.apptStatus==='RequestRejected')"
+                    [class]="getBookingStatusClass(booking.apptStatus)">{{booking.apptStatus === 'RequestRejected' ?
+                    'Request Rejected' : booking.apptStatus}}</span>
+            </div>
+            <div class="mt-3">
+                <span *ngIf="showQnrBtn" class="mgn-rt-5">
+                    <button mat-flat-button class="btns" (click)="cardActionPerformed('wl', 'details', booking, $event)">{{
+                        'More Info' | translate
+                        }}</button>
+                </span>
+                <span
+                    *ngIf="showJoinOtherVideoBtn && booking.service.virtualCallingModes && booking.service.virtualCallingModes.length > 0"
+                    class="mgn-rt-5" (click)="stopprop($event)">
+                    <a [href]="booking.service.virtualCallingModes[0].value" target="_blank">
+                        <button mat-flat-button class="btns">{{videoBtnCaption | translate}} </button>
+                    </a>
+                </span>
+                <span *ngIf="showJoinJaldeeVideoBtn" class="mgn-rt-5">
+                    <button mat-flat-button class="btns"
+                        (click)="cardActionPerformed('appt', 'joinVideo', booking, $event)">{{videoBtnCaption |
+                        translate}}</button>
+                </span>
+            </div>
+        </div>
+        <div
+            *ngIf="booking.service.serviceType !== 'virtualService' || booking.apptStatus==='Cancelled' || booking.apptStatus==='Completed'">
+            <div class="prov_lbl">{{ 'Status' | translate }}</div>
+            <div class="prov_nme line-clamp">
+                <div class="book_stats mgn-up-20">
+                    <span [class]="getBookingStatusClass(booking.apptStatus)"
+                        *ngIf="(booking.service.serviceType === 'virtualService' && booking.apptStatus !== 'Arrived')">{{booking.apptStatus}}</span>
+                    <span [class]="getBookingStatusClass(booking.apptStatus)"
+                        *ngIf="(booking.service.serviceType !== 'virtualService')">{{booking.apptStatus ===
+                        'RequestRejected' ? 'Request Rejected' : booking.apptStatus}}</span>
+                </div>
+            </div>
+            <div *ngIf="showViewPrescritionBtn" [ngClass]="showViewPrescritionBtn ? 'p-0 col-6 ' : ''">
+                <div class="prov_lbl"></div>
+                <div class="prov_nme">
+                    <button mat-flat-button class="btns"
+                        (click)="cardActionPerformed('appt', 'viewPrescription', booking, $event)">{{ 'View
+                        Prescription' | translate }}</button>
+                </div>
+            </div>            
+        </div>
+        <div class="col-12 px-3">
+            <div class="col-5 p-0 mgn-up-5">
+                <span *ngIf="showReceiptBtn &&  showPaidInfo && !booking.invoiceCreated"
+                    class="amtPaid  rupee-font mgn-rt-5">{{ 'Paid' |
+                    translate }}
+                    {{booking.amountPaid | currency:'&#8377;'}}</span>
+            </div>
+        <div class="col-7 p-0 mgn-up-5">
+            <button *ngIf="showPayBtn && !booking.invoiceCreated" mat-flat-button class="btns rupee-font mgn-rt-5"
+                (click)="cardActionPerformed('appt', 'viewBill', booking, $event)">{{'Pay' | translate}}
+            </button>
+        </div>
+        <div class="col-7 p-0 mgn-up-5">
+            <button *ngIf="showInvoiceBtn && booking.invoiceCreated"
+                    mat-flat-button class="btns rupee-font mgn-rt-5"
+                    (click)="cardActionPerformed('appt', 'viewBill', booking, $event)">
+                {{'Invoice' | translate}}
+            </button>
+        </div>
+    </div>
+</div>
+</div>

@@ -1,0 +1,190 @@
+<section class="confirm-appointment-page container no-padding confirm-aptckn no-padding-small" [ngClass]="theme ? theme : ''">
+  <div class="confirm-appointment-wrapper" *ngIf="!apiloading">
+    <article class="confirm-appointment-card" *ngIf="appointment && appointment.apptStatus !== 'Requested'">
+      <div id="scriptContainer"></div>
+
+
+
+      <header class="confirm-header">
+        <div class="success-visual" aria-hidden="true">
+        <span class="success-visual__halo"></span>
+        <span class="success-visual__core">
+          <i class="fa fa-check"></i>
+        </span>
+      </div>
+        <h2 class="confirm-title">
+          <ng-container *ngIf="type !== 'reschedule'; else rescheduleHeading">{{'Booking Confirmed' | translate}}</ng-container>
+          <span class="confetti" aria-hidden="true">🎉</span>
+        </h2>
+        <ng-template #rescheduleHeading>{{'Appointment rescheduled' | translate}}</ng-template>
+        <p class="confirm-subtitle" *ngIf="type !== 'reschedule'">{{'Your appointment has been successfully booked' | translate}}</p>
+        <p class="confirm-subtitle" *ngIf="type === 'reschedule'">{{'Your appointment has been successfully rescheduled' | translate}}</p>
+
+        <div class="booking-id" *ngIf="appointment.appointmentEncId">
+          <span class="booking-id__label">{{'Booking ID' | translate}}:</span>
+          <span class="booking-id__value">{{appointment.appointmentEncId}}</span>
+        </div>
+      </header>
+
+      <div class="card-divider" aria-hidden="true"></div>
+
+      <section class="highlight-card" *ngIf="appointment.appmtFor?.length || appointment.consumer">
+        <div class="highlight-icon">
+          <i class="fa fa-user"></i>
+        </div>
+        <div class="highlight-content">
+          <p class="highlight-label">{{'Appointment For' | translate}}</p>
+          <p class="highlight-value" *ngIf="appointment.appmtFor?.length">
+            <ng-container *ngFor="let member of appointment.appmtFor; let isLast = last">
+              <span>{{member.title || ''}} {{member.firstName}} {{member.lastName}}</span><span *ngIf="!isLast">, </span>
+            </ng-container>
+          </p>
+          <p class="highlight-value" *ngIf="!appointment.appmtFor?.length && appointment.consumer">
+            {{appointment.consumer?.firstName}} {{appointment.consumer?.lastName}}
+          </p>
+          <p class="highlight-subvalue"
+             *ngIf="appointment.consumer?.phoneNo || appointment.consumer?.mobileNo || appointment.consumer?.contactNo || appointment.phoneNumber">
+            {{appointment.consumer?.phoneNo || appointment.consumer?.mobileNo || appointment.consumer?.contactNo || appointment.phoneNumber}}
+          </p>
+        </div>
+      </section>
+
+      <section class="detail-list">
+        <div class="detail-row" *ngIf="appointment.service?.name">
+          <div class="detail-icon">
+            <i class="fa fa-video-camera" *ngIf="appointment.service?.serviceType === 'virtual'"></i>
+            <i class="fa fa-briefcase" *ngIf="appointment.service?.serviceType !== 'virtual'"></i>
+          </div>
+          <div class="detail-content">
+            <p class="detail-label">{{'Service' | translate}}</p>
+            <p class="detail-value">{{appointment.service?.name}}</p>
+          </div>
+        </div>
+
+        <div class="detail-row" *ngIf="appointment.appmtDate">
+          <div class="detail-icon">
+            <i class="fa fa-calendar"></i>
+          </div>
+          <div class="detail-content">
+            <p class="detail-label">{{'Date' | translate}}</p>
+            <p class="detail-value">{{appointment.appmtDate | date: newDateFormat}}</p>
+          </div>
+        </div>
+
+        <div class="detail-row" *ngIf="selectedApptsTime || appointment.appmtTime">
+          <div class="detail-icon">
+            <i class="fa fa-clock-o"></i>
+          </div>
+          <div class="detail-content">
+            <p class="detail-label">{{'Time' | translate}}</p>
+            <p class="detail-value">
+              <span *ngIf="selectedApptsTime">{{selectedApptsTime}}</span>
+              <span *ngIf="!selectedApptsTime && appointment.appmtTime">{{getSingleTime(appointment.appmtTime)}}</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- <div class="detail-row" *ngIf="appointment.location?.place">
+          <div class="detail-icon">
+            <i class="fa fa-map-marker"></i>
+          </div>
+          <div class="detail-content">
+            <p class="detail-label">{{'Location' | translate}}</p>
+            <p class="detail-value">
+              {{appointment.location?.place}}
+              <a *ngIf="appointment.location?.googleMapUrl"
+                 [href]="appointment.location.googleMapUrl"
+                 target="_blank"
+                 class="map-link"
+                 matTooltip="Click to navigate"
+                 rel="noopener">
+                <i class="fa fa-external-link"></i>
+              </a>
+            </p>
+          </div>
+        </div> -->
+
+ <!--        <div class="detail-row" *ngIf="appointment.provider || appointment.providerAccount?.businessName">
+          <div class="detail-icon">
+            <i class="fa fa-user-md"></i>
+          </div>
+          <div class="detail-content">
+            <p class="detail-label">{{provider_label || ('Provider' | translate)}}</p>
+            <p class="detail-value">
+              <ng-container *ngIf="appointment.provider; else providerAccountOnly">
+                {{appointment.provider.businessName ? appointment.provider.businessName : appointment.provider.firstName + ' ' + appointment.provider.lastName}}
+                <span *ngIf="appointment.providerAccount?.businessName">, {{appointment.providerAccount?.businessName}}</span>
+              </ng-container>
+              <ng-template #providerAccountOnly>
+                {{appointment.providerAccount?.businessName}}
+              </ng-template>
+            </p>
+          </div>
+        </div>
+
+        <div class="detail-row" *ngIf="appointment.appmtFor?.length">
+          <div class="detail-icon">
+            <i class="fa fa-users"></i>
+          </div>
+          <div class="detail-content">
+            <p class="detail-label">{{'Request for' | translate}}</p>
+            <p class="detail-value">
+              <ng-container *ngFor="let member of appointment.appmtFor; let isLast = last">
+                {{member.firstName}} {{member.lastName}}<span *ngIf="!isLast">, </span>
+              </ng-container>
+            </p>
+          </div>
+        </div> -->
+
+        <div class="detail-row" *ngIf="appointment.service?.minPrePaymentAmount && type !== 'reschedule' && infoParams.prepayment">
+          <div class="detail-icon">
+            <i class="fa fa-credit-card"></i>
+          </div>
+          <div class="detail-content">
+            <p class="detail-label">{{'Amount paid' | translate}}</p>
+            <p class="detail-value"><span class="rupee-font">{{infoParams.prepayment | currency:'&#8377;'}}</span></p>
+          </div>
+        </div>
+
+        <div class="detail-row" *ngIf="appointment.service?.minPrePaymentAmount && type === 'reschedule' && appointment.amountPaid > 0">
+          <div class="detail-icon">
+            <i class="fa fa-credit-card"></i>
+          </div>
+          <div class="detail-content">
+            <p class="detail-label">{{'Amount paid' | translate}}</p>
+            <p class="detail-value"><span class="rupee-font">{{appointment.amountPaid | currency:'&#8377;'}}</span></p>
+          </div>
+        </div>
+
+        <div class="detail-row" *ngIf="appointment.batchId">
+          <div class="detail-icon">
+            <i class="fa fa-tags"></i>
+          </div>
+          <div class="detail-content">
+            <p class="detail-label">{{'Batch' | translate}}</p>
+            <p class="detail-value">{{appointment.batchId}}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- <p class="status-note" *ngIf="appointment.apptStatus">
+        {{'Your Request have been sent to Provider' | translate}}
+      </p> -->
+
+      <section class="pre-instruction" *ngIf="appointment.service && appointment.service.postInfoEnabled && appointment.service.postInfoTitle">
+        <h3 class="pre-instruction__title">Pre Instruction:</h3>
+        <div class="pre-instruction__content" [innerHTML]="appointment.service.postInfoText"></div>
+      </section>
+
+      <footer class="action-buttons">
+        <button type="button" class="action-button action-button--primary" (click)="gotoActiveHome()">
+          {{'Back to Home' | translate}}
+        </button>
+        <button type="button" class="action-button action-button--secondary" (click)="okClick()">
+          {{'View My Appointments' | translate}}
+        </button>
+      </footer>
+    </article>
+  </div>
+  <app-common-innerloading-spinner *ngIf="apiloading"></app-common-innerloading-spinner>
+</section>

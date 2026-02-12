@@ -1,0 +1,92 @@
+<div class="consumer_appt comm-form mb-2" *ngIf="mode=='write'">
+    <div class="grey">
+        <form [formGroup]="commForm">
+            <div class="serv-head">
+                <h5 class="mb-1 primary-color">
+                    Status, alerts, communications will be sent to
+                </h5>
+            </div>
+            <div class="my-2 ms-2 d-flex">
+                <i class="fa phon-icon"
+                    *ngIf="selectedService.virtualCallingModes && selectedService.virtualCallingModes[0].callingMode === 'Phone'"></i>
+                <i class="fa fa-phone" style="font-size: 20px !important; align-self: center; padding-right: 9px;"
+                    *ngIf="!(selectedService.virtualCallingModes && selectedService.virtualCallingModes[0].callingMode === 'Phone')"></i>
+                <div class="number-caption"
+                    [class.width-input]="selectedService && selectedService.virtualCallingModes && selectedService.virtualCallingModes[0].callingMode === 'WhatsApp'">
+                    Phone#</div>
+                <div class="codenumber">
+                    <div class="mb-3">
+                        <app-phone-input *ngIf="(intlTelInputLoader.ready$ | async)" name="mobileNumber" formControlName="mobileNumber"
+                            [initialCountry]="'in'" [preferredCountries]="preferredCountries"
+                            [nationalMode]="false" [separateDialCode]="true" (phoneNumberChange)="setCommFields()">
+                        </app-phone-input>
+                        <input *ngIf="!(intlTelInputLoader.ready$ | async)" type="tel" class="form-control"
+                          placeholder="Enter your mobile number" autocomplete="off" disabled>
+                    </div>
+                </div>
+                <div class="sts-msg error" *ngIf="phoneError">{{phoneError}}</div>
+            </div>
+            <div class="my-2 d-flex"
+                *ngIf="selectedService && selectedService.virtualCallingModes && selectedService.virtualCallingModes[0].callingMode === 'WhatsApp'">
+                <i class="fa wtsapaud-icon" *ngIf="selectedService.virtualServiceType === 'audioService'"></i>
+                <i class="fa wtsapvid-icon me-1 ms-2" style="width: 20px;margin-top: -10px"
+                    *ngIf="selectedService.virtualServiceType === 'videoService'"></i>
+                <div class="number-caption"> WhatsApp#</div>
+                <div class="codenumber">
+                    <div class="mb-3">
+                        <app-phone-input *ngIf="(intlTelInputLoader.ready$ | async)" name="whatsAppNumber" formControlName="whatsAppNumber"
+                            [initialCountry]="'in'" [preferredCountries]="preferredCountries"
+                            [nationalMode]="false" [separateDialCode]="true" (phoneNumberChange)="setCommFields()">
+                        </app-phone-input>
+                        <input *ngIf="!(intlTelInputLoader.ready$ | async)" type="tel" class="form-control"
+                          placeholder="Enter your WhatsApp number" autocomplete="off" disabled>
+                    </div>
+                </div>
+                <div class="sts-msg error" *ngIf="whatsapperror">{{whatsapperror}}</div>
+            </div>
+            <div class="mt-1 ms-2 d-flex">
+                <div class="col-4 d-flex">
+                    <div class="envelope-stl">
+                        <i class="fa fa-envelope"
+                        style="font-size: 18px !important; align-self: center; padding-right: 7px;"></i>
+                    </div>     
+                <div class="number-caption"
+                    [class.width-input]="selectedService && selectedService.virtualCallingModes && selectedService.virtualCallingModes[0].callingMode === 'WhatsApp'">
+                    Email </div>
+                </div>
+            
+                <div class="width-100">
+                    <input type="text" class="form-control" id="emailId" placeholder="Email(user@xyz.com)"
+                        formControlName="emailId" autocomplete="off" (blur)="setCommFields()" />
+                    <!-- <app-field-error-display [displayError]="fed_service.isFieldValid(commForm,'emailId')"
+                        errorMsg="Please enter valid email.">
+                    </app-field-error-display> -->
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="consumer_appt mb-2" *ngIf="mode=='read'">
+    <div>
+        <label class="question-header">Status, alerts, communications will be sent to</label>
+    </div>
+    <div class="contact-section text-primary">
+        <i class="fa fa-volume-control-phone"></i>
+        <i class="fa phon-icon ms-2"
+            *ngIf="selectedService.virtualCallingModes && selectedService.virtualCallingModes[0].callingMode === 'Phone'"></i>
+        <span class="ms-2 phonevallabel">&nbsp;{{commObj['communicationPhCountryCode']}}
+            {{commObj['communicationPhNo']}}</span>
+    </div>
+    <div class="contact-section text-primary"
+        *ngIf="selectedService && selectedService.virtualCallingModes && selectedService.virtualCallingModes[0].callingMode === 'WhatsApp'">
+        <i class="fa wtsapaud-icon " *ngIf="selectedService.virtualServiceType === 'audioService'"></i>
+        <i class="fa wtsapvid-icon" style="width: 20px;"
+            *ngIf="selectedService.virtualServiceType === 'videoService'"></i>
+        <span class="ms-2 phonevallabel">{{commObj['comWhatsappCountryCode']}}
+            {{commObj['comWhatsappNo']}}</span>
+    </div>
+    <div class="contact-section text-primary" *ngIf="commObj['communicationEmail']">
+        <i class="fa fa-envelope-o"></i>
+        <span class="ms-2 emailvallabel">{{commObj['communicationEmail']}}</span>
+    </div>
+</div>

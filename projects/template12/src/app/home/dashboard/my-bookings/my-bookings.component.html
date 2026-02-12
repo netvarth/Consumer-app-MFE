@@ -1,0 +1,323 @@
+<div class="d-flex back-section" *ngIf="loggedIn" (click)="goBack()">
+  <i class="fa fa-arrow-left me-2"></i>
+  <p class="Back">Back</p>
+</div>
+<div class="panel mt-1" [ngClass]="theme">
+  <div class="loading-hgt my-1 login-form_custom" *ngIf="!api_loading && !loggedIn">
+    <div class="card card-custom no-margin hgt-adjust">
+      <div class="card-body p-0">
+        <app-authentication (actionPerformed)="actionPerformed($event)" [accountId]="accountId"></app-authentication>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="loggedIn">
+    <section class="container consumer-dashhome p-0 no-padding-small" [ngClass]="theme">
+  
+      <div class="content consumer-dash spinner" *ngIf="api_loading"> <app-common-innerloading-spinner>
+        </app-common-innerloading-spinner>
+      </div>
+      <div class="content consumer-dash" *ngIf="!api_loading && loggedIn && !ivrEnabled ">
+        <div class="c_card card c-checkins">
+          <h2 class="ng-tns-c16-8" [ngClass]="this.customId?'':'bg-yelow'">
+            <div class="d-flex justify-content-between">
+              <div *ngIf="!showOrder && (enabledWaitlist || enableAppt) " class="mt-2 my-booking no-padding-small ms-1">
+                {{'MY BOOKINGS' | translate}}</div>
+              <div class="mt-2 my-orders no-padding-small ms-1" *ngIf="showOrder && onlineOrder">
+                {{'MY ORDERS' | translate}}</div>
+              <div class="no-padding-small">
+                <div class="d-flex justify-content-end">
+                  <div class="p-0 item-btn-div">
+                    <button *ngIf="!showOrder && onlineOrder" class="flat-btn full-wdth" mat-flat-button
+                      (click)="showOrders()">{{'My Orders' | translate}}</button>
+                    <button *ngIf="!showOrder && onlineOrder" class="flat-icon-btn" mat-flat-button
+                      (click)="showOrders()" [matTooltip]="'Orders'">
+                      <i class="fa ordr_ico" [style.backgroundImage]="'url(' + ordrIconUrl + ')'"></i>
+                    </button>
+                    <button *ngIf="showOrder" class="flat-btn full-wdth" mat-flat-button (click)="showBookings()">{{'My
+                      Bookings' | translate}}</button>
+                    <button *ngIf="showOrder  && (enabledWaitlist || enableAppt) " class="flat-icon-btn" mat-flat-button
+                      (click)="showBookings()" [matTooltip]="'Bookings'">
+                      <i class="fa bookin_ico"></i>
+                    </button>
+                  </div>
+                  <div class="p-0 item-btn-div">
+                    <button *ngIf="!hideIcons" (click)="paymentsClicked('payments')" class="flat-btn full-wdth"
+                      mat-flat-button>
+                      {{'My Payments' |translate}}</button>
+                    <button *ngIf="!hideIcons" class="flat-icon-btn" mat-flat-button
+                      (click)="paymentsClicked('payments')" [matTooltip]="'My Payments'">
+                      <i class="fa myjld-payment"></i>
+                    </button>
+                  </div>
+                  <div class="p-0 item-btn-div">
+                    <button *ngIf="!hideIcons" class="flat-btn full-wdth" mat-flat-button
+                      (click)="gotoHistory()">{{'History' |
+                      translate}}</button>
+                    <button *ngIf="!hideIcons" class="flat-icon-btn" mat-flat-button (click)="gotoHistory()"
+                      [matTooltip]="'History'">
+                      <i class="fa myjld-histry"></i>
+                    </button>
+                  </div>
+                  <div class="p-0 item-btn-div">
+                    <button *ngIf="!hideIcons" class="flat-btn full-wdth" mat-flat-button
+                      (click)="paymentsClicked('Prescriptions')">{{'Documents' |
+                      translate}}</button>
+                    <button *ngIf="!hideIcons" class="flat-icon-btn" mat-flat-button
+                      (click)="paymentsClicked('Prescriptions')" [matTooltip]="'Documents'">
+                      <i class="fa myjld-prescription"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </h2>
+          <!-- Requests block -->
+          <div class="table-outer1 booking-dash ng-tns-c16-57 mb-3" [ngClass]="customId?'cuA':''">
+            <div *ngIf="(total_requests.length != 0)" class="day_hed">
+              {{'REQUESTS' | translate}}
+            </div>
+            <div *ngIf="total_requests.length != 0" class="my-2 grid-card">
+              <!-- rowHeight="282px" -->
+              <mat-grid-list cols="{{no_of_grids}}" [gutterSize]="'10px'">
+                <mat-grid-tile *ngFor="let booking of apptRequests;" style="border-radius:15px;"
+                  (click)="showBookingDetails(booking, 'request')">
+                  <ng-container>
+                    <app-appt-card [booking]="booking" type="request" [extras]="extras"
+                      (actionPerformed)="cardClicked($event)"></app-appt-card>
+                  </ng-container>
+                </mat-grid-tile>
+              </mat-grid-list>
+            </div>
+            <!-- show more -->
+            <div *ngIf="!more_requestShow && total_requests.length > 3" (click)="showMoreRequest()" class="my-2 ps-2">
+              <span><a class="show_more pointer-cursor">{{'show_more' | translate}}</a></span>
+            </div>
+            <div class="my-2 grid-card" *ngIf="more_requestShow">
+              <!-- rowHeight="282px" -->
+              <mat-grid-list cols="{{no_of_grids}}" [gutterSize]="'10px'">
+                <mat-grid-tile *ngFor="let booking of moreApptRequest;" style="border-radius:15px;"
+                  (click)="showBookingDetails(booking, 'request')">
+                  <!-- Appointments -->
+                  <ng-container>
+                    <app-appt-card [booking]="booking" type="request" [extras]="extras"
+                      (actionPerformed)="cardClicked($event)"></app-appt-card>
+                  </ng-container>
+                </mat-grid-tile>
+              </mat-grid-list>
+            </div>
+            <!-- Show less -->
+            <div *ngIf="more_requestShow" (click)="showLessRequest()" class="ps-2 ">
+              <a class="show_more pointer-cursor">{{'show_less' | translate}}</a>
+            </div>
+
+          </div>
+          <div *ngIf="((today_totalbookings.length == 0 && future_totalbookings.length == 0) && !loading && !showOrder)"
+            class="px-3 mt-4 nocheckins">
+            <div class="text-center">
+              <img class="emptyOrderImg" src="{{cdnPath}}customapp/assets/images/myjaldee/noBookings.png" />
+            </div>
+            <p class="locate-customer fw-bold text-center">You don’t have any bookings at the moment.
+              Start exploring and make your first booking today!</p>
+          </div>
+          <div class="table-outer1 booking-dash ng-tns-c16-57" *ngIf="!loading && !showOrder"
+            [ngClass]="customId?'cuA':''">
+
+            <!-- begin revamp bookings -->
+            <!-- TODAY BOOKINGS-->
+            <div *ngIf="(today_totalbookings.length != 0)" class="day_hed">
+              {{'TODAY' | translate}}
+            </div>
+            <!-- rowHeight="282px" -->
+            <div *ngIf="today_totalbookings.length != 0" class="my-2 pad-bt-10 grid-card">
+              <mat-grid-list cols="{{no_of_grids}}" [gutterSize]="'10px'">
+                <mat-grid-tile *ngFor="let booking of todayBookings;" style="border-radius:15px;"
+                  (click)="showBookingDetails(booking, 'today')">
+                  <!-- Appointments -->
+                  <ng-container *ngIf="booking.apptStatus">
+                    <app-appt-card [booking]="booking" type="today" [extras]="extras"
+                      (actionPerformed)="cardClicked($event)"></app-appt-card>
+                  </ng-container>
+                  <!-- Checkins -->
+                  <ng-container *ngIf="booking.waitlistStatus">
+                    <app-wl-card [booking]="booking" type="today" [extras]="extras"
+                      (actionPerformed)="cardClicked($event)">
+                    </app-wl-card>
+                  </ng-container>
+                </mat-grid-tile>
+              </mat-grid-list>
+            </div>
+            <!-- show more -->
+            <div *ngIf="!more_tdybookingsShow && today_totalbookings.length > 3" (click)="showMoreTdyBookings()"
+              class="my-2 ps-2">
+              <span><a class="show_more pointer-cursor">{{'show_more' | translate}}</a></span>
+            </div>
+            <div class="my-2 pad-bt-10 grid-card" *ngIf="more_tdybookingsShow">
+              <!-- rowHeight="282px"  -->
+              <mat-grid-list cols="{{no_of_grids}}" [gutterSize]="'10px'">
+                <mat-grid-tile *ngFor="let booking of todayBookings_more;" style="border-radius:15px;"
+                  (click)="showBookingDetails(booking, 'today')">
+                  <!-- Appointments -->
+                  <ng-container *ngIf="booking.apptStatus">
+                    <app-appt-card [booking]="booking" type="today" [extras]="extras"
+                      (actionPerformed)="cardClicked($event)"></app-appt-card>
+                  </ng-container>
+                  <!-- Checkins -->
+                  <ng-container *ngIf="booking.waitlistStatus">
+                    <app-wl-card [booking]="booking" type="today" [extras]="extras"
+                      (actionPerformed)="cardClicked($event)">
+                    </app-wl-card>
+                  </ng-container>
+                </mat-grid-tile>
+              </mat-grid-list>
+            </div>
+            <!-- Show less -->
+            <div *ngIf="more_tdybookingsShow" (click)="showlessTdyBookings()" class="ps-2">
+              <a class="show_more pointer-cursor">{{'show_less' | translate}}</a>
+            </div>
+
+
+            <!--------------------------- FUTURE BOOKINGS----------------------------------------->
+            <div *ngIf="(future_totalbookings.length != 0)" class="day_hed">
+              {{'UPCOMING' | translate}}
+            </div>
+            <div *ngIf="future_totalbookings.length != 0" class="my-2 pad-bt-10 grid-card">
+              <!-- rowHeight="282px"   -->
+              <mat-grid-list cols="{{no_of_grids}}" [gutterSize]="'10px'">
+                <mat-grid-tile *ngFor="let booking of futureBookings;" style="border-radius:15px;"
+                  (click)="showBookingDetails(booking, 'future')">
+                  <!-- Appointments -->
+                  <ng-container *ngIf="booking.apptStatus">
+                    <app-appt-card [booking]="booking" type="future" [extras]="extras"
+                      (actionPerformed)="cardClicked($event)"></app-appt-card>
+                  </ng-container>
+                  <!-- Checkins -->
+                  <ng-container *ngIf="booking.waitlistStatus">
+                    <app-wl-card [booking]="booking" type="future" [extras]="extras"
+                      (actionPerformed)="cardClicked($event)"></app-wl-card>
+                  </ng-container>
+                </mat-grid-tile>
+              </mat-grid-list>
+            </div>
+            <!-- show more -->
+            <div *ngIf="!more_futrbookingsShow && future_totalbookings.length > 3" (click)="showMoreFutrBookings()"
+              class="my-2 ps-2">
+              <span><a class="show_more pointer-cursor">{{'show_more' | translate}}</a></span>
+            </div>
+            <div class="my-2 pad-bt-10 grid-card" *ngIf="more_futrbookingsShow">
+              <!-- rowHeight="282px" -->
+              <mat-grid-list cols="{{no_of_grids}}" [gutterSize]="'10px'">
+                <mat-grid-tile *ngFor="let booking of futureBookings_more;" style="border-radius:15px;"
+                  (click)="showBookingDetails(booking, 'future')">
+                  <!-- Appointments -->
+                  <ng-container *ngIf="booking.apptStatus">
+                    <app-appt-card type="future" [booking]="booking" [extras]="extras"
+                      (actionPerformed)="cardClicked($event)"></app-appt-card>
+                  </ng-container>
+                  <!-- Checkins -->
+                  <ng-container *ngIf="booking.waitlistStatus">
+                    <app-wl-card type="future" [booking]="booking" [extras]="extras"
+                      (actionPerformed)="cardClicked($event)"></app-wl-card>
+                  </ng-container>
+                </mat-grid-tile>
+              </mat-grid-list>
+            </div>
+            <!-- Show less -->
+            <div *ngIf="more_futrbookingsShow" (click)="showlessFutrBookings()" class="ps-2">
+              <a class="show_more pointer-cursor">{{'show_less' | translate}}</a>
+            </div>
+          </div>
+          <div class="table-outer1  ng-tns-c16-57" *ngIf="!loading && showOrder && onlineOrder"
+            [ngClass]="customId?'cuA':''">
+            <div class="table-outer1 booking-dash p-0">
+              <div *ngIf="myOrders && myOrders.length > 0 && !loading" class="grid-card">
+                <div *ngFor="let order of myOrders | slice:0:orderLimit">
+                  <div class="card p-3 mb-3">
+                    <div class="order-row pb-3 mb-3">
+                      <div class="d-flex justify-content-between align-items-end">
+                        <div class="d-flex gap-2">
+                          <div class="">
+                            <img *ngIf="order.deliveryType=='STORE_PICKUP'" class="home_delivery"
+                              src="{{cdnPath}}assets/images/order/Storepickup.svg" [matTooltip]="'Store Pickup'" />
+                            <img *ngIf="order.deliveryType=='HOME_DELIVERY'" class="store_pickup"
+                              src="{{cdnPath}}assets/images/order/Delivery.svg" [matTooltip]="'Home Delivery'" />
+                            <img *ngIf="order.deliveryType!='STORE_PICKUP' && order.deliveryType!='HOME_DELIVERY'"
+                              class="store_pickup" src="{{cdnPath}}assets/images/order/e-delivery.png"
+                              [matTooltip]="'Electronic Delivery'" />
+                          </div>
+                          <div>
+                            <div class="fw-bold order-date">{{order.createdDateString}}</div>
+                            <div class="order-number mt-1 d-flex justify-content-between">
+                              <div>Order Number :
+                                {{order.orderNum}}</div>
+                            </div>
+                          </div>
+                        </div>
+                        <div *ngIf="order.netTotalWithTax" class="rupee-font ms-3 fw-bold order-number">
+                          ₹{{order.netTotalWithTax | number: '1.2-2'}}</div>
+                      </div>
+                    </div>
+                    <div *ngIf="order" class="d-flex gap-3 order-row pb-3">
+                      <button type="button" (click)="reOrder(order)" class="reorderBtn">Reorder</button>
+                      <button type="button" (click)="showOrderDetails(order)" class="viewBtnNew">View</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="myOrders && myOrders.length === 0 && !loading" class="p-4 nocheckins">
+                <div class="text-center">
+                  <img class="emptyOrderImg" src="{{cdnPath}}assets/images/myjaldee/noOrder.png" />
+                </div>
+                <p class="locate-customer fw-bold text-center">No order placed yet!
+                  Please add items to your cart and check out soon.</p>
+              </div>
+              <div *ngIf="myOrders && myOrders.length > orderLimit" (click)="showMore('orders')" class="mt-2 mb-4 ps-2">
+                <span><a class="show_more">{{'Show more' | translate}}</a></span>
+              </div>
+              <div *ngIf="myOrders &&  (myOrders.length > limit) && myOrders.length <= orderLimit"
+                (click)="showLess('orders')" class="mt-2 mb-4 ps-2">
+                <span><a class="show_more">{{'Show less' | translate}}</a></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="content consumer-dash" *ngIf="!api_loading && loggedIn && ivrEnabled">
+        <div class="">
+          <p-tabView>
+            <p-tabPanel header="Upcoming">
+              <div *ngFor="let callback of callBackList">
+                <app-callbacklist-card [callBack]="callback"></app-callbacklist-card>
+              </div>
+              <div *ngIf="callBackList.length == 0">
+                <span>No Active Bookings</span>
+              </div>
+            </p-tabPanel>
+            <p-tabPanel header="Call History">
+              <div *ngFor="let history of callBackHistoryList">
+                <app-callbacklist-card [callBack]="history"></app-callbacklist-card>
+              </div>
+              <div *ngIf="callBackHistoryList.length == 0">
+                <span>No previous history available</span>
+              </div>
+            </p-tabPanel>
+          </p-tabView>
+        </div>
+      </div>
+    </section>
+    <div id="popup" #popupforApp class="modal disply" *ngIf="customLink">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h6 class="text-center">
+            <span class="close" (click)="closeModal()">&times;</span>
+          </h6>
+          <div class="section-app text-center">
+            <button class="mt-4 find-sp-btn telebt" mat-raised-button (click)="redirectto('profile')"><i
+                class="fa fa-telegram tbt" aria-hidden="true"></i> &nbsp; Get Updates On Telegram</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

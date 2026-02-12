@@ -1,0 +1,10 @@
+<div class="my-5" >
+    <div class="deptImgInfo text-center">
+        <img class="cstmServiceIcon" src="{{cdnPath}}assets/images/myjaldee/location.png" />
+    </div>
+    <div class="deptName" *ngIf="item && item['place']">
+        {{item['place']}}
+    </div>
+    <div class="deptName description" *ngIf="item && item['address']">
+        {{item['address']}}</div>
+</div>

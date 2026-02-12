@@ -1,0 +1,53 @@
+    <div class="welcome-overlay" *ngIf="showWelcomePopup && welcomeImageUrl" role="dialog" aria-modal="true"
+      aria-label="Welcome banner" (click)="closeWelcomePopup()">
+      <div class="welcome-overlay__backdrop"></div>
+      <div class="welcome-overlay__content" (click)="$event.stopPropagation()">
+        <button type="button" class="welcome-overlay__close" aria-label="Close"
+          (click)="closeWelcomePopup()">&times;</button>
+        <img [src]="welcomeImageUrl" alt="Welcome" class="welcome-overlay__image" />
+      </div>
+    </div>
+<section id="busPageId" class="content bus-page no-padding loginpg" [ngClass]="theme">
+    <div class="bus-page-header" *ngIf="!loginRequired">
+        <div class="panel panel-default">
+
+            <div class="header-container" *ngIf="header">
+                <app-header [locations]="locations" *ngIf="locations && locations.length > 0"></app-header>
+            </div>
+            <div class="panel-body no-padding" *ngIf="locations" [class.header-visible]="!header">
+                <div class="col-12 no-padding">
+                    <router-outlet></router-outlet>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bus-page-header login-container-outer" *ngIf="loginRequired">
+        <div *ngIf="!loggedIn"
+        class="d-flex flex-column flex-root h-viewport " [ngClass]="theme?theme:''">
+                <div class="login login-3 wizard d-flex flex-column flex-lg-row flex-column-fluid no-padding">
+                  <div class="hero"
+              [ngStyle]="{ 'background-image': (loginBackground) ? 'url(' + loginBackground + ')': ''}">
+            <!-- optional logo/mascot overlay -->
+            <div class="hero-content">
+              <!-- put logo/mascot here if it's not baked into the background -->
+              <!-- <img [src]="heroMascotUrl" alt="" /> -->
+            </div>
+          </div>
+                 <div class="">
+                  <div class="">
+                    <app-authentication
+                      (actionPerformed)="actionPerformed($event)"
+                      [accountId]="accountId"
+                      [accountConfig]="accountConfig">
+                    </app-authentication>
+                  </div>
+                </div>
+            </div>
+        </div>
+        <ng-container *ngIf="oneTimeQnrEnabled && loggedIn" class="login-form-qnr">
+            <app-onetime-questionnaire [accountId]="accountId"
+                (actionPerformed)="oneTimeQnrActionPerformed($event)"></app-onetime-questionnaire>
+        </ng-container>
+    </div>
+</section>

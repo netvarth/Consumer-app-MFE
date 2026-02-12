@@ -1,0 +1,103 @@
+<div class="panel container mt-1" [ngClass]="theme">
+    <div class="loading-hgt my-1 login-form_custom" *ngIf="!loggedIn">
+        <div class="card card-custom no-margin hgt-adjust">
+            <div class="card-body p-0">
+                <app-authentication (actionPerformed)="actionPerformed($event)"
+                    [accountId]="accountId"></app-authentication>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="loggedIn">
+        <div class="col-12 col-sm-12 co-md-12 col-lg-12 p-0 cstmHeader">
+            <div (click)="goBack()" class="backFlex pointer-cursor">
+                <div><i class="fa fa-arrow-left" aria-hidden="true"></i></div>
+                <div class="my-2 ms-1 mb">
+                    <div class="cstmHeaderTemp">{{'My Orders' | translate}}</div>
+                    <div class="sub_cstmHeader">{{'Choose and view your orders' | translate}}</div>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="table-outer1 booking-dash mt-4 col-sm-12 col-md-12 col-lg-12 col-12 p-0">
+            <div *ngIf="myOrders && myOrders.length > 0 && !loading" class="grid-card">
+                <div *ngFor="let order of myOrders | slice:0:orderLimit" (click)="showOrderDetails(order, orderTitle)">
+                    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 col-12 fit_in mainFlexOrder">
+                        <div class="orderFlexMenu">
+                            <div class="orderImgInfo">
+                                <img *ngIf="order.deliveryType=='STORE_PICKUP'" class="store_pick_ico"
+                                    src="{{cdnPath}}assets/images/rx-order/Storepickup.svg" [matTooltip]="'Store Pickup'" />
+                                <img *ngIf="order.deliveryType=='HOME_DELIVERY'" class="hom_deliver_ico"
+                                    src="{{cdnPath}}assets/images/rx-order/Delivery.svg" [matTooltip]="'Home Delivery'" />
+                                <img *ngIf="order.deliveryType!='STORE_PICKUP' && order.deliveryType!='HOME_DELIVERY'"
+                                    class="electronic_deliver_icon" src="{{cdnPath}}assets/images/rx-order/e-delivery.png"
+                                    [matTooltip]="'Electronic Delivery'" />
+                            </div>
+                            <div class="statusNameBtnInfo">
+                                <div class="orderStatusProviderName">
+                                    <div *ngIf="order && order.orderStatus"
+                                        [ngClass]="order.orderStatus === 'Cancelled'?'cancelledOrder':'orderConfirm'">
+                                        <div *ngIf="order && order.orderStatus">
+                                            {{order.orderStatus==='Order Received' ? 'Order Placed - Waiting for
+                                            confirmation':setOrderStatus(order.orderStatus) | capitalizeFirst}}
+                                        </div>
+                                    </div>
+                                    <div *ngIf="order && order.store" class="OrderProviderInfo">
+                                        <div class="orderProvidername">
+                                            {{order.store.name || '' | capitalizeFirst}}, {{order.location.name}}</div>
+                                    </div>
+                                    <div class="date_TimeOrderInfo" *ngIf="order && order.createdDateString">
+                                        <div class="dateTimeTxt">{{'Date & Time' | translate}}</div>
+                                        <div class="orderDateTime">{{order.createdDateString}}</div>
+                                    </div>
+                                    <div class="orderIdInfo" *ngIf="order && order.encId">
+                                        <div class="orderId">{{'Order Id' | translate}}</div>
+                                        <div class="orderNumber">{{order.encId}}</div>
+                                    </div>
+                                    <div class="orderIdInfo cstmGapQty" *ngIf="order && order.totalItemQuantity > 0">
+                                        <div class="orderId">Qty</div>
+                                        <div class="orderNumber">{{order.totalItemQuantity}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="itemList">
+                            <div
+                                *ngIf="order.amountDue>0  && order.orderStatus != 'Cancelled' && order.billStatus!='Settled'">
+                                <span *ngIf=" order.amountPaid > 0" class="amtPaid">
+                                    {{'Total Paid' | translate}}
+                                    {{order.amountPaid | currency:'&#8377;'}} </span>
+                                <span *ngIf="order.advanceAmountPaid > 0" class="amtPaid">
+                                    {{'Total Paid' | translate}}
+                                    {{order.advanceAmountPaid | currency:'&#8377;'}}</span>&nbsp;&nbsp;
+                                <span *ngIf="order.refundedAmount > 0" style="color:green">
+                                    {{'Refunded' | translate}} &nbsp;&nbsp;</span>
+                            </div>
+                            <span *ngIf="order.amountDue ==0 && order.orderStatus != 'Cancelled'">
+                                <button class="payBtn" id="btnInvoice"
+                                    *ngIf="order.amountDue ==0 && order.orderStatus != 'Cancelled' && order.invoiceCreated"
+                                    (click)="viewBill(order,$event)">{{'Invoice' | translate}}</button>
+                            </span>
+                            <div *ngIf="order" (click)="showOrderDetails(order)">
+                                <button type="button" id="btnView" class="viewBtn">View Details</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="myOrders && myOrders.length === 0 && !loading" class="p-4 nocheckins">
+                <p class="locate-customer">{{'No Orders' | translate}}</p>
+                <div class="text-center">
+                    <img class="emptyOrderImg" src="{{cdnPath}}assets/images/myjaldee/NoOrders.png" />
+                </div>
+            </div>
+            <div *ngIf="myOrders.length > orderLimit" (click)="showMore('orders')"
+                class="mt-2 mb-4 ps-2">
+                <span><a class="show_more">{{'Show more' | translate}}</a></span>
+            </div>
+            <div *ngIf="(myOrders.length > limit) && myOrders.length <= orderLimit" (click)="showLess('orders')"
+                class="mt-2 mb-4 ps-2">
+                <span><a class="show_more">{{'Show less' | translate}}</a></span>
+            </div>
+        </div>
+    </div>
+</div>

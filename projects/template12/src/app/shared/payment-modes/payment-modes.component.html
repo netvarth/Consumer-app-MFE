@@ -1,0 +1,44 @@
+<section class="payment-modes">
+  <mat-radio-group class="payment-modes__group" name="paymentMode" (change)="paymentModeSelected($event)">
+    <mat-radio-button class="payment-mode-card" *ngFor="let modes of paymentModes" [value]="modes.mode"
+      [checked]="modes.mode==paymentMode">
+      <div class="payment-mode-card__wrapper">
+        <div class="payment-mode-card__visual">
+          <img class="payment-mode-card__icon" [src]="getImageSrc(modes.mode)" alt="{{modes.modeDisplayName}}" />
+        </div>
+        <div class="payment-mode-card__content">
+          <div class="payment-mode-card__header">
+            <span class="payment-mode-card__name">{{modes.modeDisplayName}}</span>
+            <span class="payment-mode-card__badge" *ngIf="modes.mode === 'UPI'">{{'Recommended' | translate}}</span>
+          </div>
+          <div class="payment-mode-card__subtext">
+            <ng-container [ngSwitch]="modes.mode">
+              <span *ngSwitchCase="'UPI'">Google Pay, PhonePe, Paytm</span>
+              <span *ngSwitchCase="'CREDIT_CARD'">Visa, Mastercard, RuPay</span>
+              <span *ngSwitchCase="'DEBIT_CARD'">Visa, Mastercard, Maestro</span>
+              <span *ngSwitchCase="'NET_BANKING'">{{'All major banks' | translate}}</span>
+              <span *ngSwitchCase="'WALLET'">Paytm, PhonePe, Amazon Pay</span>
+              <span *ngSwitchCase="'PAYLATER'">Simpl, Lazypay, more</span>
+              <span *ngSwitchDefault>{{modes.modeDisplayName}}</span>
+            </ng-container>
+          </div>
+        </div>
+        <i class="fa fa-angle-right payment-mode-card__chevron" aria-hidden="true"></i>
+      </div>
+    </mat-radio-button>
+    <mat-radio-button class="payment-mode-card" [value]="'cash'" *ngIf="cashPay">
+      <div class="payment-mode-card__wrapper">
+        <div class="payment-mode-card__visual">
+          <img class="payment-mode-card__icon" [src]="getImageSrc('PAYCASH')" alt="Cash" />
+        </div>
+        <div class="payment-mode-card__content">
+          <div class="payment-mode-card__header">
+            <span class="payment-mode-card__name">{{'Cash' | translate}}</span>
+          </div>
+          <div class="payment-mode-card__subtext">{{'Pay at the center' | translate}}</div>
+        </div>
+        <i class="fa fa-angle-right payment-mode-card__chevron" aria-hidden="true"></i>
+      </div>
+    </mat-radio-button>
+  </mat-radio-group>
+</section>
