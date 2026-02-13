@@ -1,0 +1,41 @@
+<section class="payment-modes-section">
+  <mat-radio-group
+    class="payment-modes-group"
+    name="paymentMode"
+    [value]="paymentMode"
+    (change)="paymentModeSelected($event)">
+    <div *ngFor="let modes of paymentModes" class="payment-mode-row">
+      <mat-radio-button
+        class="payment-mode-cards"
+        [value]="modes.mode">
+        <div class="payment-mode-inner">
+          <div class="payment-icon-wrapper">
+            <img class="payment-icon" [src]="getImageSrc(modes.mode)" />
+          </div>
+          <div class="payment-copy">
+            <div class="payment-title">
+              {{ getModeTitle(modes) }}
+            </div>
+            <div class="payment-subtitle">
+              {{ getModeSubtitle(modes) }}
+            </div>
+          </div>
+        </div>
+      </mat-radio-button>
+    </div>
+
+    <div *ngIf="cashPay" class="payment-mode-row">
+      <mat-radio-button class="payment-mode-cards" [value]="'cash'">
+        <div class="payment-mode-inner">
+          <div class="payment-icon-wrapper">
+            <img class="payment-icon" [src]="getImageSrc('PAYCASH')" />
+          </div>
+          <div class="payment-copy">
+            <div class="payment-title">Cash on Delivery</div>
+            <div class="payment-subtitle">Pay when you receive</div>
+          </div>
+        </div>
+      </mat-radio-button>
+    </div>
+  </mat-radio-group>
+</section>

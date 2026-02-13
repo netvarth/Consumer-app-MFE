@@ -1,232 +1,462 @@
-<div #consumer_order class="container checkout  mt-1" [ngClass]="theme">
-    <div class="customCard headerBorder">
-        <div (click)="goBack()"><i class="fa fa-arrow-left clrChangeHeader"></i> </div>
-        <div (click)="goBack()" class="clrChangeHeader">Back</div>
+<div #consumer_order class="checkout-page container mt-1" [ngClass]="theme">
+  <div class="page-back" (click)="goBackLocation()" *ngIf="!isCartLoading && hasCheckoutItems">
+    <i class="fa fa-arrow-left" aria-hidden="true"></i>
+    <span>Back</span>
+  </div>
+  <div class="checkout-empty" *ngIf="!isCartLoading && !hasCheckoutItems">
+    <div class="empty-card">
+      <img [src]="cdnPath + 'assets/images/noitems.png'" alt="No checkout items" />
+      <h3>No checkout available</h3>
+      <p>Your checkout is empty or no active order is available.</p>
+      <button type="button" class="btn-primary-cta Redirectbtn" (click)="editOrder()">Go to cart</button>
     </div>
-    <div class="card time-line-card">
-        <div class="">
-            <div class="">
-                <p-timeline [value]="events" layout="horizontal">
-                    <ng-template pTemplate="marker" let-event let-i="rowIndex">
-                        <span class="custom-marker p-shadow-2">
-                            <img *ngIf="event.condition" width="30" height="30" [src]="getMarkerImage(event)">
-                            <img *ngIf="!event.condition" width="30" height="30" [src]="getMarkerImage(event)">
-                        </span>
-                    </ng-template>
-                    <ng-template pTemplate="content" class="text-center timelinetext" let-event>
-                        <span class="event-adjust" [class.event-status]="event.condition">{{ event.status }}</span>
-                    </ng-template>
-                </p-timeline>
-            </div>
+  </div>
+  <!-- Header / stepper -->
+  <!-- <div class="customCard headerBorder checkout-header">
+    <div class="back-wrapper" (click)="goBack()">
+      <i class="fa fa-arrow-left clrChangeHeader"></i>
+      <span class="clrChangeHeader">Back</span>
+    </div>
+    <div class="checkout-steps">
+      <div class="step-item" [class.active]="!orderSummary && !ispaymentDone">
+        <span class="step-index">1</span>
+        <span class="step-label">Cart</span>
+      </div>
+      <div class="step-divider"></div>
+      <div class="step-item" [class.active]="orderSummary && !ispaymentDone">
+        <span class="step-index">2</span>
+        <span class="step-label">Address</span>
+      </div>
+      <div class="step-divider"></div>
+      <div class="step-item" [class.active]="ispaymentDone">
+        <span class="step-index">3</span>
+        <span class="step-label">Payment</span>
+      </div>
+    </div>
+  </div> -->
+  <div class="cart-steps" *ngIf="!isCartLoading && hasCheckoutItems">
+    <div class="steps-pill">
+      <span class="step active" (click)="goBackToCart()"><i class="fa fa-shopping-bag"></i> Cart</span>
+      <span class="step-line">.........</span>
+      <span class="step"><i class="fa fa-map-marker"></i> Address</span>
+    </div>
+  </div>
+  <!-- Main layout -->
+  <div class="checkout-layout" *ngIf="!isCartLoading && hasCheckoutItems">
+    <!-- Left column: address & payment -->
+    <div class="checkout-left" [class.hide-on-mobile]="orderSummary">
+      <!-- Address section -->
+      <section class="address-section">
+        <div class="address-header">
+          <h2 class="address-title">Delivery Address</h2>
+          <p class="address-subtitle">
+            Please set your correct Delivery Address
+          </p>
         </div>
-    </div>
-    <div class="col-lg-12 order-checkout mt-0 mt-md-3 p-0">
-        <div class="">
-            <div *ngIf="orderSummary" class="col-lg-12 account-details-show p-3 ">
-                <div class="d-flex justify-content-between">
-                    <div *ngIf="deliveryAddress && !storeData">
-                        <div class="account-font">Delivery Address</div>
-                        <div class="adrs-data mt-3">
-                            <div class="text-capitalize">{{deliveryAddress.firstName
-                                }}&nbsp;{{deliveryAddress.lastName}}</div>
-                            <div class="text-capitalize">{{deliveryAddress.address}}</div>
-                            <div class="text-capitalize">{{deliveryAddress.city}}
-                                ,{{deliveryAddress.landMark}}, {{deliveryAddress.state}}, {{deliveryAddress.country}},
-                                {{deliveryAddress.postalCode}}</div>
-                            <div> {{deliveryAddress.countryCode}}
-                                {{deliveryAddress.phoneNumber}}</div>
-                            <div> {{deliveryAddress.email}}</div>
-                        </div>
-                        </div>                        
-                        <div *ngIf="!confirmBtn && !storeData">
-                            <button pButton pRipple type="button" (click)="goBack()" id="btnEditOrder"
-                            class="btn-switch p-button-primary btn-primary me-2 mt-2">Change Address</button>
-                            <button pButton pRipple type="button" (click)="editOrder()" id="btnEditOrder"
-                                class="btn-switch p-button-primary btn-primary me-2 mt-2">Edit order</button>
-                        </div>
-                    </div>
-                    <div *ngIf="storeData && contactData" class="d-flex justify-content-between">
-                        <div>
-                            <div class="account-font">Contact Details</div>
-                            <div class="adrs-data mt-3">
-                                <div> {{contactData.firstName}}&nbsp;{{contactData.lastName}}</div>
-                                <div> {{contactData.countryCode}}&nbsp;{{contactData.primaryPhoneNumber}}</div>
-                                <div> {{contactData.email}}</div>
-                            </div>
-                        </div>
-                        <div *ngIf="!confirmBtn && storeData">
-                            <button pButton pRipple type="button" (click)="goBack()" id="btnEditOrder"
-                                class="btn-switch p-button-primary btn-primary me-2 mt-2">Change Address</button>
-                            <button pButton pRipple type="button" (click)="editOrder()" id="btnEditOrder"
-                                class="btn-switch p-button-primary btn-primary me-2 mt-2">Edit order</button>
-                        </div>
-                    </div>
-            </div>
-            <div class="col-lg-12 delivery-head">
-                <div *ngIf="!orderSummary && deliveryType == 'HOME_DELIVERY'">Delivery Address</div>
-                <div *ngIf="orderSummary">Order Summary</div>
-            </div>
-            <!-- <div *ngIf="!orderSummary" class="col-lg-12 account-details">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div class="d-flex justify-content-between gap-3 p-2">
-                        <div>
-                            <label class="ml-2 mb-0 fw-bold" for="homeDelivery">Home Delivery</label>
-                        </div>
-                    </div>
+
+        <!-- Editable address form -->
+        <div *ngIf="!orderSummary && deliveryType == 'HOME_DELIVERY'">
+          <app-address [deliveryAddressP]="deliveryAddress" (addressSelected)="addressSelected($event)">
+          </app-address>
+        </div>
+
+        <!-- Selected address / contact summary -->
+        <div *ngIf="orderSummary" class="selected-address-wrapper">
+          <div *ngIf="deliveryAddress && !storeData" class="saved-item">
+            <div class="saved-body">
+              <div class="saved-body-main">
+                <div class="saved-name">
+                  {{ deliveryAddress.firstName }}&nbsp;{{ deliveryAddress.lastName }}
                 </div>
+                <div class="saved-actions-main" *ngIf="!isReadyForPayment">
+                  <!-- Desktop buttons -->
+                  <button pButton pRipple type="button" id="btnChangeAddress" class="btn-link action-btn" (click)="goBack()">
+                    Change Address
+                  </button>
+                
+                  <button pButton pRipple type="button" id="btnEditOrder" class="btn-link action-btn" (click)="editOrder()">
+                    Edit order
+                  </button>
+                
+                  <!-- Mobile icons (<480px) -->
+                  <button type="button" class="icon-btn action-icon danger" (click)="goBack()" aria-label="Change address"
+                    title="Change address">
+                    <img [src]="cdnPath + 'assets/images/icons/editaddress.png'" alt="Change address" />
+                  </button>
+                
+                  <button type="button" class="icon-btn action-icon" (click)="editOrder()" aria-label="Edit order" title="Edit order">
+                    <img [src]="cdnPath + 'assets/images/icons/editorder.png'" alt="Edit order" />
+                  </button>
+                </div>
+                
+                </div>
+                <div class="saved-line">        {{ deliveryAddress.address }}, {{ deliveryAddress.city }}, {{ deliveryAddress.landMark }},
+                {{ deliveryAddress.state }}, {{ deliveryAddress.country }},
+                {{ deliveryAddress.postalCode }}
+              </div>
+              <div class="saved-body-sub">
+                <div class="saved-line">
+                  {{ deliveryAddress.countryCode }} {{ deliveryAddress.phoneNumber }}
+                </div>
+                <div class="saved-line">{{ deliveryAddress.email }}</div>
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="storeData && contactData" class="saved-item">
+            <div class="saved-body">
+              <div class="saved-body-main">
+                <div class="saved-name">
+                  {{ contactData.firstName }}&nbsp;{{ contactData.lastName }}
+                </div>
+                <div class="saved-actions-main" *ngIf="!isReadyForPayment">
+                  <button pButton pRipple type="button" id="btnChangeAddressStore" class="btn-link" (click)="goBack()">
+                    Change Address
+                  </button>
+                  <button pButton pRipple type="button" id="btnEditOrderStore" class="btn-link" (click)="editOrder()">
+                    Edit order
+                  </button>
+                </div>
+              </div>
+              <div class="saved-body-sub">
+                <div class="saved-line">
+                  {{ contactData.countryCode }}&nbsp;{{ contactData.primaryPhoneNumber }}
+                </div>
+                <div class="saved-line">{{ contactData.email }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Order items (summary view) -->
+      <!-- <section *ngIf="orderSummary" class="order-items-section">
+        <p-table [value]="items" [scrollable]="true" class="items">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Item</th>
+              <th class="text-center">Quantity</th>
+              <th class="text-end">Total</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-item>
+            <tr>
+              <td>
+                <div class="item-row">
+                  <div class="item-thumbnail">
+                    <img *ngIf="
+                        item &&
+                        item.spItem &&
+                        item.spItem.attachments &&
+                        item.spItem.attachments.length > 0
+                      " [src]="item.spItem?.attachments?.[0]?.s3path" alt="" height="75" width="75" />
+                    <img *ngIf="
+                        item &&
+                        item.spItem &&
+                        item.spItem.attachments &&
+                        item.spItem.attachments.length == 0
+                      " src="{{ cdnPath }}assets/images/rx-order/items/Items.svg" alt="" height="75" width="75" />
+                  </div>
+                  <div class="item-content">
+                    <div class="item-name">
+                      {{ item.spItem.name }}
+                    </div>
+                    <div class="item-price">
+                      <span class="netPrice">
+                        ₹{{ item.price | number: '1.2-2' }}
+                      </span>
+                    </div>
+                    <ul *ngIf="item && item.selectedAttributes" class="attribute-row">
+                      <li *ngFor="let value of getAttributeValues(item.selectedAttributes)" class="attribute-box">
+                        {{ value }}
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="inputnumber">
+                  {{ item.quantity }}
+                </div>
+              </td>
+              <td class="text-end">
+                <div class="fw-bold">
+                  ₹{{ item.netTotal | number: '1.2-2' }}
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </section> -->
+
+      <!-- Payment methods (redesigned payment-modes component used here) -->
+      <section
+        *ngIf="orderSummary && ((orderData && orderData.amountDue > 0) || (cartData && (cartData.netRate > 0 || cartData.netTotal > 0)))"
+        class="payment-section desktop-payment">
+        <h3 class="payment-title">Payment Method</h3>
+        <p class="payment-subtitle">Choose how you want to pay</p>
+
+        <div class="payment-modes-wrapper">
+          <ng-container *ngIf="!shownonIndianModes">
+            <app-payment-modes-new [paymentModes]="indian_payment_modes"
+              [selectedMode]="selected_payment_mode"
+              (modeSelected)="indian_payment_mode_onchange($event)">
+            </app-payment-modes-new>
+          </ng-container>
+          <ng-container *ngIf="shownonIndianModes">
+            <app-payment-modes-new [paymentModes]="non_indian_modes" 
+              [selectedMode]="selected_payment_mode"
+              (modeSelected)="non_indian_modes_onchange($event)">
+            </app-payment-modes-new>
+          </ng-container>
+        </div>
+
+        <div class="payment-toggle" *ngIf="paymentmodes && paymentmodes.internationalPay">
+          <span (click)="togglepaymentMode()" class="toggle-link pointer-cursor">
+            <span *ngIf="
+                !shownonIndianModes &&
+                paymentmodes &&
+                paymentmodes.internationalPay
+              ">
+              Non Indian Payment? Click here
+            </span>
+            <span *ngIf="shownonIndianModes && paymentmodes && paymentmodes.indiaPay">
+              Indian Payment? Click here
+            </span>
+          </span>
+        </div>
+      </section>
+    </div>
+
+    <!-- Right column: order summary card -->
+    <aside class="checkout-right" *ngIf="cartData && items && items.length">
+      <div class="summary-card">
+        <!-- Product summary -->
+        <div class="summary-product" *ngIf="items[0] as firstItem">
+          <div class="summary-count">
+            {{ items.length }} ITEM<span *ngIf="items.length > 1">S</span>
+          </div>
+          <div class="summary-total-row">
+            <div class="summary-total-text">
+              <div class="summary-total-label">Order Total</div>
+              <div class="summary-total-amount">
+                ₹{{ getOrderSummaryTotal() | number: '1.2-2' }}
+              </div>
+            </div>
+            <button type="button" class="summary-details" (click)="toggleSummaryDetails()">
+              {{ showSummaryDetails ? 'Show less' : 'View all Items' }}
+              <i class="fa" [ngClass]="showSummaryDetails ? 'fa-angle-up' : 'fa-angle-down'" aria-hidden="true"></i>
+            </button>
+          </div>
+          <ng-container *ngIf="showSummaryDetails; else firstOnly">
+            <div class="summary-product-list">
+              <div class="summary-product-card" *ngFor="let item of items">
+                <div class="summary-product-image">
+                  <img *ngIf="
+                      item &&
+                      item.spItem &&
+                      item.spItem.attachments &&
+                      item.spItem.attachments.length > 0
+                    " [src]="item.spItem?.attachments?.[0]?.s3path" alt="" />
+                  <img *ngIf="
+                      item &&
+                      item.spItem &&
+                      item.spItem.attachments &&
+                      item.spItem.attachments.length == 0
+                    " src="{{ cdnPath }}assets/images/rx-order/items/Items.svg" alt="" />
+                </div>
+                <div class="summary-product-info">
+                  <div class="product-name">
+                    {{ item.spItem?.name }}
+                  </div>
+                  <div class="product-subtitle"  *ngIf="item?.quantity">
+                    {{ item?.quantity }} {{ item?.quantity === 1 ? 'item' : 'items' }}
+                  </div>
+                  <div class="product-subtitle"  *ngIf="item.spItem?.itemCategory?.categoryName">
+                    {{ item.spItem?.itemCategory?.categoryName }}
+                  </div>
+                </div>
+                <div class="product-price">
+                  &#8377;{{ item.netTotal | number: '1.0-2' }}
+                </div>
+              </div>
+            </div>
+          </ng-container>
+          <ng-template #firstOnly>
+            <!-- <div class="summary-product-card">
+              <div class="summary-product-image">
+                <img *ngIf="
+                    firstItem &&
+                    firstItem.spItem &&
+                    firstItem.spItem.attachments &&
+                    firstItem.spItem.attachments.length > 0
+                  " [src]="firstItem.spItem?.attachments?.[0]?.s3path" alt="" />
+                <img *ngIf="
+                    firstItem &&
+                    firstItem.spItem &&
+                    firstItem.spItem.attachments &&
+                    firstItem.spItem.attachments.length == 0
+                  " src="{{ cdnPath }}assets/images/rx-order/items/Items.svg" alt="" />
+              </div>
+              <div class="summary-product-info">
+                <div class="product-name">
+                  {{ firstItem.spItem?.name }}
+                </div>
+                <div class="product-subtitle">
+                  {{ firstItem.spItem?.itemCategory?.categoryName || 'Product' }}
+                </div>
+              </div>
+              <div class="product-price">
+                &#8377;{{ firstItem.price | number: '1.0-2' }}
+              </div>
             </div> -->
-            <div *ngIf="!orderSummary && deliveryType == 'HOME_DELIVERY'">
-                <app-address [deliveryAddressP]="deliveryAddress" (addressSelected)="addressSelected($event)"></app-address>  
-            </div>          
-            <div *ngIf="orderSummary" class="col-lg-12 address-details no-padding-small p-0 p-md-3">
-                <div class="p-0 items">
-                    <p-table [value]="items" [scrollable]="true">
-                        <ng-template pTemplate="header">
-                            <tr>
-                                <th class="">Item</th>
-                                <th class="text-center">Quantity</th>
-                                <th class="text-end">Total</th>
-                            </tr>
-                        </ng-template>
-                        <ng-template pTemplate="body" let-item>
-                            <tr>
-                                <td class="">
-                                    <div>
-                                        <div class="d-flex align-items-center gap-3">
-                                            <div>                                            
-                                                <img *ngIf="item && item.spItem && item.spItem.attachments && item.spItem.attachments.length > 0"
-                                                    [src]="item.spItem?.attachments?.[0]?.s3path" alt="" height="75" width="75">
-                                                <img *ngIf="item && item.spItem && item.spItem.attachments && item.spItem.attachments.length == 0"
-                                                    src="{{cdnPath}}assets/images/rx-order/items/Items.svg" alt="" height="75" width="75">
-                                            </div>
-                                            <div>
-                                                <div class="fw-bold item-name">{{item.spItem.name}}</div>
-                                                <div class="d-flex price-section">
-                                                    <span class="netPrice">₹{{item.price | number: '1.2-2'}}</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                              
-                                    <div>
-                                        <ul *ngIf="item && item.selectedAttributes" class="attribute-row">
-                                            <li *ngFor="let value of getAttributeValues(item.selectedAttributes)" class="attribute-box">
-                                                {{ value }}
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="inputnumber">
-                                        {{item.quantity }}
-                                    </div>
-                                </td>
-                                <td class="text-end">
-                                    <div class="fw-bold">₹{{item.netTotal | number: '1.2-2'}}</div>
-                                </td>
-                            </tr>
-                        </ng-template>
-                    </p-table>
-                </div>
-                <div class="d-md-flex justify-content-end mt-3">
-                    <div class="col-12 col-md-7 col-lg-6 me-2" *ngIf="orderData.prePaymentAmount > 0">
-                        <div class="card p-0 p-md-3">
-                            <div class="">
-                                <div class="resPaymrntDetails">
-                                    <label class="fw-bold m-2">Select Payment Mode<span class="red">&nbsp;*</span></label>
-                                </div>
-                                <ng-container *ngIf="!shownonIndianModes">
-                                    <app-payment-modes [paymentModes]="indian_payment_modes"
-                                        (modeSelected)="indian_payment_mode_onchange($event)">
-                                    </app-payment-modes>
-                                </ng-container>
-                                <ng-container *ngIf="shownonIndianModes">
-                                    <app-payment-modes [paymentModes]="non_indian_modes"
-                                        (modeSelected)="non_indian_modes_onchange($event)">
-                                    </app-payment-modes>
-                                </ng-container>
-                            </div>
-                            <div class="col-md-12 text-center mt-3"
-                                *ngIf="paymentmodes && paymentmodes.internationalPay">
-                                <span (click)="togglepaymentMode()" class="pointer-cursor">
-                                    <a class="refund_policy">
-                                        <span
-                                            *ngIf="!shownonIndianModes && paymentmodes && paymentmodes.internationalPay">
-                                            Non Indian Payment ? Click here</span>
-                                        <span *ngIf="shownonIndianModes && paymentmodes && paymentmodes.indiaPay">Indian
-                                            Payment ? Click here</span>
-                                    </a>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-5 col-lg-6 no-padding-small">                        
-                        <div class="card mt-3 mt-md-0">
-                            <div *ngIf="isCouponsAvailable && !confirmBtn" class="coupon-section mb-3 col-md-12 col-12 col-sm-12 ">
-                                <app-apply-coupon [s3CouponsList]="s3CouponsList"
-                                    (actionPerformed)="couponActionPerformed($event)"></app-apply-coupon>
-                            </div>
-                            <div class="d-flex justify-content-between total mt-2">
-                                <div>Subtotal</div>
-                                <div>₹{{cartData.netTotal | number: '1.2-2'}}</div>
-                            </div>
-                            <div *ngIf="cartData.taxTotal && cartData.taxTotal > 0" class="d-flex justify-content-between total mt-2">
-                                <div>GST</div>
-                                <div>₹{{cartData.taxTotal | number: '1.2-2'}}</div>
-                            </div>
-                            <div *ngIf="orderData.netTotalWithTax && orderData.taxTotal && orderData.taxTotal > 0" class="d-flex justify-content-between total mt-2">
-                                <div>Net Total With GST</div>
-                                <div>₹{{orderData.netTotalWithTax | number: '1.2-2'}}</div>
-                            </div>
-                            <div *ngIf="roundedValue != 0" class="d-flex justify-content-between total mt-2">
-                                <div>Rounded Value</div>
-                                <div class="rupee-font">
-                                    {{ invoiceDetailsById[0].roundedValue > 0 ? '₹+' : '₹' }}{{ invoiceDetailsById[0].roundedValue | number: '1.2-2' }}
-                                </div>
-                            </div> 
-                            <div *ngIf="orderData && orderData.deliveryCharges > 0 && confirmBtn" class="d-flex justify-content-between total mt-2">
-                                <div>Delivery Charge</div>
-                                <div>(+)₹{{orderData.deliveryCharges | number: '1.2-2'}}</div>
-                            </div>
-                            <div *ngIf="cartData && cartData.providerCoupons?.length > 0">
-                                <div class="d-flex coupon-text mt-2 justify-content-between" *ngFor="let coupon of cartData.providerCoupons">
-                                    <span scope="row" class="fw-bold border-none">
-                                        {{coupon.couponCode}}(coupon)</span>
-                                    <span class="fw-bold border-none">
-                                        (-){{coupon.discount | currency:'&#8377;'}}
-                                        <i *ngIf="!confirmBtn"
-                                            (click)="removeOrderCoupon(coupon)"
-                                            class="fa fa-window-close pointer-cursor" aria-hidden="true"></i>
-                                    </span>
-                                </div>  
-                            </div>
-                            <div class="d-flex justify-content-between total mt-2">
-                                <div>Net Total</div>
-                                <div *ngIf="!orderData.netRate">₹{{cartData.netRate | number: '1.2-2'}}</div>
-                                <div *ngIf="orderData.netRate">₹{{orderData.netRate | number: '1.2-2'}}</div>
-                            </div>
-                            <div *ngIf="convenientFee && convenientFee > 0 && confirmBtn" class="d-flex justify-content-between total mt-2">
-                                <div>Convenience Fee</div>
-                                <div>₹{{convenientFee | number: '1.2-2'}}</div>
-                            </div>
-                            <div *ngIf="gatewayFee && gatewayFee > 0 && confirmBtn" class="d-flex justify-content-between total mt-2">
-                                <div>Gateway Fee</div>
-                                <div>₹{{gatewayFee | number: '1.2-2'}}</div>
-                            </div>
-                            <div *ngIf="amountWithAllCharges && amountWithAllCharges > 0 && confirmBtn" class="d-flex justify-content-between total mt-2">
-                                <div>Amount Due</div>
-                                <div>₹{{amountWithAllCharges | number: '1.2-2'}}</div>
-                            </div>
-                            <div class="mt-3">
-                                <button *ngIf="selected_payment_mode" pButton pRipple type="button" id="btnPay"
-                                    class="btn-confirm p-button-primary btn-primary" (click)="pay()">Pay</button>
-                                <button *ngIf="!selected_payment_mode && !confirmBtn" pButton pRipple type="button"
-                                    class="btn-confirm p-button-primary btn-primary" id="btnConfirm"
-                                    (click)="confirm()">Confirm</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+          </ng-template>
         </div>
+
+        <!-- Price details -->
+          <div class="summary-note-container" *ngIf="cartNote || !confirmBtn">
+          <div
+            class="summary-note-label"
+            (click)="toggleCartNoteField()"
+            [class.expanded]="cartNoteFieldVisible && !confirmBtn">
+            <span>Notes:</span>
+            <span class="summary-note-label-value" *ngIf="confirmBtn">
+              {{ cartNote || 'No notes added' }}
+            </span>
+            <span class="summary-note-label-value" *ngIf="!confirmBtn && !cartNoteFieldVisible">
+              {{ cartNote || 'Tap to add a note' }}
+               &nbsp;<i class="fa fa-edit"></i>
+            </span>
+          </div>
+          <textarea
+            class="summary-note-input"
+            rows="1"
+            *ngIf="cartNoteFieldVisible && !confirmBtn"
+            [(ngModel)]="cartNote"
+            (ngModelChange)="saveCartNote($event)"
+            maxlength="250"
+            placeholder="Have a special request? Add customisations or notes for your order here."></textarea>
+        </div>
+
+
+        <div class="summary-pricing">
+          <div class="summary-pricing-header">Price Details</div>
+          <div class="pricing-row">
+            <span>Net Total</span>
+            <span>
+              ₹{{ cartData.grossTotal || cartData.netTotal | number: '1.2-2' }}
+            </span>
+          </div>
+          <div class="pricing-row discount-row" *ngIf="cartData.discountTotal && cartData.discountTotal > 0">
+            <span>Discount on MRP</span>
+            <span class="discount-amount">
+              -₹{{ cartData.discountTotal | number: '1.2-2' }}
+            </span>
+          </div>
+          <div class="pricing-row" *ngIf="cartData.taxTotal && cartData.taxTotal > 0">
+            <span>GST</span>
+            <span>₹{{ cartData.taxTotal | number: '1.2-2' }}</span>
+          </div>
+          <div class="pricing-row" *ngIf="convenientFee && convenientFee > 0 && confirmBtn">
+            <span>Convenience Fee</span>
+            <span>₹{{ convenientFee | number: '1.2-2' }}</span>
+          </div>
+          <div class="pricing-row" *ngIf="gatewayFee && gatewayFee > 0 && confirmBtn">
+            <span>Gateway Fee</span>
+            <span>₹{{ gatewayFee | number: '1.2-2' }}</span>
+          </div>
+          <div class="pricing-row" *ngIf="orderData && orderData.deliveryCharges > 0 && confirmBtn">
+            <span>Delivery Charge</span>
+            <span>+₹{{ orderData.deliveryCharges | number: '1.2-2' }}</span>
+          </div>
+
+          <!-- Applied coupons (display only, no edit/remove UI) -->
+          <div *ngIf="cartData && cartData.providerCoupons?.length > 0" class="pricing-coupons">
+            <div class="pricing-row coupon-row" *ngFor="let coupon of cartData.providerCoupons">
+              <span class="coupon-code">
+                {{ coupon.couponCode }} (coupon)
+              </span>
+              <span class="coupon-discount">
+                -{{ coupon.discount | currency: '&#8377;' }}
+              </span>
+            </div>
+          </div>
+
+          <div class="pricing-row total-row">
+            <span>Total Amount</span>
+            <span>₹{{ getDisplayedTotal() | number: '1.2-2' }}</span>
+          </div>
+        </div>
+
+        <!-- CTA -->
+      <div class="summary-cta">
+  <button
+    pButton
+    pRipple
+    type="button"
+    id="btnPrimaryAction"
+    class="btn-primary-cta"
+    (click)="primaryAction()"
+    [disabled]="isProcessing || (deliveryType === 'HOME_DELIVERY' && !hasDeliveryAddresses)"
+  >
+    <ng-container *ngIf="isProcessing; else desktopReadyLabel">
+      Please wait...
+    </ng-container>
+    <ng-template #desktopReadyLabel>
+      <ng-container *ngIf="getPrimaryButtonLabel() === 'Pay'; else desktopContinueLabel">
+        Pay &#8377;{{ getPayableAmount() | number: '1.0-2' }}
+      </ng-container>
+      <ng-template #desktopContinueLabel>
+        {{ getPrimaryButtonLabel() }}
+      </ng-template>
+    </ng-template>
+  </button>
+</div>
+</div>
+    </aside>
+  </div>
+</div>
+
+<div
+  *ngIf="orderSummary && ((orderData && orderData.amountDue > 0) || (cartData && (cartData.netRate > 0 || cartData.netTotal > 0)))"
+  class="mobile-payment-bar">
+  <div class="mobile-payment-inner">
+    <div class="mobile-payment-controls">
+     
+      <div class="mobile-payment-select">
+        <app-payment-modes
+          [paymentModes]="indian_payment_modes"
+          [indianPaymentModes]="indian_payment_modes"
+          [nonIndianPaymentModes]="non_indian_modes"
+          [selectedMode]="selected_payment_mode"
+          [mobileSheet]="true"
+          [showPaymentToggle]="paymentmodes && paymentmodes.internationalPay"
+          [paymentToggleChecked]="shownonIndianModes"
+          [paymentToggleLabel]="'Non Indian Payment'"
+          (paymentToggleChange)="setPaymentModeToggle($event)"
+          (modeSelected)="shownonIndianModes ? non_indian_modes_onchange($event) : indian_payment_mode_onchange($event)">
+        </app-payment-modes>
+      </div>
+    <button
+      pButton
+      pRipple
+      type="button"
+      class="mobile-pay-btn btn-primary-cta"
+      (click)="primaryAction()"
+      [disabled]="isProcessing || (deliveryType === 'HOME_DELIVERY' && !hasDeliveryAddresses)">
+      <ng-container *ngIf="isProcessing; else readyLabel">
+        Please wait...
+      </ng-container>
+      <ng-template #readyLabel>
+        <ng-container *ngIf="getPrimaryButtonLabel() === 'Pay'; else continueLabel">
+          <i class="fa fa-lock" aria-hidden="true"></i>
+          Pay &#8377;{{ getPayableAmount() | number: '1.0-2' }}
+        </ng-container>
+        <ng-template #continueLabel>
+          Continue
+        </ng-template>
+      </ng-template>
+    </button>
     </div>
+  </div>
+</div>

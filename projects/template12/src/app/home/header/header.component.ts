@@ -117,7 +117,10 @@ export class HeaderComponent implements OnInit {
   }
   ngOnInit(): void {
     this.config = this.sharedService.getTemplateJSON();
-    this.isCartVisible = this.config.header?.showCart;
+    const showCartConfig = this.config?.header?.showCart;
+    this.isCartVisible = showCartConfig === undefined || showCartConfig === null
+      ? true
+      : !(showCartConfig === false || showCartConfig === 'false');
     this.headerName = this.config.header?.name ? this.config.header.name : 'header1';
     if (this.config && this.config['theme']) {
       this.theme = this.config['theme'];

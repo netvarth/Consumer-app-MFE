@@ -493,6 +493,7 @@ label {
 .cust-logpg-submt {
     width: 100%;
 }
+
 .authentication .custom:focus {
     border: 1.39032px solid #E1E2E3 !important;
 }
@@ -528,66 +529,288 @@ h1 {
     font-size: 1rem !important;
     font-weight: 600 !important;
 }
+
 .field-size {
-height: 32.5px !important;
-background: #E6E6E6 !important;
+    height: 32.5px !important;
+    background: #E6E6E6 !important;
 }
 
+@import url('https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&display=swap');
 
-
-.google-login-wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 14px;
-  padding: 10px 0;
+.auth-redesign {
+    font-family: "Assistant", sans-serif !important;
+    background: #ffffff;
 }
 
-.google-pill-btn {
-
-  width: 100% !important;
-  height: 40px !important;
-  padding: 0 15px;
-  border-radius: 999px; /* pill */
-  border: 1px solid #dadce0;
-  background: #fff;
-  color: #202124;
-
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-
-  font-family: Roboto, Arial, sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-
-  cursor: pointer;
-  transition: background-color 0.15s ease, box-shadow 0.15s ease;
+.auth-shell {
+    display: flex;
+    justify-content: center;
+    padding: 1px 16px;
 }
 
-.google-pill-btn:hover:not(:disabled) {
-  background-color: #f8f9fa;
-  box-shadow: 0 1px 2px rgba(60, 64, 67, 0.2);
+.auth-card {
+    width: 417px;
+    max-width: 100%;
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 2px 16px 0 rgba(40, 44, 63, 0.1);
+    overflow: hidden;
+}
+@media (max-width: 761px) {
+   
+    .auth-card {
+        border-radius: 0 !important;
+        box-shadow: none !important;
+    }
 }
 
-.google-pill-btn:active:not(:disabled) {
-  box-shadow: none;
-  background-color: #f1f3f4;
+.auth-logo {
+    display: flex;
+    justify-content: center;
+    padding: 18px 16px 6px;
 }
 
-.google-pill-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+.auth-logo img {
+    max-height: 60px;
+    width: auto;
 }
 
-.google-pill-icon {
-  width: 18px;
-  height: 18px;
+.auth-hero img {
+    width: 100%;
+    height: 170px;
+    object-fit: cover;
+    display: block;
 }
 
-.google-pill-spinner {
-  display: inline-flex;
-  align-items: center;
-  margin-left: 6px;
+.auth-body {
+    padding: 25px 24px 8px;
+}
+
+.auth-body-sub {
+    padding: 0px 15px 8px;
+}
+
+.auth-title {
+    margin: 0 0 14px;
+    color: #424553;
+    font-size: 20.75px;
+    font-weight: 700;
+    line-height: 29.64px;
+}
+
+.auth-title-light {
+    font-weight: 300;
+}
+
+.auth-subtitle {
+    margin: -10px 0 20px;
+    font-size: 14px;
+    color: #424553;
+}
+
+.otp-container {
+    margin-bottom: 20px;
+    display: flex;
+}
+
+.otp-timer-red {
+    color: #424553;
+    font-size: 14px;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.timer-text {
+    color: #F05454;
+}
+
+.resent-link {
+    color: #6C351F;
+}
+
+.auth-footer-link {
+    font-size: 14.53px;
+    line-height: 20.75px;
+    color: #424553;
+    padding-left: 0;
+}
+
+.auth-redesign .form-group {
+    margin-bottom: 14px;
+}
+
+.auth-phone {
+    width: 100%;
+}
+
+.terms {
+    display: grid;
+    grid-template-columns: 20px 1fr;
+    gap: 10px;
+    font-size: 14.53px;
+    line-height: 20.75px;
+    color: #424553;
+    margin: 6px 0 16px;
+    align-items: center;
+}
+
+.terms-checkbox {
+    width: 14px;
+    height: 14px;
+    border: 1px solid #767676;
+    accent-color: #6C351F;
+}
+
+.terms-link {
+    color: #6C351F;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.auth-continue {
+    width: 100% !important;
+    height: 44px !important;
+    background: #6C351F !important;
+    border-radius: 4px !important;
+}
+
+.auth-redesign .continue {
+    font-size: 14.53px;
+    font-weight: 700;
+    line-height: 16.6px;
+    letter-spacing: 0;
+    color: #FFFFFF;
+    text-transform: uppercase;
+}
+
+.auth-or {
+    font-size: 12px;
+    text-align: center;
+    color: #424553;
+    margin: 16px 0 8px;
+}
+
+.google-wrap {
+    margin-bottom: 12px;
+}
+
+.google-button {
+    width: 100% !important;
+}
+
+.auth-help {
+    font-weight: 100;
+    font-size: 14.53px;
+    line-height: 20.75px;
+    color: #424553;
+    text-align: left;
+    padding-left: 10px;
+}
+
+.auth-redesign ::ng-deep ngx-intl-tel-input input {
+    height: 44px !important;
+    border: 1.04px solid #D4D5D9 !important;
+    border-radius: 4px !important;
+    font-size: 14.53px;
+    font-weight: 400;
+    color: #424553;
+}
+
+.auth-redesign ::ng-deep ngx-intl-tel-input input::placeholder {
+    color: #94969F;
+}
+
+.auth-redesign ::ng-deep .tel-input-container input {
+    border-radius: 4px !important;
+}
+
+.cust-logpg-submt {
+    border-radius: 4px !important;
+}
+
+.cust-logpg-submt {
+    width: 100% !important;
+    height: 38px !important;
+    margin-bottom: 13px;
+}
+
+.btngle {
+    width: 100% !important;
+    min-height: 40px !important;
+    display: flex;
+    align-items: center;
+    padding-left: 0 !important;
+}
+
+:host ::ng-deep .btngle .nsm7Bb-HzV7m-LgbsSe {
+    width: 100% !important;
+    min-height: 40px !important;
+    border-radius: 6px !important;
+    justify-content: center !important;
+    padding: 0 !important;
+}
+
+:host ::ng-deep .btngle .nsm7Bb-HzV7m-LgbsSe>div {
+    justify-content: center !important;
+    width: auto !important;
+}
+
+:host ::ng-deep .btngle .nsm7Bb-HzV7m-LgbsSe svg {
+    margin: 0 !important;
+    width: 18px !important;
+    height: 18px !important;
+}
+
+:host ::ng-deep .S9gUrf-YoZ4jf {
+    width: 100% !important;
+    border: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+.contain{
+    padding-top: 40px;
+}
+@media (min-width: 480px) {
+    
+    .contain{
+        padding: 0 !important;
+    }
+    .contain .auth-shell{
+        padding: 0px !important;
+        margin-top: 10px;
+    }
+}
+
+.page-back {
+    display: inline-flex;
+    width: 100%;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #1f2933;
+    cursor: pointer;
+    margin: 14px 0 0;
+    border-bottom: 1px solid #EAEAEA;
+    padding-bottom: 10px;
+    padding-left: 10px;
+}
+
+.page-back i {
+    font-size: 14px;
+}
+
+@media (max-width: 480px) {
+    
+    .contain{
+        padding-top: 0 !important;
+    }
+    .contain .auth-shell{
+        padding: 0px !important;
+    }
+}
+@media (min-width: 761px) {
+    .page-back {
+        display: none;
+    }
 }

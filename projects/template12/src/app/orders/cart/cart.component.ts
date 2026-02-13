@@ -15,6 +15,7 @@ import {
   ToastService
 } from 'jconsumer-shared';
 import { CouponsComponent } from '../../shared/coupons/coupons.component';
+import { ItemService } from '../../home/item/item.service';
 
 @Component({
   selector: 'app-cart',
@@ -57,9 +58,14 @@ export class CartComponent implements OnInit {
   storeItems: any[];
   cartDataStore: any = [];
   cartDataHome: any = [];
+  similarItemsHome: any[] = [];
+  similarItemsStore: any[] = [];
+  private storeEncIdValidated = false;
   homeDeliveryCount: any;
   storeItemsCount: any;
   supportAllDelivery: boolean = false;
+  cartNote: string = '';
+  private readonly cartNoteKey = 'cartNote';
   @HostListener('window:resize', ['$event'])
   onResize() {
     if (window.innerWidth < 768) {
@@ -87,6 +93,7 @@ export class CartComponent implements OnInit {
     private errorService: ErrorMessagingService,
     private lStorageService: LocalStorageService,
     private consumerService: ConsumerService,
+    private itemService: ItemService,
   ) {
     this.onResize();
     this.account = this.sharedService.getAccountInfo();
@@ -100,6 +107,10 @@ export class CartComponent implements OnInit {
     })
     this.storeEncId = this.lStorageService.getitemfromLocalStorage('storeEncId')
     this.isSessionCart = this.lStorageService.getitemfromLocalStorage('isSessionCart');
+  }
+
+  goBack() {
+    this.location.back();
   }
 
   initCart() {
@@ -159,6 +170,9 @@ export class CartComponent implements OnInit {
       }
       setTimeout(() => {
         this.setTabItems()
+        if (!this.loggedIn) {
+          this.loadSimilarItems()
+        }
       }, 100);
     })
 
@@ -169,7 +183,20 @@ export class CartComponent implements OnInit {
     if (this.config.theme) {
       this.theme = this.config.theme;
     }
+    this.loadCartNote();
     this.initCart();
+  }
+
+  loadCartNote() {
+    const savedNote = this.lStorageService.getitemfromLocalStorage(this.cartNoteKey);
+    if (savedNote) {
+      this.cartNote = savedNote;
+    }
+  }
+
+  saveCartNote(note: string) {
+    this.cartNote = note ?? '';
+    this.lStorageService.setitemonLocalStorage(this.cartNoteKey, this.cartNote);
   }
   setTabItems() {
     this.homeDeliveryCount = this.items?.length ? `(${this.items?.length})` : '(' + 0 + ')';
@@ -205,20 +232,27 @@ export class CartComponent implements OnInit {
     }
   }
   actionPerformed(event) {
+    if (event === 'login') {
+      const target = this.sharedService.getRouteID() + '/order/cart';
+      this.lStorageService.setitemonLocalStorage('target', target);
+      this.router.navigate([this.sharedService.getRouteID(), 'login']);
+      return;
+    }
     if (this.isSessionCart) {
       this.initCart();
     } else {
       this.loggedIn = true;
+      this.sessionCart = true;
+      this.loading = true;
       this.loggedUser = this.groupService.getitemFromGroupStorage('jld_scon');
       this.providerConsumerId = this.loggedUser.providerConsumer;
       this.createCart().then(data => {
         this.cartId = data;
-        this.loggedIn = true;
-        this.loading = false;
         this.lStorageService.removeitemfromLocalStorage('cartData')
         this.lStorageService.removeitemfromLocalStorage('deliveryType')
         this.subscriptionService.sendMessage({ ttype: 'refresh', value: 'refresh' });
-        this.checkout(this.deliveryType);
+        // this.checkout(this.deliveryType);
+        this.getCart();
       })
     }
   }
@@ -277,9 +311,49 @@ export class CartComponent implements OnInit {
     return parseFloat(amount).toFixed(2);
   }
 
-  goBack() {
-    this.location.back();
+  getItemsTotalMrp(items: any[] = []): number {
+    return items.reduce((total, item) => {
+      const qty = Number(item?.quantity) || 0;
+      const unitPrice = Number(item?.price ?? (item?.netRate && qty ? item.netRate / qty : 0) ?? 0);
+      const unitMrp = Number(item?.mrp ?? unitPrice);
+      return total + (unitMrp * qty);
+    }, 0);
   }
+
+  getItemsDiscount(items: any[] = []): number {
+    const totalMrp = this.getItemsTotalMrp(items);
+    const totalPrice = items.reduce((total, item) => {
+      const qty = Number(item?.quantity) || 0;
+      const unitPrice = Number(item?.price ?? (item?.netRate && qty ? item.netRate / qty : 0) ?? 0);
+      return total + (unitPrice * qty);
+    }, 0);
+    return Math.max(totalMrp - totalPrice, 0);
+  }
+
+  getCouponDiscount(cartData: any): number {
+    if (!cartData?.providerCoupons?.length) {
+      return 0;
+    }
+    return cartData.providerCoupons.reduce((total, coupon) => {
+      return total + (Number(coupon?.discount) || 0);
+    }, 0);
+  }
+
+  getPlatformFee(cartData: any): number {
+    if (!cartData) {
+      return 0;
+    }
+    return Number(
+      cartData.platformFee ??
+      cartData.platformFeeAmount ??
+      cartData.platformCharge ??
+      0
+    ) || 0;
+  }
+
+  // goBack() {
+  //   this.location.back();
+  // }
 
   getCart() {
     this.orderService.getCart(this.providerConsumerId).subscribe(data => {
@@ -328,6 +402,7 @@ export class CartComponent implements OnInit {
       this.subscriptionService.sendMessage({ ttype: 'cartChanged', value: this.items?.length + this.storeItems?.length });
       this.subscriptionService.sendMessage({ ttype: 'hideCartFooter', value: 0 });
       this.setTabItems()
+      this.loadSimilarItems()
       this.loading = false;
     },
       error => {
@@ -342,7 +417,7 @@ export class CartComponent implements OnInit {
         const navigationExtras: NavigationExtras = {
           queryParams: {
             target: this.target,
-
+            deliveryType: type
           }
         }
         this.router.navigate([this.sharedService.getRouteID(), 'order', 'checkout'], navigationExtras)
@@ -361,6 +436,10 @@ export class CartComponent implements OnInit {
       this.loggedIn = false;
       this.sessionCart = false;
     }
+  }
+  loginclicked() {
+    this.loggedIn = false;
+    this.sessionCart = false;
   }
 
   removeItem(item) {
@@ -482,9 +561,148 @@ export class CartComponent implements OnInit {
       this.cartDataStore = cartData?.STORE_PICKUP;
     }
   }
+
+  incrementItemQuantity(item) {
+    const currentQty = Number(item?.quantity) || 1;
+    this.onQuantityChange(currentQty + 1, item);
+  }
+
+  decrementItemQuantity(item) {
+    const currentQty = Number(item?.quantity) || 1;
+    if (currentQty <= 1) {
+      return;
+    }
+    this.onQuantityChange(currentQty - 1, item);
+  }
   onInputFocus(event: any): void {
     // Blur immediately to prevent keyboard pop-up
     event.target.blur();
+  }
+
+  cartActionPerformed(input: any) {
+    const target = input?.value;
+    const encId = target?.encId || target?.spItem?.encId || target?.spItemDto?.encId;
+    if (encId && !this.storeEncId) {
+      const fallbackStoreEncId = target?.catalog?.encId || target?.store?.encId;
+      if (fallbackStoreEncId) {
+        this.storeEncId = fallbackStoreEncId;
+        this.lStorageService.setitemonLocalStorage('storeEncId', fallbackStoreEncId);
+      }
+    }
+    if (encId) {
+      this.router.navigate([this.sharedService.getRouteID(), 'item', encId]);
+    }
+  }
+
+  private loadSimilarItems() {
+    this.ensureStoreEncId().then((hasStore) => {
+      if (!hasStore) {
+        this.similarItemsHome = [];
+        this.similarItemsStore = [];
+        return;
+      }
+      const homeCategoryId = this.getCategoryIdFromItems(this.items || []);
+      const storeCategoryId = this.getCategoryIdFromItems(this.storeItems || []);
+      if (homeCategoryId) {
+        this.fetchSimilarItems(homeCategoryId, 'home');
+      } else if (this.items?.length) {
+        this.fetchSimilarItems(null, 'home');
+      } else {
+        this.similarItemsHome = [];
+      }
+      if (storeCategoryId) {
+        this.fetchSimilarItems(storeCategoryId, 'store');
+      } else if (this.storeItems?.length) {
+        this.fetchSimilarItems(null, 'store');
+      } else {
+        this.similarItemsStore = [];
+      }
+    });
+  }
+
+  private ensureStoreEncId(): Promise<boolean> {
+    const cached = this.storeEncId || this.lStorageService.getitemfromLocalStorage('storeEncId');
+    if (cached) {
+      this.storeEncId = cached;
+    }
+    if (this.storeEncId && this.storeEncIdValidated) {
+      return Promise.resolve(true);
+    }
+    const filter = {
+      'accountId-eq': this.accountId,
+      'onlineOrder-eq': true,
+      'status-eq': 'Active'
+    };
+    return new Promise((resolve) => {
+      this.orderService.getStores(filter).subscribe(
+        (stores: any) => {
+          const store = stores?.[0];
+          const matches = Array.isArray(stores) ? stores.find((s) => s?.encId === this.storeEncId) : null;
+          if (matches?.encId) {
+            this.storeEncId = matches.encId;
+            this.storeEncIdValidated = true;
+            this.lStorageService.setitemonLocalStorage('storeEncId', matches.encId);
+            resolve(true);
+            return;
+          }
+          if (store?.encId) {
+            this.storeEncId = store.encId;
+            this.storeEncIdValidated = true;
+            this.lStorageService.setitemonLocalStorage('storeEncId', store.encId);
+            resolve(true);
+            return;
+          }
+          resolve(false);
+        },
+        () => resolve(false)
+      );
+    });
+  }
+
+  private getCategoryIdFromItems(items: any[]): any {
+    for (const item of items) {
+      const categoryId = item?.spItemDto?.itemCategory?.id
+        || item?.spItem?.itemCategory?.id
+        || item?.catalogItem?.spItemDto?.itemCategory?.id
+        || item?.catalogItem?.itemCategory?.id
+        || item?.itemCategory?.id
+        || item?.catalog?.itemCategory?.id;
+      if (categoryId) {
+        return categoryId;
+      }
+    }
+    return null;
+  }
+
+  private fetchSimilarItems(categoryId: any, target: 'home' | 'store') {
+    let filter: any = {};
+    filter['accountId-eq'] = this.accountId;
+    filter['storeEncId-eq'] = this.storeEncId;
+    filter['from'] = 0;
+    filter['count'] = 25;
+    if (categoryId) {
+      filter['spItemCategoryId-eq'] = categoryId;
+    }
+    filter['parentItemId-eq'] = 0;
+    this.orderService.getStoreCatalogItems(filter).subscribe((items: any) => {
+      if (target === 'home') {
+        this.similarItemsHome = items || [];
+      } else {
+        this.similarItemsStore = items || [];
+      }
+    }, (error: any) => {
+      let errorObj = this.errorService.getApiError(error);
+      const message = errorObj?.error || errorObj?.message || errorObj?.msg || '';
+      if (typeof message === 'string' && message.toLowerCase().includes('no items available for online shopping')) {
+        if (target === 'home') {
+          this.similarItemsHome = [];
+        } else {
+          this.similarItemsStore = [];
+        }
+        return;
+      }
+      this.toastService.showError(errorObj);
+    })
   }
   addMore() {
     this.router.navigate([this.sharedService.getRouteID()])
@@ -514,10 +732,14 @@ export class CartComponent implements OnInit {
         this.selectedCoupons = action['value'];
         this.applyCoupon();
         break;
+      case 'login':
+        this.loginclicked();
+        break;
     }
   }
 
   openCoupons(type?: any) {
+    const appliedCoupons = this.getAppliedCoupons();
     this.coupondialogRef = this.dialog.open(CouponsComponent, {
       width: '50%',
       panelClass: ['commonpopupmainclass', 'popup-class', 'specialclass'],
@@ -525,10 +747,15 @@ export class CartComponent implements OnInit {
       data: {
         couponsList: this.s3CouponsList,
         type: type,
-        theme: this.theme
+        theme: this.theme,
+        appliedCoupons: appliedCoupons
       }
     });
-    this.coupondialogRef.afterClosed().subscribe(() => {
+    this.coupondialogRef.afterClosed().subscribe((result) => {
+      if (result?.action === 'apply' && result?.code) {
+        this.selectedCoupons = result.code;
+        this.applyCoupon();
+      }
     });
   }
 
@@ -571,4 +798,112 @@ export class CartComponent implements OnInit {
   getAttributeValues(attributes: any): string[] {
     return Object.values(attributes);
   }
+
+  hasItemAttributes(item: any): boolean {
+    const selectedCount = item?.selectedAttributes ? Object.keys(item.selectedAttributes).length : 0;
+    const attributes = item?.itemAttributes
+      || item?.spItem?.itemAttributes
+      || item?.spItemDto?.itemAttributes
+      || item?.catalogItem?.itemAttributes
+      || item?.catalogItem?.spItemDto?.itemAttributes
+      || [];
+    return selectedCount > 0 || (Array.isArray(attributes) && attributes.length > 0);
+  }
+
+  getDisplayAttributes(item: any): string[] {
+    const selected = this.getAttributeValues(item?.selectedAttributes || {});
+    if (selected.length > 0) {
+      return selected;
+    }
+    const attributes = item?.itemAttributes
+      || item?.spItem?.itemAttributes
+      || item?.spItemDto?.itemAttributes
+      || item?.catalogItem?.itemAttributes
+      || item?.catalogItem?.spItemDto?.itemAttributes
+      || [];
+    return attributes
+      .map((attr) => attr?.values?.[0])
+      .filter((value) => value);
+  }
+
+  private getAppliedCoupons() {
+    const cartData = this.showHomeDelivery ? this.cartDataHome : this.cartDataStore;
+    const provider = (cartData?.providerCoupons || []).map(coupon => coupon.couponCode).filter(code => code);
+    const jaldee = (cartData?.jaldeeCoupons || []).map(coupon => coupon.couponCode).filter(code => code);
+    return { provider, jaldee };
+  }
+
+  getItemName(item: any): string {
+    return item?.parentItemName
+      || item?.spItem?.name
+      || item?.spItemDto?.name
+      || item?.catalogItem?.spItem?.name
+      || item?.catalogItem?.spItemDto?.name
+      || item?.name
+      || '';
+  }
+
+  getItemType(item: any): string {
+    return item?.spItem?.itemType?.typeName
+      || item?.spItemDto?.itemType?.typeName
+      || item?.catalogItem?.spItem?.itemType?.typeName
+      || item?.catalogItem?.spItemDto?.itemType?.typeName
+      || '';
+  }
+ clearCartNote() {
+    this.cartNote = '';
+    this.lStorageService.removeitemfromLocalStorage(this.cartNoteKey);
+  }
+
+clearCart() {
+    const dialogRef = this.dialog.open(ConfirmBoxComponent, {
+      width: '50%',
+      panelClass: ['popup-class', 'commonpopupmainclass', 'confirmationmainclass'],
+      disableClose: true,
+      data: {
+        'message': '  Are you sure you want to clear the cart?',
+        'theme': this.theme
+      }
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (!result) {
+        return;
+      }
+      this.clearCartNote();
+      if (this.loggedIn) {
+        this.itemService.clearCart(this.cartId).subscribe(data => {
+          this.getCart();
+        });
+        return;
+      }
+
+      const cartData = this.lStorageService.getitemfromLocalStorage('cartData') || {
+        HOME_DELIVERY: { items: [], netTotal: 0, taxTotal: 0, netRate: 0 },
+        STORE_PICKUP: { items: [], netTotal: 0, taxTotal: 0, netRate: 0 }
+      };
+      const deliveryType = this.showHomeDelivery ? 'HOME_DELIVERY' : 'STORE_PICKUP';
+      cartData[deliveryType] = {
+        items: [],
+        netTotal: 0,
+        taxTotal: 0,
+        netRate: 0
+      };
+      if (cartData.HOME_DELIVERY.items.length === 0 && cartData.STORE_PICKUP.items.length === 0) {
+        this.lStorageService.removeitemfromLocalStorage('deliveryType');
+      }
+
+      // Recalculate total item count and update local storage
+      const totalItemCount = cartData.HOME_DELIVERY.items.length + cartData.STORE_PICKUP.items.length;
+      this.subscriptionService.sendMessage({ ttype: 'cartChanged', value: totalItemCount });
+      this.lStorageService.setitemonLocalStorage('cartData', cartData);
+
+      this.items = cartData.HOME_DELIVERY.items;
+      this.cartDataHome = cartData.HOME_DELIVERY;
+      this.storeItems = cartData.STORE_PICKUP.items;
+      this.cartDataStore = cartData.STORE_PICKUP;
+
+      this.setTabItems();
+    });
+  }
+
 }

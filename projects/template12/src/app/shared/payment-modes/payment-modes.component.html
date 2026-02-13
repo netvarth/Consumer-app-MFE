@@ -1,44 +1,122 @@
-<section class="payment-modes">
-  <mat-radio-group class="payment-modes__group" name="paymentMode" (change)="paymentModeSelected($event)">
-    <mat-radio-button class="payment-mode-card" *ngFor="let modes of paymentModes" [value]="modes.mode"
-      [checked]="modes.mode==paymentMode">
-      <div class="payment-mode-card__wrapper">
-        <div class="payment-mode-card__visual">
-          <img class="payment-mode-card__icon" [src]="getImageSrc(modes.mode)" alt="{{modes.modeDisplayName}}" />
+<section class="payment-modes-section" [class.is-mobile-sheet]="mobileSheet">
+  <ng-container *ngIf="mobileSheet; else inlineList">
+    <button
+      type="button"
+      class="payment-trigger"
+      [class.is-open]="isSheetOpen"
+      (click)="openSheet()">
+      <div class="payment-trigger-inner">
+        <div class="payment-icon-wrappers">
+          <img class="payment-icon" [src]="getSelectedIcon()" />
         </div>
-        <div class="payment-mode-card__content">
-          <div class="payment-mode-card__header">
-            <span class="payment-mode-card__name">{{modes.modeDisplayName}}</span>
-            <span class="payment-mode-card__badge" *ngIf="modes.mode === 'UPI'">{{'Recommended' | translate}}</span>
-          </div>
-          <div class="payment-mode-card__subtext">
-            <ng-container [ngSwitch]="modes.mode">
-              <span *ngSwitchCase="'UPI'">Google Pay, PhonePe, Paytm</span>
-              <span *ngSwitchCase="'CREDIT_CARD'">Visa, Mastercard, RuPay</span>
-              <span *ngSwitchCase="'DEBIT_CARD'">Visa, Mastercard, Maestro</span>
-              <span *ngSwitchCase="'NET_BANKING'">{{'All major banks' | translate}}</span>
-              <span *ngSwitchCase="'WALLET'">Paytm, PhonePe, Amazon Pay</span>
-              <span *ngSwitchCase="'PAYLATER'">Simpl, Lazypay, more</span>
-              <span *ngSwitchDefault>{{modes.modeDisplayName}}</span>
-            </ng-container>
-          </div>
+        <div class="payment-copy">
+          <div class="payment-trigger-label">Pay using</div>
+          <div class="payment-mode-title">{{ getSelectedTitle() }}</div>
+          <!-- <div class="payment-subtitle" *ngIf="getSelectedSubtitle()">{{ getSelectedSubtitle() }}</div> -->
         </div>
-        <i class="fa fa-angle-right payment-mode-card__chevron" aria-hidden="true"></i>
       </div>
-    </mat-radio-button>
-    <mat-radio-button class="payment-mode-card" [value]="'cash'" *ngIf="cashPay">
-      <div class="payment-mode-card__wrapper">
-        <div class="payment-mode-card__visual">
-          <img class="payment-mode-card__icon" [src]="getImageSrc('PAYCASH')" alt="Cash" />
-        </div>
-        <div class="payment-mode-card__content">
-          <div class="payment-mode-card__header">
-            <span class="payment-mode-card__name">{{'Cash' | translate}}</span>
-          </div>
-          <div class="payment-mode-card__subtext">{{'Pay at the center' | translate}}</div>
-        </div>
-        <i class="fa fa-angle-right payment-mode-card__chevron" aria-hidden="true"></i>
+      <i class="fa fa-angle-down payment-chevron" aria-hidden="true"></i>
+    </button>
+
+    <div class="payment-sheet-backdrop" *ngIf="isSheetOpen" (click)="closeSheet()"></div>
+    <div class="payment-sheet" *ngIf="isSheetOpen">
+      <div class="payment-sheet-header">
+        <div class="payment-sheet-title">Select Payment Method</div>
+        <button type="button" class="payment-sheet-close" (click)="closeSheet()" aria-label="Close">×</button>
       </div>
-    </mat-radio-button>
-  </mat-radio-group>
+      <div class="payment-sheet-toggle" *ngIf="showPaymentToggle">
+        <label class="payment-toggle-switch" aria-label="Toggle payment region">
+          <input type="checkbox" [checked]="internalToggle" (change)="onPaymentToggleChange($event)" />
+          <span class="payment-toggle-slider"></span>
+        </label>
+        <span class="payment-toggle-text">{{ paymentToggleLabel }}</span>
+      </div>
+      <mat-radio-group
+        class="payment-modes-group"
+        name="paymentMode"
+        [value]="pendingMode"
+        (change)="paymentModeSelected($event)">
+        <div *ngFor="let modes of displayPaymentModes" class="payment-mode-row">
+          <mat-radio-button
+            class="payment-mode-cards"
+            [value]="modes.mode">
+            <div class="payment-mode-inner">
+              <div class="payment-icon-wrappers">
+                <img class="payment-icon" [src]="getImageSrc(modes.mode)" />
+              </div>
+              <div class="payment-copy">
+                <div class="payment-mode-title">
+                  {{ getModeTitle(modes) }}
+                </div>
+                <div class="payment-subtitle">
+                  {{ getModeSubtitle(modes) }}
+                </div>
+              </div>
+            </div>
+          </mat-radio-button>
+        </div>
+
+        <div *ngIf="cashPay" class="payment-mode-row">
+          <mat-radio-button class="payment-mode-cards" [value]="'cash'">
+            <div class="payment-mode-inner">
+              <div class="payment-icon-wrappers">
+                <img class="payment-icon" [src]="getImageSrc('PAYCASH')" />
+              </div>
+              <div class="payment-copy">
+                <div class="payment-title">Cash on Delivery</div>
+                <div class="payment-subtitle">Pay when you receive</div>
+              </div>
+            </div>
+          </mat-radio-button>
+        </div>
+      </mat-radio-group>
+      <div class="payment-sheet-footer">
+        <button type="button" class="payment-sheet-save" (click)="saveSelection()">Save</button>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-template #inlineList>
+    <mat-radio-group
+      class="payment-modes-group"
+      name="paymentMode"
+      [value]="paymentMode"
+      (change)="paymentModeSelected($event)">
+      <div *ngFor="let modes of displayPaymentModes" class="payment-mode-row">
+        <mat-radio-button
+          class="payment-mode-cards"
+          [value]="modes.mode">
+          <div class="payment-mode-inner">
+            <div class="payment-icon-wrappers">
+              <img class="payment-icon" [src]="getImageSrc(modes.mode)" />
+            </div>
+            <div class="payment-copy">
+              <div class="payment-mode-title">
+                {{ getModeTitle(modes) }}
+              </div>
+              <div class="payment-subtitle">
+                {{ getModeSubtitle(modes) }}
+              </div>
+            </div>
+          </div>
+        </mat-radio-button>
+      </div>
+
+      <div *ngIf="cashPay" class="payment-mode-row">
+        <mat-radio-button class="payment-mode-cards" [value]="'cash'">
+          <div class="payment-mode-inner">
+            <div class="payment-icon-wrappers">
+              <img class="payment-icon" [src]="getImageSrc('PAYCASH')" />
+            </div>
+            <div class="payment-copy">
+              <div class="payment-title">Cash on Delivery</div>
+              <div class="payment-subtitle">Pay when you receive</div>
+            </div>
+          </div>
+        </mat-radio-button>
+      </div>
+    </mat-radio-group>
+  </ng-template>
 </section>
+
+

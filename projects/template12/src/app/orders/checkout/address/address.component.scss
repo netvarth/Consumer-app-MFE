@@ -1,103 +1,931 @@
-.account-details {
-    border: 0.872px solid #D0D9E7;
-    padding: 10px;
+.saved-addresses {
+  background: #ffffff;
+  // border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+  // box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
 }
 
-@media (max-width:400px) {
-    .account-details {
-        padding: 5px !important;
-    }
+.saved-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 10px;
 }
 
-.card-heading {
-    border-bottom: 1px solid #c5b5b5 !important;
+.saved-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.btn-deliver {
-    background: #436B50;
-    padding: 8px;
+.saved-item {
+  border: 1px solid #EAEAEC;
+    border-radius: 5px;
+    padding: 15px 29px;
+    background: #ffffff;
+    box-shadow: 0px 0px 4px 0px #282C3F33;
 }
 
-.btn-switch {
-    border-radius: 4.26px;
-    border: 1px solid #436B50;
-    background: #FFF;
-    color: #436B50;
-    font-size: 13px;
-    cursor: pointer;
+.saved-radio {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.saved-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 12px;
+  color: #4b5563;
+}
+
+.saved-name {
+  font-size: 14px;
+    font-weight: 700;
+    color: #111827;
+    font-family: figtree;
+}
+.saved-body-sub{
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
+.saved-line
+{
+      font-size: 13px;
+    font-weight: 400;
+    font-family: revert;
+}
+
+.saved-actions {
+  margin-top: 8px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  // justify-content: flex-end;
+  margin-left: 30px;
+}
+
+.btn-primary-ghost {
+  border: 1px solid #7b5232;
+  background: #fff7ed;
+  color: #7b5232;
+  border-radius: 5px;
+  padding: 6px 14px;
+  font-size: 12px;
+}
+
+.btn-link {
+ background: transparent;
+    border: 1px solid #282C3F;
+    border-radius: 5px;
+    color: #282C3F;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 6px;
+    display: flex;
     justify-content: center;
-    padding: 5px;
+    text-transform: uppercase;
+    text-decoration: none !important;
 }
 
-.address-details {
-    border: 0.872px solid #D0D9E7;
-    padding: 15px;
-    background: #F5F8F6;
+// .btn-link.danger {
+//   color: #b91c1c;
+// }
+.saved-title-section{
+  display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 15px;
+}
+
+.btn-add {
+  display: flex;
+    /* margin-top: 12px; */
+    border-radius: 4px;
+    border: 1px solid #424553;
+    background: #fff;
+    color: #424553;
+    font-weight: 700;
+    padding: 7px;
+    // width: 30%;
+    justify-content: center;
+    text-transform: uppercase;
+    font-size: 12px;
+}
+
+.address-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 20px 18px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.address-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.section-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2933;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.form-grid.two-col {
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px 14px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field label {
+  font-size: 12px;
+  color: #374151;
+  font-weight: 600;
+}
+
+.field input,
+.field textarea,
+::ng-deep ngx-intl-tel-input input {
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 6px !important;
+  padding: 10px 12px;
+  font-size: 13px !important;
+  color: #1f2933 !important;
 }
 
 ::ng-deep ngx-intl-tel-input .iti {
-    width: 100% !important;
-}
-
-::ng-deep ngx-intl-tel-input input::-webkit-input-placeholder {
-    color: #ddd !important;
+  width: 100% !important;
 }
 
 ::ng-deep ngx-intl-tel-input input:focus {
-    outline: none !important;
-    border-color: #E1E2E3 !important;
+  outline: none !important;
+  border-color: #c86a34 !important;
+  box-shadow: 0 0 0 2px rgba(200, 106, 52, 0.15) !important;
 }
 
-::ng-deep ngx-intl-tel-input input {
-    height: 40px !important;
-    width: 100% !important;
-    background: #FFFF !important;
-    border: 1.39032px solid #E1E2E3 !important;
-    border-radius: 5px !important;
-    padding: 15px;
-    font-size: 15px;
+.helper-text {
+  font-size: 11px;
+  color: #b45309;
 }
 
-::ng-deep .checkout ngx-intl-tel-input input.custom:focus {
-    color: #495057 !important;
-    background-color: #fff !important;
-    border-color: #3c8dbc !important;
-    outline: 0 !important;
-    box-shadow: 0 0 0 0 #fff !important;
+.helper-text.muted {
+  color: #6b7280;
 }
 
-::ng-deep .checkout ngx-intl-tel-input.ng-invalid.ng-touched input {
-    border: 1px solid #c0392b !important;
+.address-type {
+  display: flex;
+  gap: 12px;
 }
 
-::ng-deep .checkout .p-dropdown .p-inputtext {
-    padding: 6.1px !important;
+.radio-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  background: #f9fafb;
+  font-size: 12px;
+  color: #374151;
 }
 
-.add-btn {
-    background-color: #fff;
-    color: #436B50;
-    font-size: 17px;
-    font-weight: 500;
-    border-color: 1px solid #436B50 !important;
+.radio-pill input {
+  width: auto;
+  accent-color: #6C351F;
+}
+
+.default-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #374151;
+  margin-top: 8px;
+}
+.default-check input {
+  width: auto;
+  accent-color: #6C351F;
+}
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  flex-direction: row-reverse;
+    justify-content: flex-end;
+}
+
+.btn-save {
+  display: flex;
+  justify-content: center;
+  border: none;
+  background: #7b5232;
+  color: #ffffff;
+  font-weight: 600;
+  padding: 10px 18px;
+  border-radius: 8px;
+  min-width: 120px;
+}
+
+.btn-save:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .btn-cancel {
-    border-radius: 2.528px;
-    background: #E1E1E1;
-    box-shadow: 0px 1.264px 2.528px 0px rgba(0, 0, 0, 0.20);
-    color: black;
-}
-.account-font-small {
-    color: #777E97;
-    font-size: 15.321px;
-    font-weight: 500;
-}
-
-.save-btn {
-    color: #fff !important;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  color: #374151;
+  padding: 10px 18px;
+  border-radius: 8px;
+  justify-content: center;
 }
 
 .red {
-    color: red !important;
+  color: #d32f2f !important;
+}
+
+// Responsive breakpoints: 900px, 760px, 480px
+
+// Breakpoint: 900px and below
+@media (max-width: 900px) {
+  .saved-addresses {
+    padding: 14px;
+  }
+
+  .saved-item {
+    padding: 12px 20px;
+  }
+
+  .address-card {
+    padding: 18px 16px;
+  }
+
+  .form-grid.two-col {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px 12px;
+  }
+
+  .form-section {
+    gap: 10px;
+  }
+  .saved-actions-main .action-btn {
+      display: none !important;
+    }
+    
+  .section-title {
+    font-size: 13px;
+  }
+
+  .field label {
+    font-size: 11px;
+  }
+
+  .field input,
+  .field textarea,
+  ::ng-deep ngx-intl-tel-input input {
+    padding: 9px 11px;
+    font-size: 12px !important;
+  }
+
+  .btn-save,
+  .btn-cancel {
+    padding: 9px 16px;
+    font-size: 12px;
+  }
+
+  .btn-add {
+    padding: 6px 12px;
+    font-size: 11px;
+    border-radius: 12px !important;
+  }
+}
+
+// Breakpoint: 760px and below
+@media (max-width: 760px) {
+  .saved-addresses {
+    padding: 12px;
+    border-radius: 8px;
+  }
+
+  .saved-title-section {
+    // flex-direction: column;
+    // align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .saved-title {
+    font-size: 13px;
+    margin-bottom: 8px;
+  }
+
+  .saved-list {
+    gap: 10px;
+  }
+
+  .saved-item {
+    padding: 12px 16px;
+    border-radius: 4px;
+  }
+
+  .saved-radio {
+    grid-template-columns: auto 1fr;
+    gap: 8px;
+  }
+
+  .saved-body {
+    font-size: 11px;
+  }
+
+  .saved-name {
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  .saved-line {
+    font-size: 12px;
+  }
+
+  .saved-body-main {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .saved-actions-main {
+    flex-direction: row;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .saved-body-sub {
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .saved-actions {
+    margin-left: 0;
+    margin-top: 10px;
+    width: 100%;
+  }
+
+  .btn-link {
+    font-size: 11px;
+    padding: 5px 8px;
+    flex: 1;
+  }
+
+  .btn-primary-ghost {
+    // width: 100%;
+    font-size: 11px;
+    padding: 7px 12px;
+  }
+
+  .btn-add {
+    width: 100%;
+    padding: 8px 12px;
+    font-size: 11px;
+    border-radius: 12px !important;
+    display: flex;
+    align-items: center;
+  }
+
+  .address-card {
+    padding: 16px 14px;
+    border-radius: 8px;
+  }
+
+  .address-form {
+    gap: 16px;
+  }
+
+  .form-section {
+    gap: 10px;
+  }
+
+  .section-title {
+    font-size: 12px;
+  }
+
+  .form-grid {
+    gap: 10px;
+  }
+
+  .form-grid.two-col {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .field {
+    gap: 5px;
+  }
+
+  .field label {
+    font-size: 11px;
+  }
+
+  .field input,
+  .field textarea,
+  ::ng-deep ngx-intl-tel-input input {
+    padding: 8px 10px;
+    font-size: 12px !important;
+  }
+
+  .helper-text {
+    font-size: 10px;
+  }
+
+  .address-type {
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .radio-pill {
+    padding: 5px 10px;
+    font-size: 11px;
+  }
+
+  .default-check {
+    font-size: 11px;
+  }
+
+  .form-actions {
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .btn-save,
+  .btn-cancel {
+    width: 100%;
+    padding: 10px 16px;
+    font-size: 12px;
+    min-width: auto;
+  }
+}
+
+// Breakpoint: 480px and below
+@media (max-width: 480px) {
+  .saved-addresses {
+    padding: 10px;
+    margin-bottom: 16px;
+  }
+
+  .saved-title-section {
+    margin-bottom: 10px;
+    flex-direction: row;
+  }
+
+  .saved-title {
+    font-size: 12px;
+    margin-bottom: 6px;
+  }
+
+  .saved-list {
+    gap: 8px;
+  }
+
+  .saved-item {
+    padding: 10px 12px;
+  }
+
+  .saved-radio {
+    gap: 6px;
+  }
+
+  .saved-body {
+    font-size: 10px;
+    gap: 1px;
+  }
+
+  .saved-name {
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  .saved-line {
+    font-size: 11px;
+    line-height: 1.4;
+  }
+
+  .saved-body-main {
+    gap: 6px;
+  }
+
+  .saved-actions-main {
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+  }
+
+  .saved-body-sub {
+    gap: 1px;
+  }
+
+  .saved-actions {
+    margin-top: 8px;
+  }
+
+  .btn-link {
+    font-size: 10px;
+    padding: 4px 6px;
+    width: 100%;
+  }
+
+  .btn-primary-ghost {
+    font-size: 10px;
+    padding: 6px 10px;
+  }
+
+    .btn-add {
+      padding: 6px 10px;
+      font-size: 10px;
+    }
+  
+    .address-card {
+      padding: 12px 10px;
+      border-radius: 6px;
+    }
+  
+    .saved-actions-main .action-btn {
+      display: none !important;
+    }
+  
+    .saved-actions-main .action-icon {
+      display: inline-flex !important;
+    }
+  
+    .saved-actions-main {
+      gap: 3px !important;
+      align-items: center;
+      justify-content: end;
+    }
+  .icon-btn {
+    border: 0;
+    background: transparent;
+    // padding: 6px;
+    border-radius: 8px;
+    line-height: 0;
+    cursor: pointer;
+  }
+
+  .icon-btn img {
+    width: 14px;
+    height: 14px;
+    display: block;
+  }
+
+
+  .address-form {
+    gap: 14px;
+  }
+
+  .form-section {
+    gap: 8px;
+  }
+
+  .section-title {
+    font-size: 11px;
+  }
+
+  .form-grid {
+    gap: 8px;
+  }
+
+  .form-grid.two-col {
+    gap: 8px;
+  }
+
+  .field {
+    gap: 4px;
+  }
+
+  .field label {
+    font-size: 10px;
+  }
+
+  .field input,
+  .field textarea,
+  ::ng-deep ngx-intl-tel-input input {
+    padding: 7px 9px;
+    font-size: 11px !important;
+    border-radius: 4px !important;
+  }
+
+  .helper-text {
+    font-size: 9px;
+  }
+
+  .address-type {
+    gap: 8px;
+  }
+
+  .radio-pill {
+    padding: 4px 8px;
+    font-size: 10px;
+    gap: 4px;
+  }
+
+  .default-check {
+    font-size: 10px;
+    gap: 6px;
+    margin-top: 6px;
+  }
+
+  .form-actions {
+    gap: 8px;
+  }
+
+  .btn-save,
+  .btn-cancel {
+    padding: 8px 14px;
+    font-size: 11px;
+  }
+
+  // Radio button adjustments for mobile
+  ::ng-deep .p-radiobutton {
+    .p-radiobutton-box {
+      width: 18px;
+      height: 18px;
+    }
+
+    .p-radiobutton-box .p-radiobutton-icon {
+      width: 10px;
+      height: 10px;
+    }
+  }
+}
+::ng-deep app-field-error-display {
+  color: red;
+ font-size: 11px;
+}
+::ng-deep .p-radiobutton .p-radiobutton-box.p-highlight{
+  border-color: #69420f !important;
+}
+::ng-deep.p-radiobutton .p-radiobutton-box .p-radiobutton-icon{
+  background-color: #69420f !important;
+}
+.saved-body-main{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.saved-actions-main{
+  display: flex;
+  flex-direction: row;
+  gap: 13px;
+  justify-content: flex-end;
+
+}
+.saved-actions-main .action-icon { display: none; }
+.saved-actions-main .action-btn  { display: inline-flex; }
+.icon-btn {
+  border: 0;
+  background: transparent;
+  border-radius: 8px;
+  line-height: 0;
+  cursor: pointer;
+}
+
+.icon-btn img {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+@media (max-width: 830px) {
+  .saved-actions-main .action-btn {
+    display: none !important;
+  }
+
+  .saved-actions-main .action-icon {
+    display: inline-flex !important;
+  }
+}
+
+.mobile-address-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #ffffff;
+  box-shadow: 0 -10px 30px rgba(15, 23, 42, 0.12);
+  border-top: 1px solid #f1f1f1;
+  padding: 10px 14px 8px;
+  z-index: 900;
+  display: none;
+}
+
+.mobile-address-inner {
+  gap: 10px;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.mobile-address-controls {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.mobile-address-select {
+  flex: 1;
+  min-width: 0;
+}
+
+.address-trigger {
+  width: 100%;
+  text-align: left;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+
+.address-trigger-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.address-chevron {
+  font-size: 18px;
+  color: #9ca3af;
+  transition: transform 0.2s ease;
+}
+
+.address-trigger.is-open .address-chevron {
+  transform: rotate(180deg);
+}
+
+.address-trigger-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #7b5232;
+  margin-bottom: 4px;
+}
+
+.address-trigger-value {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 12px;
+  color: #1f2933;
+}
+
+.address-trigger-name {
+  font-weight: 700;
+}
+
+.address-trigger-line {
+  font-size: 11px;
+  color: #6b5b50;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mobile-address-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #7b5232;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 20px;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: none;
+  justify-content: center;
+  width: auto;
+}
+
+.mobile-address-btn:disabled {
+  opacity: 0.6;
+}
+
+.address-sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 1200;
+}
+
+.address-sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #fff;
+  border-radius: 16px 16px 0 0;
+  padding: 14px 12px 18px;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.16);
+  z-index: 1201;
+  max-height: 82vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.address-sheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.address-sheet-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1f2933;
+}
+
+.address-sheet-close {
+  border: none;
+  background: transparent;
+  font-size: 22px;
+  line-height: 1;
+  color: #9ca3af;
+  cursor: pointer;
+}
+
+.address-sheet-list {
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.address-sheet-list .saved-item {
+  margin: 0;
+  padding: 12px 14px;
+}
+
+.address-sheet-footer {
+  margin-top: 12px;
+  border-top: 1px solid #f0f0f0;
+  padding-top: 12px;
+  display: grid;
+  grid-template-columns: 1fr 0.7fr;
+  gap: 10px;
+}
+
+.address-sheet-save {
+  border: none;
+  border-radius: 12px;
+  background: #7b5232;
+  color: #fff;
+  font-weight: 700;
+  padding: 12px 10px;
+}
+
+@media (max-width: 880px) {
+  .mobile-address-bar {
+    display: block;
+  }
+
+  .saved-actions {
+    display: none;
+  }
+
+  .saved-addresses {
+    padding-bottom: 90px;
+  }
 }

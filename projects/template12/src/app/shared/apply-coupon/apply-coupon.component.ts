@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { SharedService, ToastService } from 'jconsumer-shared';
 
 @Component({
   selector: 'app-apply-coupon',
@@ -16,18 +15,11 @@ export class ApplyCouponComponent implements OnInit {
   couponValid = true;
   couponError = null;
   couponsList: any = [];
-  couponChecked: any = true;
+  couponChecked: any;
   selectedCoupons: any = [];
-  cdnPath = '';
   invalidCoupons: Set<string> = new Set();
 
-  constructor(
-    public translate: TranslateService,
-    private sharedService: SharedService,
-    private toastService: ToastService,
-  ) {
-    this.cdnPath = this.sharedService.getCDNPath();
-   }
+  constructor(public translate: TranslateService) { }
 
   ngOnInit(): void {
   }
@@ -50,18 +42,8 @@ export class ApplyCouponComponent implements OnInit {
     return found;
   }
   removeJCoupon(i) {
-    const code = this.couponsList[i]?.couponCode;
     this.selectedCoupons.splice(i, 1);
     this.couponsList.splice(i, 1);
-    if (code) {
-      this.invalidCoupons.delete(code);
-      const currentCode = (this.selectedCoupon || '').trim();
-      if (currentCode && currentCode.toUpperCase() === code.toUpperCase()) {
-        this.selectedCoupon = '';
-        this.clearCouponErrors();
-      }
-    }
-    this.clearCouponErrors();
     this.actionPerformed.emit({ttype:'validate', value: this.selectedCoupons});
   }
 
@@ -85,18 +67,6 @@ export class ApplyCouponComponent implements OnInit {
     this.clearCouponErrors();
     this.applyCoupons();
   }
-  isCurrentCodeApplied(): boolean {
-    const code = (this.selectedCoupon || '').trim();
-    return code ? this.checkCouponExists(code) : false;
-  }
-  getApplyButtonLabel(): string {
-    return this.isCurrentCodeApplied() ? 'APPLIED' : 'APPLY';
-  }
-  getCouponsCount(): number {
-    const jc = this.s3CouponsList?.JC?.length || 0;
-    const own = this.s3CouponsList?.OWN?.length || 0;
-    return jc + own;
-  }
   applyCoupons() {
     this.couponError = null;
     this.couponValid = true;
@@ -109,8 +79,6 @@ export class ApplyCouponComponent implements OnInit {
       if (this.checkCouponExists(jaldeeCoupn)) {
         this.couponError = 'Coupon already applied';
         this.couponValid = false;
-        this.toastService.showError(this.couponError);
-        this.selectedCoupon = '';
         return false;
       }
       this.couponValid = false;
@@ -123,7 +91,6 @@ export class ApplyCouponComponent implements OnInit {
           this.couponsList.push(couponInfo);
           found = true;
           this.selectedCoupon = '';
-          this.invalidCoupons.delete(jaldeeCoupn);
           break;
         }
       }
@@ -137,7 +104,6 @@ export class ApplyCouponComponent implements OnInit {
           this.couponsList.push(couponInfo);
           found = true;
           this.selectedCoupon = '';
-          this.invalidCoupons.delete(jaldeeCoupn);
           break;
         }
       }
@@ -148,29 +114,14 @@ export class ApplyCouponComponent implements OnInit {
         this.couponError = 'Coupon invalid';
       }
     }
-  }
-
-  removeCouponByCode(code: string) {
-    const idx = this.selectedCoupons.findIndex(c => c === code);
-    if (idx > -1) {
-      this.removeJCoupon(idx);
-    }
-  }
-
-  removeInvalidCoupons(codes: string[] = []) {
-    (codes || []).forEach(code => this.removeCouponByCode(code));
+    return true;
   }
 
   markCouponsNotApplicable(codes: string[] = []) {
-    (codes || []).forEach(code => {
+    (codes || []).forEach((code) => {
       if (code) {
         this.invalidCoupons.add(code);
       }
     });
-  }
-
-  isCouponNotApplicable(coupon: any): boolean {
-    const code = coupon?.couponCode;
-    return code ? this.invalidCoupons.has(code) : false;
   }
 }

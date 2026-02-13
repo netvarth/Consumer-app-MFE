@@ -1,4 +1,4 @@
-<div class="container items mt-1 p_consumer_items" [ngClass]="theme" id="itemsContainer">
+<div class="items mt-1 p_consumer_items" [ngClass]="theme" id="itemsContainer">
     <div class="mt-5" *ngIf="loading">
         <app-skeleton-loading></app-skeleton-loading>
     </div>
@@ -10,134 +10,303 @@
             </div>
         </div>
     </div>
-    <div class="row" *ngIf="!loading && loggedIn">
-        <div class="customCard headerBorder">
-            <div (click)="goBack()"><i class="fa fa-arrow-left clrChangeHeader pointer-cursor"></i>
-                <span class="clrChangeHeader  pointer-cursor ms-1">Back</span>
+    <div class="" *ngIf="!loading && loggedIn">
+        <div class="kanista-page">
+            <div class="breadcrumb-bar">
+                <div class="breadcrumb">
+                    <span class="pointer-cursor" (click)="goHome()">Home</span>
+                    <span>/</span>
+                    <span>Products</span>
+                </div>
             </div>
-           
-        </div>
-        <div class="items-main-container" [ngClass]="{'single-column': !showFilter}">
-            <div class="card for-large-screen"  *ngIf="showFilter">
-                <div class="">
-                    <h3 class="fw-bold mb-4">Filters</h3>
-                    <p-accordion [multiple]="true" [activeIndex]="[0]">
-                        <p-accordionTab header="Store" *ngIf="showStores">
-                            <div class="stocks">
-                                <p-dropdown class="text-capitalize" [options]="stores" 
-                                    [(ngModel)]="storeEncId" placeholder="Select" ropdownIcon="fa fa-caret-down"
-                                    optionLabel="name" optionValue="encId">
-                                    <ng-template let-store pTemplate="storeName">
-                                        {{store.name}}
-                                    </ng-template>
-                                </p-dropdown>
+            <div class="main-content" [ngClass]="{'no-sidebar': !showFilter}">
+                <ng-template #filterSidebar>
+                    <div class="sidebar-card">
+                        <div class="sidebar-header">
+                            <h2>Filters</h2>
+                            <div class="sidebar-actions">
+                                <button class="clear-all-btn"  type="button"  *ngIf="appliedFilters.length" (click)="onClearAll()">Clear All</button>
+                                <button class="filter-close-btn" type="button" (click)="closeFilterSidebar()">
+                                    &times;
+                                </button>
                             </div>
-                        </p-accordionTab>
-                        <p-accordionTab header="Category">
-                            <div class="mb-1" *ngFor="let category of itemCategories" class="field-checkbox">                                
-                                <mat-checkbox [checked]="selectedCategories && selectedCategories.indexOf(category.id)!==-1" (change)="categorySelected(category, $event)"
-                                  class="text-capitalize">
-                                  {{category.categoryName}}</mat-checkbox>
-                              </div>
-                        </p-accordionTab> 
-                    </p-accordion>
-                </div>
-            </div>
-            <div class="p-0" >
-                <div class="card p-0 p-2" *ngIf="itemsLoading">
-                    <app-skeleton-loading></app-skeleton-loading>
-                </div>
-                <div class="card itemGrid p-0 p-2" *ngIf="!itemsLoading">
-                    <div class="p-2 for-small-screen" *ngIf="categoryNames && categoryNames.length > 0">
-                        <span>{{ categoryNames.length > 1 ? 'Categories:' : 'Category:' }}</span>                        <span class="fw-bold">
-                            <span *ngFor="let cat of categoryNames; let last = last">
-                                &nbsp;{{ cat }}<span *ngIf="!last">,</span>
-                            </span>
-                        </span>
-                    </div> 
-                    <div class="items-header p-2">
-                        <div>                                                       
-                            <h3 class="fw-bold">Items</h3>
-                            <div *ngIf="itemsCount == 0" class="item-count">Showing 0 - {{itemsCount}} of {{itemsCount}} products</div>
-                            <div *ngIf="itemsCount > 0" class="item-count">Showing {{(startIndex)+1}} - {{startIndex + items.length}} of {{itemsCount}} products</div>
                         </div>
-                        <div class="for-small-screen" *ngIf="showFilter">
-                            <button pButton pRipple type="button" id="btnFilter" class="btn-filter p-button-primary btn-primary"
-                                (click)="viewFilter()">Filter</button>
+                        <!-- <div class="filter-block">
+                            <div class="filter-title">Gender</div>
+                            <div class="filter-options">
+                                <label class="radio-option">
+                                    <input type="radio" name="gender" checked />
+                                    <span>Women</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="gender" />
+                                    <span>Girls</span>
+                                </label>
+                            </div>
+                        </div> -->
+                        <div class="filter-block" *ngIf="itemCategories?.length">
+                            <div class="filter-header">
+                                <h3>Categories</h3>
+                                <!-- <span class="chevron"></span> -->
+                            </div>
+                            <div class="filter-options">
+                                <label class="checkbox-option"
+                                    *ngFor="let category of (showAllCategories ? itemCategories : (itemCategories | slice:0:categoryLimit))">
+                                    <input type="checkbox"
+                                        [checked]="selectedCategories && selectedCategories.indexOf(category.id)!==-1"
+                                        (change)="categorySelected(category, $event)" />
+                                    <span class="label-text">{{category.categoryName}}</span>
+                                    <!-- <span class="count">({{category.itemCount || category.count || 0}})</span> -->
+                                </label>
+                            </div>
+                            <button class="filter-more" *ngIf="itemCategories?.length > categoryLimit" type="button"
+                                (click)="showAllCategories = !showAllCategories">
+                                {{ showAllCategories ? 'Show less' : '+' + (itemCategories.length - categoryLimit) + ' more' }}
+                            </button>
                         </div>
-                        <div  *ngIf="queryString">
-                            <button pButton pRipple id="btnViewAllItems" type="button" class="btn-filter p-button-primary btn-primary"
-                                (click)="viewAllItems()">All Items</button>
-                        </div>
-                    </div>
-                    <div class="items-container" *ngIf="items && items.length > 0">
-                        <div (click)="viewItems(item , item.encId)" *ngFor="let item of items">
-                            <div class="items-card pointer-cursor" [id]="item.encId">
-                                <div class="text-center">
-                                    <img *ngIf="item && item.spItemDto && item.spItemDto.attachments[0] && item.spItemDto.attachments[0].s3path"
-                                        [src]="item.spItemDto.attachments[0].s3path" [alt]="item.alt">
-                                    <img *ngIf="item && item.spItemDto && (!item.spItemDto.attachments || !item.spItemDto.attachments.length)"
-                                        src="{{cdnPath}}assets/images/rx-order/items/Items.svg" [alt]="item.alt">
+
+                        <div class="filter-block">
+                            <div class="filter-header">
+                                <h3>Price</h3>
+                                <!-- <span class="chevron"></span> -->
+                            </div>
+                            <div class="price-range">
+                                <div class="price-slider" [style.background]="priceTrackStyle">
+                                    <input
+                                        class="price-slider__input price-slider__input--min"
+                                        type="range"
+                                        [min]="minPrice"
+                                        [max]="maxPrice"
+                                        [step]="priceStep"
+                                        [value]="rangeValues[0]"
+                                        (input)="onMinPriceInput($event)" />
+                                    <input
+                                        class="price-slider__input price-slider__input--max"
+                                        type="range"
+                                        [min]="minPrice"
+                                        [max]="maxPrice"
+                                        [step]="priceStep"
+                                        [value]="rangeValues[1]"
+                                        (input)="onMaxPriceInput($event)" />
                                 </div>
-                                <div>
-                                    <div class="item-name">
-                                        {{item.spItemDto.name}}
-                                    </div>
-                                    <div>
-                                        <!-- <div class="price-label">
-                                            {{(item && item.itemNature =='VIRTUAL_ITEM')? '*Starting at': ' '}}
-                                        </div> -->
-                                        <div class="price-label" [innerHTML]="(item && item.itemNature == 'VIRTUAL_ITEM') ? '*Starting at' : '&nbsp;'"></div>
-                                    </div>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <span class="item-rate">₹{{item.price}}</span>&nbsp;&nbsp;<span *ngIf="item.showMrp && item.mrp" class="item-mrp">₹{{item.mrp}}</span>
-                                        </div>
-                                        <div>
-                                            <button pRipple type="button" class="btn-buy btn-primary" id="btnAdd" (click)="addToCart($event,item)">Add</button>
-                                            <!-- <button *ngIf="item && item.itemNature =='VIRTUAL_ITEM'" pRipple type="button" class="btn-buy btn-primary" id="btnAdd" (click)="addToCart($event,item)">View Options</button> -->
-                                        </div>
-                                    </div>
+                                <div class="price-labels">
+                                    <span>Rs. {{ rangeValues[0] }}</span>
+                                    <span>Rs. {{ rangeValues[1] }}+</span>
                                 </div>
                             </div>
                         </div>
+                        <div class="filter-block" *ngIf="itemTypes?.length">
+                            <div class="filter-header">
+                                <h3>Type</h3>
+                                <!-- <span class="chevron"></span> -->
+                            </div>
+                            <div class="filter-options">
+                                <label class="checkbox-option text-capitalize"
+                                    *ngFor="let type of (showAllTypes ? itemTypes : (itemTypes | slice:0:typeLimit))">
+                                    <input type="checkbox"
+                                        [checked]="selectedTypes && selectedTypes.indexOf(type.id)!==-1"
+                                        (change)="typeSelected(type, $event)" />
+                                    <span class="label-text">{{type.typeName}}</span>
+                                </label>
+                            </div>
+                            <button class="filter-more" *ngIf="itemTypes?.length > typeLimit" type="button"
+                                (click)="showAllTypes = !showAllTypes">
+                                {{ showAllTypes ? 'Show less' : '+' + (itemTypes.length - typeLimit) + ' more' }}
+                            </button>
+                        </div>
+                        <div class="filter-block" *ngIf="itemGroups?.length">
+                            <div class="filter-header">
+                                <h3>Group</h3>
+                                <!-- <span class="chevron"></span> -->
+                            </div>
+                            <div class="filter-options">
+                                <label class="checkbox-option text-capitalize"
+                                    *ngFor="let group of (showAllGroups ? itemGroups : (itemGroups | slice:0:groupLimit))">
+                                    <input type="checkbox"
+                                        [checked]="selectedGroups && selectedGroups.indexOf(group.id)!==-1"
+                                        (change)="groupSelected(group, $event)" />
+                                    <span class="label-text">{{group.groupName}}</span>
+                                </label>
+                            </div>
+                            <button class="filter-more" *ngIf="itemGroups?.length > groupLimit" type="button"
+                                (click)="showAllGroups = !showAllGroups">
+                                {{ showAllGroups ? 'Show less' : '+' + (itemGroups.length - groupLimit) + ' more' }}
+                            </button>
+                        </div>
+                        <!-- <div class="filter-block">
+                            <div class="filter-header">
+                                <h3>Color</h3>
+                                <span class="chevron"></span>
+                            </div>
+                            <div class="filter-options">
+                                <label class="checkbox-option" *ngFor="let color of colorOptions">
+                                    <input type="checkbox" />
+                                    <span class="color-dot" [style.background]="color.hex"></span>
+                                    <span class="label-text">{{color.label}}</span>
+                                </label>
+                            </div>
+                        </div> -->
+                        <!-- <div class="filter-block">
+                            <div class="filter-header">
+                                <h3>Discount Range</h3>
+                                <span class="chevron"></span>
+                            </div>
+                            <div class="filter-options">
+                                <label class="checkbox-option" *ngFor="let discount of discountOptions">
+                                    <input type="checkbox" />
+                                    <span class="label-text">{{ discount }}</span>
+                                </label>
+                            </div>
+                        </div> -->
                     </div>
-                    </div>                    
-                    <div class="card paginator p-0 flex justify-content-center paginatior-section" *ngIf="itemsCount>0">
-                        <p-paginator [rows]="rows" [totalRecords]="itemsCount" [first]="currentPage * rows"
-                            (onPageChange)="onPageChange($event)" [rowsPerPageOptions]="[10, 20, 30]">
-                        </p-paginator>
+                </ng-template>
+                <aside class="sidebar desktop-only" *ngIf="showFilter">
+                    <ng-container *ngTemplateOutlet="filterSidebar"></ng-container>
+                </aside>
+                <div class="filter-drawer-backdrop" *ngIf="sidebarVisible" (click)="closeFilterSidebar()"></div>
+                <div class="filter-drawer" *ngIf="sidebarVisible">
+                    <ng-container *ngTemplateOutlet="filterSidebar"></ng-container>
+                </div>
+
+                <section class="products-section">
+                    <div class="products-header">
+                        <div class="products-title">
+                            <h1>Products</h1>
+                            <span class="products-count"> - {{itemsCount}} items</span>
+                        </div>
+
+                        <div class="products-actions">
+                            <button class="filter-toggle-btn" type="button" (click)="viewFilter()" *ngIf="showFilter">
+                               <i class="fa fa-filter" aria-hidden="true"></i> Filters
+                            </button>
+                            <div class="sort-dropdown">
+                                <label class="sort-label" for="sortSelect">Sort by:</label>
+                                <div class="sort-select">
+                                    <select id="sortSelect" [(ngModel)]="selectedSort" (ngModelChange)="onSortChange($event)">
+                                        <option *ngFor="let option of sortOptions" [value]="option.value">
+                                            {{ option.label }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                    <div class="applied-filters" *ngIf="appliedFilters.length">
+                        <div class="filter-chip" *ngFor="let filter of appliedFilters">
+                            <span class="filter-chip__text">{{ filter.label }}</span>
+                            <button class="filter-chip__remove" type="button" (click)="removeAppliedFilter(filter)"
+                                aria-label="Remove filter">
+                                &times;
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="product-grid" *ngIf="items && items.length > 0">
+                        <div class="product-card reveal-item" *ngFor="let item of items; trackBy: trackByItem"
+                            (click)="viewItems(item , item.encId)">
+                            <!-- <div class="product-card-inner">
+                                <div class="product-card-face product-card-front"> -->
+                                    <div class="product-image">
+                                        <img [src]="getItemImage(item)" [alt]="item.alt" />
+                                        
+                                        <div class="product-actions">
+                                        <button
+                                            class="product-like-btn"
+                                            type="button"
+                                            aria-label="Add to wishlist"
+                                            pTooltip="Add to wishlist"
+                                            tooltipPosition="top"
+                                            (click)="onWishlist(item, $event)">
+                                            <img class="actionImge" [src]="isWishlisted(item) ? (cdnPath + 'assets/images/wishlist.png') : (cdnPath + 'assets/images/like.png')" alt="Add to wishlist" />
+                                        </button>
+                                        <button
+                                            class="product-cart-btn"
+                                            type="button"
+                                            aria-label="Add to cart"
+                                            *ngIf="!cartDisabled"
+                                            pTooltip="Add to cart"
+                                            tooltipPosition="top"
+                                            (click)="$event.stopPropagation(); addToCart($event, item)">
+                                             <img  class="actionImge" [src]="cdnPath + 'assets/images/icons/addtocart.png'" alt="Change address" />
+                                        </button>
+                                        </div>
+                                        <span class="product-badge few-left" *ngIf="isLowStock(item)">Only Few Left</span>
+                                        <div class="item-tags-overlay" *ngIf="item.itemTags?.length">
+                                            <div class="item-tags-carousel">
+                                                <p-carousel
+                                                    [value]="item.itemTags"
+                                                    [numVisible]="1"
+                                                    [numScroll]="1"
+                                                    [circular]="true"
+                                                    [autoplayInterval]="3000"
+                                                    [showIndicators]="false"
+                                                    [showNavigators]="false"
+                                                    [containerStyle]="{ 'width': '100%', 'height': 'auto', 'border': 'none' }">
+                                                    <ng-template pTemplate="item" let-tag>
+                                                        <span class="item-tag-chip">
+                                                            <span class="tag-name">{{ getTagLabel(tag) }}</span>
+                                                            <span class="tag-position" *ngIf="item.itemTags?.length > 1">
+                                                                {{ getTagPosition(item, tag) }}/{{ item.itemTags.length }}
+                                                            </span>
+                                                        </span>
+                                                    </ng-template>
+                                                </p-carousel>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="product-info">
+                                        <h3 class="product-name">{{ item.spItemDto?.name }}</h3>
+                                        <div class="product-price" *ngIf="!hidePrices">
+                                            <span class="current-price">Rs. {{ item.price }}</span>
+                                            <span class="original-price" *ngIf="item.showMrp && item.mrp && item.mrp > item.price">Rs. {{ item.mrp }}</span>
+                                            <span class="discount" *ngIf="item.showMrp && item.mrp && (((item.mrp - item.price) / item.mrp) * 100) > 0">
+                                            ({{ ((item.mrp - item.price) / item.mrp) * 100 | number:'1.0-0' }}% OFF)
+                                            </span>
+                                        </div>
+                                    <!-- </div>
+                                </div>
+                                <div class="product-card-face product-card-back">
+                                    <div class="product-back-bg"
+                                        [style.background-image]="'url(' + getItemImage(item) + ')'"></div>
+                                    <div class="product-back-content">
+                                        <h3 class="product-name">{{ item.spItemDto?.name }}</h3>
+                                        <p class="product-description">
+                                            {{ item.spItemDto?.description || item.description || item.spItem?.description || 'No description available.' }}
+                                        </p>
+                                    </div>
+                                </div> -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        class="items-load-more-trigger"
+                        *ngIf="enableInfiniteScroll && hasMoreItems"
+                        lazyLoadTrigger
+                        [lazyLoadEnabled]="enableInfiniteScroll && hasMoreItems && !itemsLoading"
+                        (lazyLoadTrigger)="loadMoreItems()"></div>
+                    <div class="items-load-more" *ngIf="enableInfiniteScroll && itemsLoading">
+                        Loading more items...
+                    </div>
+                    <div class="pagination" *ngIf="!enableInfiniteScroll && itemsCount > 0 && totalPages > 1">
+                        <div class="pagination-bar">
+                            <button class="page-btn" type="button" (click)="goToPage(0)" [disabled]="currentPage === 0">
+                                &laquo; Page 1
+                            </button>
+                            <button class="page-btn" type="button" (click)="goToPage(currentPage - 1)"
+                                [disabled]="currentPage === 0">
+                                &lsaquo; Previous
+                            </button>
+                            <span class="page-status">Page {{ currentPage + 1 }} of {{ totalPages }}</span>
+                            <button class="page-btn" type="button" (click)="goToPage(currentPage + 1)"
+                                [disabled]="currentPage >= totalPages - 1">
+                                Next &rsaquo;
+                            </button>
+                        </div>
+                    </div>
+                </section>
             </div>
         </div>
     </div>
-    <div class="filter-sidebar">
-        <p-sidebar [(visible)]="sidebarVisible" position="right">
-            <div>
-                <h3 class="fw-bold mb-4">Filters</h3>
-            </div>
-            <hr/>
-            <div>
-                <p-accordion [multiple]="true" [activeIndex]="[0]">
-                    <p-accordionTab header="Store" *ngIf="showStores">
-                        <div class="stocks">
-                            <p-dropdown class="text-capitalize" [options]="stores" 
-                                [(ngModel)]="storeEncId" placeholder="Select" ropdownIcon="fa fa-caret-down"
-                                optionLabel="name" optionValue="encId">
-                                <ng-template let-store pTemplate="storeName">
-                                    {{store.name}}
-                                </ng-template>
-                            </p-dropdown>
-                        </div>
-                    </p-accordionTab>
-                    <p-accordionTab header="Category">
-                        <div class="mb-1" *ngFor="let category of itemCategories" class="field-checkbox">                                
-                            <mat-checkbox [checked]="selectedCategories && selectedCategories.indexOf(category.id)!==-1" (change)="categorySelected(category, $event)"
-                              class="text-capitalize">
-                              {{category.categoryName}}</mat-checkbox>
-                          </div>
-                    </p-accordionTab> 
-                </p-accordion>
-            </div>
-        </p-sidebar>
-    </div>
+</div>

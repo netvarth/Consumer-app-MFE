@@ -1,220 +1,39 @@
 [class*=" icon-"]:before {
-    font-family: custom-ynw !important;
-    font-style: normal !important;
-    font-weight: 400 !important;
-    font-feature-settings: normal !important;
-    font-variant: normal !important;
-    text-transform: none !important;
+    font-family: custom-ynw!important;
+    font-style: normal!important;
+    font-weight: 400!important;
+    font-feature-settings: normal!important;
+    font-variant: normal!important;
+    text-transform: none!important;
     speak-as: none;
     line-height: 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
-
-.icon-delete:before {
-    content: "\4b";
-}
-.coupon-card {
-    background: #ffffff;
-    border-radius: 18px;
-    padding: 16px 18px;
-    box-shadow: 0 24px 40px rgb(191 153 153 / 18%);
+.coupon-area {
     display: flex;
-    flex-direction: column;
-    gap: 12px;
+    justify-content: space-between !important;
 }
-
-.coupon-card__header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+.applybill {
+    margin-bottom: 5px!important;
+    margin-top: 15px;
 }
-
-.coupon-card__icon {
-    width: 35px;
-    display: flex;
-    height: 35px;
-    background: var(--booking-accent-primary, #fff5eb) !important;
-    border-radius: 11px;
-    align-items: center;
-    justify-content: center;
-}
-.coupon-card__icon_placeholder-icon {
-    background: linear-gradient(135deg, #ff7a00, #f16a13);
-    width: 20px;
+.ckbx{
     height: 20px;
 }
-
-.coupon-card__text {
+.fa-tags:before {
+    content: "\f02c";
+}
+.input-group-append {
+    display: inline-flex;
+    margin-bottom: 8px;
+}
+.delteTC {
     display: flex;
-    flex-direction: column;
 }
-
-.coupon-card__title {
-    font-size: 15px;
-    font-weight: 700;
-    color: #2c3649;
-    white-space: nowrap;
+.icon-delete {
+    padding-left: 2px;
 }
-
-.coupon-card__subtitle {
-    font-size: 11px;
-    color: #808898;
-    white-space: nowrap;
-}
-
-.coupon-card__badge {
-    margin-left: auto;
-    background: #fff2e8;
-    color: #f16a13;
-    border: 1px solid #f16a13;
-    border-radius: 10px;
-    padding: 6px 10px;
-    font-weight: 700;
-    font-size: 9px;
-    cursor: pointer;
-    white-space: nowrap;
-}
-
-.coupon-card__arrow {
-    background: none;
-    border: none;
-    color: #6a7283;
-    font-size: 16px;
-    padding: 8px;
-    cursor: pointer;
-}
-
-.coupon-card__divider {
-    border: 0;
-    border-top: 1px solid #c1c1c1;
-    margin: 0;
-}
-
-.coupon-card__body {
-    display: flex;
-    flex-direction: row;
-    gap: 5px;
-}
-
-.coupon-card__input-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    width: 100%;
-}
-
-.coupon-card__input {
-    flex: 1;
-    height: 35px;
-    border-radius: 10px;
-    border: 2px solid #d4d6dc;
-    background: #eef0f3;
-    padding: 0 13px;
-    font-size: 11px;
-    font-weight: 600;
-    color: #a5a9b3;
-    // text-transform: uppercase;
-}
-
-.coupon-card__input:focus {
-    outline: none;
-    border-color: #f16a13;
-    background: #fff;
-}
-
-.coupon-card__input.invalid {
-    border-color: #e02424;
-}
-
-.coupon-card__apply {
-    background: #f16a13;
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    height: 35px;
-    min-width: 68px;
-    font-size: 12px;
-    font-weight: 500;
-    cursor: pointer;
-}
-
-.coupon-card__apply.applied {
-    background: #1cce71;
-}
-
-.coupon-card__error {
-    color: #e02424;
-    font-size: 13px;
-}
-
-.coupon-card__applied {
-    margin-top: 8px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.coupon-pill {
-    border: 1px solid #f16a13;
-    border-radius: 11px;
-    padding: 8px 14px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: #fff;
-}
-
-.coupon-pill__left {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.coupon-pill__tag {
-    color: #f16a13;
-    font-size: 15px;
-}
-
-.coupon-pill__code {
-    font-size: 14px;
-    font-weight: 700;
-    color: #2c3649;
-    letter-spacing: 0.02em;
-}
-
-.coupon-pill__status {
-    background: #aee7c6;
-    color: #1b7d3d;
-    padding: 3px 6px;
-    border-radius: 6px;
-    font-weight: 700;
-    font-size: 9px;
-}
-.coupon-pill__status.not-applicable {
-    background: #ffe5e5;
-    color: #d61f1f;
-}
-
-.coupon-pill__remove {
-    background: none;
-    border: none;
-    color: #f16a13;
-    font-size: 14px;
-    cursor: pointer;
-}
-
-@media (max-width: 575px) {
-    .coupon-card {
-        padding: 14px 12px;
-    }
-
-    .coupon-card__input-row {
-        flex-direction: row;
-        // align-items: stretch;
-    }
-
-    // .coupon-card__apply {
-    //     width: 100%;
-    // }
+.icon-delete:before {
+    content: "\4b";
 }

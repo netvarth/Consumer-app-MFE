@@ -1,0 +1,109 @@
+<div class="items mt-1 p_consumer_items" [ngClass]="theme" id="wishlistContainer">
+    <div class="mt-5" *ngIf="loading">
+        <app-skeleton-loading></app-skeleton-loading>
+    </div>
+    <div class="my-1 login-form_custom" *ngIf="!loading && !loggedIn">
+        <div class="card card-custom no-margin hgt-adjust">
+            <div class="card-body p-0">
+                <app-authentication (actionPerformed)="actionPerformed($event)"
+                    [accountId]="accountId"></app-authentication>
+            </div>
+        </div>
+    </div>
+    <div class="" *ngIf="!loading && loggedIn">
+        <div class="kanista-page">
+            <div class="breadcrumb-bar">
+                <div class="breadcrumb">
+                    <span class="pointer-cursor" (click)="goHome()">Home</span>
+                    <span>/</span>
+                    <span>Wishlist</span>
+                </div>
+            </div>
+            <div class="main-content no-sidebar">
+                <section class="products-section">
+                    <div class="products-header">
+                        <div class="products-title">
+                            <h1>Wishlist</h1>
+                            <span class="products-count"> - {{itemsCount}} items</span>
+                        </div>
+
+                        <div class="products-actions">
+                            <div class="sort-dropdown">
+                                <label class="sort-label" for="sortSelect">Sort by:</label>
+                                <div class="sort-select">
+                                    <select id="sortSelect" [(ngModel)]="selectedSort" (ngModelChange)="onSortChange($event)">
+                                        <option *ngFor="let option of sortOptions" [value]="option.value">
+                                            {{ option.label }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="product-grid" *ngIf="displayedItems && displayedItems.length > 0">
+                        <div class="product-card reveal-item" *ngFor="let item of displayedItems; trackBy: trackByItem"
+                            (click)="viewItems(item , item.encId)">
+                                    <div class="product-image">
+                                        <img [src]="getItemImage(item)" [alt]="item.alt" />
+                                        <div class="product-actions" (click)="$event.stopPropagation()">
+                                        <button
+                                            class="product-like-btn"
+                                            type="button"
+                                            aria-label="Add to wishlist"
+                                            (click)="$event.stopPropagation(); onWishlist(item, $event)">
+                                            <img class="actionImge" src="{{ cdnPath }}assets/images/remove.png" (click)="$event.stopPropagation()" />
+                                        </button>
+                                        <button
+                                            class="product-cart-btn"
+                                            type="button"
+                                            aria-label="Add to cart"
+                                            *ngIf="!cartDisabled"
+                                            (click)="$event.stopPropagation(); addToCart($event, item)">
+                                            <i class="fa fa-shopping-bag" aria-hidden="true"></i>
+                                        </button>
+                                        </div>
+                                        <span class="product-badge few-left" *ngIf="isLowStock(item)">Only Few Left</span>
+                                    </div>
+
+                                    <div class="product-info">
+                                        <h3 class="product-name">{{ item.spItemDto?.name }}</h3>
+                                        <div class="product-price" *ngIf="!hidePrices">
+                                            <span class="current-price">Rs. {{ item.price }}</span>
+                                            <!-- <span class="original-price" *ngIf="item.showMrp && item.mrp && item.mrp > item.price">Rs. {{ item.mrp }}</span> -->
+                                            <span class="original-price" >Rs. {{ item.mrp }}</span>
+                                            <span class="discount" *ngIf=" item.mrp && (((item.mrp - item.price) / item.mrp) * 100) > 0">
+                                                 <!-- <span class="discount" *ngIf="item.showMrp && item.mrp && (((item.mrp - item.price) / item.mrp) * 100) > 0"></span> -->
+                                            ({{ ((item.mrp - item.price) / item.mrp) * 100 | number:'1.0-0' }}% OFF)
+                                            </span>
+                                        </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="wishlist-empty" *ngIf="!displayedItems || displayedItems.length === 0">
+                        <img [src]="cdnPath + 'assets/images/noitems.png'" alt="No wishlist items" />
+                        <p>No items in your wishlist.</p>
+                    </div>
+
+                    <div class="pagination" *ngIf="itemsCount > 0 && totalPages > 1">
+                        <div class="pagination-bar">
+                            <button class="page-btn" type="button" (click)="goToPage(0)" [disabled]="currentPage === 0">
+                                &laquo; Page 1
+                            </button>
+                            <button class="page-btn" type="button" (click)="goToPage(currentPage - 1)"
+                                [disabled]="currentPage === 0">
+                                &lsaquo; Previous
+                            </button>
+                            <span class="page-status">Page {{ currentPage + 1 }} of {{ totalPages }}</span>
+                            <button class="page-btn" type="button" (click)="goToPage(currentPage + 1)"
+                                [disabled]="currentPage >= totalPages - 1">
+                                Next &rsaquo;
+                            </button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>

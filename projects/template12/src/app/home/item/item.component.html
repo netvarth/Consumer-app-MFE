@@ -1,9 +1,9 @@
 <div class="container pb-5" id="itemContainer" [ngClass]="theme">
     <div class="confirm-box">
-        <div class="mt-5" *ngIf="loading">
+        <div class="mt-5" *ngIf="loading || mediaLoading">
             <app-skeleton-loading></app-skeleton-loading>
         </div>
-        <div class="my-1 login-form_custom" *ngIf="!loading && !loggedIn && isLogin">
+        <div class="my-1 login-form_custom" *ngIf="!loading && !mediaLoading && !loggedIn && isLogin">
             <div class="card card-custom no-margin hgt-adjust">
                 <div class="card-body p-0">
                     <app-authentication (actionPerformed)="actionPerformed($event)"
@@ -11,222 +11,312 @@
                 </div>
             </div>
         </div>
-        <div class="item-details-page" *ngIf="!loading && !isLogin">
-            <div class="customCard headerBorder mt-1">
-                <div (click)="goBack()"><i class="fa fa-arrow-left clrChangeHeader pointer-cursor"></i> </div>
-                <div (click)="goBack()" class="clrChangeHeader pointer-cursor">Back</div>
+        <div class="item-details-page kanista-item" *ngIf="!loading && !mediaLoading && !isLogin">
+            <div class="item-breadcrumb">
+                <span class="pointer-cursor" (click)="goHome()">Home</span>
+                <span>/</span>
+                <!-- <span class="pointer-cursor" (click)="goProducts()">{{ !virtualItem ? (item?.spItemDto?.itemCategory?.categoryName || 'Products') :
+                    (itemAttributes?.spItemDto?.itemCategory?.categoryName || 'Products') }}</span> -->
+                     <span class="pointer-cursor" (click)="goProducts()">Products</span>
+                <span>/</span>
+                <span class="is-current">{{ !virtualItem ? (item?.parentItemName  || item?.spItem?.name || '') :
+                    (itemAttributes?.parentItemName  || itemAttributes?.spItem?.name || '') }}</span>
             </div>
             <div class="item-container card">
-                <div class="main-cont">
-                    <div class="item-selector item-width"
-                        *ngIf="(item && item.spItemDto && item.spItemDto.attachments && item.spItemDto.attachments.length > 0)  && !virtualItem">
-                        <div class="item pointer-cursor" *ngFor="let attachment of item.spItemDto.attachments"
+                <div class="item-media">
+                    <div class="item-selector item-width" *ngIf="thumbnailAttachments?.length > 0">
+                        <div class="item pointer-cursor" *ngFor="let attachment of thumbnailAttachments"
+                            [class.selected]="selectedItemImage?.s3path === attachment?.s3path"
                             (click)="setSelectedItemImage(attachment)">
-                            <img [src]="attachment.s3path" [alt]="attachment.s3path" height="auto" width="60px">
+                            <ng-container *ngIf="isVideoAttachment(attachment); else imageThumb">
+                                <div class="item-thumb-video-wrapper" aria-label="Video attachment">
+                                    <i class="fa fa-play item-thumb-video-icon" aria-hidden="true"></i>
+                                    <video class="item-thumb-video" [src]="attachment.s3path" muted playsinline
+                                        preload="metadata"></video>
+                                </div>
+                            </ng-container>
+                            <ng-template #imageThumb>
+                                <img [src]="attachment.s3path" [alt]="attachment.s3path"
+                                    (error)="handleThumbnailError($event, attachment)">
+                            </ng-template>
                         </div>
                     </div>
-                    <!-- used for virtual item -->
-                    <div *ngIf="virtualItem">
-                        <div class="item-selector item-width"
-                            *ngIf="itemAttributes && itemAttributes.spItemDto && itemAttributes.spItemDto.attachments && itemAttributes.spItemDto.attachments.length > 0">
-                            <div class="item pointer-cursor"
-                                *ngFor="let attachment of itemAttributes.spItemDto.attachments"
-                                (click)="setSelectedItemImage(attachment)">
-                                <img [src]="attachment.s3path" [alt]="attachment.s3path" height="auto" width="60px">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="item-preview w-100">
+                    <div class="item-preview">
+                        <button type="button" class="share-btn" (click)="openShareSheet()" aria-label="Share item">
+                            <i class="fa fa-share-alt" aria-hidden="true"></i>
+                        </button>
                         <div *ngIf="selectedItemImage"
-                            class="h-100 w-100 d-flex justify-content-center align-items-center">
-                            <p-image [src]="selectedItemImage.s3path" alt="Image" [preview]="true" height="auto"
-                                width="100%"></p-image>
+                             class="item-preview-inner"
+                             [class.is-video]="isVideoAttachment(selectedItemImage)"
+                             [class.video-ready]="isVideoReady">
+                            <div class="item-media-layer item-media-image">
+                                <p-image [src]="getPreviewImageSrc(selectedItemImage)" alt="Image" [preview]="true" height="auto"
+                                    width="100%"></p-image>
+                            </div>
+                            <div class="item-media-layer item-media-video">
+                                <video class="item-video"
+                                       [src]="selectedItemImage.s3path"
+                                       [attr.poster]="getVideoPoster(selectedItemImage)"
+                                       autoplay
+                                       playsinline
+                                       loop
+                                       preload="metadata"
+                                       [muted]="isVideoMuted"
+                                       (loadedmetadata)="onVideoReady()"
+                                       (canplay)="onVideoReady()"
+                                       (waiting)="onVideoWaiting()"></video>
+                                <div class="item-video-controls" *ngIf="isVideoAttachment(selectedItemImage)">
+                                    <button type="button" class="item-video-mute" (click)="toggleVideoMute()">
+                                        {{ isVideoMuted ? 'Unmute' : 'Mute' }}
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div *ngIf="item && item.spItemDto" class="">
-                    <div class="p-md-4">
-                        <div class="head d-flex justify-content-between">
-                            <div>
-                                <h2 class="item-name">{{item.spItemDto.name}}</h2>
-                            </div>
-                        </div>
-                        <div class="item-description mt-2" *ngIf="item && item.spItemDto && item.spItemDto.shortDesc">
-                            <span>{{item.spItemDto.shortDesc}}</span>
-                            <hr>
-                        </div>
-                        <!-- <div *ngIf="item && item.spItemDto && item.spItemDto.internalDesc" class="item-description mt-2 long-desc">                       
-                        <span class="item-detail"  [innerHtml]="safeHtml">
-                        </span>
-                        <hr>
-                    </div> -->
-                        <div *ngIf="item?.spItemDto?.internalDesc" class="item-description">
-                            <span
-                                [innerHTML]="showFullContent ? item.spItemDto.internalDesc : getTruncatedContent(item.spItemDto.internalDesc) + (showFullContent ? '' : '...')"></span>
-                            <span class="showmore" (click)="toggleContent()" style="display: inline;">
-                                {{ showFullContent ? 'Read Less' : 'Read More' }}
-                            </span>
-                        </div>
-                        <div class="qty_adjuster">
-                            <div *ngIf="badges" class="mt-3 pb-4">
-                                <p-accordion [activeIndex]="[0]">
-                                    <p-accordionTab>
-                                        <ng-template pTemplate="header">
-                                            <h4 class="badge-title">Product Credentials</h4>
-                                        </ng-template>
-                                        <div class="badge-section" *ngIf="badges && badges.length > 0">
-                                            <div *ngFor="let badge of badges">
-                                                <div class="badge"
-                                                    *ngIf="(badge.attachments && badge.attachments.length > 0) || badge.name || badge.link">
-                                                    <img *ngIf="badge.attachments[0]" class="badge-img"
-                                                        [src]="badge?.attachments[0]?.s3path" alt="">
-                                                    <img *ngIf="!badge.attachments[0]" class="badge-img"
-                                                        src="{{cdnPath}}assets/images/rx-order/medicine.png" alt="">
-                                                    <span class="badge-name">{{badge.name}}<i *ngIf="badge.link"
-                                                            class="fa fa-external-link"
-                                                            (click)="actionClicked(badge)"></i></span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </p-accordionTab>
-                                </p-accordion>
-                            </div>
-                            <div *ngIf="item.spItemDto?.itemCategory?.categoryName" class="d-flex align-items-center">
-                                <span class="item-details me-3">Category:</span><span
-                                    class="fw-bold me-3">{{item.spItemDto.itemCategory.categoryName}}</span>
-                            </div>
-                            <div *ngIf="item.spItemDto?.itemGroups?.groupName" class="d-flex align-items-center">
-                                <span class="item-details me-3">Group:</span><span
-                                    class="fw-bold me-3">{{item.spItemDto.itemGroups.groupName}}</span>
-                            </div>
-                            <div *ngIf="item.spItemDto?.itemType?.typeName" class="d-flex align-items-center">
-                                <span class="item-details me-3">Type:</span><span
-                                    class="fw-bold me-3">{{item.spItemDto.itemType.typeName}}</span>
-                            </div>
-                            <div *ngIf="item.spItemDto?.itemManufacturer?.manufacturerName"
-                                class="d-flex align-items-center">
-                                <span class="item-details me-3">Manufacturer:</span><span
-                                    class="fw-bold me-3">{{item.spItemDto.itemManufacturer.manufacturerName}}</span>
-                            </div>
-                            <div *ngIf="item && item.itemAttributes">
-
-                                <div *ngFor="let attribute of item.itemAttributes">
-                                    <div>
-                                        <span class="attribute-stl">{{ attribute.attribute }}:</span>
-                                        <div class="value-container">
-                                            <button *ngFor="let value of attribute.values" class="btn mb-2 user-button"
-                                                [ngClass]="{ 'highlightcolor': selectedValues[attribute.attribute] === value }"
-                                                (click)="selectValue(attribute.attribute, value)">
-                                                {{ value }}
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div *ngIf="!virtualItem && item">
-                                <div *ngIf="item.showMrp && item.mrp" class="mt-3">
-                                    <span class="me-3 item-size">M.R.P:</span><span
-                                        class="item-mrp">₹{{item.mrp}}</span>
-                                </div>
-                                <div class="mt-3 d-flex align-items-center">
-                                    <span class="me-3 item-size">Price:</span><span
-                                        class="price me-3">₹{{item.price}}</span>
-                                </div>
-                            </div>
-
-                            <div *ngIf="virtualItem && itemAttributes">
-                                <div *ngIf="itemAttributes.showMrp && itemAttributes.mrp" class="mt-3">
-                                    <span class="me-3 item-size">M.R.P:</span><span
-                                        class="item-mrp">₹{{itemAttributes.mrp}}</span>
-                                </div>
-                                <div class="mt-3 d-flex align-items-center">
-                                    <span class="me-3 item-size">Price:</span><span
-                                        class="price me-3">₹{{itemAttributes.price}}</span>
-                                </div>
-                            </div>
-                            <div class="mt-3">
-                                <span class="me-3 item-size">Quantity:</span><span>
-                                    <p-inputNumber [(ngModel)]="quantity" [showButtons]="true" buttonLayout="horizontal"
-                                        spinnerMode="vertical" inputId="vertical"
-                                        decrementButtonClass="p-button-secondary"
-                                        incrementButtonClass="p-button-secondary" incrementButtonIcon="fa fa-plus"
-                                        decrementButtonIcon="fa fa-minus"
-                                        [ngClass]="{'disabled-decrement': quantity === 1}"></p-inputNumber>
+                <div *ngIf="(item && item.spItemDto) || (virtualItem && itemAttributes && itemAttributes.spItemDto)"
+                    class="item-info">
+                    <div class="item-title-row">
+                        <div>
+                            <h1 class="item-name">{{ !virtualItem ? (item?.parentItemName || item?.spItemDto?.name) :
+                                (itemAttributes?.parentItemName || itemAttributes?.spItemDto?.name) }}</h1>
+                            <div class="item-subline">
+                                <!-- <span>{{ item?.spItemDto?.shortDesc }}</span> -->
+                                <!-- <span class="dot">•</span> -->
+                                <span *ngIf="getDisplayItemTypeName()">
+                                    {{ getDisplayItemTypeName() }}
                                 </span>
-                            </div>
-                            <!-- <div *ngIf="(item?.homeDelivery && item?.storePickup) || (itemAttributes?.homeDelivery && itemAttributes?.storePickup)" class="mt-3">
-                                <div class="me-3 item-size">Delivery Type:</div>
-                                <div class="d-flex card-gap">
-                                    <div class="col-6 ">
-                                        <div class="d-flex delivery-card align-items-center" (click)="orderDeliveryType('homeDelivery')"
-                                            [ngClass]="{ 'selected-card': itemDeliveryType == 'HOME_DELIVERY' }">
-                                            <div class="col-4">
-                                                <img src="{{cdnPath}}assets/images/homed.svg" alt=""
-                                                    class="delivery-image">
-                                            </div>
-                                            <div class="fw-bold col-8 title-size">
-                                                Home Delivery
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="d-flex delivery-card align-items-center" (click)="orderDeliveryType()"
-                                            [ngClass]="{ 'selected-card': itemDeliveryType == 'STORE_PICKUP' }">
-                                            <div class="col-4">
-                                                <img src="{{cdnPath}}assets/images/storep.svg" alt=""
-                                                    class="delivery-image">
-                                            </div>
-                                            <div class="fw-bold  col-8 title-size">
-                                                Store Pickup
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>    
-                            </div> -->
+                                <span class="dot" *ngIf="getDisplayItemTypeName()">•</span>
+                                <span>Product Code: {{ !virtualItem ? (item?.spItemDto?.itemCode || item?.spItemDto?.id)
+                                    : (itemAttributes?.spItemDto?.itemCode || itemAttributes?.spItemDto?.id) }}</span>
 
-                            <div *ngIf="(item?.homeDelivery && item?.storePickup) || (itemAttributes?.homeDelivery && itemAttributes?.storePickup)"
-                                class="mt-3">
-                                <div class="me-3 item-size">Delivery Type:</div>
-                                <p-dropdown [options]="deliveryOptions" [(ngModel)]="itemDeliveryType"
-                                    optionLabel="label" optionValue="value" placeholder="Select Delivery Type"
-                                    class="w-100">
-                                    <ng-template let-option pTemplate="item">
-                                        <div class="d-flex align-items-center">
-                                            <img [src]="cdnPath + option.icon" class="delivery-image me-2" alt="" />
-                                            <div class="fw-bold title-size">{{ option.label }}</div>
-                                        </div>
-                                    </ng-template>
-                                </p-dropdown>
                             </div>
-                            <div class="d-flex item-btns mb-4 mt-4">
-                                <button pButton pRipple type="button" id="btnAddToCart"
-                                    class="btn-cart p-button-primary btn-primary" (click)='addToCart()'>Add to
-                                    cart</button>
-                                <button pButton pRipple type="button" id="btnBuy"
-                                    class="btn-cart p-button-primary btn-primary" (click)="byNow()">Buy it
-                                    now</button>
+                           <div class="item-tags" *ngIf="getItemTags().length">
+                               <span class="item-tag-chip" *ngFor="let tag of getItemTags()">
+                                   <span class="tag-name">{{ getTagLabel(tag) }}</span>
+                               </span>
+                           </div>
+                        </div>
+                    </div>
+                    <div class="item-price-row" *ngIf="!hidePrices">
+                        <span class="price1">RS.{{ !virtualItem ? item?.price : itemAttributes?.price | number:'1.0-0'
+                            }}</span>
+                        <span class="item-mrp"
+                            *ngIf="((!virtualItem && item?.showMrp && item?.mrp) || (virtualItem && itemAttributes?.showMrp && itemAttributes?.mrp)) && ((!virtualItem ? item?.mrp : itemAttributes?.mrp) > (!virtualItem ? item?.price : itemAttributes?.price))">
+                            MRP RS.{{ !virtualItem ? item?.mrp : itemAttributes?.mrp | number:'1.0-0' }}
+                        </span>
+                        <span class="item-discount"
+                            *ngIf="((!virtualItem && item?.showMrp && item?.mrp) || (virtualItem && itemAttributes?.showMrp && itemAttributes?.mrp)) && ((((!virtualItem ? item?.mrp : itemAttributes?.mrp) - (!virtualItem ? item?.price : itemAttributes?.price)) / (!virtualItem ? item?.mrp : itemAttributes?.mrp)) * 100) > 0">
+                            ({{ (((!virtualItem ? item?.mrp : itemAttributes?.mrp) - (!virtualItem ? item?.price :
+                            itemAttributes?.price)) / (!virtualItem ? item?.mrp : itemAttributes?.mrp)) * 100 |
+                            number:'1.0-0' }}% OFF)
+                        </span>
+                    </div>
+                    <div class="tax-msg">inclusive of all taxes</div>
+
+                    <div class="item-size-panel" *ngIf="item?.itemAttributes?.length">
+                        <!-- <div class="item-size-title">Select Size</div> -->
+                        <div class="item-size-options" *ngFor="let attribute of item.itemAttributes">
+                            <div class="attribute-stl">{{ attribute.attribute }}</div>
+                            <div class="value-container">
+                                <button *ngFor="let value of attribute.values" class="user-button"
+                                    [ngClass]="{ 'highlightcolor': selectedValues[attribute.attribute] === value }"
+                                    (click)="selectValue(attribute.attribute, value)">
+                                    {{ value }}
+                                </button>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="item-action-row">
+                        <button class="btn-outline" type="button" (click)="onWishlist($event)">
+                            <img class="actionImge"
+                                [src]="isWishlisted() ? (cdnPath + 'assets/images/wishlist.png') : (cdnPath + 'assets/images/like.png')" />
+                            {{ isWishlisted() ? 'Remove from Wishlist' : 'Add to Wishlist' }}
+                        </button>
+                        <button class="btn-outline btn-green" type="button" (click)="sendEnquiry()">
+                            <i class="fa fa-whatsapp"></i>
+                            Enquiry
+                        </button>
+                    </div>
+
+                    <div class="item-buy-row" *ngIf="!cartDisabled">
+                        <div class="qty_adjuster">
+                            <div class="qty-box" [ngClass]="{'is-disabled': quantity === 1}">
+                                <button type="button" class="qty-btn" (click)="decrementQuantity()"
+                                    [disabled]="quantity === 1">-</button>
+                                <input type="text" class="qty-input" [value]="quantity" readonly>
+                                <button type="button" class="qty-btn" (click)="incrementQuantity()">+</button>
+                            </div>
+                        </div>
+                        <button pButton pRipple type="button" id="btnAddToCart"
+                            class="btn-cart p-button-primary btn-primary" (click)='addToCart()'>
+                            
+                                <img class="actionImge" src="{{cdnPath}}assets/images/myjaldee/carticon.png" />
+                            &nbsp;Add to cart
+                            <!-- RS.{{ !hidePrices ? (item?.price || itemAttributes?.price) : '' }} -->
+                        </button>
+                    </div>
+
+                    <div class="item-delivery" *ngIf="showCheckDeliveryAvailability">
+                        <div class="item-delivery-title">Delivery Options <img class="actionImge" 
+                            src="{{cdnPath}}assets/images/myjaldee/deliveryicon.png" />
+                            &nbsp;</div>
+                        <p class="item-delivery-note">Please enter your pin code to check delivery availability.</p>
+                        <div class="item-delivery-form">
+                            <input type="text" placeholder="Enter pincode" [(ngModel)]="pinCode" name="pinCode"
+                                #pinCodeField="ngModel" required minlength="6" maxlength="8"
+                                (keypress)="allowOnlyNumbers($event)" (input)="limitLength()">
+                            <button type="button" (click)="checkAvailability()"
+                                [disabled]="pinCodeField.invalid">Check</button>
+                        </div>
+                        <div *ngIf="showDeliveryAvailability" class="delivery-available">
+                            {{ deliveryAvailability }}
+                        </div>
+                        <div *ngIf="showDeliveryUnAvailability" class="delivery-unavailable">
+                            {{ deliveryAvailability }}
+                        </div>
+                    </div>
+
+                    <div class="item-details-block" *ngIf="safeHtml">
+                        <div class="block-title">Product Details
+                            <img class="actionImge" src="{{cdnPath}}assets/images/myjaldee/detailsicon.png" />
+                            &nbsp;
+                        </div>
+                        <div class="item-description" [innerHTML]="safeHtml"></div>
+                        <!-- <button class="showmore" type="button" (click)="toggleContent()"> -->
+                        
+                        <!-- </button> -->
+                    </div>
+                    <div class="item-details-block" *ngIf="shortDescHtml">
+                        <div class="block-title">Additional Info</div>
+                        <div class="item-description" [innerHTML]="shortDescHtml"></div>
+                    </div>
+
+                    <div class="item-specs"
+                        *ngIf="(item?.spItemDto?.itemCategory?.categoryName
+                          || getDisplayItemTypeName()
+                          || getDisplayItemGroups().length
+                          || item?.spItemDto?.itemManufacturer?.manufacturerName
+                          || itemAttributes?.spItemDto?.itemCategory?.categoryName
+                          || itemAttributes?.spItemDto?.itemManufacturer?.manufacturerName)">
+                        <div class="block-title">Specifications</div>
+                        <div class="spec-grid">
+                            <div class="spec"
+                                *ngIf="!virtualItem ? item?.spItemDto?.itemCategory?.categoryName : itemAttributes?.spItemDto?.itemCategory?.categoryName">
+                                <div class="spec-label">Category</div>
+                                <div class="spec-value">{{ !virtualItem ? (item?.spItemDto?.itemCategory?.categoryName
+                                    || '-') : (itemAttributes?.spItemDto?.itemCategory?.categoryName || '-') }}</div>
+                            </div>
+                            <div class="spec" *ngIf="getDisplayItemTypeName()">
+                                <div class="spec-label">Type</div>
+                                <div class="spec-value">{{ getDisplayItemTypeName() || '-' }}</div>
+                            </div>
+                            <div class="spec" *ngIf="getDisplayItemGroups().length">
+                                <div class="spec-label">Group</div>
+                                <div class="spec-value">{{ getDisplayItemGroups().join(', ') }}</div>
+                            </div>
+                            <div class="spec"
+                                *ngIf="!virtualItem ? item?.spItemDto?.itemManufacturer?.manufacturerName : itemAttributes?.spItemDto?.itemManufacturer?.manufacturerName">
+                                <div class="spec-label">Manufacturer</div>
+                                <div class="spec-value">{{ !virtualItem ?
+                                    (item?.spItemDto?.itemManufacturer?.manufacturerName || '-') :
+                                    (itemAttributes?.spItemDto?.itemManufacturer?.manufacturerName || '-') }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div *ngIf="badges" class="item-badges">
+                        <p-accordion [activeIndex]="[0]">
+                            <p-accordionTab>
+                                <ng-template pTemplate="header">
+                                    <h4 class="badge-title">Product Credentials</h4>
+                                </ng-template>
+                                <div class="badge-section" *ngIf="badges && badges.length > 0">
+                                    <div *ngFor="let badge of badges">
+                                        <div class="badge"
+                                            *ngIf="(badge.attachments && badge.attachments.length > 0) || badge.name || badge.link">
+                                            <img *ngIf="badge.attachments[0]" class="badge-img"
+                                                [src]="badge?.attachments[0]?.s3path" alt="">
+                                            <img *ngIf="!badge.attachments[0]" class="badge-img"
+                                                src="{{cdnPath}}assets/images/rx-order/medicine.png" alt="">
+                                            <span class="badge-name">{{badge.name}}<i *ngIf="badge.link"
+                                                    class="fa fa-external-link"
+                                                    (click)="actionClicked(badge)"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </p-accordionTab>
+                        </p-accordion>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-12 mt-5 mb-5">
+            <div class="col-lg-12 mt-4" *ngIf="!cartDisabled">
                 <div class=" d-flex justify-content-between align-items-center">
                     <div>
-                        <h2 class="fw-bold add-cart-title">Add more items to your Cart </h2>
+                        <h2 class="fw-bold add-cart-title">Similar Products</h2>
                     </div>
-                    <div class="m-3 m-md-0">
+                    <!-- <div class="m-3 m-md-0">
                         <button pButton pRipple type="button" id="btnViewAll"
                             class="btn-viewall p-button-primary btn-primary" (click)="viewAll()">View All</button>
-                    </div>
+                    </div> -->
                 </div>
-
             </div>
-            <div class="my-4" *ngIf="items && items.length > 0">
+            <div class="my-4" *ngIf="!cartDisabled && items && items.length > 0">
                 <app-items-card [items]="items" [themes]="theme"
                     (actionPerformed)="cartActionPerformed($event)"></app-items-card>
             </div>
         </div>
+    </div>
+</div>
+
+<div class="share-sheet-backdrop" *ngIf="isShareSheetOpen" (click)="closeShareSheet()"></div>
+<div class="share-sheet" *ngIf="isShareSheetOpen">
+    <div class="share-sheet-header">
+        <button type="button" class="share-sheet-close" (click)="closeShareSheet()" aria-label="Close share">×</button>
+        <div class="share-sheet-title">Share</div>
+    </div>
+    <div class="share-sheet-item">
+        <img class="share-sheet-thumb"
+            [src]="getPreviewImageSrc(selectedItemImage)" alt="">
+        <div class="share-sheet-meta">
+            <div class="share-sheet-name">{{ getShareItemName() }}</div>
+            <div class="share-sheet-subtitle">{{ getShareItemSubtitle() }}</div>
+        </div>
+    </div>
+    <div class="share-sheet-options">
+        <button type="button" class="share-option" (click)="shareVia('copy')">
+            <span class="share-icon share-icon-link"><i class="fa fa-link" aria-hidden="true"></i></span>
+            <span class="share-label">Copy Link</span>
+        </button>
+        <button type="button" class="share-option" (click)="shareVia('whatsapp')">
+            <span class="share-icon share-icon-whatsapp"><i class="fa fa-whatsapp" aria-hidden="true"></i></span>
+            <span class="share-label">Whatsapp</span>
+        </button>
+        <button type="button" class="share-option" (click)="shareVia('facebook')">
+            <span class="share-icon share-icon-facebook"><i class="fa fa-facebook" aria-hidden="true"></i></span>
+            <span class="share-label">Facebook</span>
+        </button>
+        <button type="button" class="share-option" (click)="shareVia('messenger')">
+            <span class="share-icon share-icon-messenger"><i class="fa fa-comment" aria-hidden="true"></i></span>
+            <span class="share-label">Messenger</span>
+        </button>
+        <button type="button" class="share-option" (click)="shareVia('gmail')">
+            <span class="share-icon share-icon-gmail"><i class="fa fa-envelope" aria-hidden="true"></i></span>
+            <span class="share-label">Gmail</span>
+        </button>
+        <button type="button" class="share-option" (click)="shareVia('sms')">
+            <span class="share-icon share-icon-sms"><i class="fa fa-commenting" aria-hidden="true"></i></span>
+            <span class="share-label">SMS</span>
+        </button>
+        <button type="button" class="share-option" (click)="shareVia('linkedin')">
+            <span class="share-icon share-icon-linkedin"><i class="fa fa-linkedin" aria-hidden="true"></i></span>
+            <span class="share-label">LinkedIn</span>
+        </button>
+        <button type="button" class="share-option" (click)="shareVia('more')">
+            <span class="share-icon share-icon-more"><i class="fa fa-ellipsis-h" aria-hidden="true"></i></span>
+            <span class="share-label">More Apps</span>
+        </button>
     </div>
 </div>
 

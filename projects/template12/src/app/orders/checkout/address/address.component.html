@@ -1,186 +1,334 @@
-<div *ngIf="!isEditable && addedAddresses.length > 0">
-    <div class="account-details">
-        <div class="mb-2 card-heading" *ngFor="let address of addedAddresses; let i = index">
-            <div class="d-flex mb-2 gap-3 justify-content-between">
-                <div class="d-flex gap-3">
-                    <p-radioButton [inputId]="address.key" name="address" [value]="address"
-                        [(ngModel)]="deliveryAddress"
-                        (ngModelChange)="selectAddress($event)"></p-radioButton>
-                    <div class="adrs-data">
-                        <div class="text-capitalize">{{address.firstName}}&nbsp;{{address.lastName}}</div>
-                        <div class="text-capitalize">{{address.address}}</div>
-                        <div class="text-capitalize">{{address.city}}, 
-                            {{address.landMark}}, <ng-container *ngIf="address.state">{{address.state}}, </ng-container>
-                            <ng-container *ngIf="address.country">{{address.country}}, </ng-container>
-                            {{address.postalCode}}</div>
-                        <div>{{address.countryCode}} {{address.phoneNumber}}</div>
-                        <div>{{address.email}}</div>
-                        <div *ngIf="deliveryAddress === address">
-                            <button pButton pRipple type="button" (click)="proceedToCheckout()" id="btnProceedPayment"
-                                class="btn-deliver p-button-primary btn-primary mt-2 me-1">Proceed to
-                                payment</button>
-                        </div>
-                    </div>
-                </div>
-                <div *ngIf="deliveryAddress === address">
-                    <button pButton pRipple type="button" (click)="editAddress(address,i,'type')" id="btnEditAddress"
-                        class="btn-switch p-button-primary btn-primary me-2 mt-2">Edit</button>
-                    <button pButton pRipple type="button" (click)="deleteAddress(address,i)" id="btnDeleteAddress"
-                        class="btn-switch p-button-primary btn-primary mt-2">Delete</button>
-                </div>
-            </div>
-        </div>
+<div class="saved-addresses" *ngIf="!isEditable && addedAddresses.length > 0 && !isSmallDevice" id="savedAddressList">
+  <div class="saved-title-section">
+    <div class="saved-title">Saved addresses</div>
+    <div class="saved-subtitle">
+      <button pButton pRipple type="button" class="btn-add" id="btnAddNewAddress" (click)="addAddress()">
+        Add a new address
+      </button>
     </div>
-</div>
-<div class="col-lg-12 address-details ">
-    <div *ngIf="!isEditable">
-        <button pButton pRipple type="button" class="add-btn p-button-primary btn-primary" id="btnAddNewAddress"
-            (click)="addAddress()">+ Add a new address
+  </div>
+  <div class="saved-list">
+    <div class="saved-item" *ngFor="let address of addedAddresses; let i = index">
+      <label class="saved-radio">
+        <p-radioButton [inputId]="address.key" name="address" [value]="address" [(ngModel)]="deliveryAddress"
+          (ngModelChange)="selectAddress($event)"></p-radioButton>
+        <div class="saved-body">
+          <div class="saved-body-main">
+            <div class="saved-name">
+              {{ address.firstName }} {{ address.lastName }}
+            </div>
+            <div class="saved-actions-main">
+              <!-- Desktop buttons (>=480px) -->
+              <button pButton pRipple type="button" (click)="deleteAddress(address,i)" id="btnDeleteAddress"
+                class="btn-link danger action-btn">
+                Remove
+              </button>
+
+              <button pButton pRipple type="button" (click)="editAddress(address,i,'type')" id="btnEditAddress"
+                class="btn-link action-btn">
+                Edit
+              </button>
+
+              <!-- Mobile icons (<480px) -->
+              <button type="button" class="icon-btn action-icon danger" (click)="deleteAddress(address,i)"
+                aria-label="Remove address" title="Remove">
+                <img [src]="cdnPath + 'assets/images/icons/trash.png'" alt="Remove" />
+              </button>
+
+              <button type="button" class="icon-btn action-icon" (click)="editAddress(address,i,'type')"
+                aria-label="Edit address" title="Edit">
+                <img [src]="cdnPath + 'assets/images/icons/edit.png'" alt="Edit" />
+              </button>
+            </div>
+          </div>
+
+          <!-- <div class="saved-line">
+            
+          </div> -->
+          <div class="saved-line">
+            {{ address.address }},{{ address.city }}, {{ address.landMark }}, {{ address.state }},
+            {{ address.country }}, {{ address.postalCode }}
+          </div>
+          <div class="saved-body-sub">
+            <div class="saved-line">
+              {{ address.countryCode }} {{ address.phoneNumber }}
+            </div>
+            <div class="saved-line">
+              {{ address.email }}
+            </div>
+          </div>
+        </div>
+      </label>
+      <!-- <div class="saved-actions" *ngIf="deliveryAddress === address">
+        <button pButton pRipple type="button" (click)="proceedToCheckout()" id="btnProceedPayment"
+          class="btn-primary-ghost">
+          Deliver here
         </button>
+      </div> -->
     </div>
-    <div class="col-lg-12" *ngIf="isEditable">
-        <form [formGroup]="addressForm">
-            <div class="row">
-                <div class="col-lg-6  mt-2">
-                    <label class="p-0 m-0 pt-1 form-text-light account-font-small">First Name<span
-                            class="red">&nbsp;*</span></label>
-                    <input type="text" pInputText name="name" formControlName="firstName"
-                        class="form-control" id="ownerName" placeholder="First Name" autocomplete="off"
-                        maxlength="50" />
-                    <app-field-error-display
-                        [displayError]="fed_service.isFieldValid(addressForm,'firstName')" [errorMsgs]="fed_service.getErrorMessage(addressForm,'firstName',
-                          {
-                            'required' : 'First name is required',
-                            'pattern' : 'Only alphabets are allowed'
-                          })">
-                    </app-field-error-display>
-                </div>
-                <div class="col-lg-6  mt-2">
-                    <label class="p-0 m-0 pt-1 form-text-light account-font-small">Last Name<span
-                            class="red">&nbsp;*</span></label>
-                    <input type="text" pInputText name="name" formControlName="lastName"
-                        class="form-control" id="ownerName" placeholder="Last Name" autocomplete="off"
-                        maxlength="50" />
-                    <app-field-error-display
-                        [displayError]="fed_service.isFieldValid(addressForm,'lastName')" [errorMsgs]="fed_service.getErrorMessage(addressForm,'lastName',
-                        {
-                          'required' : 'Last name is required',
-                          'pattern' : 'Only alphabets are allowed'
-                        })">
-                    </app-field-error-display>
-                </div>
+  </div>
+
+</div>
+<div class="mobile-header"  *ngIf="!isEditable && addedAddresses.length > 0 && isSmallDevice && deliveryAddress">
+  <!-- <div class="mobile-header-title">Delivering to</div> -->
+  <div class="saved-item">
+     <div class="saved-body">
+          <div class="saved-body-main">
+            <div class="saved-name">
+              {{ deliveryAddress.firstName }} {{ deliveryAddress.lastName }}
             </div>
-            <div class="row">
-                <div class="col-lg-6  mt-2">
-                    <label class="p-0 m-0 pt-1 form-text-light account-font-small">Email<span
-                            class="red">&nbsp;*</span></label>
-                    <input type="text" pInputText class="form-control" id="email" placeholder="Email"
-                        formControlName="email" autocomplete="off" />
-                    <app-field-error-display [displayError]="fed_service.isFieldValid(addressForm,'email')"
-                        [errorMsgs]="fed_service.getErrorMessage(addressForm,'email',
-                    {
-                      'required' : 'Email is required',
-                      'pattern' : 'Please enter valid email'
-                    })">
-                    </app-field-error-display>
-                </div>
-                <div class="col-lg-6  mt-2">
-                    <label class="p-0 m-0 pt-1 form-text-light account-font-small">Mobile<span class="red">&nbsp;*</span></label>
-                      <app-phone-input *ngIf="(intlTelInputLoader.ready$ | async)" formControlName="phoneNumber" name="phoneNumber" [initialCountry]="'in'"
-                          [preferredCountries]="preferredCountries" [nationalMode]="false" [separateDialCode]="true"></app-phone-input>
-                      <input *ngIf="!(intlTelInputLoader.ready$ | async)" type="tel" class="form-control"
-                        placeholder="Enter your mobile number" autocomplete="off" disabled>
-                </div>
+          </div>
+
+          <!-- <div class="saved-line">
+            
+          </div> -->
+          <div class="saved-line">
+            {{ deliveryAddress.address }},{{ deliveryAddress.city }}, {{ deliveryAddress.landMark }}, {{ deliveryAddress.state }},
+            {{ deliveryAddress.country }}, {{ deliveryAddress.postalCode }}
+          </div>
+          <div class="saved-body-sub">
+            <div class="saved-line">
+              {{ deliveryAddress.countryCode }} {{ deliveryAddress.phoneNumber }}
             </div>
-            <div class="row">
-                <div class="col-lg-6  mt-2">
-                    <label class="p-0 m-0 pt-1 form-text-light account-font-small">Address<span
-                            class="red">&nbsp;*</span></label>
-                    <textarea rows="1" class="w-100" pInputTextarea formControlName="address">
-                        </textarea>
-                    <app-field-error-display
-                        [displayError]="fed_service.isFieldValid(addressForm,'address')" [errorMsgs]="fed_service.getErrorMessage(addressForm,'address',
-                              {
-                                'required' : 'Please enter address'
-                              })">
-                    </app-field-error-display>
-                </div>
-                <div class="col-lg-6 mt-2">
-                    <label class="p-0 m-0 pt-1 form-text-light account-font-small">Pin Code<span
-                            class="red">&nbsp;*</span></label>
-                    <input type="text" pInputText class="form-control" id="pinCode" placeholder="Pin Code"
-                        formControlName="postalCode" autocomplete="off" />
-                    <app-field-error-display
-                        [displayError]="fed_service.isFieldValid(addressForm,'postalCode')" [errorMsgs]="fed_service.getErrorMessage(addressForm,'postalCode',
-                        {
-                          'required' : 'Please enter Postal Code ',
-                          'minlength' : 'Enter a 6 digit Postal Code',
-                          'maxlength' : 'Enter a 6 digit Postal Code',
-                          'pattern' : 'Only numbers are allowed'
-                        })">
-                    </app-field-error-display>
-                </div>
+            <div class="saved-line">
+              {{ deliveryAddress.email }}
             </div>
-            <div class="row">
-                <div class="col-lg-6  mt-2">
-                    <label class="p-0 m-0 pt-1 form-text-light account-font-small">Landmark<span
-                            class="red">&nbsp;*</span></label>
-                    <input type="text" pInputText class="form-control" id="landMark" placeholder="Landmark"
-                        formControlName="landMark" autocomplete="off" />
-                    <app-field-error-display
-                        [displayError]="fed_service.isFieldValid(addressForm,'landMark')" [errorMsgs]="fed_service.getErrorMessage(addressForm,'landMark',
-                        {
-                          'required' : 'Please enter landmark'
-                        })">
-                    </app-field-error-display>
-                </div>
-                <div class="col-lg-6  mt-2">
-                    <label class="p-0 m-0 pt-1 form-text-light account-font-small">City<span
-                            class="red">&nbsp;*</span></label>
-                    <input type="text" pInputText name="city" formControlName="city" class="form-control"
-                        id="city" placeholder="City" autocomplete="off" maxlength="50" />
-                    <app-field-error-display [displayError]="fed_service.isFieldValid(addressForm,'city')"
-                        [errorMsgs]="fed_service.getErrorMessage(addressForm,'city',
-                            {
-                              'required' : 'Please enter city name',
-                              'pattern' : 'Only alphabets are allowed'
-                            })">
-                    </app-field-error-display>
-                </div>
-                <div class="col-lg-6  mt-2">
-                    <label class="p-0 m-0 pt-1 form-text-light account-font-small">State<span
-                            class="red">&nbsp;*</span></label>
-                    <input type="text" pInputText name="state" formControlName="state" class="form-control"
-                        id="state" placeholder="State" autocomplete="off" maxlength="50" />
-                    <app-field-error-display [displayError]="fed_service.isFieldValid(addressForm,'state')"
-                        [errorMsgs]="fed_service.getErrorMessage(addressForm,'state',
-                            {
-                              'required' : 'Please enter state',
-                              'pattern' : 'Only alphabets are allowed'
-                            })">
-                    </app-field-error-display>
-                </div>
-                <div class="col-lg-6  mt-2">
-                    <label class="p-0 m-0 pt-1 form-text-light account-font-small">Country<span
-                            class="red">&nbsp;*</span></label>
-                    <input type="text" pInputText name="country" formControlName="country" class="form-control"
-                        id="country" placeholder="Country" autocomplete="off" maxlength="50" />
-                    <app-field-error-display [displayError]="fed_service.isFieldValid(addressForm,'country')"
-                        [errorMsgs]="fed_service.getErrorMessage(addressForm,'country',
-                            {
-                              'required' : 'Please enter country',
-                              'pattern' : 'Only alphabets are allowed'
-                            })">
-                    </app-field-error-display>
-                </div>
-            </div>
-        </form>
-        <div class="d-flex gap-3 mt-3">
-            <button pButton pRipple type="button" class="btn-cancel p-button-primary btn-primary" id="btnCancel"
-                (click)="resetAddress()">Cancel</button>
-            <button pButton pRipple type="button" [disabled]="isFormInvalid()" id="btnSaveProceed"
-                class="btn-viewall save-btn p-button-primary btn-primary" (click)="saveAddress()">Save &
-                Proceed</button>
+          </div>
         </div>
+  </div>
+
+</div>
+<div class="mobile-address-bar" *ngIf="!isEditable && addedAddresses.length > 0 && isSmallDevice">
+  <div class="mobile-address-inner">
+    <div class="mobile-address-controls">
+      <div class="mobile-address-select">
+        <button type="button" class="address-trigger" [class.is-open]="isAddressSheetOpen" (click)="openAddressSheet()"
+          aria-label="Select address">
+          <div class="address-trigger-inner">
+            <div>
+              <div class="address-trigger-label">Deliver to</div>
+              <div class="address-trigger-value" *ngIf="deliveryAddress; else noAddress">
+                <span class="address-trigger-name">{{ deliveryAddress?.firstName }} {{ deliveryAddress?.lastName }}</span>
+                <span class="address-trigger-line">
+                  {{ deliveryAddress?.address }}, {{ deliveryAddress?.city }}
+                </span>
+              </div>
+            </div>
+            <i class="fa fa-angle-down address-chevron" aria-hidden="true"></i>
+          </div>
+          <ng-template #noAddress>
+            <div class="address-trigger-value">
+              Select address
+            </div>
+          </ng-template>
+        </button>
+      </div>
+      <button pButton pRipple type="button" class="mobile-address-btn btn-primary-cta"
+        (click)="proceedToCheckout()" [disabled]="!deliveryAddress">
+        Checkout
+      </button>
     </div>
+  </div>
+</div>
+
+<div class="address-sheet-backdrop" *ngIf="isAddressSheetOpen && isSmallDevice" (click)="closeAddressSheet()"></div>
+<div class="address-sheet" *ngIf="isAddressSheetOpen && isSmallDevice">
+  <div class="address-sheet-header">
+    <div class="address-sheet-title">Select Address</div>
+    <button type="button" class="address-sheet-close" (click)="closeAddressSheet()" aria-label="Close">&times;</button>
+  </div>
+
+  <div class="address-sheet-list">
+    <div class="saved-item" *ngFor="let address of addedAddresses; let i = index">
+      <label class="saved-radio">
+        <p-radioButton [inputId]="'mobileAddress' + address.key" name="mobileAddress" [value]="address"
+          [ngModel]="pendingDeliveryAddress" (ngModelChange)="pendingDeliveryAddress = $event"></p-radioButton>
+        <div class="saved-body">
+          <div class="saved-body-main">
+            <div class="saved-name">{{ address.firstName }} {{ address.lastName }}</div>
+            <div class="saved-actions-main">
+              <button pButton pRipple type="button" class="btn-link danger action-btn"
+                (click)="deleteAddressFromSheet(address, i)">
+                Remove
+              </button>
+              <button pButton pRipple type="button" class="btn-link action-btn"
+                (click)="editAddressFromSheet(address, i, 'type')">
+                Edit
+              </button>
+              <button type="button" class="icon-btn action-icon danger" (click)="deleteAddressFromSheet(address, i)"
+                aria-label="Remove address" title="Remove">
+                <img [src]="cdnPath + 'assets/images/icons/trash.png'" alt="Remove" />
+              </button>
+              <button type="button" class="icon-btn action-icon" (click)="editAddressFromSheet(address, i, 'type')"
+                aria-label="Edit address" title="Edit">
+                <img [src]="cdnPath + 'assets/images/icons/edit.png'" alt="Edit" />
+              </button>
+            </div>
+          </div>
+          <div class="saved-line">
+            {{ address.address }},{{ address.city }}, {{ address.landMark }}, {{ address.state }},
+            {{ address.country }}, {{ address.postalCode }}
+          </div>
+          <div class="saved-body-sub">
+            <div class="saved-line">{{ address.countryCode }} {{ address.phoneNumber }}</div>
+            <div class="saved-line">{{ address.email }}</div>
+          </div>
+        </div>
+      </label>
+    </div>
+  </div>
+
+  <div class="address-sheet-footer">
+    <button pButton pRipple type="button" class="btn-add" (click)="addAddressFromSheet()">Add a new address</button>
+    <button type="button" class="address-sheet-save" (click)="saveAddressSheetSelection()">Save</button>
+  </div>
+</div>
+
+<div class="address-card" *ngIf="isEditable">
+  <form [formGroup]="addressForm" class="address-form">
+    <div class="form-section">
+      <div class="section-title">Contact Details</div>
+      <div class="form-grid two-col">
+        <div class="field">
+          <label>First Name<span class="red">*</span></label>
+          <input type="text" pInputText formControlName="firstName" placeholder="First Name" autocomplete="off"
+            maxlength="50" />
+          <app-field-error-display [displayError]="fed_service.isFieldValid(addressForm,'firstName')" [errorMsgs]="fed_service.getErrorMessage(addressForm,'firstName', {
+              'required' : 'First name is required',
+              'pattern' : 'Only alphabets are allowed'
+            })">
+          </app-field-error-display>
+        </div>
+        <div class="field">
+          <label>Last Name<span class="red">*</span></label>
+          <input type="text" pInputText formControlName="lastName" placeholder="Last Name" autocomplete="off"
+            maxlength="50" />
+          <app-field-error-display [displayError]="fed_service.isFieldValid(addressForm,'lastName')" [errorMsgs]="fed_service.getErrorMessage(addressForm,'lastName', {
+              'required' : 'Last name is required',
+              'pattern' : 'Only alphabets are allowed'
+            })">
+          </app-field-error-display>
+        </div>
+      </div>
+      <div class="form-grid two-col">
+        <div class="field">
+          <label>Phone Number<span class="red">*</span></label>
+          <app-phone-input formControlName="phoneNumber" name="phoneNumber" [initialCountry]="'in'"
+            [preferredCountries]="preferredCountries" [nationalMode]="false"
+            [separateDialCode]="true"></app-phone-input>
+        </div>
+        <div class="field">
+          <label>Email<span class="red">*</span></label>
+          <input type="text" pInputText formControlName="email" placeholder="Email Id" autocomplete="off" />
+          <app-field-error-display [displayError]="fed_service.isFieldValid(addressForm,'email')" [errorMsgs]="fed_service.getErrorMessage(addressForm,'email', {
+              'required' : 'Email is required',
+              'pattern' : 'Enter a valid email'
+            })">
+          </app-field-error-display>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="section-title">Address</div>
+      <div class="form-grid two-col">
+        <div class="field">
+          <label>Pin Code<span class="red">*</span></label>
+          <input type="text" pInputText formControlName="postalCode" placeholder="Pin Code" autocomplete="off" />
+          <!-- <div class="helper-text">This is a mandatory field</div> -->
+          <app-field-error-display [displayError]="fed_service.isFieldValid(addressForm,'postalCode')" [errorMsgs]="fed_service.getErrorMessage(addressForm,'postalCode', {
+              'required' : 'Please enter Postal Code ',
+              'minlength' : 'Enter a 6 digit Postal Code',
+              'maxlength' : 'Enter a 6 digit Postal Code',
+              'pattern' : 'Only numbers are allowed'
+            })">
+          </app-field-error-display>
+        </div>
+        <div class="field">
+          <label>House Number/Tower/Block<span class="red">*</span></label>
+          <input type="text" pInputText formControlName="landMark" placeholder="House Number/Tower/Block" />
+          <div class="helper-text muted">
+            House Number will allow a doorstep delivery
+          </div>
+          <app-field-error-display [displayError]="fed_service.isFieldValid(addressForm,'landMark')" [errorMsgs]="fed_service.getErrorMessage(addressForm,'landMark', {
+              'required' : 'Please enter landmark'
+            })">
+          </app-field-error-display>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="field">
+          <label>Address (locality, building, street)<span class="red">*</span></label>
+          <input type="text" pInputText formControlName="address" placeholder="Address (locality, building, street)" />
+          <div class="helper-text muted">
+            Please update society/apartment details
+          </div>
+          <app-field-error-display [displayError]="fed_service.isFieldValid(addressForm,'address')" [errorMsgs]="fed_service.getErrorMessage(addressForm,'address', {
+              'required' : 'Please enter address'
+            })">
+          </app-field-error-display>
+        </div>
+      </div>
+      <div class="form-grid two-col">
+        <div class="field">
+          <label>Locality / Town<span class="red">*</span></label>
+          <input type="text" pInputText formControlName="city" placeholder="Locality / Town" />
+          <app-field-error-display [displayError]="fed_service.isFieldValid(addressForm,'city')" [errorMsgs]="fed_service.getErrorMessage(addressForm,'city', {
+              'required' : 'Please enter city name',
+              'pattern' : 'Only alphabets are allowed'
+            })">
+          </app-field-error-display>
+        </div>
+        <div class="field">
+          <label>State<span class="red">*</span></label>
+          <input type="text" pInputText formControlName="state" placeholder="State" />
+          <app-field-error-display [displayError]="fed_service.isFieldValid(addressForm,'state')" [errorMsgs]="fed_service.getErrorMessage(addressForm,'state', {
+              'required' : 'Please enter state',
+              'pattern' : 'Only alphabets are allowed'
+            })">
+          </app-field-error-display>
+        </div>
+        <div class="form-grid two-col">
+          <div class="field">
+            <label>Country<span class="red">*</span></label>
+            <input type="text" pInputText formControlName="country" placeholder="Country" />
+            <app-field-error-display [displayError]="fed_service.isFieldValid(addressForm,'country')" [errorMsgs]="fed_service.getErrorMessage(addressForm,'country', {
+              'required' : 'Please enter country',
+              'pattern' : 'Only alphabets are allowed'
+            })">
+            </app-field-error-display>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- <div class="form-section">
+      <div class="section-title">Address Type</div>
+      <div class="address-type">
+        <label class="radio-pill">
+          <input type="radio" name="addrType" checked />
+          <span>Home</span>
+        </label>
+        <label class="radio-pill">
+          <input type="radio" name="addrType" />
+          <span>Office</span>
+        </label>
+      </div>
+      <label class="default-check">
+        <input type="checkbox" />
+        <span>Make this as my default address</span>
+      </label>
+    </div> -->
+
+    <div class="form-actions">
+      <button pButton pRipple type="button" [disabled]="isFormInvalid()" id="btnSaveProceed" class="btn-save"
+        (click)="saveAddress()">
+        Save
+      </button>
+      <button pButton pRipple type="button" class="btn-cancel" id="btnCancel" (click)="resetAddress()"
+        *ngIf="addedAddresses?.length > 0">
+        Cancel
+      </button>
+    </div>
+  </form>
 </div>

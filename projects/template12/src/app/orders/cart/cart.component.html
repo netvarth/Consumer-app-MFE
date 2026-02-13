@@ -1,5 +1,4 @@
-<div class="cart" [class.container]="!smallDevice" [class]="theme">
-    <div class="my-1 login-form_custom" *ngIf="!loggedIn && !sessionCart">
+<div class="my-1 login-form_custom" *ngIf="!loggedIn && !sessionCart">
         <div class="card card-custom no-margin hgt-adjust">
             <div class="card-body p-0">
                 <app-authentication (actionPerformed)="actionPerformed($event)"
@@ -7,15 +6,10 @@
             </div>
         </div>
     </div>
-    <div class="customCard headerBorder mt-1"
-        *ngIf="(items?.length > 0 || storeItems?.length > 0) && sessionCart && !loading">
-        <div class="pointer-cursor" (click)="goBack()"><i class="fa fa-arrow-left clrChangeHeader"></i> </div>
-        <div class="pointer-cursor" (click)="goBack()" class="clrChangeHeader">Back</div>
-    </div>
-    <div class="d-flex justify-content-between align-items-center"
-        *ngIf="(items?.length > 0 || storeItems?.length > 0) && sessionCart && !loading">
-        <h3 class="fw-bold mt-3 ms-3 mb-3">My Cart</h3>
-        <span class="continue pointer-cursor me-3" (click)="addMore()">Continue shopping </span>
+<div class="cart" [class.container]="!smallDevice" [class]="theme"  *ngIf="showHomeDelivery && sessionCart && !loading">
+    <div class="page-back" (click)="goBack()">
+        <i class="fa fa-arrow-left" aria-hidden="true"></i>
+        <span>Cart</span>
     </div>
     <div *ngIf="sessionCart && !loading && supportAllDelivery">
         <p-tabMenu [model]="cartTabs" [(activeItem)]="activeTab" (activeItemChange)="onTabChange($event)">
@@ -24,176 +18,150 @@
 
     <div *ngIf="showHomeDelivery">
         <div class="order-cart" *ngIf="items && items?.length > 0 && sessionCart && !loading">
-            <div class="cart-wrapper card p-0">
-                <div class="cart-container">
-                    <div class="cart-container-section1">
-                        <div class="">
-                            <div class="items card p-0">
-                                <p-table [value]="items" [scrollable]="true">
-                                    <ng-template pTemplate="header" *ngIf="!smallDevice">
-                                        <tr>
-                                            <th class="">Item</th>
-                                            <th class="text-center">GST</th>
-                                            <th class="text-center">Quantity</th>
-                                            <th class="text-start">Total</th>
-                                        </tr>
-                                    </ng-template>
-                                    <ng-template *ngIf="!smallDevice" pTemplate="body" let-item>
-                                        <tr>
-                                            <td class="">
-                                                <div class="d-flex align-items-center gap-2">
-                                                    <div>
-                                                        <img *ngIf="item && item.spItem && item.spItem.attachments && item.spItem.attachments.length > 0"
-                                                            [src]="item.spItem?.attachments?.[0]?.s3path" alt=""
-                                                            height="75" width="75">
-                                                        <img *ngIf="item && item.spItem && item.spItem.attachments && item.spItem.attachments.length == 0"
-                                                            src="{{cdnPath}}assets/images/rx-order/items/Items.svg"
-                                                            alt="" height="75" width="75">
-                                                        <img *ngIf="item && item.spItemDto && item.spItemDto.attachments && item.spItemDto.attachments.length > 0"
-                                                            [src]="item.spItemDto?.attachments?.[0]?.s3path" alt=""
-                                                            height="75" width="75">
-                                                        <img *ngIf="item && item.spItemDto && item.spItemDto.attachments && item.spItemDto.attachments.length == 0"
-                                                            src="{{cdnPath}}assets/images/rx-order/items/Items.svg"
-                                                            alt="" height="75" width="75">
-                                                    </div>
-                                                    <div>
-                                                        <div class="fw-bold item-name">{{item.spItem.name}}</div>
-                                                        <div class="d-flex price-section">
-                                                            <span class="netPrice">₹{{item.taxableAmount}}</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <ul *ngIf="item && item.selectedAttributes" class="attribute-row">
-                                                        <li *ngFor="let value of getAttributeValues(item.selectedAttributes)"
-                                                            class="attribute-box">
-                                                            {{ value }}
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </td>
-                                            <td class="text-center">
-                                                <div *ngIf="item?.taxPercentage" class="fw-bold">{{item.taxPercentage}}%
-                                                </div>
-                                                <div *ngIf="!item?.taxPercentage" class="fw-bold">-</div>
-                                            </td>
-                                            <td>
-                                                <div class="inputnumber">
-                                                    <div
-                                                        class="d-flex justify-content-between align-items-center gap-5">
-                                                        <p-inputNumber [(ngModel)]="item.quantity" [showButtons]="true"
-                                                            buttonLayout="horizontal" spinnerMode="vertical"
-                                                            inputId="vertical" incrementButtonClass="p-button-secondary"
-                                                            incrementButtonIcon="fa fa-plus"
-                                                            decrementButtonIcon="fa fa-minus" [readonlyInput]="true"
-                                                            [ngClass]="{'disabled-decrement': item.quantity === 1, 'text-center':true}"
-                                                            (ngModelChange)="onQuantityChange($event, item)">
-                                                        </p-inputNumber>
-                                                    </div>
-                                                    <!-- <div class="remove" (click)="removeItem(item.uid)">Remove</div> -->
-                                                </div>
-                                            </td>
-                                            <td class="text-end">
-                                                <div class="d-flex justify-content-between align-items-center gap-5">
-                                                    <div class="fw-bold">₹{{getAmountInDecimalPoints(item.netRate)}}
-                                                    </div>
-                                                    <div class="remove pe-2" (click)="removeItem(item)"><i
-                                                            class="fa fa-trash"></i></div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </ng-template>
-                                    <ng-template *ngIf="smallDevice" pTemplate="body" let-item>
-                                        <tr class="small_item_container">
-                                            <td class="card p-0">
-                                                <div class="item-container-tbl p-0">
-                                                    <div class="item-container-tbl-cont-left p-2">
-                                                        <img *ngIf="item && item.spItem && item.spItem.attachments && item.spItem.attachments.length > 0"
-                                                            [src]="item.spItem?.attachments?.[0]?.s3path" alt=""
-                                                            height="75" width="65">
-                                                        <img *ngIf="item && item.spItem && item.spItem.attachments && item.spItem.attachments.length == 0"
-                                                            src="{{cdnPath}}assets/images/rx-order/items/Items.svg"
-                                                            alt="" height="75" width="65">
-                                                        <img *ngIf="item && item.spItemDto && item.spItemDto.attachments && item.spItemDto.attachments.length > 0"
-                                                            [src]="item.spItemDto?.attachments?.[0]?.s3path" alt=""
-                                                            height="75" width="65">
-                                                        <img *ngIf="item && item.spItemDto && item.spItemDto.attachments && item.spItemDto.attachments.length == 0"
-                                                            src="{{cdnPath}}assets/images/rx-order/items/Items.svg"
-                                                            alt="" height="75" width="65">
-                                                    </div>
-                                                    <div class="item-container-tbl-cont-right p-2">
-                                                        <div class="d-flex justify-content-between align-items-center">
-                                                            <div class="item_name">{{item.spItem.name}}</div>
-                                                            <div class="remove pe-2" (click)="removeItem(item)"><i
-                                                                    class="fa fa-trash"></i></div>
-                                                        </div>
-                                                        <div class="pb-2 item_price">₹{{item.taxableAmount}}<span
-                                                                *ngIf="item.taxPercentage">+({{item?.taxPercentage}}% of
-                                                                GST)</span></div>
-                                                        <div class="inputnumber d-flex">
-                                                            <p-inputNumber class="adjust-Qty"
-                                                                [(ngModel)]="item.quantity" [showButtons]="true"
-                                                                buttonLayout="horizontal" spinnerMode="vertical"
-                                                                inputId="vertical"
-                                                                incrementButtonClass="p-button-secondary"
-                                                                incrementButtonIcon="fa fa-plus"
-                                                                decrementButtonIcon="fa fa-minus" [readonlyInput]="true"
-                                                                [ngClass]="{'disabled-decrement': item.quantity === 1, 'text-center':true}"
-                                                                (ngModelChange)="onQuantityChange($event, item)"
-                                                                (onFocus)="onInputFocus($event)">
-                                                            </p-inputNumber>
-                                                            <div class="fw-bold">₹{{item.netRate}}</div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </ng-template>
-                                </p-table>
+            <div class="cart-steps">
+                <div class="steps-pill">
+                    <span class="step active"><i class="fa fa-shopping-bag"></i> Cart</span>
+                    <span class="step-line">.........</span>
+                    <span class="step"><i class="fa fa-map-marker"></i> Address</span>
+                </div>
+            </div>
+            <div class="cart-wrapper  no-padding">
+                <div class="cart-container cart-layout">
+                    <div class="cart-container-section1 cart-left">
+                        <div class="cart-login-banner" *ngIf="!loggedIn">
+                            <span>Login to see items from your existing cart and wishlist.</span>
+                            <button type="button" class="btn-login" (click)="loginclicked()">Login Now</button>
+                        </div>
+                        <div class="cart-left-header">
+                            <span class="cart-count">{{items.length}} {{items.length === 1 ? 'ITEM' : 'ITEMS'}} IN CART</span>
+                            <span class="clear-all pointer-cursor" (click)="clearCart()">Clear all</span>
+                        </div>
+                        <div class="cart-items-list">
+                            <div class="cart-item-card" *ngFor="let item of items">
+                                <div class="cart-item-thumb pointer-cursor" (click)="cartActionPerformed({ value: item })">
+                                    <!-- <div class="cart-item-wishlist" aria-hidden="true">
+                                        <i class="fa fa-heart-o"></i>
+                                    </div> -->
+                                    <img *ngIf="item?.spItemDto?.attachments?.[0]?.s3path"
+                                        [src]="item.spItemDto.attachments[0].s3path" alt="">
+                                    <img *ngIf="!item?.spItemDto?.attachments?.length && item?.spItem?.attachments?.[0]?.s3path"
+                                        [src]="item.spItem.attachments[0].s3path" alt="">
+                                    <img *ngIf="!item?.spItemDto?.attachments?.length && !item?.spItem?.attachments?.length && item?.attachments?.[0]?.s3path"
+                                        [src]="item.attachments[0].s3path" alt="">
+                                    <img *ngIf="(!item?.spItemDto?.attachments?.length && !item?.spItem?.attachments?.length)"
+                                        src="{{cdnPath}}assets/images/rx-order/items/Items.svg" alt="">
+                                </div>
+                                <div class="cart-item-details">
+                                    <div class="cart-item-title pointer-cursor" (click)="cartActionPerformed({ value: item })">
+                                        {{getItemName(item)}}
+                                    </div>
+                                    <div class="cart-item-sub" *ngIf="getItemType(item)">
+                                        {{getItemType(item)}}
+                                    </div>
+                                    <div class="cart-item-variant" *ngIf="hasItemAttributes(item)">
+                                        <span>Options: {{ getDisplayAttributes(item).join(', ') }}</span>
+                                        <!-- <i class="fa fa-caret-down" aria-hidden="true"></i> -->
+                                    </div>
+                                    <div class="cart-item-price">
+                                        <span class="cart-item-net">₹{{getAmountInDecimalPoints(item.netRate)}}</span>
+                                        <span class="cart-item-mrp" *ngIf="item?.showMrp && item?.mrp && item?.mrp > item?.price">₹{{item.mrp | number:'1.0-0'}}</span>
+                                        <span class="cart-item-off" *ngIf="item?.showMrp && item?.mrp && (((item.mrp - item.price) / item.mrp) * 100) > 0">
+                                            ₹{{item.mrp - item.price | number:'1.0-0'}} OFF
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="cart-item-action-group">
+                                <div class="cart-item-actions">
+                                    <div class="qty-box" [ngClass]="{'is-disabled': item.quantity === 1}">
+                                        <button type="button" class="qty-btn" (click)="decrementItemQuantity(item)"
+                                            [disabled]="item.quantity === 1">-</button>
+                                        <input type="text" class="qty-input" [value]="item.quantity" readonly>
+                                        <button type="button" class="qty-btn" (click)="incrementItemQuantity(item)">+</button>
+                                    </div>
+                                    </div>
+                                    <div class="cart-item-action-separator">
+                                    <button class="cart-remove" type="button" (click)="removeItem(item)">
+                                   <img [src]="cdnPath + 'assets/images/icons/crossicon.png'" style="height: 10px;" alt="Change address" />
+                                </button>
+                                
+                                </div>
+                                </div>
+                                
                             </div>
                         </div>
                     </div>
-                    <div *ngIf="cartDataHome" class="cart-container-section1">
-                        <div [ngClass]="!mediumDevice && smallDevice?'card':'p-4'">
-                            <div *ngIf="isCouponsAvailable" class="coupon-section mb-3 col-md-12 col-12 col-sm-12 ">
-                                <app-apply-coupon [s3CouponsList]="s3CouponsList"
+                    <div *ngIf="cartDataHome" class="cart-container-section1 cart-right">
+                        <div class="cart-right-note">
+                            <label for="cartNote" class="cart-right-note-label">NOTES</label>
+                            <textarea id="cartNote" name="cartNote" rows="2" [(ngModel)]="cartNote"
+                                (ngModelChange)="saveCartNote($event)"
+                                maxlength="250"
+                                placeholder="Have a special request? Add customisations or notes for your order here."></textarea>
+                        </div>
+                        <div class="cart-summary">
+                            <div *ngIf="isCouponsAvailable" class="coupon-section mb-3 col-md-12 col-12 col-sm-12">
+                                <app-apply-coupon [s3CouponsList]="s3CouponsList" [loggedIn]="loggedIn"
                                     (actionPerformed)="couponActionPerformed($event)"></app-apply-coupon>
                             </div>
-                            <div *ngIf="cartDataHome.netTotal && cartDataHome.netTotal > 0"
-                                class="d-flex justify-content-between total mt-2">
-                                <div>Total</div>
-                                <div>₹{{getAmountInDecimalPoints(cartDataHome.netTotal)}}</div>
+                            <div class="summary-title">Price Details ({{items.length}} {{items.length ===1? 'Item' :'Items'}})</div>
+                            <div class="summary-row" *ngIf="(cartDataHome?.netTotal ?? getItemsTotalMrp(items)) > 0">
+                                <span>Net Total</span>
+                                <span>₹{{getAmountInDecimalPoints(cartDataHome?.netTotal ?? getItemsTotalMrp(items))}}</span>
                             </div>
-                            <div *ngIf="cartDataHome.taxTotal && cartDataHome.taxTotal > 0"
-                                class="d-flex justify-content-between total mt-2">
-                                <div>Tax Total</div>
-                                <div>₹{{getAmountInDecimalPoints(cartDataHome.taxTotal)}}</div>
+                            <div class="summary-row discount-row" *ngIf="getItemsDiscount(items) > 0">
+                                <span>Discount on MRP</span>
+                                <span>- ₹{{getAmountInDecimalPoints(getItemsDiscount(items))}}</span>
                             </div>
-                            <div
-                                *ngIf="cartDataHome && cartDataHome.providerCoupons &&  cartDataHome.providerCoupons.length > 0">
-                                <div class="d-flex coupon-text mt-2 justify-content-between"
-                                    *ngFor="let coupon of cartDataHome.providerCoupons">
-                                    <span scope="row" class="fw-bold border-none">
-                                        {{coupon.couponCode}}(coupon)</span>
-                                    <span class="fw-bold border-none">
-                                        (-){{coupon.discount | currency:'&#8377;'}}
-                                        <i (click)="removeOrderCoupon(coupon)" class="fa fa-window-close pointer-cursor"
-                                            aria-hidden="true"></i>
-                                    </span>
+                            <div class="summary-row" *ngIf="isCouponsAvailable">
+                                <span>Coupon Discount</span>
+                                <span *ngIf="getCouponDiscount(cartDataHome) > 0" class="summary-discount">
+                                    - ₹{{getAmountInDecimalPoints(getCouponDiscount(cartDataHome))}}
+                                </span>
+                                <button class="summary-link" type="button" *ngIf="getCouponDiscount(cartDataHome) === 0"
+                                    (click)="openCoupons()">Apply Coupon</button>
+                            </div>
+                             <div class="summary-coupon-list"
+                                *ngIf="cartDataHome?.providerCoupons && cartDataHome.providerCoupons.length > 0">
+                                <div class="coupon-item" *ngFor="let coupon of cartDataHome.providerCoupons">
+                                    <span>{{coupon.couponCode}}</span>
+                                    <button type="button" class="coupon-remove" (click)="removeOrderCoupon(coupon)">
+                                        <i class="fa fa-window-close" aria-hidden="true"></i>
+                                    </button>
                                 </div>
                             </div>
-                            <div *ngIf="cartDataHome.netRate" class="d-flex justify-content-between total mt-2">
-                                <div>Net Total</div>
-                                <div>₹{{getAmountInDecimalPoints(cartDataHome.netRate)}}</div>
+                            <div class="summary-row" *ngIf="cartDataHome.taxTotal && cartDataHome.taxTotal > 0">
+                                <span>Tax</span>
+                                <span>₹{{getAmountInDecimalPoints(cartDataHome.taxTotal)}}</span>
                             </div>
+                            <div class="summary-row" *ngIf="getPlatformFee(cartDataHome) > 0">
+                                <span>Platform Fee</span>
+                                <span>₹{{getAmountInDecimalPoints(getPlatformFee(cartDataHome))}}</span>
+                            </div>
+                            <div class="summary-total" *ngIf="cartDataHome.netRate">
+                                <span>Total Amount</span>
+                                <span>₹{{getAmountInDecimalPoints(cartDataHome.netRate)}}</span>
+                            </div>
+                           
                             <div class="mt-3">
-                                <button pButton pRipple type="button" class="btn-checkout p-button-primary btn-primary"
-                                    (click)="checkout('HOME_DELIVERY')" id="btnCheckout">Checkout</button>
+                                <button type="button" class="btn-place-order"
+                                    (click)="checkout('HOME_DELIVERY')" id="btnCheckout">Place Order</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <div class="col-lg-12 mt-4" *ngIf="similarItemsHome && similarItemsHome.length > 0">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2 class="fw-bold add-cart-title">Similar Products</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="my-4 pb-4" *ngIf="similarItemsHome && similarItemsHome.length > 0">
+                <app-items-card [items]="similarItemsHome" [themes]="theme"
+                    (actionPerformed)="cartActionPerformed($event)"></app-items-card>
+            </div>
+            <div></div>
         </div>
         <div class="empty-cart" *ngIf="items && items.length == 0 && sessionCart && !loading">
             <div class="card mt-3">
@@ -211,176 +179,127 @@
 
     <div *ngIf="showStorePickup">
         <div class="order-cart" *ngIf="storeItems && storeItems.length > 0 && sessionCart && !loading">
-            <div class="cart-wrapper card p-0">
-                <div class="cart-container">
-                    <div class="cart-container-section1">
-                        <div class="">
-                            <div class="items card p-0">
-                                <p-table [value]="storeItems" [scrollable]="true">
-                                    <ng-template pTemplate="header" *ngIf="!smallDevice">
-                                        <tr>
-                                            <th class="">Item</th>
-                                            <th class="text-center">GST</th>
-                                            <th class="text-center">Quantity</th>
-                                            <th class="text-start">Total</th>
-                                        </tr>
-                                    </ng-template>
-                                    <ng-template *ngIf="!smallDevice" pTemplate="body" let-item>
-                                        <tr>
-                                            <td class="">
-                                                <div class="d-flex align-items-center gap-2">
-                                                    <div>
-                                                        <img *ngIf="item && item.spItem && item.spItem.attachments && item.spItem.attachments.length > 0"
-                                                            [src]="item.spItem?.attachments?.[0]?.s3path" alt=""
-                                                            height="75" width="75">
-                                                        <img *ngIf="item && item.spItem && item.spItem.attachments && item.spItem.attachments.length == 0"
-                                                            src="{{cdnPath}}assets/images/rx-order/items/Items.svg"
-                                                            alt="" height="75" width="75">
-                                                        <img *ngIf="item && item.spItemDto && item.spItemDto.attachments && item.spItemDto.attachments.length > 0"
-                                                            [src]="item.spItemDto?.attachments?.[0]?.s3path" alt=""
-                                                            height="75" width="75">
-                                                        <img *ngIf="item && item.spItemDto && item.spItemDto.attachments && item.spItemDto.attachments.length == 0"
-                                                            src="{{cdnPath}}assets/images/rx-order/items/Items.svg"
-                                                            alt="" height="75" width="75">
-                                                    </div>
-                                                    <div>
-                                                        <div class="fw-bold item-name">{{item.spItem.name}}</div>
-                                                        <div class="d-flex price-section">
-                                                            <span class="netPrice">₹{{item.taxableAmount}}</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <ul *ngIf="item && item.selectedAttributes" class="attribute-row">
-                                                        <li *ngFor="let value of getAttributeValues(item.selectedAttributes)"
-                                                            class="attribute-box">
-                                                            {{ value }}
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </td>
-                                            <td class="text-center">
-                                                <div *ngIf="item?.taxPercentage" class="fw-bold">{{item.taxPercentage}}%
-                                                </div>
-                                                <div *ngIf="!item?.taxPercentage" class="fw-bold">-</div>
-                                            </td>
-                                            <td>
-                                                <div class="inputnumber">
-                                                    <div
-                                                        class="d-flex justify-content-between align-items-center gap-5">
-                                                        <p-inputNumber [(ngModel)]="item.quantity" [showButtons]="true"
-                                                            buttonLayout="horizontal" spinnerMode="vertical"
-                                                            inputId="vertical" incrementButtonClass="p-button-secondary"
-                                                            incrementButtonIcon="fa fa-plus"
-                                                            decrementButtonIcon="fa fa-minus" [readonlyInput]="true"
-                                                            [ngClass]="{'disabled-decrement': item.quantity === 1, 'text-center':true}"
-                                                            (ngModelChange)="onQuantityChange($event, item)">
-                                                        </p-inputNumber>
-                                                    </div>
-                                                    <!-- <div class="remove" (click)="removeItem(item.uid)">Remove</div> -->
-                                                </div>
-                                            </td>
-                                            <td class="text-end">
-                                                <div class="d-flex justify-content-between align-items-center gap-5">
-                                                    <div class="fw-bold">₹{{getAmountInDecimalPoints(item.netRate)}}
-                                                    </div>
-                                                    <div class="remove pe-2" (click)="removeItem(item)"><i
-                                                            class="fa fa-trash"></i></div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </ng-template>
-                                    <ng-template *ngIf="smallDevice" pTemplate="body" let-item>
-                                        <tr class="small_item_container">
-                                            <td class="card p-0">
-                                                <div class="item-container-tbl p-0">
-                                                    <div class="item-container-tbl-cont-left p-2">
-                                                        <img *ngIf="item && item.spItem && item.spItem.attachments && item.spItem.attachments.length > 0"
-                                                            [src]="item.spItem?.attachments?.[0]?.s3path" alt=""
-                                                            height="75" width="65">
-                                                        <img *ngIf="item && item.spItem && item.spItem.attachments && item.spItem.attachments.length == 0"
-                                                            src="{{cdnPath}}assets/images/rx-order/items/Items.svg"
-                                                            alt="" height="75" width="65">
-                                                        <img *ngIf="item && item.spItemDto && item.spItemDto.attachments && item.spItemDto.attachments.length > 0"
-                                                            [src]="item.spItemDto?.attachments?.[0]?.s3path" alt=""
-                                                            height="75" width="65">
-                                                        <img *ngIf="item && item.spItemDto && item.spItemDto.attachments && item.spItemDto.attachments.length == 0"
-                                                            src="{{cdnPath}}assets/images/rx-order/items/Items.svg"
-                                                            alt="" height="75" width="65">
-                                                    </div>
-                                                    <div class="item-container-tbl-cont-right p-2">
-                                                        <div class="d-flex justify-content-between align-items-center">
-                                                            <div class="item_name">{{item.spItem.name}}</div>
-                                                            <div class="remove pe-2" (click)="removeItem(item)"><i
-                                                                    class="fa fa-trash"></i></div>
-                                                        </div>
-                                                        <div class="pb-2 item_price">₹{{item.taxableAmount}}<span
-                                                                *ngIf="item.taxPercentage">+({{item?.taxPercentage}}% of
-                                                                GST)</span></div>
-                                                        <div class="inputnumber d-flex">
-                                                            <p-inputNumber class="adjust-Qty"
-                                                                [(ngModel)]="item.quantity" [showButtons]="true"
-                                                                buttonLayout="horizontal" spinnerMode="vertical"
-                                                                inputId="vertical"
-                                                                incrementButtonClass="p-button-secondary"
-                                                                incrementButtonIcon="fa fa-plus"
-                                                                decrementButtonIcon="fa fa-minus" [readonlyInput]="true"
-                                                                [ngClass]="{'disabled-decrement': item.quantity === 1, 'text-center':true}"
-                                                                (ngModelChange)="onQuantityChange($event, item)"
-                                                                (onFocus)="onInputFocus($event)">
-                                                            </p-inputNumber>
-                                                            <div class="fw-bold">₹{{item.netRate}}</div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </ng-template>
-                                </p-table>
+            <div class="cart-wrapper card no-padding">
+                <div class="cart-container cart-layout">
+                    <div class="cart-container-section1 cart-left">
+                        <div class="cart-left-header">
+                            <span class="cart-count">{{storeItems.length}} {{storeItems.length === 1 ? 'ITEM' : 'ITEMS'}} IN CART</span>
+                            <span class="clear-all pointer-cursor" (click)="clearCart()">Clear all</span>
+                        </div>
+                        <div class="cart-items-list">
+                            <div class="cart-item-card" *ngFor="let item of storeItems">
+                                <div class="cart-item-thumb pointer-cursor" (click)="cartActionPerformed({ value: item })">
+                                    <div class="cart-item-wishlist" aria-hidden="true">
+                                        <i class="fa fa-heart-o"></i>
+                                    </div>
+                                    <img *ngIf="item?.spItemDto?.attachments?.[0]?.s3path"
+                                        [src]="item.spItemDto.attachments[0].s3path" alt="">
+                                    <img *ngIf="!item?.spItemDto?.attachments?.length && item?.spItem?.attachments?.[0]?.s3path"
+                                        [src]="item.spItem.attachments[0].s3path" alt="">
+                                    <img *ngIf="!item?.spItemDto?.attachments?.length && !item?.spItem?.attachments?.length && item?.attachments?.[0]?.s3path"
+                                        [src]="item.attachments[0].s3path" alt="">
+                                    <img *ngIf="(!item?.spItemDto?.attachments?.length && !item?.spItem?.attachments?.length)"
+                                        src="{{cdnPath}}assets/images/rx-order/items/Items.svg" alt="">
+                                </div>
+                                <div class="cart-item-details">
+                                    <div class="cart-item-title pointer-cursor" (click)="cartActionPerformed({ value: item })">
+                                        {{getItemName(item)}}
+                                    </div>
+                                    <div class="cart-item-sub" *ngIf="getItemType(item)">
+                                        {{getItemType(item)}}
+                                    </div>
+                                    <div class="cart-item-variant" *ngIf="hasItemAttributes(item)">
+                                        <span>Options: {{ getDisplayAttributes(item).join(', ') }}</span>
+                                        <!-- <i class="fa fa-caret-down" aria-hidden="true"></i> -->
+                                    </div>
+                                    <div class="cart-item-price">
+                                        <span class="cart-item-net">₹{{getAmountInDecimalPoints(item.netRate)}}</span>
+                                        <span class="cart-item-mrp" *ngIf="item?.showMrp && item?.mrp && item?.mrp > item?.price">₹{{item.mrp | number:'1.0-0'}}</span>
+                                        <span class="cart-item-off" *ngIf="item?.showMrp && item?.mrp && (((item.mrp - item.price) / item.mrp) * 100) > 0">
+                                            ₹{{item.mrp - item.price | number:'1.0-0'}} OFF
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="cart-item-actions">
+                                    <div class="qty-box" [ngClass]="{'is-disabled': item.quantity === 1}">
+                                        <button type="button" class="qty-btn" (click)="decrementItemQuantity(item)"
+                                            [disabled]="item.quantity === 1">-</button>
+                                        <input type="text" class="qty-input" [value]="item.quantity" readonly>
+                                        <button type="button" class="qty-btn" (click)="incrementItemQuantity(item)">+</button>
+                                    </div>
+                                </div>
+                                <button class="cart-remove" type="button" (click)="removeItem(item)">
+                                    <i class="fa fa-times"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
-                    <div *ngIf="cartDataStore" class="cart-container-section1">
-                        <div [ngClass]="!mediumDevice && smallDevice?'card':'p-4'">
-                            <div *ngIf="isCouponsAvailable" class="coupon-section mb-3 col-md-12 col-12 col-sm-12 ">
-                                <app-apply-coupon [s3CouponsList]="s3CouponsList"
+                    <div *ngIf="cartDataStore" class="cart-container-section1 cart-right">
+                        <div class="cart-summary">
+                            <div class="summary-title">Coupons</div>
+                            <div *ngIf="isCouponsAvailable" class="coupon-section mb-3 col-md-12 col-12 col-sm-12">
+                                <app-apply-coupon [s3CouponsList]="s3CouponsList" [loggedIn]="loggedIn"
                                     (actionPerformed)="couponActionPerformed($event)"></app-apply-coupon>
                             </div>
-                            <div *ngIf="cartDataStore.netTotal && cartDataStore.netTotal > 0"
-                                class="d-flex justify-content-between total mt-2">
-                                <div>Total</div>
-                                <div>₹{{getAmountInDecimalPoints(cartDataStore.netTotal)}}</div>
+                            <div class="summary-title">Price Details ({{storeItems.length}} Item)</div>
+                            <div class="summary-row" *ngIf="(cartDataStore?.netTotal ?? getItemsTotalMrp(storeItems)) > 0">
+                                <span>Net Total</span>
+                                <span>₹{{getAmountInDecimalPoints(cartDataStore?.netTotal ?? getItemsTotalMrp(storeItems))}}</span>
                             </div>
-                            <div *ngIf="cartDataStore.taxTotal && cartDataStore.taxTotal > 0"
-                                class="d-flex justify-content-between total mt-2">
-                                <div>Tax Total</div>
-                                <div>₹{{getAmountInDecimalPoints(cartDataStore.taxTotal)}}</div>
+                            <div class="summary-row" *ngIf="cartDataStore.taxTotal && cartDataStore.taxTotal > 0">
+                                <span>Tax</span>
+                                <span>₹{{getAmountInDecimalPoints(cartDataStore.taxTotal)}}</span>
                             </div>
-                            <div
-                                *ngIf="cartDataStore && cartDataStore.providerCoupons &&  cartDataStore.providerCoupons.length > 0">
-                                <div class="d-flex coupon-text mt-2 justify-content-between"
-                                    *ngFor="let coupon of cartDataStore.providerCoupons">
-                                    <span scope="row" class="fw-bold border-none">
-                                        {{coupon.couponCode}}(coupon)</span>
-                                    <span class="fw-bold border-none">
-                                        (-){{coupon.discount | currency:'&#8377;'}}
-                                        <i (click)="removeOrderCoupon(coupon)" class="fa fa-window-close pointer-cursor"
-                                            aria-hidden="true"></i>
-                                    </span>
+                            <div class="summary-row discount-row" *ngIf="getItemsDiscount(storeItems) > 0">
+                                <span>Discount on MRP</span>
+                                <span>- ₹{{getAmountInDecimalPoints(getItemsDiscount(storeItems))}}</span>
+                            </div>
+                            <div class="summary-row" *ngIf="isCouponsAvailable">
+                                <span>Coupon Discount</span>
+                                <span *ngIf="getCouponDiscount(cartDataStore) > 0" class="summary-discount">
+                                    - ₹{{getAmountInDecimalPoints(getCouponDiscount(cartDataStore))}}
+                                </span>
+                                <button class="summary-link" type="button" *ngIf="getCouponDiscount(cartDataStore) === 0"
+                                    (click)="openCoupons()">Apply Coupon</button>
+                            </div>
+                            <div class="summary-coupon-list"
+                                *ngIf="cartDataStore?.providerCoupons && cartDataStore.providerCoupons.length > 0">
+                                <div class="coupon-item" *ngFor="let coupon of cartDataStore.providerCoupons">
+                                    <span>{{coupon.couponCode}}</span>
+                                    <button type="button" class="coupon-remove" (click)="removeOrderCoupon(coupon)">
+                                        <i class="fa fa-window-close" aria-hidden="true"></i>
+                                    </button>
                                 </div>
                             </div>
-                            <div *ngIf="cartDataStore.netRate" class="d-flex justify-content-between total mt-2">
-                                <div>Net Total</div>
-                                <div>₹{{getAmountInDecimalPoints(cartDataStore.netRate)}}</div>
+                            <div class="summary-row" *ngIf="getPlatformFee(cartDataStore) > 0">
+                                <span>Platform Fee</span>
+                                <span>₹{{getAmountInDecimalPoints(getPlatformFee(cartDataStore))}}</span>
                             </div>
+                            <div class="summary-total" *ngIf="cartDataStore.netRate">
+                                <span>Total Amount</span>
+                                <span>₹{{getAmountInDecimalPoints(cartDataStore.netRate)}}</span>
+                            </div>
+                            
                             <div class="mt-3">
-                                <button pButton pRipple type="button" class="btn-checkout p-button-primary btn-primary"
-                                    (click)="checkout('STORE_PICKUP')" id="btnCheckout">Checkout</button>
+                                <button type="button" class="btn-place-order"
+                                    (click)="checkout('STORE_PICKUP')" id="btnCheckout">Place Order</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <div class="col-lg-12 mt-4" *ngIf="similarItemsStore && similarItemsStore.length > 0">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2 class="fw-bold add-cart-title">Similar Products</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="my-4  pb-4" *ngIf="similarItemsStore && similarItemsStore.length > 0">
+                <app-items-card [items]="similarItemsStore" [themes]="theme"
+                    (actionPerformed)="cartActionPerformed($event)"></app-items-card>
+            </div>
+            <div></div>
         </div>
         <div class="empty-cart" *ngIf="storeItems && storeItems.length == 0 && sessionCart && !loading">
             <div class="card mt-3">
