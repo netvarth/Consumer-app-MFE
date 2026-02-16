@@ -19,8 +19,9 @@
     </div>
 
     <div class="actions">
-      <button type="button" class="icon-btn" (click)="redirectto('wishlist')" aria-label="Wishlist">
+      <button type="button" class="icon-btn wishlist-btn" (click)="redirectto('wishlist')" aria-label="Wishlist">
         <i class="fa fa-heart-o"></i>
+        <span *ngIf="wishlistCount > 0" class="cart-count wishlist-count">{{ wishlistCount }}</span>
       </button>
 
       <span class="location" *ngIf="!hideLocationGlobal && showLocation && locations?.length > 1">
@@ -29,17 +30,16 @@
         </button>
       </span>
 
-      <button type="button" class="icon-btn" *ngIf="!isLoggedIn" (click)="dashboardClicked()" aria-label="My account">
-        <i class="fa fa-user-o"></i>
-      </button>
-
-      <button type="button" class="icon-btn" *ngIf="isLoggedIn" [matMenuTriggerFor]="profileMenu" aria-label="Profile">
-        <i class="fa fa-user-o"></i>
-      </button>
 
       <button type="button" class="icon-btn cart-btn" (click)="goToCart()" *ngIf="isCartVisible" aria-label="Cart">
         <i class="fa fa-shopping-cart"></i>
         <span *ngIf="cartCount > 0" class="cart-count">{{ cartCount }}</span>
+      </button>
+      <button type="button" class="icon-btn" *ngIf="isLoggedIn" [matMenuTriggerFor]="profileMenu" aria-label="Profile">
+        <i class="fa fa-user-o"></i>
+      </button>
+       <button type="button" class="icon-btn" *ngIf="!isLoggedIn" (click)="dashboardClicked()" aria-label="My account">
+        <i class="fa fa-user-o"></i>
       </button>
     </div>
   </div>
@@ -80,7 +80,7 @@
   </mat-menu>
 
   <mat-menu #profileMenu="matMenu">
-    <button mat-menu-item (click)="redirectto('dashboard')" id="btnDashboard">
+    <button mat-menu-item (click)="redirectto('orders')" id="btnDashboard">
       <i class="fa fa-desktop me-2" aria-hidden="true"></i>
       <span>{{ dashboard_cap | translate }}</span>
     </button>

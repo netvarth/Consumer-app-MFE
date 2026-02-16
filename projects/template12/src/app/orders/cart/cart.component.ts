@@ -729,8 +729,12 @@ export class CartComponent implements OnInit {
         this.openCoupons();
         break;
       case 'validate':
-        this.selectedCoupons = action['value'];
+        this.selectedCoupons = this.normalizeCouponCode(action?.value);
         this.applyCoupon();
+        break;
+      case 'remove':
+        this.selectedCoupons = action?.selectedCoupons || [];
+        this.removeOrderCoupon({ couponCode: action?.value });
         break;
       case 'login':
         this.loginclicked();
@@ -748,24 +752,35 @@ export class CartComponent implements OnInit {
         couponsList: this.s3CouponsList,
         type: type,
         theme: this.theme,
-        appliedCoupons: appliedCoupons
+        selectedCoupons: [...appliedCoupons.provider, ...appliedCoupons.jaldee]
       }
     });
     this.coupondialogRef.afterClosed().subscribe((result) => {
-      if (result?.action === 'apply' && result?.code) {
-        this.selectedCoupons = result.code;
+      const codeFromDialog = this.normalizeCouponCode(result?.couponCode || result?.code);
+      if (codeFromDialog) {
+        this.selectedCoupons = codeFromDialog;
         this.applyCoupon();
       }
     });
   }
 
   applyCoupon() {
-    let postData = {}
-    postData['couponCode'] = this.selectedCoupons;
-    this.orderService.applyCoupon(this.cartId, postData).subscribe(couponData => {
+    const couponCode = this.normalizeCouponCode(this.selectedCoupons);
+    if (!couponCode) {
+      this.toastService.showError('Please select a valid coupon');
+      return;
+    }
+    const activeCartId = this.getActiveCartId();
+    if (!activeCartId) {
+      this.toastService.showError('Unable to apply coupon. Cart not ready.');
+      return;
+    }
+    const postData: any = {};
+    postData['couponCode'] = couponCode;
+    this.orderService.applyCoupon(activeCartId, postData).subscribe(couponData => {
       if (couponData) {
         this.toastService.showSuccess('Coupon applied successfully');
-        this.selectedCoupons = [];
+        this.selectedCoupons = '';
         this.getCart();
       }
     },
@@ -776,10 +791,20 @@ export class CartComponent implements OnInit {
       })
   }
 
-  removeOrderCoupon(coupon) {
-    const data = {};
-    data['couponCode'] = coupon.couponCode;
-    this.orderService.removeCoupon(this.cartId, data)
+  removeOrderCoupon(coupon: any, cartUid?: string) {
+    const couponCode = (coupon?.couponCode || coupon?.jaldeeCouponCode || '').trim();
+    if (!couponCode) {
+      this.toastService.showError('Unable to remove coupon. Invalid coupon code.');
+      return;
+    }
+    const data: any = {};
+    data['couponCode'] = couponCode;
+    const resolvedCartId = cartUid || this.getActiveCartId();
+    if (!resolvedCartId) {
+      this.toastService.showError('Unable to remove coupon. Cart not ready.');
+      return;
+    }
+    this.orderService.removeCoupon(resolvedCartId, data)
       .subscribe((data) => {
         this.toastService.showSuccess('Coupon removed successfully');
         this.getCart();
@@ -829,8 +854,28 @@ export class CartComponent implements OnInit {
   private getAppliedCoupons() {
     const cartData = this.showHomeDelivery ? this.cartDataHome : this.cartDataStore;
     const provider = (cartData?.providerCoupons || []).map(coupon => coupon.couponCode).filter(code => code);
-    const jaldee = (cartData?.jaldeeCoupons || []).map(coupon => coupon.couponCode).filter(code => code);
+    const jaldee = (cartData?.jaldeeCoupons || [])
+      .map(coupon => coupon.couponCode || coupon.jaldeeCouponCode)
+      .filter(code => code);
     return { provider, jaldee };
+  }
+
+  private normalizeCouponCode(value: any): string {
+    if (Array.isArray(value)) {
+      const last = value[value.length - 1];
+      return typeof last === 'string' ? last.trim() : '';
+    }
+    return typeof value === 'string' ? value.trim() : '';
+  }
+
+  private getActiveCartId(): string | undefined {
+    if (this.showHomeDelivery && this.cartDataHome?.uid) {
+      return this.cartDataHome.uid;
+    }
+    if (this.showStorePickup && this.cartDataStore?.uid) {
+      return this.cartDataStore.uid;
+    }
+    return this.cartId;
   }
 
   getItemName(item: any): string {

@@ -1,11 +1,11 @@
-<p-toast
+<!-- <p-toast
   [key]="'template12Toast'"
   styleClass="app-custom-toast-host"
   [life]="2500"
   [breakpoints]="{ '920px': { width: '100%', right: '0', left: '0' } }"
   position="top-right"
   [baseZIndex]="12000"
->
+> -->
   <ng-template let-message pTemplate="message">
     <article class="app-custom-toast" [ngClass]="'tone-' + getTone(message)">
       <div class="toast-icon">{{ getIcon(message) }}</div>
@@ -21,4 +21,4 @@
       </button>
     </article>
   </ng-template>
-</p-toast>
+<!-- </p-toast> -->

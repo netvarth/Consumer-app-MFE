@@ -100,7 +100,7 @@
                         </div>
                         <div class="cart-summary">
                             <div *ngIf="isCouponsAvailable" class="coupon-section mb-3 col-md-12 col-12 col-sm-12">
-                                <app-apply-coupon [s3CouponsList]="s3CouponsList" [loggedIn]="loggedIn"
+                                <app-apply-coupon [s3CouponsList]="s3CouponsList" [appliedCoupons]="getAppliedCoupons()" [loggedIn]="loggedIn"
                                     (actionPerformed)="couponActionPerformed($event)"></app-apply-coupon>
                             </div>
                             <div class="summary-title">Price Details ({{items.length}} {{items.length ===1? 'Item' :'Items'}})</div>
@@ -120,11 +120,20 @@
                                 <button class="summary-link" type="button" *ngIf="getCouponDiscount(cartDataHome) === 0"
                                     (click)="openCoupons()">Apply Coupon</button>
                             </div>
-                             <div class="summary-coupon-list"
+                            <div class="summary-coupon-list"
                                 *ngIf="cartDataHome?.providerCoupons && cartDataHome.providerCoupons.length > 0">
                                 <div class="coupon-item" *ngFor="let coupon of cartDataHome.providerCoupons">
                                     <span>{{coupon.couponCode}}</span>
-                                    <button type="button" class="coupon-remove" (click)="removeOrderCoupon(coupon)">
+                                    <button type="button" class="coupon-remove" (click)="removeOrderCoupon(coupon, cartDataHome?.uid)">
+                                        <i class="fa fa-window-close" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="summary-coupon-list"
+                                *ngIf="cartDataHome?.jaldeeCoupons && cartDataHome.jaldeeCoupons.length > 0">
+                                <div class="coupon-item" *ngFor="let coupon of cartDataHome.jaldeeCoupons">
+                                    <span>{{coupon.couponCode || coupon.jaldeeCouponCode}}</span>
+                                    <button type="button" class="coupon-remove" (click)="removeOrderCoupon(coupon, cartDataHome?.uid)">
                                         <i class="fa fa-window-close" aria-hidden="true"></i>
                                     </button>
                                 </div>
@@ -238,7 +247,7 @@
                         <div class="cart-summary">
                             <div class="summary-title">Coupons</div>
                             <div *ngIf="isCouponsAvailable" class="coupon-section mb-3 col-md-12 col-12 col-sm-12">
-                                <app-apply-coupon [s3CouponsList]="s3CouponsList" [loggedIn]="loggedIn"
+                                <app-apply-coupon [s3CouponsList]="s3CouponsList" [appliedCoupons]="getAppliedCoupons()" [loggedIn]="loggedIn"
                                     (actionPerformed)="couponActionPerformed($event)"></app-apply-coupon>
                             </div>
                             <div class="summary-title">Price Details ({{storeItems.length}} Item)</div>
@@ -266,7 +275,16 @@
                                 *ngIf="cartDataStore?.providerCoupons && cartDataStore.providerCoupons.length > 0">
                                 <div class="coupon-item" *ngFor="let coupon of cartDataStore.providerCoupons">
                                     <span>{{coupon.couponCode}}</span>
-                                    <button type="button" class="coupon-remove" (click)="removeOrderCoupon(coupon)">
+                                    <button type="button" class="coupon-remove" (click)="removeOrderCoupon(coupon, cartDataStore?.uid)">
+                                        <i class="fa fa-window-close" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="summary-coupon-list"
+                                *ngIf="cartDataStore?.jaldeeCoupons && cartDataStore.jaldeeCoupons.length > 0">
+                                <div class="coupon-item" *ngFor="let coupon of cartDataStore.jaldeeCoupons">
+                                    <span>{{coupon.couponCode || coupon.jaldeeCouponCode}}</span>
+                                    <button type="button" class="coupon-remove" (click)="removeOrderCoupon(coupon, cartDataStore?.uid)">
                                         <i class="fa fa-window-close" aria-hidden="true"></i>
                                     </button>
                                 </div>

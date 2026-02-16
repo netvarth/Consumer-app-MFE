@@ -349,7 +349,8 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
       this.lStorageService.setitemonLocalStorage('tabIndex', this.selectedIndex);
     } else {
       console.log(section.link);
-      let url = this.sharedService.getRouteID() + '/' + section.link;
+      const link = this.resolveSectionLink(section);
+      let url = this.sharedService.getRouteID() + '/' + link;
       console.log("Url:", url);
 
       this.router.navigateByUrl(url);
@@ -371,12 +372,24 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
     if (action.link && action.link.startsWith('http')) {
       window.open(action.link, "_system");
     } else if (action.link) {
-      let url = this.sharedService.getRouteID() + '/' + action.link;
+      const link = this.resolveSectionLink(action);
+      let url = this.sharedService.getRouteID() + '/' + link;
       console.log("Url:", url);
       this.router.navigateByUrl(url);
     } else if (action.type === 'menu') {
       this.actionPerformed(action);
     }
+  }
+
+  private resolveSectionLink(section: any): string {
+    const rawLink = (section?.link || '').toString().replace(/^\/+|\/+$/g, '');
+    const title = (section?.title || '').toString().toLowerCase();
+    const isOrderHistoryTitle =
+      title.includes('order history') || title.includes('my orders') || title === 'orders';
+    if (isOrderHistoryTitle && (rawLink === 'dashboard' || rawLink === 'bookings')) {
+      return 'orders';
+    }
+    return rawLink;
   }
 
   onViewAllBookings() {

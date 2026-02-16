@@ -78,7 +78,7 @@
 }
 
 .brand span {
-  font-size: 16px;
+  font-size: 14px;
   line-height: 20px;
   font-weight: 600;
   color: #222;
@@ -96,6 +96,9 @@
 .cart-btn {
   position: relative;
 }
+.wishlist-btn {
+  position: relative;
+}
 
 .cart-count {
   position: absolute;
@@ -111,6 +114,10 @@
   text-align: center;
   padding: 0 2px;
   font-weight: 700;
+}
+.wishlist-count {
+  right: -5px;
+  top: -4px;
 }
 
 ::ng-deep .full-screen-menu {

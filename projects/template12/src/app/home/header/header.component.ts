@@ -1,8 +1,9 @@
 import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
+import { NavigationEnd, NavigationExtras, Router } from '@angular/router';
 import { AccountService, AuthService, GroupStorageService, LocalStorageService, Messages, OrderService, SharedService, SubscriptionService } from 'jconsumer-shared';
 import { TranslateService } from '@ngx-translate/core';
+import { WishlistService } from '../../shared/wishlist.service';
 
 @Component({
   selector: 'app-header',
@@ -26,6 +27,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   searchOption: any = false;
   theme: any;
   cartCount: number = 0;
+  wishlistCount: number = 0;
   config: any;
   accountID: any;
   hideItemSearch: any = false;
@@ -56,17 +58,18 @@ export class HeaderComponent implements OnInit, OnDestroy {
     public translate: TranslateService,
     private orderService: OrderService,
     private accountService: AccountService,
-    private activatedRoute: ActivatedRoute
+    private wishlistService: WishlistService
   ) {
     this.cdnPath = this.sharedService.getCDNPath();
     this.onResize();
-    this.activatedRoute.queryParams.subscribe((qparams: any) => {
-      if (qparams['_t'] && qparams['_t'] !== '') {
-        this.activeMenuItem = qparams['_t'];
-      } else {
-        this.activeMenuItem = '';
-      }
-    })
+    this.subscriptions.add(
+      this.router.events.subscribe((event) => {
+        if (event instanceof NavigationEnd) {
+          this.setActiveMenuFromUrl(event.urlAfterRedirects || event.url);
+        }
+      })
+    );
+    this.setActiveMenuFromUrl(this.router.url);
     console.log("Order Header Compoent Constructor");
     this.accountID = this.sharedService.getAccountID();
     this.storeEncId = this.lStorageService.getitemfromLocalStorage('storeEncId')
@@ -82,8 +85,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
       console.log(this.loggedUser);
       if (refresh) {
         this.setCartCount(this.loggedUser.providerConsumer ? this.loggedUser.providerConsumer : this.loggedUser.id);
+        this.setWishlistCount(this.loggedUser.providerConsumer ? this.loggedUser.providerConsumer : this.loggedUser.id);
       }
     } else {
+      this.wishlistService.clear();
+      this.wishlistCount = 0;
       if (this.isSessionCart) {
         this.isLoggedIn = false;
         this.cartCount = 0;
@@ -115,6 +121,50 @@ export class HeaderComponent implements OnInit, OnDestroy {
       }
     )
   }
+
+  setWishlistCount(userID: any) {
+    this.wishlistService.getallWishlistItems(userID).subscribe(
+      (wishlistItems: any) => {
+        this.wishlistService.clear();
+        const list = this.extractWishlistItems(wishlistItems);
+        list.forEach((wish: any) => {
+          const itemEncId = wish?.catalogItem?.encId;
+          if (!itemEncId) {
+            return;
+          }
+          this.wishlistService.add({ encId: itemEncId });
+          if (wish?.id) {
+            this.wishlistService.setWishlistItemUid(itemEncId, wish.id);
+          }
+          const spCode = wish?.spItem?.spCode;
+          if (spCode) {
+            this.wishlistService.setWishlistItemSpCode(itemEncId, spCode);
+          }
+        });
+        this.wishlistCount = this.wishlistService.getIds().length;
+      },
+      () => {
+        this.wishlistCount = this.wishlistService.getIds().length;
+      }
+    );
+  }
+
+  private extractWishlistItems(wishlistItems: any): any[] {
+    if (!Array.isArray(wishlistItems)) {
+      return [];
+    }
+    const hasWrappedItems = wishlistItems.some((entry) => Array.isArray(entry?.items));
+    if (hasWrappedItems) {
+      return wishlistItems.reduce((acc: any[], entry: any) => {
+        if (Array.isArray(entry?.items)) {
+          acc.push(...entry.items);
+        }
+        return acc;
+      }, []);
+    }
+    return wishlistItems;
+  }
+
   ngOnInit(): void {
     this.config = this.sharedService.getTemplateJSON();
     const showCartConfig = this.config?.header?.showCart;
@@ -145,6 +195,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
       this.logo = accountProfile.logo?.url;
     }
     this.initSubscriptions();
+    const wishlistSub = this.wishlistService.changes$.subscribe((ids: Set<string>) => {
+      this.wishlistCount = ids.size;
+    });
+    this.subscriptions.add(wishlistSub);
     this.initHeader(null);
     const activeLoc = this.accountService.getActiveLocation();
     if (activeLoc) {
@@ -272,15 +326,64 @@ export class HeaderComponent implements OnInit, OnDestroy {
     if (action.link && action.link.startsWith('http')) {
       window.open(action.link, "_system");
     } else {
-      this.activeMenuItem = action.link;
-      const queryParams = { ['_t']: action.link };
-      this.router.navigate([this.sharedService.getRouteID()], {
-        queryParams: queryParams,
-        queryParamsHandling: 'merge'
-      }).then(() => {
-        // this.router.navigate[(this.sharedService.getRouteID())];
-      });
+      const routeId = this.sharedService.getRouteID();
+      const rawLink = (action?.link || '').toString().trim();
+      const normalizedLink = this.resolveMenuLink(action, rawLink.replace(/^\/+|\/+$/g, ''));
+      if (!normalizedLink || normalizedLink === 'home' || normalizedLink === routeId || normalizedLink === `${routeId}/home`) {
+        this.activeMenuItem = 'home';
+        this.router.navigate([routeId]);
+        return;
+      }
+
+      const relativePath = normalizedLink.startsWith(`capp/${routeId}/`)
+        ? normalizedLink.substring(`capp/${routeId}/`.length)
+        : normalizedLink.startsWith(`${routeId}/`)
+          ? normalizedLink.substring(routeId.length + 1)
+          : normalizedLink;
+      const segments = relativePath.split('/').filter(Boolean);
+      this.activeMenuItem = normalizedLink;
+      this.router.navigate([routeId, ...segments]);
     }
+  }
+
+  private resolveMenuLink(action: any, normalizedLink: string): string {
+    const title = (action?.title || '').toString().trim().toLowerCase();
+    const isOrderHistory =
+      title.includes('order history') || title.includes('my orders') || title === 'orders';
+    if (!isOrderHistory) {
+      return normalizedLink;
+    }
+    if (normalizedLink === 'dashboard' || normalizedLink === 'bookings') {
+      return 'orders';
+    }
+    if (normalizedLink.endsWith('/dashboard')) {
+      return normalizedLink.replace(/\/dashboard$/, '/orders');
+    }
+    if (normalizedLink.endsWith('/bookings')) {
+      return normalizedLink.replace(/\/bookings$/, '/orders');
+    }
+    return normalizedLink;
+  }
+
+  private setActiveMenuFromUrl(url: string): void {
+    const routeId = this.sharedService.getRouteID();
+    const normalized = (url || '').split('?')[0].replace(/^\/+|\/+$/g, '');
+    const routeIdPrefix = `capp/${routeId}/`;
+    const routeRoot = `capp/${routeId}`;
+    if (!normalized || normalized === routeRoot) {
+      this.activeMenuItem = 'home';
+      return;
+    }
+    if (normalized.startsWith(routeIdPrefix)) {
+      const tail = normalized.substring(routeIdPrefix.length);
+      this.activeMenuItem = tail ? `${routeId}/${tail}` : 'home';
+      return;
+    }
+    if (normalized === routeId) {
+      this.activeMenuItem = 'home';
+      return;
+    }
+    this.activeMenuItem = normalized;
   }
   @HostListener('window:resize', ['$event'])
   onResize() {
@@ -308,6 +411,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
     switch (mod) {
       case 'profile':
         this.router.navigate([this.sharedService.getRouteID(), 'profile']);
+        break;
+      case 'orders':
+        this.router.navigate([this.sharedService.getRouteID(), 'orders']);
         break;
       case 'inbox':
         let qParams = {};

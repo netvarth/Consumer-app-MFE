@@ -18,7 +18,7 @@
         </div>
         <div style="color: red;" *ngIf="couponError !== null">{{couponError}}</div>
     </div>
-    <div class="px-2 pt-2 my-4"
+    <div class="px-2 pt-2 "
         *ngIf="couponsList && couponsList.length>0">
         <div *ngFor="let coupon of couponsList let i=index">
             <div class="d-flex row coupon-add-msg">

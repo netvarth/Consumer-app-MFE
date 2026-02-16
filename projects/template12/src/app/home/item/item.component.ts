@@ -155,6 +155,26 @@ export class ItemComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
   }
+  private resolveStoreContext(): boolean {
+    const activeStore = this.accountService.getActiveStore();
+    const storedEncId = this.lStorageService.getitemfromLocalStorage('storeEncId');
+    const stores = this.accountService.getStores ? this.accountService.getStores() : [];
+    const fallbackStore = Array.isArray(stores) && stores.length ? stores[0] : null;
+    const resolvedEncId = activeStore || storedEncId || fallbackStore?.encId || null;
+
+    if (!resolvedEncId) {
+      return false;
+    }
+
+    this.storeEncId = resolvedEncId;
+    this.lStorageService.setitemonLocalStorage('storeEncId', resolvedEncId);
+    this.accountService.setActiveStore(resolvedEncId);
+    if (fallbackStore?.id) {
+      this.lStorageService.setitemonLocalStorage('storeId', fallbackStore.id);
+    }
+    return true;
+  }
+
   scrollToElement(elementId: string): void {
     setTimeout(() => {
       const element = document.getElementById(elementId);
@@ -200,8 +220,7 @@ export class ItemComponent implements OnInit, OnDestroy {
       }
       this.isSessionCart = this.lStorageService.getitemfromLocalStorage('isSessionCart')
       setTimeout(() => {
-        this.storeEncId = this.accountService.getActiveStore();
-        if (this.storeEncId) {
+        if (this.resolveStoreContext()) {
           this.getSoCatalogItems()
         }
         this.processPendingWishlist();
@@ -240,6 +259,10 @@ export class ItemComponent implements OnInit, OnDestroy {
     this.viewAll();
   }
   getSoCatalogItems() {
+    if (!this.resolveStoreContext()) {
+      this.loading = false;
+      return;
+    }
     this.loading = true;
     let filter: any = {};
     filter['accountId-eq'] = this.accountId;
@@ -495,7 +518,7 @@ export class ItemComponent implements OnInit, OnDestroy {
     if (!pending || !pending.encId) {
       return;
     }
-    if (!this.loggedUser?.providerConsumer || !this.storeEncId) {
+    if (!this.loggedUser?.providerConsumer || !this.resolveStoreContext()) {
       return;
     }
     const wishlistItemEncId = pending.encId;
@@ -720,8 +743,23 @@ export class ItemComponent implements OnInit, OnDestroy {
     // Set fallback image for thumbnail if it fails to load
     event.target.src = this.cdnPath + 'assets/images/rx-order/items/Items.svg';
   }
+
+  private finishAddToCartLoading(scrollY: number): void {
+   
+    if (typeof window !== 'undefined') {
+      requestAnimationFrame(() => {
+        window.scrollTo({ top: scrollY, left: 0, behavior: 'auto' });
+      });
+    }
+     this.loading = false;
+  }
+
   addToCart(param?: string | null) {
     const _this = this;
+    const preservedScrollY =
+      typeof window !== 'undefined'
+        ? (window.scrollY || document.documentElement.scrollTop || 0)
+        : 0;
     this.loading = true;
     let item = this.item
     if (this.virtualItem == true) {
@@ -736,12 +774,12 @@ export class ItemComponent implements OnInit, OnDestroy {
     if (isVirtual) {
       this.virtualItem = true;
       if (!this.itemAttributes || !this.itemAttributes.encId) {
-        this.loading = false;
+        this.finishAddToCartLoading(preservedScrollY);
         this.toastService.showError('Please select item attributes');
         return;
       }
       if (this.itemAttributes?.stockStatus === 'OUT_OF_STOCK') {
-        this.loading = false;
+        this.finishAddToCartLoading(preservedScrollY);
         this.toastService.showError('Selected attribute is out of stock');
         return;
       }
@@ -789,7 +827,7 @@ export class ItemComponent implements OnInit, OnDestroy {
                           _this.subscriptionService.sendMessage({ ttype: 'refresh', value: 'refresh' });
                         } else {
                           _this.loggedIn = true;
-                          _this.loading = false;
+                          _this.finishAddToCartLoading(preservedScrollY);
                           _this.subscriptionService.sendMessage({ ttype: 'refresh', value: 'refresh' });
                           _this.toastService.showSuccess("Item added to cart");
                           this.setAnalytics('addToCart')
@@ -804,7 +842,7 @@ export class ItemComponent implements OnInit, OnDestroy {
                         _this.subscriptionService.sendMessage({ ttype: 'refresh', value: 'refresh' });
                       } else {
                         _this.loggedIn = true;
-                        _this.loading = false;
+                        _this.finishAddToCartLoading(preservedScrollY);
                         _this.subscriptionService.sendMessage({ ttype: 'refresh', value: 'refresh' });
                         _this.toastService.showSuccess("Item added to cart");
                         this.setAnalytics('addToCart')
@@ -823,7 +861,7 @@ export class ItemComponent implements OnInit, OnDestroy {
                     _this.lStorageService.removeitemfromLocalStorage('deliveryType')
                   } else {
                     _this.loggedIn = true;
-                    _this.loading = false;
+                    _this.finishAddToCartLoading(preservedScrollY);
                     _this.subscriptionService.sendMessage({ ttype: 'refresh', value: 'refresh' });
                     _this.toastService.showSuccess("Item added to cart");
                     this.setAnalytics('addToCart')
@@ -875,10 +913,10 @@ export class ItemComponent implements OnInit, OnDestroy {
           this.toastService.showSuccess("Item added to cart");
           this.setAnalytics('addToCart');
           this.loggedIn = true;
-          this.loading = false;
+          this.finishAddToCartLoading(preservedScrollY);
         } else {
           this.loggedIn = false;
-          this.loading = false;
+          this.finishAddToCartLoading(preservedScrollY);
           this.isLogin = true;
         }
       }
@@ -1072,6 +1110,10 @@ export class ItemComponent implements OnInit, OnDestroy {
   //   });
   // }
   createCart() {
+    if (!this.resolveStoreContext()) {
+      this.toastService.showError('Store information is unavailable. Please refresh and try again.');
+      return Promise.resolve(false);
+    }
     console.log('this.itemDeliveryType', this.itemDeliveryType);
 
     let item = this.virtualItem ? this.itemAttributes : this.item;
