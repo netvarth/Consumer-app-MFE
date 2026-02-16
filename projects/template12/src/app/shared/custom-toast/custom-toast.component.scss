@@ -1,5 +1,9 @@
-.p-toast:not(.app-custom-toast-host) {
+.p-toast {
   display: none !important;
+}
+
+.p-toast.app-custom-toast-host {
+  display: block !important;
 }
 
 .app-custom-toast-host {

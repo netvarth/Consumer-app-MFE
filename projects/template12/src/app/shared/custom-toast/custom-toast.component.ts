@@ -1,5 +1,5 @@
 import { Component, ViewEncapsulation } from '@angular/core';
-import { Message } from 'primeng/api';
+import { Message, MessageService } from 'primeng/api';
 
 type ToastTone = 'default' | 'info' | 'success' | 'error' | 'warning';
 
@@ -10,6 +10,10 @@ type ToastTone = 'default' | 'info' | 'success' | 'error' | 'warning';
   encapsulation: ViewEncapsulation.None
 })
 export class CustomToastComponent {
+  private readonly toastKey = 'template12Toast';
+
+  constructor(private messageService: MessageService) {}
+
   getTone(message: Message | null | undefined): ToastTone {
     const severity = (message?.severity || '').toLowerCase();
     if (severity === 'success') {
@@ -25,26 +29,6 @@ export class CustomToastComponent {
       return 'error';
     }
     return 'default';
-  }
-
-  getTitle(message: Message | null | undefined): string {
-    if (message?.summary && String(message.summary).trim().length > 0) {
-      return String(message.summary);
-    }
-    const tone = this.getTone(message);
-    if (tone === 'success') {
-      return 'Success';
-    }
-    if (tone === 'info') {
-      return 'Information';
-    }
-    if (tone === 'warning') {
-      return 'Warning';
-    }
-    if (tone === 'error') {
-      return 'Error';
-    }
-    return 'Notice';
   }
 
   getBody(message: Message | null | undefined): string {
@@ -64,10 +48,12 @@ export class CustomToastComponent {
     if (tone === 'error') {
       return '!';
     }
-    if (tone === 'info' || tone === 'warning' || tone === 'default') {
-      return 'i';
-    }
     return 'i';
+  }
+
+  hasAction(message: Message | null | undefined): boolean {
+    const actionLabel = message?.data?.actionLabel;
+    return typeof actionLabel === 'string' && actionLabel.trim().length > 0;
   }
 
   getActionLabel(message: Message | null | undefined): string {
@@ -75,22 +61,18 @@ export class CustomToastComponent {
     if (typeof actionLabel === 'string' && actionLabel.trim().length > 0) {
       return actionLabel.toUpperCase();
     }
-    return 'BUTTON';
+    return '';
   }
 
-  onAction(message: Message | null | undefined, closeFn: (() => void) | undefined): void {
+  onAction(message: Message | null | undefined): void {
     const action = message?.data?.action;
     if (typeof action === 'function') {
       action();
     }
-    if (closeFn) {
-      closeFn();
-    }
+    this.messageService.clear(this.toastKey);
   }
 
-  onDismiss(closeFn: (() => void) | undefined): void {
-    if (closeFn) {
-      closeFn();
-    }
+  onDismiss(): void {
+    this.messageService.clear(this.toastKey);
   }
 }
