@@ -1,4 +1,4 @@
-import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -18,7 +18,7 @@ import { GalleryService } from '../../shared/gallery/galery-service';
   templateUrl: './root.component.html',
   styleUrls: ['./root.component.scss']
 })
-export class RootComponent implements OnInit, OnDestroy {
+export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
   basicProfile: any = {};
   templateJson: any;
   locationjson: any;
@@ -84,6 +84,19 @@ export class RootComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription = new Subscription();
   heroSection: any;
   blogConfig: any;
+  assetBasePath = '{{ASSET_BASE_PATH}}';
+  homeDesign: any = {};
+  categories: any[] = [];
+  preBookingCollection: any[] = [];
+  reels: any[] = [];
+  newArrivals: any[] = [];
+  customerReviews: any[] = [];
+  socialLinks: any[] = [];
+  footerColumns: any[] = [];
+  activeReviewIndex = 0;
+  brandName = 'Kanishta';
+  logoUrl = '';
+  private sectionObserver: IntersectionObserver | null = null;
   notificationdialogRef;
   addnotedialogRef;
   checkindialogRef;
@@ -141,6 +154,10 @@ export class RootComponent implements OnInit, OnDestroy {
     }
   }
   ngOnDestroy(): void {
+    if (this.sectionObserver) {
+      this.sectionObserver.disconnect();
+      this.sectionObserver = null;
+    }
     this.subscriptions.unsubscribe();
   }
   ngOnInit(): void {
@@ -178,6 +195,9 @@ export class RootComponent implements OnInit, OnDestroy {
       this.resumeLoadingHome();      
     }
 
+  }
+  ngAfterViewInit(): void {
+    this.setupScrollReveal();
   }
   private fetchFutureAppointments() {
     const params: any = { 'apptStatus-neq': 'failed,prepaymentPending,Cancelled,Rejected' };
@@ -1327,11 +1347,54 @@ export class RootComponent implements OnInit, OnDestroy {
   // ——— HERO / CARDS / BLOG DATA ———
   private hydrateTemplateContent() {
     this.heroSection = this.templateJson?.heroSection || null;
+    this.homeDesign = this.templateJson?.homeDesign || this.templateJson?.home || this.templateJson?.landingPage || {};
 
-    const comingSoon = this.templateJson?.section1?.comingSoon;
+    const section1 = this.templateJson?.section1 || {};
+    const comingSoon = section1?.comingSoon || {};
+
     this.comingSoonCards = Array.isArray(comingSoon?.cards) ? comingSoon.cards : [];
+    this.categories = this.getArrayWithFallback(
+      this.homeDesign?.categories,
+      this.homeDesign?.categoryCards,
+      section1?.categories,
+      this.comingSoonCards
+    );
+    this.preBookingCollection = this.getArrayWithFallback(
+      this.homeDesign?.preBookingCollection,
+      this.homeDesign?.preBookingCollections,
+      this.homeDesign?.collections,
+      section1?.preBookingCollection
+    );
+    this.reels = this.getArrayWithFallback(
+      this.homeDesign?.reels,
+      this.homeDesign?.shopByReels,
+      section1?.videos,
+      this.videos
+    );
+    this.newArrivals = this.getArrayWithFallback(
+      this.homeDesign?.newArrivals,
+      this.homeDesign?.products,
+      section1?.newArrivals,
+      section1?.products
+    );
+    this.customerReviews = this.getArrayWithFallback(
+      this.homeDesign?.customerReviews,
+      this.homeDesign?.reviews,
+      section1?.reviews
+    );
+    this.socialLinks = this.getArrayWithFallback(this.homeDesign?.socialLinks, this.homeDesign?.socials);
+    this.footerColumns = this.getArrayWithFallback(this.homeDesign?.footerColumns, this.homeDesign?.footerLinks);
 
-    this.blogConfig = this.templateJson?.section1?.blogs || null;
+    this.logoUrl = this.getFirstTruthy(
+      this.homeDesign?.footerLogo,
+      this.homeDesign?.logo,
+      this.logoUrl,
+      this.accountProfile?.businessLogo?.[0]?.s3path,
+      this.accountProfile?.logo?.url
+    );
+    this.brandName = this.homeDesign?.brandName || this.accountProfile?.businessName || this.brandName;
+
+    this.blogConfig = section1?.blogs || null;
     if (this.blogConfig) {
       const filters = Array.isArray(this.blogConfig.filters) && this.blogConfig.filters.length
         ? this.blogConfig.filters
@@ -1381,6 +1444,112 @@ export class RootComponent implements OnInit, OnDestroy {
   }
   selectBlogFilter(filterKey: string) {
     this.applyBlogFilter(filterKey);
+  }
+  onPrimaryCta() {
+    this.createappoinment();
+  }
+  onCardClick(item: any) {
+    if (!item) {
+      return;
+    }
+    const link = item?.link || item?.url || item?.route;
+    if (link && typeof link === 'string' && link.startsWith('http')) {
+      window.open(link, '_blank');
+      return;
+    }
+    if (link && typeof link === 'string') {
+      this.router.navigateByUrl(link.startsWith('/') ? link : `/${link}`);
+      return;
+    }
+  }
+  onShowMore(sectionKey: string) {
+    const section = this.homeDesign?.[sectionKey] || this.homeDesign?.[`${sectionKey}Section`] || {};
+    if (section?.link) {
+      this.onCardClick(section);
+    }
+  }
+  onReviewScroll(event: Event) {
+    const element = event?.target as HTMLElement;
+    if (!element || !this.customerReviews?.length) {
+      return;
+    }
+    const cardWidth = element.clientWidth / 2;
+    if (!cardWidth) {
+      this.activeReviewIndex = 0;
+      return;
+    }
+    const index = Math.round(element.scrollLeft / cardWidth);
+    this.activeReviewIndex = Math.max(0, Math.min(this.customerReviews.length - 1, index));
+  }
+  getStars(inputRating: any): number[] {
+    const rating = Math.max(1, Math.min(5, Number(inputRating || 5)));
+    return Array.from({ length: rating }, (_, i) => i);
+  }
+  forcePlay(event: Event) {
+    const video = event?.target as HTMLVideoElement;
+    if (!video) {
+      return;
+    }
+    video.muted = true;
+    video.defaultMuted = true;
+    video.loop = true;
+    video.playsInline = true;
+    const playPromise = video.play();
+    if (playPromise && typeof playPromise.catch === 'function') {
+      playPromise.catch(() => {
+        // Autoplay can still be blocked by browser policy; keep silent for preview mode.
+      });
+    }
+  }
+  trackByIndex(index: number): number {
+    return index;
+  }
+  resolveAsset(path: string): string {
+    if (!path || typeof path !== 'string') {
+      return '';
+    }
+    if (path.startsWith('http') || path.startsWith('data:') || path.startsWith('//')) {
+      return path;
+    }
+    const trimmedBase = (this.assetBasePath || '').replace(/\/$/, '');
+    const trimmedPath = path.replace(/^\//, '');
+    return trimmedBase ? `${trimmedBase}/${trimmedPath}` : path;
+  }
+  private setupScrollReveal() {
+    if (typeof window === 'undefined' || !('IntersectionObserver' in window)) {
+      return;
+    }
+    if (this.sectionObserver) {
+      this.sectionObserver.disconnect();
+    }
+    this.sectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+        }
+      });
+    }, { threshold: 0.15 });
+
+    setTimeout(() => {
+      const sections = document.querySelectorAll('.reveal-on-scroll');
+      sections.forEach((section) => this.sectionObserver?.observe(section));
+    });
+  }
+  private getArrayWithFallback(...values: any[]): any[] {
+    for (const value of values) {
+      if (Array.isArray(value) && value.length) {
+        return value;
+      }
+    }
+    return [];
+  }
+  private getFirstTruthy(...values: any[]): any {
+    for (const value of values) {
+      if (value) {
+        return value;
+      }
+    }
+    return '';
   }
 
   handleNotification(notification) {
@@ -1472,16 +1641,16 @@ export class RootComponent implements OnInit, OnDestroy {
     }
   }
   resumeLoadingHome() {
-    this.hydrateTemplateContent();
-    this.galleryJson = this.sharedService.getJson(this.account['gallery']);
-    this.loadImages(this.galleryJson);
-    this.subscriptionService.sendMessage({ ttype: 'showLocation' });
     if (this.templateJson.section1.blog) {
       this.blogs = this.templateJson.section1.blog;
     }
     if (this.templateJson.section1.videos) {
       this.videos = this.templateJson.section1.videos;
     }
+    this.hydrateTemplateContent();
+    this.galleryJson = this.sharedService.getJson(this.account['gallery']);
+    this.loadImages(this.galleryJson);
+    this.subscriptionService.sendMessage({ ttype: 'showLocation' });
     if (this.templateJson.section1.donations || this.templateJson.section2.donations || this.templateJson.section3.donations) {
       this.getDonationServices();
     }

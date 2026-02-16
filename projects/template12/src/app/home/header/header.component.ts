@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { AccountService, AuthService, GroupStorageService, LocalStorageService, Messages, OrderService, SharedService, SubscriptionService } from 'jconsumer-shared';
@@ -9,7 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss', './modal.scss']
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, OnDestroy {
   restrictNavigation: boolean = false;
   isLoggedIn: boolean = false;
   loggedUser: any;
@@ -44,7 +44,7 @@ export class HeaderComponent implements OnInit {
   selectedLocation: any;
   activeMenuItem = '';
   hideLocationGlobal: boolean = false;
-
+  headerTitle: any;
 
   constructor(
     private lStorageService: LocalStorageService,
@@ -138,6 +138,7 @@ export class HeaderComponent implements OnInit {
     let account = this.sharedService.getAccountInfo();
     this.locations = this.sharedService.getJson(account['location']);
     let accountProfile = this.accountService.getJson(account['businessProfile']);
+    this.headerTitle = accountProfile.businessName;
     if (accountProfile.businessLogo && accountProfile.businessLogo.length > 0) {
       this.logo = accountProfile.businessLogo[0].s3path;
     } else {
@@ -283,9 +284,11 @@ export class HeaderComponent implements OnInit {
   }
   @HostListener('window:resize', ['$event'])
   onResize() {
-    if (window.innerWidth < 870) {
-      this.smallDevice = true;
-    }
+    this.smallDevice = window.innerWidth < 870;
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   doLogout() {
@@ -327,6 +330,9 @@ export class HeaderComponent implements OnInit {
         break;
       case 'contactus':
         this.router.navigate([this.sharedService.getRouteID(), 'contactus']);
+        break;
+      case 'wishlist':
+        this.router.navigate([this.sharedService.getRouteID(), 'order', 'wishlist']);
         break;
     }
   }

@@ -1,0 +1,24 @@
+<p-toast
+  styleClass="app-custom-toast-host"
+  [breakpoints]="{ '920px': { width: '100%', right: '0', left: '0' } }"
+  position="top-right"
+  [preventOpenDuplicates]="true"
+  [preventDuplicates]="true"
+  [baseZIndex]="12000"
+>
+  <ng-template let-message let-closeFn="closeFn" pTemplate="message">
+    <article class="app-custom-toast" [ngClass]="'tone-' + getTone(message)">
+      <div class="toast-icon">{{ getIcon(message) }}</div>
+      <div class="toast-content">
+        <p class="toast-body">{{ getBody(message) }}</p>
+      </div>
+      <button type="button" class="toast-action" (click)="onAction(message, closeFn)">
+        {{ getActionLabel(message) }}
+      </button>
+      <button type="button" class="toast-close" aria-label="Close" (click)="onDismiss(closeFn)">
+        <span></span>
+        <span></span>
+      </button>
+    </article>
+  </ng-template>
+</p-toast>
