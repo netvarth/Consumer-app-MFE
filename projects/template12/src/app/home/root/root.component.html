@@ -1,5 +1,13 @@
 <div class="fashion-home" *ngIf="templateJson">
-  <section class="hero-shell reveal-on-scroll">
+  <section class="search-shell">
+    <app-item-search
+      [accountID]="accountId"
+      [catalogEncids]="selectedCatalogs"
+      [autoFocusOnMobile]="false"
+      (selectedItemsEmit)="onItemSearchSelected($event)">
+    </app-item-search>
+  </section>
+  <section class="hero-shell">
     <div class="hero-media" (click)="gotoItems()">
       <img [src]="resolveAsset(homeDesign.heroImage )" alt="Hero banner" loading="eager" decoding="async" />
       <img [src]="resolveAsset(homeDesign.heroImagesub )" alt="Hero sub banner" loading="eager" decoding="async" />

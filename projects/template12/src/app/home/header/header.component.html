@@ -32,7 +32,8 @@
 
 
       <button type="button" class="icon-btn cart-btn" (click)="goToCart()" *ngIf="isCartVisible" aria-label="Cart">
-        <i class="fa fa-shopping-cart"></i>
+        <!-- <i class="fa fa-shopping-cart"></i> -->
+        <img class="actionImge" src="{{cdnPath}}assets/images/myjaldee/shopping-cart.png" />
         <span *ngIf="cartCount > 0" class="cart-count">{{ cartCount }}</span>
       </button>
       <button type="button" class="icon-btn" *ngIf="isLoggedIn" [matMenuTriggerFor]="profileMenu" aria-label="Profile">

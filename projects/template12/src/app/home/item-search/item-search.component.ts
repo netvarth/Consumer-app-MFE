@@ -17,6 +17,7 @@ interface AutoCompleteCompleteEvent {
 export class ItemSearchComponent {
   @Input() catalogEncids;
   @Input() accountID: any;
+  @Input() autoFocusOnMobile: boolean = true;
   @Output() selectedItemsEmit = new EventEmitter<any>;
   @ViewChild('autocomplete') autocomplete!: AutoComplete;
   selectedItems: any = [];
@@ -32,7 +33,7 @@ export class ItemSearchComponent {
   }
 
   private checkScreenSizeAndFocus(): void {
-    if (window.innerWidth <= 870) {
+    if (this.autoFocusOnMobile && window.innerWidth <= 870) {
       this.focusAutocompleteInput();
     }
   }

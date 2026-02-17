@@ -14,8 +14,14 @@
 
 .section-block,
 .hero-shell,
-.fashion-footer {
+.fashion-footer,
+.search-shell {
   margin: 0 10px;
+}
+
+
+.search-shell {
+  margin-top: 8px;
 }
 
 .hero-shell {
@@ -432,7 +438,7 @@
 
 .reveal-on-scroll {
   opacity: 0;
-  transform: translateY(22px);
+  transform: translateY(12px);
   transition: opacity 420ms ease, transform 420ms ease;
 }
 

@@ -98,6 +98,7 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
   visibleCustomerReviews: any[] = [];
   socialLinks: any[] = [];
   footerColumns: any[] = [];
+  selectedCatalogs: any[] = [];
   activeReviewIndex = 0;
   readonly reelsBatchSize = 4;
   readonly listBatchSize = 4;
@@ -191,6 +192,7 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     this.selectedLocation = this.accountService.getActiveLocation();
     this.templateJson = this.sharedService.getTemplateJSON();
+    this.selectedCatalogs = this.templateJson?.extras?.selectedCatalogs || [];
 
     let notification = this.accountService.getJson(this.lStorageService.getitemfromLocalStorage('appNotification'));
 
@@ -1613,7 +1615,7 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
           entry.target.classList.add('is-visible');
         }
       });
-    }, { threshold: 0.15 });
+    }, { threshold: 0.11 });
 
     setTimeout(() => {
       const sections = document.querySelectorAll('.reveal-on-scroll');
@@ -1778,5 +1780,19 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   gotoItems(){
     this.router.navigate([this.sharedService.getRouteID(), 'items']);
+  }
+  onItemSearchSelected(event: any) {
+    if (event?.query) {
+      const navigationExtras: NavigationExtras = {
+        queryParams: {
+          query: event.query
+        }
+      };
+      this.router.navigate([this.sharedService.getRouteID(), 'items'], navigationExtras);
+      return;
+    }
+    if (event?.value?.encId) {
+      this.router.navigate([this.sharedService.getRouteID(), 'item', event.value.encId]);
+    }
   }
 }

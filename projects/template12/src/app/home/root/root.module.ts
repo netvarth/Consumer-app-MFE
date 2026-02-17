@@ -24,6 +24,7 @@ import { AttachmentPopupModule } from '../../shared/attachment-popup/attachment-
 import { GalleryModule } from '../../shared/gallery/gallery.module';
 import { WLCardModule } from '../../shared/wl-card/wl-card.module';
 import { LazyLoadTriggerDirective } from '../../lazy-load-trigger.directive';
+import { ItemSearchModule } from '../item-search/item-search.module';
 const routes: Routes = [
   { path: '', component: RootComponent }
 ]
@@ -57,6 +58,7 @@ const routes: Routes = [
     GalleryModule,
     AttachmentPopupModule,
     LazyLoadTriggerDirective,
+    ItemSearchModule,
     RouterModule.forChild(routes)
   ],
   exports: [RootComponent],
