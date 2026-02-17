@@ -87,13 +87,20 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
   assetBasePath = '{{ASSET_BASE_PATH}}';
   homeDesign: any = {};
   categories: any[] = [];
+  visibleCategories: any[] = [];
   preBookingCollection: any[] = [];
+  visiblePreBookingCollection: any[] = [];
   reels: any[] = [];
+  visibleReels: any[] = [];
   newArrivals: any[] = [];
+  visibleNewArrivals: any[] = [];
   customerReviews: any[] = [];
+  visibleCustomerReviews: any[] = [];
   socialLinks: any[] = [];
   footerColumns: any[] = [];
   activeReviewIndex = 0;
+  readonly reelsBatchSize = 4;
+  readonly listBatchSize = 4;
   brandName = 'Kanishta';
   logoUrl = '';
   private sectionObserver: IntersectionObserver | null = null;
@@ -383,10 +390,20 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private resolveSectionLink(section: any): string {
     const rawLink = (section?.link || '').toString().replace(/^\/+|\/+$/g, '');
+    const normalizedLink = rawLink.toLowerCase();
     const title = (section?.title || '').toString().toLowerCase();
+    const routeAliasMap: { [key: string]: string } = {
+      paboutus: 'about',
+      aboutus: 'about',
+      pfaq: 'faq',
+      psupport: 'support'
+    };
+    if (routeAliasMap[normalizedLink]) {
+      return routeAliasMap[normalizedLink];
+    }
     const isOrderHistoryTitle =
       title.includes('order history') || title.includes('my orders') || title === 'orders';
-    if (isOrderHistoryTitle && (rawLink === 'dashboard' || rawLink === 'bookings')) {
+    if (isOrderHistoryTitle && (normalizedLink === 'dashboard' || normalizedLink === 'bookings')) {
       return 'orders';
     }
     return rawLink;
@@ -1372,29 +1389,34 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
       section1?.categories,
       this.comingSoonCards
     );
+    this.visibleCategories = this.categories.slice(0, this.listBatchSize);
     this.preBookingCollection = this.getArrayWithFallback(
       this.homeDesign?.preBookingCollection,
       this.homeDesign?.preBookingCollections,
       this.homeDesign?.collections,
       section1?.preBookingCollection
     );
+    this.visiblePreBookingCollection = this.preBookingCollection.slice(0, this.listBatchSize);
     this.reels = this.getArrayWithFallback(
       this.homeDesign?.reels,
       this.homeDesign?.shopByReels,
       section1?.videos,
       this.videos
     );
+    this.visibleReels = this.reels.slice(0, this.reelsBatchSize);
     this.newArrivals = this.getArrayWithFallback(
       this.homeDesign?.newArrivals,
       this.homeDesign?.products,
       section1?.newArrivals,
       section1?.products
     );
+    this.visibleNewArrivals = this.newArrivals.slice(0, this.listBatchSize);
     this.customerReviews = this.getArrayWithFallback(
       this.homeDesign?.customerReviews,
       this.homeDesign?.reviews,
       section1?.reviews
     );
+    this.visibleCustomerReviews = this.customerReviews.slice(0, this.listBatchSize);
     this.socialLinks = this.getArrayWithFallback(this.homeDesign?.socialLinks, this.homeDesign?.socials);
     this.footerColumns = this.getArrayWithFallback(this.homeDesign?.footerColumns, this.homeDesign?.footerLinks);
 
@@ -1481,9 +1503,59 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
       this.onCardClick(section);
     }
   }
+  hasMoreCategories(): boolean {
+    return this.visibleCategories.length < this.categories.length;
+  }
+  loadMoreCategories() {
+    if (!this.hasMoreCategories()) {
+      return;
+    }
+    const nextCount = this.visibleCategories.length + this.listBatchSize;
+    this.visibleCategories = this.categories.slice(0, nextCount);
+  }
+  hasMorePreBookingCollection(): boolean {
+    return this.visiblePreBookingCollection.length < this.preBookingCollection.length;
+  }
+  loadMorePreBookingCollection() {
+    if (!this.hasMorePreBookingCollection()) {
+      return;
+    }
+    const nextCount = this.visiblePreBookingCollection.length + this.listBatchSize;
+    this.visiblePreBookingCollection = this.preBookingCollection.slice(0, nextCount);
+  }
+  hasMoreReels(): boolean {
+    return this.visibleReels.length < this.reels.length;
+  }
+  loadMoreReels() {
+    if (!this.hasMoreReels()) {
+      return;
+    }
+    const nextCount = this.visibleReels.length + this.reelsBatchSize;
+    this.visibleReels = this.reels.slice(0, nextCount);
+  }
+  hasMoreNewArrivals(): boolean {
+    return this.visibleNewArrivals.length < this.newArrivals.length;
+  }
+  loadMoreNewArrivals() {
+    if (!this.hasMoreNewArrivals()) {
+      return;
+    }
+    const nextCount = this.visibleNewArrivals.length + this.listBatchSize;
+    this.visibleNewArrivals = this.newArrivals.slice(0, nextCount);
+  }
+  hasMoreCustomerReviews(): boolean {
+    return this.visibleCustomerReviews.length < this.customerReviews.length;
+  }
+  loadMoreCustomerReviews() {
+    if (!this.hasMoreCustomerReviews()) {
+      return;
+    }
+    const nextCount = this.visibleCustomerReviews.length + this.listBatchSize;
+    this.visibleCustomerReviews = this.customerReviews.slice(0, nextCount);
+  }
   onReviewScroll(event: Event) {
     const element = event?.target as HTMLElement;
-    if (!element || !this.customerReviews?.length) {
+    if (!element || !this.visibleCustomerReviews?.length) {
       return;
     }
     const cardWidth = element.clientWidth / 2;
@@ -1492,7 +1564,7 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
       return;
     }
     const index = Math.round(element.scrollLeft / cardWidth);
-    this.activeReviewIndex = Math.max(0, Math.min(this.customerReviews.length - 1, index));
+    this.activeReviewIndex = Math.max(0, Math.min(this.visibleCustomerReviews.length - 1, index));
   }
   getStars(inputRating: any): number[] {
     const rating = Math.max(1, Math.min(5, Number(inputRating || 5)));
@@ -1703,5 +1775,8 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       }
     }));
+  }
+  gotoItems(){
+    this.router.navigate([this.sharedService.getRouteID(), 'items']);
   }
 }

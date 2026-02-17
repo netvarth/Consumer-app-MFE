@@ -23,6 +23,7 @@ import { InvoiceListModule } from '../../shared/invoice-list/invoice-list.module
 import { AttachmentPopupModule } from '../../shared/attachment-popup/attachment-popup.module';
 import { GalleryModule } from '../../shared/gallery/gallery.module';
 import { WLCardModule } from '../../shared/wl-card/wl-card.module';
+import { LazyLoadTriggerDirective } from '../../lazy-load-trigger.directive';
 const routes: Routes = [
   { path: '', component: RootComponent }
 ]
@@ -55,6 +56,7 @@ const routes: Routes = [
     ErrrorMessageModule,
     GalleryModule,
     AttachmentPopupModule,
+    LazyLoadTriggerDirective,
     RouterModule.forChild(routes)
   ],
   exports: [RootComponent],

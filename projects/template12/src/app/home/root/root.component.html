@@ -1,47 +1,66 @@
 <div class="fashion-home" *ngIf="templateJson">
   <section class="hero-shell reveal-on-scroll">
-    <div class="hero-media">
-      <img [src]="resolveAsset(homeDesign.heroImage || templateJson?.homepagecover || templateJson?.offerBanner || templateJson?.trustFeatures)" alt="Hero banner" loading="eager" decoding="async" />
+    <div class="hero-media" (click)="gotoItems()">
+      <img [src]="resolveAsset(homeDesign.heroImage )" alt="Hero banner" loading="eager" decoding="async" />
+      <img [src]="resolveAsset(homeDesign.heroImagesub )" alt="Hero sub banner" loading="eager" decoding="async" />
     </div>
-    <div class="hero-copy">
+    <!-- <div class="hero-copy">
       <h1>{{ homeDesign.heroTitle || 'THE GREAT INDIAN WEDDING sale' }}</h1>
       <p>{{ homeDesign.heroSubTitle || 'FLAT 25% OFF' }}</p>
       <button type="button" class="hero-cta" (click)="onPrimaryCta()">
         {{ homeDesign.heroCta || 'EXPLORE NOW' }}
       </button>
-    </div>
+    </div> -->
   </section>
 
   <section class="section-block reveal-on-scroll" *ngIf="categories?.length">
-    <h2 class="section-title">{{ homeDesign.categoriesTitle || 'Categories' }}</h2>
+    <h2 class="section-title">{{ homeDesign.categoriesTitle }}</h2>
     <p class="section-subtitle">{{ homeDesign.categoriesSubTitle || '' }}</p>
     <div class="grid-two">
-      <article class="product-card" *ngFor="let item of categories; trackBy: trackByIndex" (click)="onCardClick(item)">
+      <article class="product-card" *ngFor="let item of visibleCategories; trackBy: trackByIndex" (click)="onCardClick(item)">
         <div class="media-wrap">
           <img [src]="resolveAsset(item?.image || item?.url || item?.media)" [alt]="item?.title || item?.name || 'Category'" loading="lazy" decoding="async" />
         </div>
         <div class="meta-wrap">
-          <h3>{{ item?.title || item?.name || 'Category' }}</h3>
-          <p *ngIf="item?.subTitle || item?.price">{{ item?.subTitle || item?.price }}</p>
+          <h3>{{ item?.title || item?.name }}</h3>
+          <p *ngIf="item?.subTitle || item?.price" class="price-inline">
+            <span class="price-value">{{ item?.subTitle || item?.price }}</span>
+            <span class="price-mrp" *ngIf="!item?.subTitle && item?.mrp">{{ item?.mrp }}</span>
+          </p>
         </div>
       </article>
     </div>
+    <div
+      class="items-load-more-trigger"
+      *ngIf="hasMoreCategories()"
+      lazyLoadTrigger
+      [lazyLoadEnabled]="hasMoreCategories()"
+      (lazyLoadTrigger)="loadMoreCategories()"></div>
   </section>
 
   <section class="section-block reveal-on-scroll" *ngIf="preBookingCollection?.length">
-    <h2 class="section-title">{{ homeDesign.preBookingTitle || 'Pre-Booking Collections' }}</h2>
+    <h2 class="section-title">{{ homeDesign.preBookingTitle }}</h2>
     <p class="section-subtitle">{{ homeDesign.preBookingSubTitle || '' }}</p>
     <div class="grid-two">
-      <article class="product-card" *ngFor="let item of preBookingCollection; trackBy: trackByIndex" (click)="onCardClick(item)">
+      <article class="product-card" *ngFor="let item of visiblePreBookingCollection; trackBy: trackByIndex" (click)="onCardClick(item)">
         <div class="media-wrap">
           <img [src]="resolveAsset(item?.image || item?.url || item?.media)" [alt]="item?.title || item?.name || 'Collection item'" loading="lazy" decoding="async" />
         </div>
         <div class="meta-wrap">
           <h3>{{ item?.title || item?.name || 'Collection' }}</h3>
-          <p *ngIf="item?.price">{{ item?.price }}</p>
+          <p *ngIf="item?.price" class="price-inline">
+            <span class="price-value">{{ item?.price }}</span>
+            <span class="price-mrp" *ngIf="item?.mrp">{{ item?.mrp }}</span>
+          </p>
         </div>
       </article>
     </div>
+    <div
+      class="items-load-more-trigger"
+      *ngIf="hasMorePreBookingCollection()"
+      lazyLoadTrigger
+      [lazyLoadEnabled]="hasMorePreBookingCollection()"
+      (lazyLoadTrigger)="loadMorePreBookingCollection()"></div>
     <button type="button" class="pill-btn" (click)="onShowMore('prebooking')">{{ homeDesign.preBookingCta || 'Show More' }}</button>
   </section>
 
@@ -49,7 +68,7 @@
     <h2 class="section-title">{{ homeDesign.reelsTitle || 'Shop By Reels' }}</h2>
     <p class="section-subtitle">{{ homeDesign.reelsSubTitle || '' }}</p>
     <div class="reel-grid">
-      <article class="reel-card" *ngFor="let reel of reels; trackBy: trackByIndex" (click)="onCardClick(reel)">
+      <article class="reel-card" *ngFor="let reel of visibleReels; trackBy: trackByIndex" (click)="onCardClick(reel)">
         <div class="reel-media">
           <video
             [poster]="resolveAsset(reel?.poster || reel?.image)"
@@ -62,36 +81,60 @@
             (loadedmetadata)="forcePlay($event)"
             (canplay)="forcePlay($event)"
           ></video>
+          <div class="reel-wrap">
+            <div class="reel-wrap-main">
+          <img [src]="resolveAsset(reel?.poster || reel?.image)" [alt]="reel?.title || reel?.name || 'Reel'" loading="lazy" decoding="async" />
+          </div>
+          <div class="reel-wrap-sub">
+            <h3>{{ reel?.title || reel?.name}}</h3>
+          <p *ngIf="reel?.price" class="price-inline">
+            <span class="price-value">{{ reel?.price }}</span>
+            <span class="price-mrp" *ngIf="reel?.mrp">{{ reel?.mrp }}</span>
+          </p>
+          </div>
         </div>
-        <div class="meta-wrap">
-          <h3>{{ reel?.title || reel?.name || 'Reel' }}</h3>
-          <p *ngIf="reel?.price">{{ reel?.price }}</p>
         </div>
+        
       </article>
     </div>
+    <div
+      class="items-load-more-trigger"
+      *ngIf="hasMoreReels()"
+      lazyLoadTrigger
+      [lazyLoadEnabled]="hasMoreReels()"
+      (lazyLoadTrigger)="loadMoreReels()"></div>
   </section>
 
   <section class="section-block reveal-on-scroll" *ngIf="newArrivals?.length">
     <h2 class="section-title">{{ homeDesign.newArrivalsTitle || 'New Arrivals' }}</h2>
     <p class="section-subtitle">{{ homeDesign.newArrivalsSubTitle || '' }}</p>
     <div class="grid-two">
-      <article class="product-card" *ngFor="let item of newArrivals; trackBy: trackByIndex" (click)="onCardClick(item)">
+      <article class="product-card" *ngFor="let item of visibleNewArrivals; trackBy: trackByIndex" (click)="onCardClick(item)">
         <div class="media-wrap">
           <img [src]="resolveAsset(item?.image || item?.url || item?.media)" [alt]="item?.title || item?.name || 'New arrival'" loading="lazy" decoding="async" />
         </div>
         <div class="meta-wrap">
           <h3>{{ item?.title || item?.name || 'New Arrival' }}</h3>
-          <p *ngIf="item?.price">{{ item?.price }}</p>
+          <p *ngIf="item?.price" class="price-inline">
+            <span class="price-value">{{ item?.price }}</span>
+            <span class="price-mrp" *ngIf="item?.mrp">{{ item?.mrp }}</span>
+          </p>
         </div>
       </article>
     </div>
+    <div
+      class="items-load-more-trigger"
+      *ngIf="hasMoreNewArrivals()"
+      lazyLoadTrigger
+      [lazyLoadEnabled]="hasMoreNewArrivals()"
+      (lazyLoadTrigger)="loadMoreNewArrivals()"></div>
     <button type="button" class="pill-btn" (click)="onShowMore('new-arrivals')">{{ homeDesign.newArrivalsCta || 'Show More' }}</button>
   </section>
 
   <section class="section-block reveal-on-scroll" *ngIf="customerReviews?.length">
     <h2 class="section-title centered">{{ homeDesign.reviewsTitle || 'Customer Review' }}</h2>
     <div class="reviews-track" (scroll)="onReviewScroll($event)">
-      <article class="review-card" *ngFor="let review of customerReviews; let i = index; trackBy: trackByIndex" [class.active]="activeReviewIndex === i">
+      <article class="review-card" *ngFor="let review of visibleCustomerReviews; let i = index; trackBy: trackByIndex" [class.active]="activeReviewIndex === i">
         <div class="review-avatar-wrap">
           <img [src]="resolveAsset(review?.avatar || review?.image)" [alt]="review?.name || 'Reviewer'" loading="lazy" decoding="async" />
         </div>
@@ -102,12 +145,21 @@
         <h3 class="review-name">{{ review?.name || '' }}</h3>
       </article>
     </div>
-    <div class="dots" *ngIf="customerReviews.length > 1">
-      <span class="dot" *ngFor="let review of customerReviews; let i = index" [class.active]="activeReviewIndex === i"></span>
+    <div
+      class="items-load-more-trigger"
+      *ngIf="hasMoreCustomerReviews()"
+      lazyLoadTrigger
+      [lazyLoadEnabled]="hasMoreCustomerReviews()"
+      (lazyLoadTrigger)="loadMoreCustomerReviews()"></div>
+    <div class="dots" *ngIf="visibleCustomerReviews.length > 1">
+<span class="dot" 
+      *ngFor="let review of visibleCustomerReviews  | slice:0:-1; let i = index" 
+      [class.active]="activeReviewIndex === i">
+</span>
     </div>
   </section>
 
-  <footer class="fashion-footer reveal-on-scroll">
+  <!-- <footer class="fashion-footer reveal-on-scroll">
     <div class="footer-brand">
       <img *ngIf="logoUrl" [src]="resolveAsset(logoUrl)" alt="Brand logo" loading="lazy" decoding="async" />
       <h3>{{ brandName }}</h3>
@@ -126,7 +178,7 @@
         <a *ngFor="let link of col?.links; trackBy: trackByIndex" [href]="link?.url || 'javascript:void(0)'" target="_blank" rel="noopener">{{ link?.label }}</a>
       </div>
     </div>
-  </footer>
+  </footer> -->
 
   <div id="footer-bar" class="footer-bar-1">
     <a (click)="menuSelected(templateJson.section1)"
