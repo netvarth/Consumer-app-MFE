@@ -71,8 +71,8 @@
                                         <div class="product-price" *ngIf="!hidePrices">
                                             <span class="current-price">Rs. {{ item.price }}</span>
                                             <!-- <span class="original-price" *ngIf="item.showMrp && item.mrp && item.mrp > item.price">Rs. {{ item.mrp }}</span> -->
-                                            <span class="original-price" >Rs. {{ item.mrp }}</span>
-                                            <span class="discount" *ngIf=" item.mrp && (((item.mrp - item.price) / item.mrp) * 100) > 0">
+                                            <span class="original-price" *ngIf="item.mrp && (+item.mrp !== +item.price)">Rs. {{ item.mrp }}</span>
+                                            <span class="discount" *ngIf="item.mrp && (+item.mrp !== +item.price) && (((+item.mrp - +item.price) / +item.mrp) * 100) > 0">
                                                  <!-- <span class="discount" *ngIf="item.showMrp && item.mrp && (((item.mrp - item.price) / item.mrp) * 100) > 0"></span> -->
                                             ({{ ((item.mrp - item.price) / item.mrp) * 100 | number:'1.0-0' }}% OFF)
                                             </span>

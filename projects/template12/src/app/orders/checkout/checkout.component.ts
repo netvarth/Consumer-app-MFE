@@ -242,6 +242,7 @@ export class CheckoutComponent implements OnInit {
   togglepaymentMode() {
     this.shownonIndianModes = !this.shownonIndianModes;
     this.selected_payment_mode = null;
+    this.resetConvenienceCharges();
   }
 
   setPaymentModeToggle(value: boolean) {
@@ -250,45 +251,22 @@ export class CheckoutComponent implements OnInit {
     }
     this.shownonIndianModes = value;
     this.selected_payment_mode = null;
+    this.resetConvenienceCharges();
   }
 
   indian_payment_mode_onchange(event) {
-    this.selected_payment_mode = event.value;
+    this.selected_payment_mode = event?.value ?? event;
     console.log("this.selected_payment_mode", this.selected_payment_mode)
     this.isInternatonal = false;
-    this.convenientPaymentModes.map((res: any) => {
-      this.convenientFeeObj = {}
-      if (res.isInternational === false) {
-        this.convenientFeeObj = res;
-        if (this.selected_payment_mode === res.mode) {
-          this.gatewayFee = this.convenientFeeObj.totalGatewayFee;
-          this.convenientFee = this.convenientFeeObj.convenienceFee;
-          this.convenientFeeTax = this.convenientFeeObj.consumerGatewayFeeTax;
-          this.amountWithAllCharges = this.convenientFeeObj.amountWithAllCharges;
-          console.log("convenientFee for Indian:", this.convenientFee, res.mode, this.gatewayFee)
-        }
-      }
-    })
+    this.applyConvenienceForMode(this.selected_payment_mode, false);
   }
 
 
   non_indian_modes_onchange(event) {
-    this.selected_payment_mode = event.value;
+    this.selected_payment_mode = event?.value ?? event;
     console.log("this.selected_payment_mode", this.selected_payment_mode)
     this.isInternatonal = true;
-    this.convenientPaymentModes.map((res: any) => {
-      this.convenientFeeObj = {}
-      if (res.isInternational === true) {
-        this.convenientFeeObj = res;
-        if (this.selected_payment_mode === res.mode) {
-          this.gatewayFee = this.convenientFeeObj.totalGatewayFee;
-          this.convenientFee = this.convenientFeeObj.convenienceFee;
-          this.convenientFeeTax = this.convenientFeeObj.consumerGatewayFeeTax;
-          this.amountWithAllCharges = this.convenientFeeObj.amountWithAllCharges;
-          console.log("convenientFee for Indian:", this.convenientFee, res.mode, this.gatewayFee)
-        }
-      }
-    })
+    this.applyConvenienceForMode(this.selected_payment_mode, true);
   }
 
   getPaymentModes() {
@@ -327,6 +305,7 @@ export class CheckoutComponent implements OnInit {
                 }
               })
             }
+            this.applyDefaultConvenienceCharges();
           })
           console.log("isConvenienceFee paymentsss:", this.paymentmodes)
           if (this.paymentmodes && this.paymentmodes.indiaPay) {
@@ -831,47 +810,85 @@ confirm() {
   }
 
   getPayableAmount(): number {
-    if (this.amountWithAllCharges && this.amountWithAllCharges > 0 && this.confirmBtn) {
-      return this.amountWithAllCharges;
+    return this.getAmountPaid();
+  }
+
+  getDisplayedTotal(): number {
+    return this.getAmountPaid();
+  }
+
+  getTotalBeforeTax(): number {
+    if (this.cartData?.netTotal != null) {
+      return this.toNumber(this.cartData.netTotal);
     }
-    if (this.orderData?.grossTotal) {
-      return this.orderData.grossTotal;
+    if (this.orderData?.netTotal != null) {
+      return this.toNumber(this.orderData.netTotal);
     }
-    if (this.orderData?.amountDue) {
-      return this.orderData.amountDue;
+    return this.getNetTotalAmount();
+  }
+
+  getTaxTotalAmount(): number {
+    if (this.cartData?.taxTotal != null) {
+      return this.toNumber(this.cartData.taxTotal);
     }
-    if (this.orderData?.netRate) {
-      return this.orderData.netRate;
-    }
-    if (this.cartData?.grossTotal) {
-      return this.cartData.grossTotal;
-    }
-    if (this.cartData?.netRate) {
-      return this.cartData.netRate;
-    }
-    if (this.cartData?.netTotal) {
-      return this.cartData.netTotal;
+    if (this.orderData?.taxTotal != null) {
+      return this.toNumber(this.orderData.taxTotal);
     }
     return 0;
   }
 
-  getDisplayedTotal(): number {
-    if (this.selected_payment_mode && this.amountWithAllCharges && this.amountWithAllCharges > 0) {
-      return this.amountWithAllCharges;
+  getNetTotalWithTax(): number {
+    return this.getTotalBeforeTax() + this.getTaxTotalAmount();
+  }
+
+  getProviderCouponTotal(): number {
+    if (this.cartData?.providerCouponAmount != null) {
+      return this.toNumber(this.cartData.providerCouponAmount);
     }
-    if (this.orderData?.amountDue) {
-      return this.orderData.amountDue;
+    const coupons = this.cartData?.providerCoupons || [];
+    return coupons.reduce((sum: number, coupon: any) => sum + this.toNumber(coupon?.discount), 0);
+  }
+
+  getNetTotalAfterCoupons(): number {
+    if (this.cartData?.netRateBeforeRounding != null) {
+      return this.toNumber(this.cartData.netRateBeforeRounding);
     }
-    if (this.orderData?.netRate) {
-      return this.orderData.netRate;
+    if (this.cartData?.netRate != null) {
+      return this.toNumber(this.cartData.netRate);
     }
-    if (this.cartData?.netRate) {
-      return this.cartData.netRate;
+    if (this.orderData?.netRate != null) {
+      return this.toNumber(this.orderData.netRate);
     }
-    if (this.cartData?.netTotal) {
-      return this.cartData.netTotal;
+    return this.getNetTotalWithTax() - this.getProviderCouponTotal();
+  }
+
+  getAmountPaid(): number {
+    const amountWithCharges = this.resolveAmountWithAllCharges();
+    if (amountWithCharges > 0) {
+      return amountWithCharges;
     }
-    return 0;
+    if (this.orderData?.amountDue != null) {
+      return this.toNumber(this.orderData.amountDue);
+    }
+    return this.getNetTotalAfterCoupons();
+  }
+
+  getProcessingFee(): number {
+    const processing = this.getAmountPaid() - this.getNetTotalAfterCoupons();
+    return processing > 0 ? processing : 0;
+  }
+
+  hasPaymentCharges(): boolean {
+    if (this.toNumber(this.convenientFee) > 0 || this.toNumber(this.gatewayFee) > 0) {
+      return true;
+    }
+    const activeMode = this.getActiveConvenienceMode();
+    if (!activeMode) {
+      return false;
+    }
+    const convenience = this.toNumber(activeMode.convenienceFee);
+    const gateway = this.toNumber(activeMode.totalGatewayFee);
+    return convenience > 0 || gateway > 0;
   }
 
   getOrderSummaryTotal(): number {
@@ -889,9 +906,146 @@ confirm() {
     }
     return 0;
   }
+
+  getNetTotalAmount(): number {
+    if (this.cartData?.netTotal) {
+      return this.cartData.netTotal;
+    }
+    if (this.orderData?.netTotal) {
+      return this.orderData.netTotal;
+    }
+    if (this.cartData?.netRate) {
+      return this.cartData.netRate;
+    }
+    if (this.orderData?.netRate) {
+      return this.orderData.netRate;
+    }
+    return 0;
+  }
+
   goBackToCart() {
     // this.router.navigate([this.sharedService.getRouteID(), 'cart']);
   this.location.back();
+  }
+
+  private toNumber(value: any): number {
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : 0;
+  }
+
+  private resolveAmountWithAllCharges(): number {
+    const directAmount = this.toNumber(this.amountWithAllCharges);
+    if (directAmount > 0) {
+      return directAmount;
+    }
+    if (!Array.isArray(this.convenientPaymentModes) || this.convenientPaymentModes.length === 0) {
+      return 0;
+    }
+
+    const selected = (this.selected_payment_mode ?? '').toString().trim().toUpperCase();
+    const targetInternational = !!this.shownonIndianModes;
+    let matched = this.convenientPaymentModes.find((res: any) =>
+      !!res &&
+      res.isInternational === targetInternational &&
+      (res.mode ?? '').toString().trim().toUpperCase() === selected
+    );
+
+    if (!matched) {
+      matched = this.convenientPaymentModes.find((res: any) => !!res && res.isInternational === targetInternational)
+        || this.convenientPaymentModes[0];
+    }
+
+    const resolvedAmount = this.toNumber(matched?.amountWithAllCharges);
+    if (resolvedAmount > 0) {
+      this.amountWithAllCharges = resolvedAmount;
+      if (!this.selected_payment_mode && matched?.mode) {
+        this.selected_payment_mode = matched.mode;
+      }
+      this.isInternatonal = !!matched?.isInternational;
+    }
+    return resolvedAmount;
+  }
+
+  private getActiveConvenienceMode(): any {
+    if (!Array.isArray(this.convenientPaymentModes) || this.convenientPaymentModes.length === 0) {
+      return null;
+    }
+    const selected = (this.selected_payment_mode ?? '').toString().trim().toUpperCase();
+    const targetInternational = !!this.shownonIndianModes;
+    const matched = this.convenientPaymentModes.find((res: any) =>
+      !!res &&
+      res.isInternational === targetInternational &&
+      (res.mode ?? '').toString().trim().toUpperCase() === selected
+    );
+    if (matched) {
+      return matched;
+    }
+    return this.convenientPaymentModes.find((res: any) => !!res && res.isInternational === targetInternational)
+      || this.convenientPaymentModes[0]
+      || null;
+  }
+
+  private resetConvenienceCharges(): void {
+    this.gatewayFee = 0;
+    this.convenientFee = 0;
+    this.convenientFeeTax = 0;
+    this.amountWithAllCharges = 0;
+    this.convenientFeeObj = null;
+  }
+
+  private applyConvenienceForMode(selectedMode: any, isInternational: boolean): void {
+    const selected = (selectedMode ?? '').toString().trim().toUpperCase();
+    if (!selected || !Array.isArray(this.convenientPaymentModes)) {
+      this.resetConvenienceCharges();
+      return;
+    }
+
+    const matchedMode = this.convenientPaymentModes.find((res: any) => {
+      return !!res &&
+        res.isInternational === isInternational &&
+        (res.mode ?? '').toString().trim().toUpperCase() === selected;
+    });
+
+    if (!matchedMode) {
+      this.resetConvenienceCharges();
+      return;
+    }
+
+    this.convenientFeeObj = matchedMode;
+    this.gatewayFee = this.toNumber(matchedMode.totalGatewayFee);
+    this.convenientFee = this.toNumber(matchedMode.convenienceFee);
+    this.convenientFeeTax = this.toNumber(matchedMode.consumerGatewayFeeTax);
+    this.amountWithAllCharges = this.toNumber(matchedMode.amountWithAllCharges);
+    console.log("convenientFee applied:", this.convenientFee, matchedMode.mode, this.gatewayFee, this.amountWithAllCharges);
+  }
+
+  private applyDefaultConvenienceCharges(): void {
+    if (!Array.isArray(this.convenientPaymentModes) || this.convenientPaymentModes.length === 0) {
+      this.resetConvenienceCharges();
+      return;
+    }
+
+    const requestedInternational = !!this.shownonIndianModes;
+    const selectedMode = (this.selected_payment_mode ?? '').toString().trim();
+    if (selectedMode) {
+      this.applyConvenienceForMode(selectedMode, requestedInternational);
+      if (this.amountWithAllCharges > 0) {
+        this.isInternatonal = requestedInternational;
+        return;
+      }
+    }
+
+    const defaultMode = this.convenientPaymentModes.find((res: any) => !!res && res.isInternational === requestedInternational)
+      || this.convenientPaymentModes[0];
+
+    if (!defaultMode?.mode) {
+      this.resetConvenienceCharges();
+      return;
+    }
+
+    this.selected_payment_mode = defaultMode.mode;
+    this.isInternatonal = !!defaultMode.isInternational;
+    this.applyConvenienceForMode(this.selected_payment_mode, this.isInternatonal);
   }
 
 }

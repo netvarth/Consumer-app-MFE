@@ -240,7 +240,7 @@
             <div class="summary-total-text">
               <div class="summary-total-label">Order Total</div>
               <div class="summary-total-amount">
-                ₹{{ getOrderSummaryTotal() | number: '1.2-2' }}
+                ₹{{ getDisplayedTotal() | number: '1.2-2' }}
               </div>
             </div>
             <button type="button" class="summary-details" (click)="toggleSummaryDetails()">
@@ -342,49 +342,48 @@
         <div class="summary-pricing">
           <div class="summary-pricing-header">Price Details</div>
           <div class="pricing-row">
-            <span>Net Total</span>
+            <span>Total</span>
             <span>
-              ₹{{ cartData.grossTotal || cartData.netTotal | number: '1.2-2' }}
+              &#8377;{{ getTotalBeforeTax() | number: '1.2-2' }}
             </span>
           </div>
-          <div class="pricing-row discount-row" *ngIf="cartData.discountTotal && cartData.discountTotal > 0">
-            <span>Discount on MRP</span>
-            <span class="discount-amount">
-              -₹{{ cartData.discountTotal | number: '1.2-2' }}
-            </span>
+          <div class="pricing-row">
+            <span>Tax Total</span>
+            <span>&#8377;{{ getTaxTotalAmount() | number: '1.2-2' }}</span>
           </div>
-          <div class="pricing-row" *ngIf="cartData.taxTotal && cartData.taxTotal > 0">
-            <span>GST</span>
-            <span>₹{{ cartData.taxTotal | number: '1.2-2' }}</span>
+          <div class="pricing-row">
+            <span>Net Total With Tax</span>
+            <span>&#8377;{{ getNetTotalWithTax() | number: '1.2-2' }}</span>
           </div>
-          <div class="pricing-row" *ngIf="convenientFee && convenientFee > 0 && confirmBtn">
-            <span>Convenience Fee</span>
-            <span>₹{{ convenientFee | number: '1.2-2' }}</span>
-          </div>
-          <div class="pricing-row" *ngIf="gatewayFee && gatewayFee > 0 && confirmBtn">
-            <span>Gateway Fee</span>
-            <span>₹{{ gatewayFee | number: '1.2-2' }}</span>
-          </div>
-          <div class="pricing-row" *ngIf="orderData && orderData.deliveryCharges > 0 && confirmBtn">
-            <span>Delivery Charge</span>
-            <span>+₹{{ orderData.deliveryCharges | number: '1.2-2' }}</span>
-          </div>
-
-          <!-- Applied coupons (display only, no edit/remove UI) -->
-          <div *ngIf="cartData && cartData.providerCoupons?.length > 0" class="pricing-coupons">
+          <div class="pricing-coupons">
             <div class="pricing-row coupon-row" *ngFor="let coupon of cartData.providerCoupons">
               <span class="coupon-code">
                 {{ coupon.couponCode }} (coupon)
               </span>
               <span class="coupon-discount">
-                -{{ coupon.discount | currency: '&#8377;' }}
+                (-)&#8377;{{ coupon.discount | number: '1.2-2' }}
+              </span>
+            </div>
+            <div class="pricing-row coupon-row" *ngIf="!cartData?.providerCoupons?.length">
+              <span class="coupon-code">
+                Coupon
+              </span>
+              <span class="coupon-discount">
+                (-)&#8377;0.00
               </span>
             </div>
           </div>
-
-          <div class="pricing-row total-row">
-            <span>Total Amount</span>
-            <span>₹{{ getDisplayedTotal() | number: '1.2-2' }}</span>
+          <div class="pricing-row">
+            <span>Net Total</span>
+            <span>&#8377;{{ getNetTotalAfterCoupons() | number: '1.2-2' }}</span>
+          </div>
+          <div class="pricing-row" *ngIf="hasPaymentCharges()">
+            <span>Processing Fee</span>
+            <span>&#8377;{{ getProcessingFee() | number: '1.2-2' }}</span>
+          </div>
+          <div class="pricing-row total-row" *ngIf="hasPaymentCharges()">
+            <span>Amount Paid</span>
+            <span>&#8377;{{ getAmountPaid() | number: '1.2-2' }}</span>
           </div>
         </div>
 
