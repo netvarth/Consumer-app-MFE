@@ -75,8 +75,8 @@
   <section class="section-block reveal-on-scroll" *ngIf="reels?.length">
     <h2 class="section-title">{{ homeDesign.reelsTitle || 'Shop By Reels' }}</h2>
     <p class="section-subtitle">{{ homeDesign.reelsSubTitle || '' }}</p>
-    <div class="reel-grid">
-      <article class="reel-card" *ngFor="let reel of visibleReels; trackBy: trackByIndex" (click)="onCardClick(reel)">
+    <div class="reel-grid" (scroll)="onReelScroll($event)">
+      <article class="reel-card" *ngFor="let reel of visibleReels; let i = index; trackBy: trackByIndex" [class.active]="activeReelIndex === i" (click)="onCardClick(reel)">
         <div class="reel-media">
           <video
             [poster]="resolveAsset(reel?.poster || reel?.image)"

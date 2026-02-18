@@ -100,6 +100,7 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
   footerColumns: any[] = [];
   selectedCatalogs: any[] = [];
   activeReviewIndex = 0;
+  activeReelIndex = 0;
   readonly reelsBatchSize = 4;
   readonly listBatchSize = 4;
   brandName = 'Kanishta';
@@ -1567,6 +1568,19 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     const index = Math.round(element.scrollLeft / cardWidth);
     this.activeReviewIndex = Math.max(0, Math.min(this.visibleCustomerReviews.length - 1, index));
+  }
+  onReelScroll(event: Event) {
+    const element = event?.target as HTMLElement;
+    if (!element || !this.visibleReels?.length) {
+      return;
+    }
+    const cardWidth = element.clientWidth / 2;
+    if (!cardWidth) {
+      this.activeReelIndex = 0;
+      return;
+    }
+    const index = Math.round(element.scrollLeft / cardWidth);
+    this.activeReelIndex = Math.max(0, Math.min(this.visibleReels.length - 1, index));
   }
   getStars(inputRating: any): number[] {
     const rating = Math.max(1, Math.min(5, Number(inputRating || 5)));
