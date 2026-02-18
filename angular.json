@@ -1743,6 +1743,9 @@
 							}
 						],
 						"styles": [
+							"node_modules/primeng/resources/primeng.min.css",
+							"node_modules/primeng/resources/themes/md-light-indigo/theme.css",
+							"node_modules/primeicons/primeicons.css",
 							"projects/template12/src/styles.scss"
 						],
 						"scripts": []
@@ -1767,6 +1770,9 @@
 							}
 						],
 						"styles": [
+							"node_modules/primeng/resources/primeng.min.css",
+							"node_modules/primeng/resources/themes/md-light-indigo/theme.css",
+							"node_modules/primeicons/primeicons.css",
 							"projects/template12/src/styles.scss"
 						],
 						"scripts": []
