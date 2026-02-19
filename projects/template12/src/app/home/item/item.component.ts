@@ -1614,8 +1614,42 @@ export class ItemComponent implements OnInit, OnDestroy {
     }
   }
 
-  private openShareUrl(url: string): void {
-    window.open(url, '_blank');
+  private openShareUrl(url: string, forceSameWindow: boolean = false): void {
+    if (!url) {
+      return;
+    }
+    if (forceSameWindow) {
+      window.location.href = url;
+      return;
+    }
+    const winRef = window.open(url, '_blank');
+    if (!winRef) {
+      // Popups are commonly blocked inside WebView.
+      window.location.href = url;
+    }
+  }
+
+  private isAndroidDevice(): boolean {
+    return /android/i.test(navigator.userAgent || '');
+  }
+
+  private openAppOrFallback(appUrl: string, fallbackUrl: string): void {
+    if (!this.isAndroidDevice()) {
+      this.openShareUrl(fallbackUrl);
+      return;
+    }
+    const fallbackTimer = setTimeout(() => {
+      if (!document.hidden) {
+        this.openShareUrl(fallbackUrl, true);
+      }
+    }, 1200);
+    const handleVisibility = () => {
+      if (document.hidden) {
+        clearTimeout(fallbackTimer);
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibility, { once: true });
+    this.openShareUrl(appUrl, true);
   }
 
   shareVia(type: string): void {
@@ -1623,39 +1657,63 @@ export class ItemComponent implements OnInit, OnDestroy {
     const url = this.getShareItemUrl();
     const encodedText = encodeURIComponent(text);
     const encodedUrl = encodeURIComponent(url);
+    const encodedSubject = encodeURIComponent('Check this out');
     this.closeShareSheet();
     switch (type) {
       case 'copy':
         this.copyShareText();
         break;
       case 'whatsapp':
-        this.openShareUrl(`https://wa.me/?text=${encodedText}`);
+        this.openAppOrFallback(`whatsapp://send?text=${encodedText}`, `https://wa.me/?text=${encodedText}`);
         break;
       case 'facebook':
-        this.openShareUrl(`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encodedText}`);
+        this.openAppOrFallback(
+          `fb://facewebmodal/f?href=${encodeURIComponent(`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encodedText}`)}`,
+          `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encodedText}`
+        );
         break;
       case 'messenger':
-        this.openShareUrl(`fb-messenger://share/?link=${encodedUrl}&app_id=0`);
+        this.openAppOrFallback(`fb-messenger://share/?link=${encodedUrl}`, `https://m.me/share?link=${encodedUrl}`);
         break;
       case 'gmail':
-        this.openShareUrl(`https://mail.google.com/mail/?view=cm&to=&su=${encodeURIComponent('Check this out')}&body=${encodedText}`);
+        const gmailWebCompose = `https://mail.google.com/mail/?view=cm&fs=1&tf=1&su=${encodedSubject}&body=${encodedText}`;
+        if (window.innerWidth >= 1024) {
+          this.openShareUrl(`mailto:?subject=${encodedSubject}&body=${encodedText}`);
+          break;
+        }
+        if (this.isAndroidDevice()) {
+          const intentUrl =
+            `intent://co?subject=${encodedSubject}&body=${encodedText}` +
+            `#Intent;scheme=googlegmail;package=com.google.android.gm;` +
+            `S.browser_fallback_url=${encodeURIComponent(gmailWebCompose)};end`;
+          this.openShareUrl(intentUrl, true);
+          setTimeout(() => {
+            if (!document.hidden) {
+              this.openShareUrl(gmailWebCompose, true);
+            }
+          }, 900);
+        } else {
+          this.openShareUrl(gmailWebCompose);
+        }
         break;
       case 'sms':
-        this.openShareUrl(`sms:?&body=${encodedText}`);
+        this.openShareUrl(`sms:?body=${encodedText}`, true);
         break;
       case 'linkedin':
-        this.openShareUrl(`https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`);
+        this.openAppOrFallback(
+          `linkedin://shareArticle?mini=true&url=${encodedUrl}`,
+          `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`
+        );
         break;
       case 'more':
         if (navigator.share) {
           navigator.share({ text, url })
-          // .catch(() => {
-          //   this.copyShareText();
-          // });
-        } 
-        // else {
-        //   this.copyShareText();
-        // }
+            .catch(() => {
+              this.copyShareText();
+            });
+        } else {
+          this.copyShareText();
+        }
         break;
       default:
         this.copyShareText();
