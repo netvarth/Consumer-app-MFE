@@ -1629,20 +1629,20 @@ export class ItemComponent implements OnInit, OnDestroy {
     }
   }
 
+  private isDesktopShareView(): boolean {
+    return window.innerWidth >= 1024;
+  }
+
   private isAndroidDevice(): boolean {
     return /android/i.test(navigator.userAgent || '');
   }
 
-  private openAppOrFallback(appUrl: string, fallbackUrl: string): void {
-    if (!this.isAndroidDevice()) {
-      this.openShareUrl(fallbackUrl);
-      return;
-    }
+  private openAppOrFallback(appUrl: string, fallbackUrl: string, timeoutMs: number = 1200): void {
     const fallbackTimer = setTimeout(() => {
       if (!document.hidden) {
         this.openShareUrl(fallbackUrl, true);
       }
-    }, 1200);
+    }, timeoutMs);
     const handleVisibility = () => {
       if (document.hidden) {
         clearTimeout(fallbackTimer);
@@ -1652,65 +1652,54 @@ export class ItemComponent implements OnInit, OnDestroy {
     this.openShareUrl(appUrl, true);
   }
 
-  shareVia(type: string): void {
+  private buildAndroidIntentUrl(scheme: string, packageName: string, pathAndQuery: string, fallbackUrl: string): string {
+    return `intent://${pathAndQuery}#Intent;scheme=${scheme};package=${packageName};S.browser_fallback_url=${encodeURIComponent(fallbackUrl)};end`;
+  }
+
+  private openAndroidShareChooser(text: string): void {
+    const intentUrl =
+      `intent://share/#Intent;action=android.intent.action.SEND;type=text/plain;` +
+      `S.android.intent.extra.TEXT=${encodeURIComponent(text)};` +
+      `S.android.intent.extra.SUBJECT=${encodeURIComponent('Check this out')};end`;
+    this.openShareUrl(intentUrl, true);
+  }
+
+  private getSharePayload() {
     const text = this.getShareText();
     const url = this.getShareItemUrl();
     const encodedText = encodeURIComponent(text);
     const encodedUrl = encodeURIComponent(url);
     const encodedSubject = encodeURIComponent('Check this out');
-    this.closeShareSheet();
+    return { text, url, encodedText, encodedUrl, encodedSubject };
+  }
+
+  private handleDesktopShareClick(type: string, payload: any): void {
+    const { text, url, encodedText, encodedUrl, encodedSubject } = payload;
     switch (type) {
       case 'copy':
         this.copyShareText();
         break;
       case 'whatsapp':
-        this.openAppOrFallback(`whatsapp://send?text=${encodedText}`, `https://wa.me/?text=${encodedText}`);
+        this.openShareUrl(`https://wa.me/?text=${encodedText}`);
         break;
       case 'facebook':
-        this.openAppOrFallback(
-          `fb://facewebmodal/f?href=${encodeURIComponent(`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encodedText}`)}`,
-          `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encodedText}`
-        );
+        this.openShareUrl(`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encodedText}`);
         break;
       case 'messenger':
-        this.openAppOrFallback(`fb-messenger://share/?link=${encodedUrl}`, `https://m.me/share?link=${encodedUrl}`);
+        this.openShareUrl(`https://m.me/share?link=${encodedUrl}`);
         break;
       case 'gmail':
-        const gmailWebCompose = `https://mail.google.com/mail/?view=cm&fs=1&tf=1&su=${encodedSubject}&body=${encodedText}`;
-        if (window.innerWidth >= 1024) {
-          this.openShareUrl(`mailto:?subject=${encodedSubject}&body=${encodedText}`);
-          break;
-        }
-        if (this.isAndroidDevice()) {
-          const intentUrl =
-            `intent://co?subject=${encodedSubject}&body=${encodedText}` +
-            `#Intent;scheme=googlegmail;package=com.google.android.gm;` +
-            `S.browser_fallback_url=${encodeURIComponent(gmailWebCompose)};end`;
-          this.openShareUrl(intentUrl, true);
-          setTimeout(() => {
-            if (!document.hidden) {
-              this.openShareUrl(gmailWebCompose, true);
-            }
-          }, 900);
-        } else {
-          this.openShareUrl(gmailWebCompose);
-        }
+        this.openShareUrl(`mailto:?subject=${encodedSubject}&body=${encodedText}`);
         break;
       case 'sms':
-        this.openShareUrl(`sms:?body=${encodedText}`, true);
+        this.openShareUrl(`sms:?body=${encodedText}`);
         break;
       case 'linkedin':
-        this.openAppOrFallback(
-          `linkedin://shareArticle?mini=true&url=${encodedUrl}`,
-          `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`
-        );
+        this.openShareUrl(`https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`);
         break;
       case 'more':
         if (navigator.share) {
-          navigator.share({ text, url })
-            .catch(() => {
-              this.copyShareText();
-            });
+          navigator.share({ text, url }).catch(() => this.copyShareText());
         } else {
           this.copyShareText();
         }
@@ -1719,6 +1708,115 @@ export class ItemComponent implements OnInit, OnDestroy {
         this.copyShareText();
         break;
     }
+  }
+
+  private handleMobileShareClick(type: string, payload: any): void {
+    const { text, url, encodedText, encodedUrl, encodedSubject } = payload;
+    if (type === 'copy') {
+      this.copyShareText();
+      return;
+    }
+    switch (type) {
+      case 'whatsapp': {
+        const fallback = `https://wa.me/?text=${encodedText}`;
+        if (this.isAndroidDevice()) {
+          const intentUrl = this.buildAndroidIntentUrl(
+            'whatsapp',
+            'com.whatsapp',
+            `send?text=${encodedText}`,
+            fallback
+          );
+          this.openShareUrl(intentUrl, true);
+          return;
+        }
+        this.openAppOrFallback(`whatsapp://send?text=${encodedText}`, fallback);
+        return;
+      }
+      case 'facebook': {
+        const fallback = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encodedText}`;
+        if (this.isAndroidDevice()) {
+          const webShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encodedText}`;
+          const intentUrl = this.buildAndroidIntentUrl(
+            'fb',
+            'com.facebook.katana',
+            `facewebmodal/f?href=${encodeURIComponent(webShareUrl)}`,
+            fallback
+          );
+          this.openShareUrl(intentUrl, true);
+          return;
+        }
+        this.openAppOrFallback(`fb://facewebmodal/f?href=${encodeURIComponent(fallback)}`, fallback);
+        return;
+      }
+      case 'messenger': {
+        const fallback = `https://m.me/share?link=${encodedUrl}`;
+        if (this.isAndroidDevice()) {
+          const intentUrl = this.buildAndroidIntentUrl(
+            'fb-messenger',
+            'com.facebook.orca',
+            `share?link=${encodedUrl}`,
+            fallback
+          );
+          this.openShareUrl(intentUrl, true);
+          return;
+        }
+        this.openAppOrFallback(`fb-messenger://share/?link=${encodedUrl}`, fallback);
+        return;
+      }
+      case 'gmail': {
+        const gmailWebCompose = `https://mail.google.com/mail/?view=cm&fs=1&tf=1&su=${encodedSubject}&body=${encodedText}`;
+        if (this.isAndroidDevice()) {
+          const intentUrl = this.buildAndroidIntentUrl(
+            'googlegmail',
+            'com.google.android.gm',
+            `co?subject=${encodedSubject}&body=${encodedText}`,
+            gmailWebCompose
+          );
+          this.openShareUrl(intentUrl, true);
+          return;
+        }
+        this.openAppOrFallback(`googlegmail:///co?subject=${encodedSubject}&body=${encodedText}`, gmailWebCompose);
+        return;
+      }
+      case 'sms':
+        this.openShareUrl(`sms:?body=${encodedText}`, true);
+        return;
+      case 'linkedin': {
+        const fallback = `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`;
+        if (this.isAndroidDevice()) {
+          const intentUrl = this.buildAndroidIntentUrl(
+            'linkedin',
+            'com.linkedin.android',
+            `shareArticle?mini=true&url=${encodedUrl}`,
+            fallback
+          );
+          this.openShareUrl(intentUrl, true);
+          return;
+        }
+        this.openAppOrFallback(`linkedin://shareArticle?mini=true&url=${encodedUrl}`, fallback);
+        return;
+      }
+      case 'more':
+      default:
+        if (navigator.share) {
+          navigator.share({ text, url }).catch(() => this.copyShareText());
+        } else if (this.isAndroidDevice()) {
+          this.openAndroidShareChooser(text);
+        } else {
+          this.copyShareText();
+        }
+        return;
+    }
+  }
+
+  shareVia(type: string): void {
+    const payload = this.getSharePayload();
+    this.closeShareSheet();
+    if (this.isDesktopShareView()) {
+      this.handleDesktopShareClick(type, payload);
+      return;
+    }
+    this.handleMobileShareClick(type, payload);
   }
 
   orderDeliveryType(type?) {
