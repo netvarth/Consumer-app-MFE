@@ -1664,21 +1664,14 @@ export class ItemComponent implements OnInit, OnDestroy {
     this.openShareUrl(intentUrl, true);
   }
 
-  private openAndroidShareToPackage(packageName: string, text: string, fallbackUrl: string): void {
-    const intentUrl =
-      `intent://share/#Intent;action=android.intent.action.SEND;type=text/plain;` +
-      `package=${packageName};` +
-      `S.android.intent.extra.TEXT=${encodeURIComponent(text)};` +
-      `S.android.intent.extra.SUBJECT=${encodeURIComponent('Check this out')};` +
-      `S.browser_fallback_url=${encodeURIComponent(fallbackUrl)};end`;
-    this.openShareUrl(intentUrl, true);
-  }
-
   private openAndroidSmsApp(text: string): void {
-    const intentUrl =
-      `intent://send?body=${encodeURIComponent(text)}` +
-      `#Intent;scheme=smsto;action=android.intent.action.SENDTO;end`;
-    this.openShareUrl(intentUrl, true);
+    const encoded = encodeURIComponent(text);
+    this.openShareUrl(`smsto:?body=${encoded}`, true);
+    setTimeout(() => {
+      if (!document.hidden) {
+        this.openShareUrl(`sms:?body=${encoded}`, true);
+      }
+    }, 900);
   }
 
   private getSharePayload() {
@@ -1752,7 +1745,13 @@ export class ItemComponent implements OnInit, OnDestroy {
       case 'facebook': {
         const fallback = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encodedText}`;
         if (this.isAndroidDevice()) {
-          this.openAndroidShareToPackage('com.facebook.katana', text, fallback);
+          const intentUrl = this.buildAndroidIntentUrl(
+            'fb',
+            'com.facebook.katana',
+            `facewebmodal/f?href=${encodeURIComponent(fallback)}`,
+            fallback
+          );
+          this.openShareUrl(intentUrl, true);
           return;
         }
         this.openAppOrFallback(`fb://facewebmodal/f?href=${encodeURIComponent(fallback)}`, fallback);
@@ -1761,7 +1760,7 @@ export class ItemComponent implements OnInit, OnDestroy {
       case 'messenger': {
         const fallback = `https://m.me/share?link=${encodedUrl}`;
         if (this.isAndroidDevice()) {
-          this.openAndroidShareToPackage('com.facebook.orca', text, fallback);
+          this.openAppOrFallback(`fb-messenger://share/?link=${encodedUrl}`, fallback, 1500);
           return;
         }
         this.openAppOrFallback(`fb-messenger://share/?link=${encodedUrl}`, fallback);
@@ -1770,13 +1769,7 @@ export class ItemComponent implements OnInit, OnDestroy {
       case 'gmail': {
         const gmailWebCompose = `https://mail.google.com/mail/?view=cm&fs=1&tf=1&su=${encodedSubject}&body=${encodedText}`;
         if (this.isAndroidDevice()) {
-          const intentUrl = this.buildAndroidIntentUrl(
-            'googlegmail',
-            'com.google.android.gm',
-            `co?subject=${encodedSubject}&body=${encodedText}`,
-            gmailWebCompose
-          );
-          this.openShareUrl(intentUrl, true);
+          this.openAppOrFallback(`googlegmail://co?subject=${encodedSubject}&body=${encodedText}`, gmailWebCompose, 1500);
           return;
         }
         this.openAppOrFallback(`googlegmail:///co?subject=${encodedSubject}&body=${encodedText}`, gmailWebCompose);
