@@ -76,6 +76,8 @@
             <app-common-innerloading-spinner [spinnerParams]="{diameter:30}" *ngIf="api_loading">
             </app-common-innerloading-spinner>
           </button>
+          <div class="auth-help">Have trouble logging in? <a class="terms-link" style="cursor: pointer;" (click)="goBack()">Change Login Method</a>
+                </div>
         </div>
 
         <div class="auth-body-sub">

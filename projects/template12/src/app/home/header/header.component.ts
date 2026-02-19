@@ -471,7 +471,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         if (status) {
           this.viewDashboard();
         } else {
-          let dashboardUrl = this.sharedService.getRouteID() + '/bookings';
+          let dashboardUrl = this.sharedService.getRouteID();
           this.lStorageService.setitemonLocalStorage('target', dashboardUrl);
           this.router.navigate([this.sharedService.getRouteID(), 'login']);
         }

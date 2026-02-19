@@ -1,4 +1,4 @@
-<div class="container pb-5" id="itemContainer" [ngClass]="theme">
+<div class="mx-2 pb-5" id="itemContainer" [ngClass]="theme">
     <div class="confirm-box">
         <div class="mt-5" *ngIf="loading || mediaLoading">
             <app-skeleton-loading></app-skeleton-loading>
@@ -50,8 +50,14 @@
                              [class.is-video]="isVideoAttachment(selectedItemImage)"
                              [class.video-ready]="isVideoReady">
                             <div class="item-media-layer item-media-image">
-                                <p-image [src]="getPreviewImageSrc(selectedItemImage)" alt="Image" [preview]="true" height="auto"
-                                    width="100%"></p-image>
+                                <ng-container *ngIf="isVideoAttachment(selectedItemImage); else previewableImage">
+                                    <img [src]="getPreviewImageSrc(selectedItemImage)" alt="Video preview" width="100%"
+                                        (error)="handlePreviewImageError($event)">
+                                </ng-container>
+                                <ng-template #previewableImage>
+                                    <p-image [src]="getPreviewImageSrc(selectedItemImage)" alt="Image" [preview]="true" height="auto"
+                                        width="100%"></p-image>
+                                </ng-template>
                             </div>
                             <div class="item-media-layer item-media-video">
                                 <video class="item-video"
@@ -64,6 +70,8 @@
                                        [muted]="isVideoMuted"
                                        (loadedmetadata)="onVideoReady()"
                                        (canplay)="onVideoReady()"
+                                       (error)="onVideoError()"
+                                       (abort)="onVideoError()"
                                        (waiting)="onVideoWaiting()"></video>
                                 <div class="item-video-controls" *ngIf="isVideoAttachment(selectedItemImage)">
                                     <button type="button" class="item-video-mute" (click)="toggleVideoMute()">

@@ -108,6 +108,7 @@
   letter-spacing: 0;
   font-weight: 400;
   display: flex;
+  justify-content: center;
 
 }
 
@@ -178,7 +179,7 @@
   // aspect-ratio: 0.75;
   background: #111;
   height: 100%;
-  max-height: 360px;
+  // max-height: 360px;
 }
 
 .reel-wrap {

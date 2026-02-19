@@ -48,6 +48,8 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewChecked {
   googleLogin!: boolean;
   private gisLoaded = false;
   private googleButtonResizeObserver?: ResizeObserver;
+  private googleButtonHostEl?: HTMLElement;
+  private googleButtonSourceEl?: HTMLElement;
   private readonly googleButtonNewOpts = {
     theme: 'outline',
     size: 'large',
@@ -162,6 +164,8 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewChecked {
       this.googleButtonResizeObserver.disconnect();
       this.googleButtonResizeObserver = undefined;
     }
+    this.googleButtonHostEl = undefined;
+    this.googleButtonSourceEl = undefined;
   }
 
   resetCounter(val: number) {
@@ -282,14 +286,30 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewChecked {
     if (!this.googleButton?.nativeElement || !window['google']?.accounts?.id) {
       return;
     }
-    if (this.googleButtonResizeObserver) {
-      return;
-    }
-    const targetDrive = this.googleButton?.nativeElement;
-    const sourceButton = document.getElementById('targeted');
+    const targetDrive = this.googleButton.nativeElement as HTMLElement;
+    const sourceButton = document.getElementById('targeted') as HTMLElement | null;
     if (!targetDrive || !sourceButton) {
       return;
     }
+    if (
+      this.googleButtonResizeObserver &&
+      this.googleButtonHostEl === targetDrive &&
+      this.googleButtonSourceEl === sourceButton
+    ) {
+      return;
+    }
+    if (this.googleButtonResizeObserver) {
+      this.googleButtonResizeObserver.disconnect();
+      this.googleButtonResizeObserver = undefined;
+    }
+    this.googleButtonHostEl = targetDrive;
+    this.googleButtonSourceEl = sourceButton;
+
+    const initialWidth = Math.round(
+      Math.min(Math.max(sourceButton.getBoundingClientRect().width || this.calculateResponsiveGoogleWidth(targetDrive), 200), 400)
+    );
+    this.renderGisButton(this.googleButton, { ...this.googleButtonNewOpts, width: initialWidth });
+
     const resizeObserver = new ResizeObserver(entries => {
       for (const entry of entries) {
         const currentWidth = entry.contentRect.width;
@@ -570,7 +590,17 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewChecked {
       });
   }
   goBack() {
-    this.initGoogleButton();
+    if (this.googleButtonResizeObserver) {
+      this.googleButtonResizeObserver.disconnect();
+      this.googleButtonResizeObserver = undefined;
+    }
+    this.googleButtonHostEl = undefined;
+    this.googleButtonSourceEl = undefined;
+    setTimeout(() => {
+      if (this.googleButton) {
+        this.initGoogleButton();
+      }
+    });
     this.step = 1;
   }
   goBackmain() {

@@ -111,6 +111,7 @@ export class ItemComponent implements OnInit, OnDestroy {
   isShareSheetOpen: boolean = false;
   mediaLoading: boolean = false;
   private mediaLoadToken = 0;
+  private mediaLoadFallbackTimer: any;
   private readonly minItemLoadMs = 1000;
   private itemLoadToken = 0;
 
@@ -154,6 +155,7 @@ export class ItemComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
+    this.clearMediaLoadFallbackTimer();
   }
   private resolveStoreContext(): boolean {
     const activeStore = this.accountService.getActiveStore();
@@ -1431,9 +1433,16 @@ export class ItemComponent implements OnInit, OnDestroy {
     if (this.isVideoAttachment(this.selectedItemImage)) {
       this.isVideoReady = true;
     }
+    this.clearMediaLoadFallbackTimer();
     if (this.mediaLoading) {
       this.mediaLoading = false;
     }
+  }
+
+  onVideoError(): void {
+    this.clearMediaLoadFallbackTimer();
+    this.mediaLoading = false;
+    this.isVideoReady = false;
   }
 
   onVideoWaiting(): void {
@@ -1442,7 +1451,7 @@ export class ItemComponent implements OnInit, OnDestroy {
 
   getVideoPoster(attachment: any): string {
     const candidate = attachment?.poster || attachment?.thumbnail || attachment?.thumb || attachment?.preview;
-    if (candidate) {
+    if (this.isImageLikeSource(candidate)) {
       return candidate;
     }
     const fallback =
@@ -1463,7 +1472,29 @@ export class ItemComponent implements OnInit, OnDestroy {
     return attachment.s3path || (this.cdnPath + 'assets/images/rx-order/items/Items.svg');
   }
 
+  handlePreviewImageError(event: any): void {
+    const fallback = this.cdnPath + 'assets/images/rx-order/items/Items.svg';
+    if (event?.target?.src !== fallback) {
+      event.target.src = fallback;
+    }
+  }
+
+  private isImageLikeSource(src: any): boolean {
+    if (!src || typeof src !== 'string') {
+      return false;
+    }
+    const lower = src.toLowerCase();
+    if (/\.(jpg|jpeg|png|webp|gif|bmp|svg)(\?|#|$)/.test(lower)) {
+      return true;
+    }
+    if (/\.(mp4|webm|ogg|mov|m3u8)(\?|#|$)/.test(lower)) {
+      return false;
+    }
+    return true;
+  }
+
   private trackSelectedMediaLoad(attachment: any): void {
+    this.clearMediaLoadFallbackTimer();
     this.mediaLoadToken += 1;
     const token = this.mediaLoadToken;
     if (!attachment) {
@@ -1472,6 +1503,11 @@ export class ItemComponent implements OnInit, OnDestroy {
     }
     if (this.isVideoAttachment(attachment)) {
       this.mediaLoading = true;
+      this.mediaLoadFallbackTimer = setTimeout(() => {
+        if (this.mediaLoadToken === token) {
+          this.mediaLoading = false;
+        }
+      }, 4000);
       return;
     }
     const src = this.getPreviewImageSrc(attachment);
@@ -1492,6 +1528,13 @@ export class ItemComponent implements OnInit, OnDestroy {
       }
     };
     img.src = src;
+  }
+
+  private clearMediaLoadFallbackTimer(): void {
+    if (this.mediaLoadFallbackTimer) {
+      clearTimeout(this.mediaLoadFallbackTimer);
+      this.mediaLoadFallbackTimer = null;
+    }
   }
 
   private updateVideoState(item: any): void {
