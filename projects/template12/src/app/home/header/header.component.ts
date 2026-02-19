@@ -323,27 +323,77 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.subscriptionService.sendMessage(response);
   }
   menuClicked(action) {
-    if (action.link && action.link.startsWith('http')) {
-      window.open(action.link, "_system");
-    } else {
-      const routeId = this.sharedService.getRouteID();
-      const rawLink = (action?.link || '').toString().trim();
-      const normalizedLink = this.resolveMenuLink(action, rawLink.replace(/^\/+|\/+$/g, ''));
-      if (!normalizedLink || normalizedLink === 'home' || normalizedLink === routeId || normalizedLink === `${routeId}/home`) {
-        this.activeMenuItem = 'home';
-        this.router.navigate([routeId]);
-        return;
-      }
+    const routeId = this.sharedService.getRouteID();
+    const rawLink = (action?.link || '').toString().trim();
+    const resolved = this.resolveMenuTarget(rawLink, routeId);
 
-      const relativePath = normalizedLink.startsWith(`capp/${routeId}/`)
-        ? normalizedLink.substring(`capp/${routeId}/`.length)
-        : normalizedLink.startsWith(`${routeId}/`)
-          ? normalizedLink.substring(routeId.length + 1)
-          : normalizedLink;
-      const segments = relativePath.split('/').filter(Boolean);
-      this.activeMenuItem = normalizedLink;
-      this.router.navigate([routeId, ...segments]);
+    if (resolved?.externalUrl) {
+      window.open(resolved.externalUrl, "_system");
+      return;
     }
+
+    const normalizedLink = this.resolveMenuLink(action, (resolved?.path || '').replace(/^\/+|\/+$/g, ''));
+    if (!normalizedLink || normalizedLink === 'home' || normalizedLink === routeId || normalizedLink === `${routeId}/home`) {
+      this.activeMenuItem = 'home';
+      this.router.navigate([routeId], { queryParams: resolved?.queryParams || {} });
+      return;
+    }
+
+    const relativePath = normalizedLink.startsWith(`capp/${routeId}/`)
+      ? normalizedLink.substring(`capp/${routeId}/`.length)
+      : normalizedLink.startsWith(`${routeId}/`)
+        ? normalizedLink.substring(routeId.length + 1)
+        : normalizedLink;
+    const segments = relativePath.split('/').filter(Boolean);
+    this.activeMenuItem = normalizedLink;
+    this.router.navigate([routeId, ...segments], { queryParams: resolved?.queryParams || {} });
+  }
+
+  private resolveMenuTarget(rawLink: string, routeId: string): { path: string; queryParams: any; externalUrl?: string } {
+    if (!rawLink) {
+      return { path: '', queryParams: {} };
+    }
+    if (!/^https?:\/\//i.test(rawLink)) {
+      return this.splitPathAndQuery(rawLink);
+    }
+    try {
+      const currentOrigin = window.location.origin;
+      const parsed = new URL(rawLink, currentOrigin);
+      const normalizedPath = parsed.pathname.replace(/^\/+|\/+$/g, '');
+      const isInternal =
+        parsed.origin === currentOrigin &&
+        (
+          normalizedPath === routeId ||
+          normalizedPath.startsWith(`${routeId}/`) ||
+          normalizedPath === `capp/${routeId}` ||
+          normalizedPath.startsWith(`capp/${routeId}/`)
+        );
+      if (isInternal) {
+        const pathWithoutPrefix = normalizedPath.startsWith('capp/')
+          ? normalizedPath.substring('capp/'.length)
+          : normalizedPath;
+        const queryParams: any = {};
+        parsed.searchParams.forEach((value, key) => {
+          queryParams[key] = value;
+        });
+        return { path: pathWithoutPrefix, queryParams };
+      }
+      return { path: rawLink, queryParams: {}, externalUrl: rawLink };
+    } catch {
+      return { path: rawLink, queryParams: {} };
+    }
+  }
+
+  private splitPathAndQuery(link: string): { path: string; queryParams: any } {
+    const [pathPart, queryPart] = (link || '').split('?');
+    const queryParams: any = {};
+    if (queryPart) {
+      const search = new URLSearchParams(queryPart);
+      search.forEach((value, key) => {
+        queryParams[key] = value;
+      });
+    }
+    return { path: pathPart || '', queryParams };
   }
 
   private resolveMenuLink(action: any, normalizedLink: string): string {
