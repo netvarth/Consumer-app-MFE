@@ -402,20 +402,32 @@ export class ItemsComponent implements OnInit, AfterViewInit, OnDestroy {
     return new Promise((resolve, reject) => {
       this.orderService.getStores(filter).subscribe(
         (stores: any) => {
-          this.stores = stores;
-          this.lStorageService.setitemonLocalStorage('storeId', stores[0].id);
+          this.stores = Array.isArray(stores) ? stores : [];
+          const firstStore = this.stores.length ? this.stores[0] : null;
+          if (firstStore?.id) {
+            this.lStorageService.setitemonLocalStorage('storeId', firstStore.id);
+          }
           switch (this.stores.length) {
             case 0:
               this.showStores = false;
+              this.storeEncId = this.lStorageService.getitemfromLocalStorage('storeEncId') || null;
               break;
             case 1:
               this.showStores = false;
-              this.storeEncId = this.stores[0].encId;
+              this.storeEncId = firstStore?.encId || null;
               break;
             default:
               this.showStores = true;
-              this.storeEncId = this.stores[0].encId;
+              this.storeEncId = firstStore?.encId || null;
               break;
+          }
+          if (!this.storeEncId) {
+            this.items = [];
+            this.itemsCount = 0;
+            this.loading = false;
+            this.itemsLoading = false;
+            resolve(false);
+            return;
           }
           if(!this.pageEnabled) {
             this.getSoCatalogItems();
@@ -437,6 +449,11 @@ export class ItemsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   getSoCatalogItems(append: boolean = false) {
     console.log("this.currentPage&rows",this.currentPage, this.rows)
+    if (!this.storeEncId) {
+      this.itemsLoading = false;
+      this.loading = false;
+      return;
+    }
     if (this.priceFilterTouched) {
       this.applyPriceFilter(append);
       return;
