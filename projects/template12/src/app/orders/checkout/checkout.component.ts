@@ -759,10 +759,11 @@ confirm() {
     // Step 1: Continue -> create order + invoice
     if (!this.isReadyForPayment) {
       if (this.deliveryType === 'HOME_DELIVERY' && !this.deliveryAddress) {
-          this.addressComponent?.proceedToCheckout();
-        }
-      if (this.isInvoiceReady) {
-        this.isReadyForPayment = true;
+        this.addressComponent?.proceedToCheckout();
+        return;
+      }
+      if (this.orderData?.uid && this.orderData?.orderStatus === 'ORDER_PREPAYMENT_PENDING' && !this.invId) {
+        this.fetchInvoiceAndMarkReady(this.orderData.uid);
         return;
       }
       this.confirm();  // confirm() will set isInvoiceReady when invoice is fetched
@@ -790,7 +791,7 @@ confirm() {
       this.roundedValue = this.invoiceDetailsById?.[0]?.roundedValue || 0;
 
       this.isInvoiceReady = this.computeReadyForPayment();
-      this.isReadyForPayment = false;
+      this.isReadyForPayment = this.isInvoiceReady;
       this.isProcessing = false;
 
       // Move timeline to payment step (optional; you already do orderSummary earlier)
@@ -798,7 +799,7 @@ confirm() {
       this.setTimeline();
 
       if (!this.invId) {
-        this.toastService.showError('Invoice not ready yet. Please click Continue again.');
+        this.toastService.showError('Invoice not ready yet. Please wait a moment and retry.');
       }
     },
     error: (error) => {
