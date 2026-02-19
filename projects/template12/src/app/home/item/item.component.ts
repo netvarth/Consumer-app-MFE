@@ -1551,6 +1551,8 @@ export class ItemComponent implements OnInit, OnDestroy {
 
   openShareSheet(): void {
     if (this.isAndroidDevice()) {
+      const payload = this.getSharePayload();
+        this.handleMobileShareClick('item', payload);
       return;
     }
     this.isShareSheetOpen = true;
