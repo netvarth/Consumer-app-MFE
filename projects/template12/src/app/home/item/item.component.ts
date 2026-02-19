@@ -754,6 +754,53 @@ export class ItemComponent implements OnInit, OnDestroy {
      this.loading = false;
   }
 
+  private addItemToGuestCart(item: any, preservedScrollY: number): void {
+    const cartData = this.lStorageService.getitemfromLocalStorage('cartData') || {
+      HOME_DELIVERY: { items: [], netTotal: 0, taxTotal: 0, netRate: 0 },
+      STORE_PICKUP: { items: [], netTotal: 0, taxTotal: 0, netRate: 0 }
+    };
+    const deliveryType = this.itemDeliveryType === 'HOME_DELIVERY' ? 'HOME_DELIVERY' : 'STORE_PICKUP';
+    const targetCart = cartData[deliveryType];
+    const orderList = targetCart.items;
+    const existingItem = orderList.find((orderItem: any) => orderItem.encId === item.encId);
+
+    if (existingItem) {
+      existingItem.quantity = (existingItem.quantity || 1) + this.quantity;
+      existingItem.netTotal = existingItem.quantity * (existingItem.taxableAmount || 0);
+      existingItem.totalTaxAmount = existingItem.quantity * (existingItem.taxAmount || 0);
+      existingItem.netRate = existingItem.quantity * (existingItem.price || 0);
+    } else {
+      const newItem = {
+        ...item,
+        quantity: this.quantity,
+        price: item.price || 0,
+        netTotal: this.quantity * (item.taxableAmount || 0),
+        totalTaxAmount: this.quantity * (item.taxAmount || 0),
+        netRate: this.quantity * (item.price || 0)
+      };
+      orderList.push(newItem);
+    }
+
+    targetCart.netTotal = orderList.reduce((total, i) => total + i.netTotal, 0);
+    targetCart.taxTotal = orderList.reduce((total, i) => total + i.totalTaxAmount, 0);
+    targetCart.netRate = orderList.reduce((total, i) => total + i.netRate, 0);
+
+    this.lStorageService.setitemonLocalStorage('cartData', cartData);
+    const totalItems = cartData.HOME_DELIVERY.items.length + cartData.STORE_PICKUP.items.length;
+    this.subscriptionService.sendMessage({ ttype: 'cartChanged', value: totalItems });
+    this.toastService.showSuccess("Item added to cart");
+    const activeUser = this.groupService.getitemFromGroupStorage('jld_scon');
+    if (activeUser?.providerConsumer) {
+      this.setAnalytics('addToCart');
+    }
+    this.loggedIn = true;
+    this.finishAddToCartLoading(preservedScrollY);
+  }
+
+  private isSessionCartEnabled(): boolean {
+    return this.isSessionCart === true || this.isSessionCart === 'true';
+  }
+
   addToCart(param?: string | null) {
     const _this = this;
     const preservedScrollY =
@@ -792,6 +839,21 @@ export class ItemComponent implements OnInit, OnDestroy {
         this.itemDeliveryType = 'STORE_PICKUP';
       }
     }
+
+    const sessionCartEnabled = this.isSessionCartEnabled();
+    this.loggedUser = this.groupService.getitemFromGroupStorage('jld_scon');
+    const isLoggedInUser = !!this.loggedUser?.providerConsumer;
+
+    if (!param && !isLoggedInUser) {
+      this.addItemToGuestCart(item, preservedScrollY);
+      return;
+    }
+
+    if (!sessionCartEnabled && !param) {
+      this.addItemToGuestCart(item, preservedScrollY);
+      return;
+    }
+
     this.authService.goThroughLogin().then((status: any) => {
       if (status) {
         _this.loggedIn = true;
@@ -875,50 +937,9 @@ export class ItemComponent implements OnInit, OnDestroy {
           });
         this.subscriptions.add(subs);
       } else {
-        if (!this.isSessionCart && !param) {
-          const cartData = this.lStorageService.getitemfromLocalStorage('cartData') || {
-            HOME_DELIVERY: { items: [], netTotal: 0, taxTotal: 0, netRate: 0 },
-            STORE_PICKUP: { items: [], netTotal: 0, taxTotal: 0, netRate: 0 }
-          };
-          const deliveryType = this.itemDeliveryType == 'HOME_DELIVERY' ? 'HOME_DELIVERY' : 'STORE_PICKUP';
-          const targetCart = cartData[deliveryType];
-          const orderList = targetCart.items;
-          const existingItem = orderList.find((orderItem: any) => orderItem.encId === item.encId);
-          if (existingItem) {
-            existingItem.quantity = (existingItem.quantity || 1) + this.quantity;
-            existingItem.netTotal = existingItem.quantity * (existingItem.taxableAmount || 0);
-            existingItem.totalTaxAmount = existingItem.quantity * (existingItem.taxAmount || 0);
-            existingItem.netRate = existingItem.quantity * (existingItem.price || 0);
-          } else {
-            const newItem = {
-              ...item,
-              quantity: this.quantity,
-              price: item.price || 0,
-              netTotal: this.quantity * (item.taxableAmount || 0),
-              totalTaxAmount: this.quantity * (item.taxAmount || 0),
-              netRate: this.quantity * (item.price || 0)
-            };
-            orderList.push(newItem);
-          }
-          // Recalculate totals for the current delivery type
-          targetCart.netTotal = orderList.reduce((total, i) => total + i.netTotal, 0);
-          targetCart.taxTotal = orderList.reduce((total, i) => total + i.totalTaxAmount, 0);
-          targetCart.netRate = orderList.reduce((total, i) => total + i.netRate, 0);
-
-          this.lStorageService.setitemonLocalStorage('cartData', cartData);
-          const totalItems = cartData.HOME_DELIVERY.items.length + cartData.STORE_PICKUP.items.length;
-          this.subscriptionService.sendMessage({ ttype: 'cartChanged', value: totalItems });
-          this.subscriptionService.sendMessage({ ttype: 'refresh', value: 'refresh' });
-
-          this.toastService.showSuccess("Item added to cart");
-          this.setAnalytics('addToCart');
-          this.loggedIn = true;
-          this.finishAddToCartLoading(preservedScrollY);
-        } else {
-          this.loggedIn = false;
-          this.finishAddToCartLoading(preservedScrollY);
-          this.isLogin = true;
-        }
+        this.loggedIn = false;
+        this.finishAddToCartLoading(preservedScrollY);
+        this.isLogin = true;
       }
     }
     )

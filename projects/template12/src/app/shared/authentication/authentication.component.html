@@ -62,8 +62,8 @@
                 </div>
                 <label class="terms">
                     <input type="checkbox" #termsCheck class="terms-checkbox">
-                    <span>By continuing, I agree to the <a class="terms-link">Terms of Use</a> &amp; <a
-                            class="terms-link">Privacy Policy</a></span>
+                    <span>By continuing, I agree to the <a class="terms-link" href="" (click)="openLegalPage('terms', $event)">Terms of Use</a> &amp; <a
+                            class="terms-link" href="" (click)="openLegalPage('privacy', $event)">Privacy Policy</a></span>
                 </label>
                 <button id="btnSendOTP" class="cust-logpg-submt mat-button mdc-button continue-button auth-continue"
                     type="button"

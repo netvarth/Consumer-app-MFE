@@ -576,6 +576,15 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewChecked {
   goBackmain() {
     this.location.back();
   }
+
+  openLegalPage(type: 'terms' | 'privacy', event?: Event): void {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    const path = type === 'privacy' ? 'privacy-policy' : 'terms-and-conditions';
+    this.router.navigate([this.sharedService.getRouteID(), path]);
+  }
   onPhoneNumberChanged(updatedPhoneNumber: any) {
     console.log('Updated phone number:', updatedPhoneNumber);
     this.phoneNumber = updatedPhoneNumber;

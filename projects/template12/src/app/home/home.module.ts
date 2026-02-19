@@ -33,6 +33,8 @@ const routes: Routes = [
       { path: 'about', loadChildren: () => import('./aboutus/aboutus.module').then(m => m.AboutusModule) },
       { path: 'faq', loadChildren: () => import('./faq/faq.module').then(m => m.FaqModule) },
       { path: 'support', loadChildren: () => import('./support/support.module').then(m => m.SupportModule) },
+      { path: 'terms-and-conditions', loadChildren: () => import('./legal/legal.module').then(m => m.LegalModule) },
+      { path: 'privacy-policy', loadChildren: () => import('./legal/legal.module').then(m => m.LegalModule) },
       { path: 'service/:serid', loadChildren: () => import('./service-page/service-page.module').then(m => m.ServicePageModule) },
       { path: 'meeting/:phonenumber/:id', loadChildren: () => import('./live-chat/live-chat.module').then(m => m.LiveChatModule)},
       { path: 'history', loadChildren: () => import('./history/history.module').then(m => m.ConsumerHistoryModule) },

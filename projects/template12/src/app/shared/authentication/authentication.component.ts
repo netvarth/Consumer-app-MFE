@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
+import { Router } from '@angular/router';
 import { AuthService, ErrorMessagingService, GroupStorageService, LocalStorageService, SharedService, ToastService } from 'jconsumer-shared';
 import { jwtDecode } from "jwt-decode";
 import { IntlTelInputLoaderService } from '../intl-tel-input-loader.service';
@@ -107,12 +108,22 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
     public intlTelInputLoader: IntlTelInputLoaderService,
     private ngZone: NgZone,
     private errorService: ErrorMessagingService,
-    private location: Location
+    private location: Location,
+    private router: Router
   ) {
     this.loading = true;
   }
   goBackmain() {
     this.location.back();
+  }
+
+  openLegalPage(type: 'terms' | 'privacy', event?: Event): void {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    const path = type === 'privacy' ? 'privacy-policy' : 'terms-and-conditions';
+    this.router.navigate([this.sharedService.getRouteID(), path]);
   }
   ngOnDestroy(): void {
     this.lStorageService.removeitemfromLocalStorage('login');

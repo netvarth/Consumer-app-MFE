@@ -348,6 +348,24 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   private resolveMenuLink(action: any, normalizedLink: string): string {
     const title = (action?.title || '').toString().trim().toLowerCase();
+    const normalized = (normalizedLink || '').toLowerCase();
+
+    if (
+      normalized === 'products' ||
+      normalized === 'product' ||
+      normalized === 'catalog' ||
+      normalized === 'catalogue' ||
+      normalized === 'shop'
+    ) {
+      return 'items';
+    }
+    if (
+      !normalized &&
+      (title === 'products' || title === 'product' || title === 'catalog' || title === 'catalogue' || title === 'shop')
+    ) {
+      return 'items';
+    }
+
     const isOrderHistory =
       title.includes('order history') || title.includes('my orders') || title === 'orders';
     if (!isOrderHistory) {
