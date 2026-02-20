@@ -1168,7 +1168,7 @@ export class ItemsComponent implements OnInit, AfterViewInit, OnDestroy {
     const high = this.rangeValues[1];
     const lowPercent = ((low - min) / (max - min)) * 100;
     const highPercent = ((high - min) / (max - min)) * 100;
-    this.priceTrackStyle = `linear-gradient(90deg, #e7d5c0 ${lowPercent}%, #a36a39 ${lowPercent}%, #a36a39 ${highPercent}%, #e7d5c0 ${highPercent}%)`;
+    this.priceTrackStyle = `linear-gradient(90deg, var(--slider-track-bg, #e7d5c0) ${lowPercent}%, var(--slider-track-fill, #a36a39) ${lowPercent}%, var(--slider-track-fill, #a36a39) ${highPercent}%, var(--slider-track-bg, #e7d5c0) ${highPercent}%)`;
   }
 
   private schedulePriceFilter(): void {

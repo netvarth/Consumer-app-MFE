@@ -5,6 +5,8 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { ConsumerService, DateFormatPipe, Messages, OrderService, PaytmService, projectConstantsLocal, RazorpayService, SharedService, ToastService, WordProcessor } from 'jconsumer-shared';
 import { CouponNotesComponent } from '../../shared/coupon-notes/coupon-notes.component';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 
 @Component({
     selector: 'app-bill',
@@ -132,6 +134,7 @@ export class BillComponent implements OnInit, OnDestroy {
     desktopDeviceDisplay = false;
     storeLogo: any;
     ynwUuid: any;
+    fileDownloading = false;
     constructor(
         public _sanitizer: DomSanitizer,
         private wordProcessor: WordProcessor,
@@ -941,6 +944,100 @@ export class BillComponent implements OnInit, OnDestroy {
         } else {
             printWindow.close();
         }
+    }
+
+    async downloadMe() {
+        this.fileDownloading = true;
+        await new Promise(resolve => setTimeout(resolve, 100));
+        this.cdRef.detectChanges();
+
+        const doc: Document = (this.document as Document) || document;
+        const htmlContainer = (doc.getElementById('receipt') || doc.getElementById('payment-receipt')) as HTMLElement | null;
+        if (!htmlContainer) {
+            this.toastService.showError('Could not generate PDF');
+            this.fileDownloading = false;
+            return;
+        }
+
+        const prevVisibility = htmlContainer.style.visibility;
+        htmlContainer.style.visibility = 'visible';
+
+        try {
+            const source = htmlContainer;
+            const prevOverflow = source.style.overflow;
+            const prevWidth = source.style.width;
+            const prevMaxWidth = source.style.maxWidth;
+            source.style.overflow = 'visible';
+
+            const bounds = source.getBoundingClientRect();
+            const options = {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: '#FFFFFF',
+                width: source.scrollWidth || bounds.width,
+                height: source.scrollHeight || bounds.height,
+                windowWidth: source.scrollWidth || bounds.width,
+                windowHeight: source.scrollHeight || bounds.height,
+                scrollX: 0,
+                scrollY: 0
+            };
+
+            let canvas;
+            try {
+                canvas = await html2canvas(source, options);
+            } finally {
+                source.style.overflow = prevOverflow;
+                source.style.width = prevWidth;
+                source.style.maxWidth = prevMaxWidth;
+            }
+
+            const marginPx = 24;
+            const zoomedOutCanvas = doc.createElement('canvas');
+            zoomedOutCanvas.width = canvas.width + marginPx * 2;
+            zoomedOutCanvas.height = canvas.height + marginPx * 2;
+
+            const ctx = zoomedOutCanvas.getContext('2d');
+            if (ctx) {
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, zoomedOutCanvas.width, zoomedOutCanvas.height);
+                ctx.drawImage(canvas, marginPx, marginPx);
+            }
+
+            const imgData = zoomedOutCanvas.toDataURL('image/png');
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
+
+            const canvasWidth = zoomedOutCanvas.width;
+            const canvasHeight = zoomedOutCanvas.height;
+            const canvasAspectRatio = canvasWidth / canvasHeight;
+            const imgHeightOnPdf = pdfWidth / canvasAspectRatio;
+
+            let heightLeft = imgHeightOnPdf;
+            let position = 0;
+
+            pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeightOnPdf);
+            heightLeft -= pdfHeight;
+
+            while (heightLeft > 0) {
+                position -= pdfHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeightOnPdf);
+                heightLeft -= pdfHeight;
+            }
+
+            pdf.save(this.getInvoiceFileName());
+        } catch (error) {
+            this.toastService.showError('Could not generate PDF');
+        } finally {
+            this.fileDownloading = false;
+            htmlContainer.style.visibility = prevVisibility;
+        }
+    }
+
+    private getInvoiceFileName(): string {
+        const identifier = this.invoiceDetailsById?.invoiceNum || this.billnumber;
+        return identifier ? `Invoice-${identifier}.pdf` : 'Invoice.pdf';
     }
     /**
      * Cash Button Pressed

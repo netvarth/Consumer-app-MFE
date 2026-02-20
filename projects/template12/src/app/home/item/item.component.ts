@@ -847,16 +847,10 @@ export class ItemComponent implements OnInit, OnDestroy {
       }
     }
 
-    const sessionCartEnabled = this.isSessionCartEnabled();
     this.loggedUser = this.groupService.getitemFromGroupStorage('jld_scon');
     const isLoggedInUser = !!this.loggedUser?.providerConsumer;
 
     if (!param && !isLoggedInUser) {
-      this.addItemToGuestCart(item, preservedScrollY);
-      return;
-    }
-
-    if (!sessionCartEnabled && !param) {
       this.addItemToGuestCart(item, preservedScrollY);
       return;
     }
@@ -891,6 +885,10 @@ export class ItemComponent implements OnInit, OnDestroy {
                       this.lStorageService.setitemonLocalStorage('serviceOPtionInfo', this.questionAnswers);
                       _this.createCart().then(data => {
                         _this.cartId = data;
+                        if (!data) {
+                          _this.finishAddToCartLoading(preservedScrollY);
+                          return;
+                        }
                         if (param) {
                           _this.router.navigate([_this.sharedService.getRouteID(), 'order', 'checkout'], navigationExtras)
                           _this.subscriptionService.sendMessage({ ttype: 'refresh', value: 'refresh' });
@@ -906,6 +904,10 @@ export class ItemComponent implements OnInit, OnDestroy {
                   } else {
                     _this.createCart().then(data => {
                       _this.cartId = data;
+                      if (!data) {
+                        _this.finishAddToCartLoading(preservedScrollY);
+                        return;
+                      }
                       if (param) {
                         _this.router.navigate([_this.sharedService.getRouteID(), 'order', 'checkout'], navigationExtras)
                         _this.subscriptionService.sendMessage({ ttype: 'refresh', value: 'refresh' });
@@ -923,6 +925,10 @@ export class ItemComponent implements OnInit, OnDestroy {
               else {
                 _this.createCart().then(data => {
                   _this.cartId = data;
+                  if (!data) {
+                    _this.finishAddToCartLoading(preservedScrollY);
+                    return;
+                  }
                   if (param) {
                     _this.router.navigate([_this.sharedService.getRouteID(), 'order', 'checkout'], navigationExtras)
                     _this.subscriptionService.sendMessage({ ttype: 'refresh', value: 'refresh' });
@@ -1142,83 +1148,40 @@ export class ItemComponent implements OnInit, OnDestroy {
       this.toastService.showError('Store information is unavailable. Please refresh and try again.');
       return Promise.resolve(false);
     }
-    console.log('this.itemDeliveryType', this.itemDeliveryType);
-
-    let item = this.virtualItem ? this.itemAttributes : this.item;
-    const deliveryType = this.itemDeliveryType;
-    const quantity = this.quantity;
-
-    // Fetch or initialize savedCartData structure
-    let savedCartData = this.lStorageService.getitemfromLocalStorage('cartData') || {
-      HOME_DELIVERY: { items: [] },
-      STORE_PICKUP: { items: [] }
+    const item = this.virtualItem ? this.itemAttributes : this.item;
+    const deliveryType = this.itemDeliveryType === 'HOME_DELIVERY' ? 'HOME_DELIVERY' : 'STORE_PICKUP';
+    const cartInfo = {
+      store: {
+        encId: this.storeEncId
+      },
+      providerConsumer: {
+        id: this.loggedUser.providerConsumer
+      },
+      deliveryType,
+      items: [
+        {
+          catalogItem: {
+            encId: item?.encId
+          },
+          quantity: this.quantity
+        }
+      ],
+      orderCategory: 'SALES_ORDER',
+      orderSource: 'PROVIDER_CONSUMER'
     };
-
-    // Ensure current delivery type exists
-    if (!savedCartData[deliveryType]) {
-      savedCartData[deliveryType] = { items: [] };
+    if (!item?.encId) {
+      return Promise.resolve(false);
     }
-
-    // Update items for selected deliveryType
-    let itemExists = false;
-    savedCartData[deliveryType].items = savedCartData[deliveryType].items.map(cartItem => {
-      if (cartItem.encId === item.encId) {
-        itemExists = true;
-        return {
-          ...cartItem,
-          quantity: cartItem.quantity + quantity
-        };
-      }
-      return cartItem;
+    return new Promise((resolve) => {
+      this.orderService.createCart(cartInfo).subscribe(
+        (data: any) => resolve(data),
+        (error: any) => {
+          let errorObj = this.errorService.getApiError(error);
+          this.toastService.showError(errorObj);
+          resolve(false);
+        }
+      );
     });
-
-    if (!itemExists) {
-      savedCartData[deliveryType].items.push({
-        encId: item.encId,
-        quantity: quantity
-      });
-    }
-
-    // Save updated cart data to localStorage
-    // this.lStorageService.setitemInLocalStorage('cartData', savedCartData);
-
-    // Build cart array with both delivery types if items exist
-    const cartRequests = ['HOME_DELIVERY', 'STORE_PICKUP'].map((type) => {
-      const items = savedCartData[type]?.items;
-      if (!items || items.length === 0) return null;
-
-      return {
-        store: {
-          encId: this.storeEncId
-        },
-        providerConsumer: {
-          id: this.loggedUser.providerConsumer
-        },
-        deliveryType: type,
-        items: items.map(i => ({
-          catalogItem: { encId: i.encId },
-          quantity: i.quantity
-        })),
-        orderCategory: 'SALES_ORDER',
-        orderSource: 'PROVIDER_CONSUMER'
-      };
-    }).filter(Boolean); // Remove nulls
-
-    // Create cart for each type and return a combined Promise
-    const promises = cartRequests.map((cartInfo) => {
-      return new Promise((resolve, reject) => {
-        this.orderService.createCart(cartInfo).subscribe(
-          (data: any) => resolve(data),
-          (error: any) => {
-            let errorObj = this.errorService.getApiError(error);
-            this.toastService.showError(errorObj);
-            resolve(false); // still resolve so Promise.all continues
-          }
-        );
-      });
-    });
-
-    return Promise.all(promises);
   }
 
   viewItems(item: any) {

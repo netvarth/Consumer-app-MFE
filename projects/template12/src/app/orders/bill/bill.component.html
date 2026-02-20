@@ -25,9 +25,12 @@
                                             <div class="col-md-12 col-sm-12 col-lg-12 bill-wrapper viewBill no-padding-small"
                                                 *ngIf="invoiceDetailsById">
                                                 <div class="global-icons col-md-12 col-sm-12 col-lg-12">
-                                                    <button (click)="printMe()" [matTooltipClass]="tooltipcls"
-                                                        [matTooltip]="'Print'" id="btnPrint">
-                                                        <i class="fa fa-print" aria-hidden="true"></i>
+                                                    <button type="button" class="download-btn" (click)="downloadMe()"
+                                                        [disabled]="fileDownloading" [matTooltipClass]="tooltipcls"
+                                                        [matTooltip]="fileDownloading ? 'Preparing PDF...' : 'Download'"
+                                                        [attr.aria-busy]="fileDownloading" id="btnPrint">
+                                                        <i class="fa" [ngClass]="fileDownloading ? 'fa-spinner fa-spin' : 'fa-download'"
+                                                            aria-hidden="true"></i>
                                                     </button>
                                                 </div>
                                                 <div id="receipt" class="receipt">
