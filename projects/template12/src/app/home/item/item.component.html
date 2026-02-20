@@ -31,8 +31,8 @@
                             <ng-container *ngIf="isVideoAttachment(attachment); else imageThumb">
                                 <div class="item-thumb-video-wrapper" aria-label="Video attachment">
                                     <i class="fa fa-play item-thumb-video-icon" aria-hidden="true"></i>
-                                    <video class="item-thumb-video" [src]="attachment.s3path" muted playsinline
-                                        preload="metadata"></video>
+                                    <img class="item-thumb-video" [src]="getPreviewImageSrc(attachment)" alt="Video thumbnail"
+                                        (error)="handleThumbnailError($event, attachment)">
                                 </div>
                             </ng-container>
                             <ng-template #imageThumb>

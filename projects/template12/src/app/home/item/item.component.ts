@@ -743,6 +743,11 @@ export class ItemComponent implements OnInit, OnDestroy {
 
   handleThumbnailError(event: any, attachment: any) {
     // Set fallback image for thumbnail if it fails to load
+    const fallback = this.getVideoPoster(attachment);
+    if (event?.target?.src !== fallback) {
+      event.target.src = fallback;
+      return;
+    }
     event.target.src = this.cdnPath + 'assets/images/rx-order/items/Items.svg';
   }
 
@@ -1450,8 +1455,8 @@ export class ItemComponent implements OnInit, OnDestroy {
   }
 
   getVideoPoster(attachment: any): string {
-    const candidate = attachment?.poster || attachment?.thumbnail || attachment?.thumb || attachment?.preview;
-    if (this.isImageLikeSource(candidate)) {
+    const candidate = this.getAttachmentImageSource(attachment);
+    if (candidate) {
       return candidate;
     }
     const fallback =
@@ -1491,6 +1496,36 @@ export class ItemComponent implements OnInit, OnDestroy {
       return false;
     }
     return true;
+  }
+
+  private getAttachmentImageSource(attachment: any): string {
+    if (!attachment || typeof attachment !== 'object') {
+      return '';
+    }
+    const imageCandidates: any[] = [
+      attachment.poster,
+      attachment.thumbnail,
+      attachment.thumb,
+      attachment.preview,
+      attachment.thumbPath,
+      attachment.previewPath,
+      attachment.thumbnailPath,
+      attachment.posterPath,
+      attachment.image,
+      attachment.imageUrl
+    ];
+    for (const candidate of imageCandidates) {
+      if (typeof candidate === 'string' && this.isImageLikeSource(candidate)) {
+        return candidate;
+      }
+      if (candidate && typeof candidate === 'object') {
+        const nested = candidate?.s3path || candidate?.url || candidate?.path || '';
+        if (typeof nested === 'string' && this.isImageLikeSource(nested)) {
+          return nested;
+        }
+      }
+    }
+    return '';
   }
 
   private trackSelectedMediaLoad(attachment: any): void {
