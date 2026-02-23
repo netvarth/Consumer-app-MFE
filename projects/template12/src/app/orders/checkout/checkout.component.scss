@@ -988,6 +988,9 @@
     display: grid !important;
     grid-template-columns: 1fr .7fr;
   }
+  .mobile-payment-controls.pay-step {
+    grid-template-columns: 1fr;
+  }
 }
 /* Default (desktop): show text buttons, hide icons */
 .saved-actions-main .action-btn {
@@ -1094,6 +1097,107 @@
   justify-content: center;
   width: auto;
   white-space: nowrap;
+}
+
+.slide-pay {
+  width: 100%;
+  min-height: 52px;
+  outline: none;
+}
+
+.slide-pay-track {
+  position: relative;
+  width: 100%;
+  height: 52px;
+  border-radius: 999px;
+  background: #7b5232;
+  overflow: hidden;
+  touch-action: pan-y;
+}
+
+.slide-pay-fill {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, #43b788 0%, #2EB62C 100%);
+  transform-origin: left center;
+  transform: scaleX(0);
+  will-change: transform;
+  transition: transform 80ms linear;
+}
+
+.slide-pay-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  pointer-events: none;
+  transition: opacity 120ms ease;
+}
+
+.slide-pay-label.fade {
+  opacity: 0.75;
+}
+
+.slide-pay-knob {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #7b5232;
+  font-size: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  transform: translateX(0);
+  will-change: transform;
+  transition: none;
+  z-index: 2;
+}
+
+.slide-pay-knob.is-resetting {
+  transition: transform 280ms ease-out;
+}
+
+.slide-pay-knob.is-success {
+  animation: slide-pay-success-knob 220ms ease-out;
+}
+
+.slide-pay:focus-visible .slide-pay-track {
+  box-shadow: 0 0 0 3px rgba(17, 126, 80, 0.3);
+}
+
+.slide-pay.is-disabled {
+  opacity: 0.6;
+}
+
+.slide-pay.is-disabled .slide-pay-track {
+  filter: grayscale(0.15);
+}
+
+.slide-pay.is-disabled .slide-pay-knob {
+  cursor: not-allowed;
+}
+
+@keyframes slide-pay-success-knob {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.2);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+  }
 }
 
 ::ng-deep .mobile-payment-bar .payment-trigger {

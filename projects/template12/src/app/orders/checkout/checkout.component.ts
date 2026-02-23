@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import {
   ConsumerService,
@@ -100,6 +100,19 @@ export class CheckoutComponent implements OnInit {
   selectedDeliveryType: any;
   showSummaryDetails = false;
   isCartLoading = true;
+  readonly slideConfirmThreshold = 0.85;
+  readonly enableMobileHaptics = true;
+  slideProgress = 0;
+  slideOffsetX = 0;
+  slideWasConfirmed = false;
+  slideAnimateReset = false;
+  isSliding = false;
+  private slidePointerId: number | null = null;
+  private slideDragStartX = 0;
+  private slideDragStartOffset = 0;
+  private slideMaxOffsetX = 0;
+  @ViewChild('mobilePaySliderTrack') mobilePaySliderTrack?: ElementRef<HTMLElement>;
+  @ViewChild('mobilePaySliderKnob') mobilePaySliderKnob?: ElementRef<HTMLElement>;
   get hasCheckoutItems(): boolean {
     return Array.isArray(this.items) && this.items.length > 0;
   }
@@ -741,6 +754,104 @@ confirm() {
   if (this.isProcessing) return 'Please wait...';
   return this.isReadyForPayment ? 'Pay' : 'Continue';
 }
+  isPayStep(): boolean {
+    return !!this.isReadyForPayment;
+  }
+  isPrimaryActionDisabled(): boolean {
+    return this.isProcessing || (this.deliveryType === 'HOME_DELIVERY' && !this.hasDeliveryAddresses);
+  }
+  getSlideAriaValue(): number {
+    return Math.round(this.slideProgress * 100);
+  }
+  getSlideAriaText(): string {
+    if (this.slideWasConfirmed && this.isProcessing) {
+      return 'Processing';
+    }
+    if (this.slideWasConfirmed) {
+      return 'Processing Payment';
+    }
+    return `Slide to pay. ${this.getSlideAriaValue()} percent complete`;
+  }
+  getSlideLabel(): string {
+    if (this.slideWasConfirmed && this.isProcessing) {
+      return 'Processing...';
+    }
+    if (this.slideWasConfirmed) {
+      return 'Processing Payment';
+    }
+    return `Slide to pay | \u20b9${this.getPayableAmount()}`;
+  }
+  onSlidePointerDown(event: PointerEvent): void {
+    if (this.isPrimaryActionDisabled() || !event.isPrimary) {
+      return;
+    }
+    this.ensureSlideBounds();
+    this.slidePointerId = event.pointerId;
+    this.isSliding = true;
+    this.slideAnimateReset = false;
+    this.slideDragStartX = event.clientX;
+    this.slideDragStartOffset = this.slideOffsetX;
+    const knobEl = this.mobilePaySliderKnob?.nativeElement;
+    if (knobEl?.setPointerCapture) {
+      knobEl.setPointerCapture(event.pointerId);
+    }
+    event.preventDefault();
+  }
+  onSlidePointerMove(event: PointerEvent): void {
+    if (!this.isSliding || this.slidePointerId !== event.pointerId) {
+      return;
+    }
+    const delta = event.clientX - this.slideDragStartX;
+    this.setSlideOffset(this.slideDragStartOffset + delta);
+    event.preventDefault();
+  }
+  onSlidePointerUp(event: PointerEvent): void {
+    if (this.slidePointerId !== event.pointerId) {
+      return;
+    }
+    this.finishSlideGesture();
+  }
+  onSlidePointerCancel(event: PointerEvent): void {
+    if (this.slidePointerId !== event.pointerId) {
+      return;
+    }
+    this.resetSlide(true);
+  }
+  onSlidePointerLostCapture(event: PointerEvent): void {
+    if (this.slidePointerId !== event.pointerId) {
+      return;
+    }
+    this.finishSlideGesture();
+  }
+  onSlideKeyDown(event: KeyboardEvent): void {
+    if (this.isPrimaryActionDisabled()) {
+      return;
+    }
+    this.ensureSlideBounds();
+    if (event.key === 'ArrowRight') {
+      this.setSlideOffset(this.slideOffsetX + (this.slideMaxOffsetX * 0.12));
+      if (this.slideProgress >= this.slideConfirmThreshold) {
+        this.triggerSlideSuccess();
+      }
+      event.preventDefault();
+      return;
+    }
+    if (event.key === 'Home') {
+      this.resetSlide(true);
+      event.preventDefault();
+      return;
+    }
+    if (event.key === 'Enter' || event.key === ' ') {
+      this.setSlideOffset(this.slideMaxOffsetX);
+      this.triggerSlideSuccess();
+      event.preventDefault();
+    }
+  }
+  @HostListener('window:resize')
+  onWindowResize(): void {
+    this.ensureSlideBounds();
+    this.setSlideOffset(this.slideOffsetX);
+  }
   private computeReadyForPayment(): boolean {
     return (
       !!this.orderData?.uid &&
@@ -777,6 +888,67 @@ confirm() {
 
   this.makePayment();
 }
+  private finishSlideGesture(): void {
+    this.isSliding = false;
+    this.slidePointerId = null;
+    if (this.slideProgress >= this.slideConfirmThreshold) {
+      this.triggerSlideSuccess();
+      return;
+    }
+    this.resetSlide(true);
+  }
+  private ensureSlideBounds(): void {
+    const track = this.mobilePaySliderTrack?.nativeElement;
+    const knob = this.mobilePaySliderKnob?.nativeElement;
+    if (!track || !knob) {
+      this.slideMaxOffsetX = 0;
+      return;
+    }
+    const horizontalPadding = 12;
+    this.slideMaxOffsetX = Math.max(0, track.clientWidth - knob.offsetWidth - horizontalPadding);
+  }
+  private setSlideOffset(value: number): void {
+    const nextOffset = Math.min(Math.max(0, value), this.slideMaxOffsetX);
+    this.slideOffsetX = nextOffset;
+    if (this.slideMaxOffsetX <= 0) {
+      this.slideProgress = 0;
+      return;
+    }
+    this.slideProgress = nextOffset / this.slideMaxOffsetX;
+  }
+  private resetSlide(animate: boolean): void {
+    this.isSliding = false;
+    this.slidePointerId = null;
+    this.slideWasConfirmed = false;
+    this.slideAnimateReset = animate;
+    this.slideOffsetX = 0;
+    this.slideProgress = 0;
+    if (animate) {
+      window.setTimeout(() => {
+        this.slideAnimateReset = false;
+      }, 300);
+    }
+  }
+  private triggerSlideSuccess(): void {
+    if (this.slideWasConfirmed || this.isPrimaryActionDisabled()) {
+      return;
+    }
+    this.slideWasConfirmed = true;
+    this.isSliding = false;
+    this.slideAnimateReset = false;
+    this.setSlideOffset(this.slideMaxOffsetX);
+    if (this.enableMobileHaptics && typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+      navigator.vibrate(20);
+    }
+    window.setTimeout(() => {
+      this.primaryAction();
+      window.setTimeout(() => {
+        if (!this.isProcessing) {
+          this.resetSlide(true);
+        }
+      }, 500);
+    }, 140);
+  }
   private fetchInvoiceAndMarkReady(orderUid: string) {
   this.orderService.getInvoiceByOrderUid(this.accountId, orderUid).subscribe({
     next: (invoiceInfo) => {

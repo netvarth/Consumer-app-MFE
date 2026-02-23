@@ -16,6 +16,7 @@ import { SliderModule } from 'primeng/slider';
 import { CarouselModule } from 'primeng/carousel';
 import { TooltipModule } from 'primeng/tooltip';
 import { LazyLoadTriggerDirective } from '../../lazy-load-trigger.directive';
+import { ItemSearchModule } from '../item-search/item-search.module';
 const routes: Routes = [
   { path: '', component: ItemsComponent}
 ]
@@ -38,6 +39,7 @@ const routes: Routes = [
     AuthenticationModule,
     ErrrorMessageModule,
     DeliverySelectionModule,
+    ItemSearchModule,
     RouterModule.forChild(routes)
   ],
   exports: [

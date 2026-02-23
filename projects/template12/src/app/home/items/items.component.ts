@@ -80,6 +80,8 @@ export class ItemsComponent implements OnInit, AfterViewInit, OnDestroy {
   maxPrice = 20000;
   priceStep = 100;
   minPriceGap = 100;
+  selectedCatalogs: any[] = [];
+  templateJson: any;
   priceTrackStyle = '';
   private priceFilterTimer: any;
   private priceFilterTouched = false;
@@ -142,6 +144,8 @@ export class ItemsComponent implements OnInit, AfterViewInit, OnDestroy {
       this.cartDisabled = accountConfig['cartDisabled'] || false;
       this.hidePrices = accountConfig['hidePrice'] || false;
     }
+    this.templateJson = this.sharedService.getTemplateJSON();
+    this.selectedCatalogs = this.templateJson?.extras?.selectedCatalogs || [];
     this.loggedUser = this.groupService.getitemFromGroupStorage('jld_scon');
     if (!this.loggedUser?.providerConsumer) {
       this.wishlistService.clear();
@@ -1454,6 +1458,20 @@ export class ItemsComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     return a === b;
   }
+   onItemSearchSelected(event: any) {
+      if (event?.query) {
+        const navigationExtras: NavigationExtras = {
+          queryParams: {
+            query: event.query
+          }
+        };
+        this.router.navigate([this.sharedService.getRouteID(), 'items'], navigationExtras);
+        return;
+      }
+      if (event?.value?.encId) {
+        this.router.navigate([this.sharedService.getRouteID(), 'item', event.value.encId]);
+      }
+    }
 
 }
 

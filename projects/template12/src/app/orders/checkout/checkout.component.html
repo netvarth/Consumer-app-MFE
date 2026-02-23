@@ -424,9 +424,9 @@
   *ngIf="orderSummary && ((orderData && orderData.amountDue > 0) || (cartData && (cartData.netRate > 0 || cartData.netTotal > 0)))"
   class="mobile-payment-bar">
   <div class="mobile-payment-inner">
-    <div class="mobile-payment-controls">
-     
-      <div class="mobile-payment-select">
+    <div class="mobile-payment-controls" [class.pay-step]="isPayStep()">
+      
+      <div class="mobile-payment-select" *ngIf="!isPayStep()">
         <app-payment-modes
           [paymentModes]="indian_payment_modes"
           [indianPaymentModes]="indian_payment_modes"
@@ -440,26 +440,61 @@
           (modeSelected)="shownonIndianModes ? non_indian_modes_onchange($event) : indian_payment_mode_onchange($event)">
         </app-payment-modes>
       </div>
-    <button
-      pButton
-      pRipple
-      type="button"
-      class="mobile-pay-btn btn-primary-cta"
-      (click)="primaryAction()"
-      [disabled]="isProcessing || (deliveryType === 'HOME_DELIVERY' && !hasDeliveryAddresses)">
-      <ng-container *ngIf="isProcessing; else readyLabel">
-        Please wait...
+       <ng-container *ngIf="isPayStep(); else continuePayButton">
+        <div
+          class="slide-pay"
+          role="slider"
+          tabindex="0"
+          [attr.aria-disabled]="isPrimaryActionDisabled() ? 'true' : 'false'"
+          [attr.aria-valuemin]="0"
+          [attr.aria-valuemax]="100"
+          [attr.aria-valuenow]="getSlideAriaValue()"
+          [attr.aria-valuetext]="getSlideAriaText()"
+          [class.is-disabled]="isPrimaryActionDisabled()"
+          [class.is-success]="slideWasConfirmed"
+          (keydown)="onSlideKeyDown($event)">
+          <div #mobilePaySliderTrack class="slide-pay-track">
+            <div class="slide-pay-fill" [style.transform]="'scaleX(' + slideProgress + ')'"></div>
+            <div class="slide-pay-label" [class.fade]="isSliding && !slideWasConfirmed">
+              {{ getSlideLabel() }}
+            </div>
+            <button
+              #mobilePaySliderKnob
+              type="button"
+              class="slide-pay-knob"
+              [class.is-resetting]="slideAnimateReset"
+              [class.is-success]="slideWasConfirmed"
+              [style.transform]="'translateX(' + slideOffsetX + 'px)'"
+              [disabled]="isPrimaryActionDisabled()"
+              aria-label="Slide to confirm payment"
+              (pointerdown)="onSlidePointerDown($event)"
+              (pointermove)="onSlidePointerMove($event)"
+              (pointerup)="onSlidePointerUp($event)"
+              (pointercancel)="onSlidePointerCancel($event)"
+              (lostpointercapture)="onSlidePointerLostCapture($event)">
+              <i class="fa" [ngClass]="slideWasConfirmed ? 'fa-check' : 'fa-angle-right'" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
       </ng-container>
-      <ng-template #readyLabel>
-        <ng-container *ngIf="getPrimaryButtonLabel() === 'Pay'; else continueLabel">
-          <i class="fa fa-lock" aria-hidden="true"></i>
-          Pay &#8377;{{ getPayableAmount() | number: '1.0-2' }}
-        </ng-container>
-        <ng-template #continueLabel>
-          Continue
-        </ng-template>
+      <ng-template #continuePayButton>
+        <button
+          pButton
+          pRipple
+          type="button"
+          class="mobile-pay-btn btn-primary-cta"
+          (click)="primaryAction()"
+          [disabled]="isPrimaryActionDisabled()">
+          <ng-container *ngIf="isProcessing; else continueLabel">
+            Please wait...
+          </ng-container>
+          <ng-template #continueLabel>
+            Continue
+          </ng-template>
+        </button>
       </ng-template>
-    </button>
     </div>
+     
+
   </div>
 </div>

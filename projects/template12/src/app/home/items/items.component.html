@@ -12,6 +12,14 @@
     </div>
     <div class="" *ngIf="!loading && loggedIn">
         <div class="kanista-page">
+                      <section class="search-shell">
+                <app-item-search
+                [accountID]="accountId"
+                [catalogEncids]="selectedCatalogs"
+                [autoFocusOnMobile]="false"
+                (selectedItemsEmit)="onItemSearchSelected($event)">
+                </app-item-search>
+            </section>
             <div class="breadcrumb-bar">
                 <div class="breadcrumb">
                     <span class="pointer-cursor" (click)="goHome()">Home</span>
@@ -19,6 +27,7 @@
                     <span>Products</span>
                 </div>
             </div>
+  
             <div class="main-content" [ngClass]="{'no-sidebar': !showFilter}">
                 <ng-template #filterSidebar>
                     <div class="sidebar-card">
