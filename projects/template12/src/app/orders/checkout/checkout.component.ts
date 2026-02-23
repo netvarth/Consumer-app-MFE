@@ -96,6 +96,7 @@ export class CheckoutComponent implements OnInit {
   accountProfile: any;
   account: any;
   roundedValue: any = 0;
+  convenienceBaseAmount: number = 0;
   selectedDeliveryType: any;
   showSummaryDetails = false;
   isCartLoading = true;
@@ -270,14 +271,7 @@ export class CheckoutComponent implements OnInit {
   }
 
   getPaymentModes() {
-    let amount = 0;
-    if (this.orderData && this.orderData.amountDue) {
-      amount = this.orderData.amountDue;
-    } else if (this.orderData && this.orderData.netRate) {
-      amount = this.orderData.netRate;
-    } else if (this.cartData && (this.cartData.netTotal || this.cartData.netRate)) {
-      amount = this.cartData.netTotal || this.cartData.netRate;
-    }
+    const amount = this.getConvenienceBaseAmount();
 
     this.consumerService.getPaymentModesofProvider(this.accountId, 0, 'prePayment')
       .subscribe(
@@ -355,6 +349,7 @@ export class CheckoutComponent implements OnInit {
         this.cartId = this.cartData.uid;
         console.log('this.cartData1112', this.cartData);
         this.items = Array.isArray(this.cartData.items) ? this.cartData.items : [];
+        this.convenienceBaseAmount = this.resolveConvenienceAmountFromCart(this.cartData);
         // this.deliveryType = this.cartData.deliveryType;
         this.subscriptionService.sendMessage({ ttype: 'cartChanged', value: this.items.length })
         this.subscriptionService.sendMessage({ ttype: 'hideCartFooter', value: 0 });
@@ -879,6 +874,22 @@ confirm() {
     return processing > 0 ? processing : 0;
   }
 
+  getConvenienceFeeAmount(): number {
+    const activeMode = this.getActiveConvenienceMode();
+    if (activeMode) {
+      return this.toNumber(activeMode.convenienceFee);
+    }
+    return this.toNumber(this.convenientFee);
+  }
+
+  getGatewayFeeAmount(): number {
+    const activeMode = this.getActiveConvenienceMode();
+    if (activeMode) {
+      return this.toNumber(activeMode.totalGatewayFee);
+    }
+    return this.toNumber(this.gatewayFee);
+  }
+
   hasPaymentCharges(): boolean {
     if (this.toNumber(this.convenientFee) > 0 || this.toNumber(this.gatewayFee) > 0) {
       return true;
@@ -1047,6 +1058,34 @@ confirm() {
     this.selected_payment_mode = defaultMode.mode;
     this.isInternatonal = !!defaultMode.isInternational;
     this.applyConvenienceForMode(this.selected_payment_mode, this.isInternatonal);
+  }
+
+  private getConvenienceBaseAmount(): number {
+    if (this.convenienceBaseAmount > 0) {
+      return this.convenienceBaseAmount;
+    }
+    const cartAmount = this.resolveConvenienceAmountFromCart(this.cartData);
+    if (cartAmount > 0) {
+      this.convenienceBaseAmount = cartAmount;
+      return cartAmount;
+    }
+    const orderAmount = this.toNumber(this.orderData?.netRateBeforeRounding)
+      || this.toNumber(this.orderData?.netRate)
+      || this.toNumber(this.orderData?.amountDue);
+    if (orderAmount > 0) {
+      this.convenienceBaseAmount = orderAmount;
+      return orderAmount;
+    }
+    return 0;
+  }
+
+  private resolveConvenienceAmountFromCart(cart: any): number {
+    if (!cart) {
+      return 0;
+    }
+    return this.toNumber(cart?.netRateBeforeRounding)
+      || this.toNumber(cart?.netRate)
+      || this.toNumber(cart?.netTotal);
   }
 
 }

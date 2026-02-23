@@ -352,7 +352,7 @@
             <span>&#8377;{{ getTaxTotalAmount() | number: '1.2-2' }}</span>
           </div>
           <div class="pricing-row">
-            <span>Net Total With Tax</span>
+            <span>Total With Tax</span>
             <span>&#8377;{{ getNetTotalWithTax() | number: '1.2-2' }}</span>
           </div>
           <div class="pricing-coupons">
@@ -378,8 +378,12 @@
             <span>&#8377;{{ getNetTotalAfterCoupons() | number: '1.2-2' }}</span>
           </div>
           <div class="pricing-row" *ngIf="hasPaymentCharges()">
-            <span>Processing Fee</span>
-            <span>&#8377;{{ getProcessingFee() | number: '1.2-2' }}</span>
+            <span>Convenience Fee</span>
+            <span>&#8377;{{ getConvenienceFeeAmount() | number: '1.2-2' }}</span>
+          </div>
+          <div class="pricing-row" *ngIf="hasPaymentCharges()">
+            <span>Gateway Fee</span>
+            <span>&#8377;{{ getGatewayFeeAmount() | number: '1.2-2' }}</span>
           </div>
           <div class="pricing-row total-row" *ngIf="hasPaymentCharges()">
             <span>Amount Paid</span>
