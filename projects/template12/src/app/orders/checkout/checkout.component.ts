@@ -1255,8 +1255,8 @@ confirm() {
     if (!cart) {
       return 0;
     }
-    return this.toNumber(cart?.netRateBeforeRounding)
-      || this.toNumber(cart?.netRate)
+    return this.toNumber(cart?.netRate)
+      || this.toNumber(cart?.netRateBeforeRounding)
       || this.toNumber(cart?.netTotal);
   }
 

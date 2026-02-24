@@ -80,7 +80,7 @@
         <div class="reel-media">
           <video
             [poster]="resolveAsset(reel?.poster || reel?.image)"
-            [src]="resolveAsset(reel?.video || reel?.videoUrl || reel?.link || reel?.media)"
+            [src]="getReelVideoSrc(reel)"
             autoplay
             loop
             muted

@@ -65,10 +65,14 @@
                                        [attr.poster]="getVideoPoster(selectedItemImage)"
                                        autoplay
                                        playsinline
+                                       webkit-playsinline
                                        loop
                                        preload="metadata"
                                        [muted]="isVideoMuted"
+                                       [attr.muted]="isVideoMuted ? '' : null"
+                                       crossorigin="anonymous"
                                        (loadedmetadata)="onVideoReady()"
+                                       (loadeddata)="onVideoReady()"
                                        (canplay)="onVideoReady()"
                                        (error)="onVideoError()"
                                        (abort)="onVideoError()"

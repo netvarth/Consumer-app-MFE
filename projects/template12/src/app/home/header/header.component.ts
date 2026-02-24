@@ -339,14 +339,40 @@ export class HeaderComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const relativePath = normalizedLink.startsWith(`capp/${routeId}/`)
-      ? normalizedLink.substring(`capp/${routeId}/`.length)
-      : normalizedLink.startsWith(`${routeId}/`)
-        ? normalizedLink.substring(routeId.length + 1)
-        : normalizedLink;
+    const relativePath = this.getRelativePathForRoute(normalizedLink, routeId);
     const segments = relativePath.split('/').filter(Boolean);
     this.activeMenuItem = normalizedLink;
     this.router.navigate([routeId, ...segments], { queryParams: resolved?.queryParams || {} });
+  }
+
+  private getRelativePathForRoute(linkPath: string, routeId: string): string {
+    const normalizedPath = (linkPath || '').replace(/^\/+|\/+$/g, '');
+    const normalizedRoute = (routeId || '').replace(/^\/+|\/+$/g, '');
+    if (!normalizedPath || !normalizedRoute) {
+      return normalizedPath;
+    }
+
+    if (normalizedPath.startsWith(`capp/${normalizedRoute}/`)) {
+      return normalizedPath.substring(`capp/${normalizedRoute}/`.length);
+    }
+    if (normalizedPath === `capp/${normalizedRoute}`) {
+      return '';
+    }
+    if (normalizedPath.startsWith(`${normalizedRoute}/`)) {
+      return normalizedPath.substring(normalizedRoute.length + 1);
+    }
+    if (normalizedPath === normalizedRoute) {
+      return '';
+    }
+
+    // Handle paths that carry an extra prefix in WebView, e.g. "<prefix>/<routeId>/items".
+    const pathParts = normalizedPath.split('/').filter(Boolean);
+    const routeIndex = pathParts.findIndex((part) => part.toLowerCase() === normalizedRoute.toLowerCase());
+    if (routeIndex >= 0) {
+      return pathParts.slice(routeIndex + 1).join('/');
+    }
+
+    return normalizedPath;
   }
 
   private resolveMenuTarget(rawLink: string, routeId: string): { path: string; queryParams: any; externalUrl?: string } {

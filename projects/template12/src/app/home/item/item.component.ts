@@ -1452,19 +1452,44 @@ export class ItemComponent implements OnInit, OnDestroy {
       return false;
     }
     const lower = src.toLowerCase();
+    if (this.isVideoLikeSource(lower)) {
+      return false;
+    }
     if (/\.(jpg|jpeg|png|webp|gif|bmp|svg)(\?|#|$)/.test(lower)) {
       return true;
     }
-    if (/\.(mp4|webm|ogg|mov|m3u8)(\?|#|$)/.test(lower)) {
-      return false;
+    if (/^data:image\//.test(lower)) {
+      return true;
+    }
+    if (/(^|[?&])(mime(type)?|content[-_]?type|type)=image(%2f|\/)/.test(lower)) {
+      return true;
     }
     return true;
+  }
+
+  private isVideoLikeSource(src: string): boolean {
+    if (!src) {
+      return false;
+    }
+    return (
+      /\.(mp4|webm|ogg|mov|m3u8)(\?|#|$)/.test(src) ||
+      /(^|[?&])(mime(type)?|content[-_]?type|type)=video(%2f|\/)/.test(src) ||
+      /(^|[?&])(format|fm|ext)=(mp4|webm|ogg|mov|m3u8)(\b|%26|&|$)/.test(src)
+    );
+  }
+
+  private normalizeMediaUrl(src: string): string {
+    if (!src || typeof src !== 'string') {
+      return '';
+    }
+    return src.trim().toLowerCase();
   }
 
   private getAttachmentImageSource(attachment: any): string {
     if (!attachment || typeof attachment !== 'object') {
       return '';
     }
+    const videoSource = this.normalizeMediaUrl(attachment?.s3path || '');
     const imageCandidates: any[] = [
       attachment.poster,
       attachment.thumbnail,
@@ -1479,11 +1504,17 @@ export class ItemComponent implements OnInit, OnDestroy {
     ];
     for (const candidate of imageCandidates) {
       if (typeof candidate === 'string' && this.isImageLikeSource(candidate)) {
+        if (videoSource && this.normalizeMediaUrl(candidate) === videoSource) {
+          continue;
+        }
         return candidate;
       }
       if (candidate && typeof candidate === 'object') {
         const nested = candidate?.s3path || candidate?.url || candidate?.path || '';
         if (typeof nested === 'string' && this.isImageLikeSource(nested)) {
+          if (videoSource && this.normalizeMediaUrl(nested) === videoSource) {
+            continue;
+          }
           return nested;
         }
       }

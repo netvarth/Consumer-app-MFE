@@ -106,6 +106,9 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
   brandName = 'Kanishta';
   logoUrl = '';
   private sectionObserver: IntersectionObserver | null = null;
+  private reelVideoSourceCache = new Map<string, string>();
+  private reelVideoFetchInflight = new Map<string, Promise<string>>();
+  private reelVideoObjectUrls: string[] = [];
   notificationdialogRef;
   addnotedialogRef;
   checkindialogRef;
@@ -163,6 +166,7 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
   ngOnDestroy(): void {
+    this.clearReelVideoObjectUrls();
     if (this.sectionObserver) {
       this.sectionObserver.disconnect();
       this.sectionObserver = null;
@@ -1407,6 +1411,7 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
       this.videos
     );
     this.visibleReels = this.reels.slice(0, this.reelsBatchSize);
+    this.primeVisibleReelVideoCache();
     this.newArrivals = this.getArrayWithFallback(
       this.homeDesign?.newArrivals,
       this.homeDesign?.products,
@@ -1535,6 +1540,7 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     const nextCount = this.visibleReels.length + this.reelsBatchSize;
     this.visibleReels = this.reels.slice(0, nextCount);
+    this.primeVisibleReelVideoCache();
   }
   hasMoreNewArrivals(): boolean {
     return this.visibleNewArrivals.length < this.newArrivals.length;
@@ -1605,6 +1611,18 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
   trackByIndex(index: number): number {
     return index;
   }
+  getReelVideoSrc(reel: any): string {
+    const sourceUrl = this.resolveAsset(reel?.video || reel?.videoUrl || reel?.link || reel?.media);
+    if (!sourceUrl) {
+      return '';
+    }
+    const cached = this.reelVideoSourceCache.get(sourceUrl);
+    if (cached) {
+      return cached;
+    }
+    this.prefetchReelVideo(sourceUrl);
+    return sourceUrl;
+  }
   resolveAsset(path: string): string {
     if (!path || typeof path !== 'string') {
       return '';
@@ -1651,6 +1669,74 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     }
     return '';
+  }
+  private primeVisibleReelVideoCache(): void {
+    if (!Array.isArray(this.visibleReels) || !this.visibleReels.length) {
+      return;
+    }
+    this.visibleReels.forEach((reel) => {
+      const sourceUrl = this.resolveAsset(reel?.video || reel?.videoUrl || reel?.link || reel?.media);
+      if (sourceUrl) {
+        this.prefetchReelVideo(sourceUrl);
+      }
+    });
+  }
+  private prefetchReelVideo(sourceUrl: string): void {
+    if (!sourceUrl || sourceUrl.startsWith('blob:') || sourceUrl.startsWith('data:')) {
+      return;
+    }
+    if (this.reelVideoSourceCache.has(sourceUrl) || this.reelVideoFetchInflight.has(sourceUrl)) {
+      return;
+    }
+    const task = this.resolveReelVideoSource(sourceUrl)
+      .then((resolvedUrl) => {
+        this.reelVideoSourceCache.set(sourceUrl, resolvedUrl || sourceUrl);
+        return resolvedUrl || sourceUrl;
+      })
+      .catch(() => {
+        this.reelVideoSourceCache.set(sourceUrl, sourceUrl);
+        return sourceUrl;
+      })
+      .finally(() => {
+        this.reelVideoFetchInflight.delete(sourceUrl);
+      });
+    this.reelVideoFetchInflight.set(sourceUrl, task);
+  }
+  private async resolveReelVideoSource(sourceUrl: string): Promise<string> {
+    if (typeof window === 'undefined' || typeof fetch === 'undefined') {
+      return sourceUrl;
+    }
+    try {
+      const response = await fetch(sourceUrl, { cache: 'force-cache' });
+      if (!response?.ok) {
+        return sourceUrl;
+      }
+      const blob = await response.blob();
+      if (!blob || !blob.size || typeof URL === 'undefined' || typeof URL.createObjectURL !== 'function') {
+        return sourceUrl;
+      }
+      const blobUrl = URL.createObjectURL(blob);
+      this.reelVideoObjectUrls.push(blobUrl);
+      return blobUrl;
+    } catch {
+      return sourceUrl;
+    }
+  }
+  private clearReelVideoObjectUrls(): void {
+    if (typeof URL === 'undefined' || typeof URL.revokeObjectURL !== 'function') {
+      this.reelVideoObjectUrls = [];
+      return;
+    }
+    this.reelVideoObjectUrls.forEach((url) => {
+      try {
+        URL.revokeObjectURL(url);
+      } catch {
+        // Ignore revoke errors.
+      }
+    });
+    this.reelVideoObjectUrls = [];
+    this.reelVideoSourceCache.clear();
+    this.reelVideoFetchInflight.clear();
   }
 
   handleNotification(notification) {

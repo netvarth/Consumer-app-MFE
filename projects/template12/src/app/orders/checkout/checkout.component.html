@@ -373,10 +373,10 @@
               </span>
             </div>
           </div>
-          <div class="pricing-row">
+          <!-- <div class="pricing-row">
             <span>Net Total</span>
             <span>&#8377;{{ getNetTotalAfterCoupons() | number: '1.2-2' }}</span>
-          </div>
+          </div> -->
           <div class="pricing-row" *ngIf="hasPaymentCharges()">
             <span>Convenience Fee</span>
             <span>&#8377;{{ getConvenienceFeeAmount() | number: '1.2-2' }}</span>
