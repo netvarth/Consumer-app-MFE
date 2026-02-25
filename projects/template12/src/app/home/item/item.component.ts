@@ -1919,8 +1919,8 @@ export class ItemComponent implements OnInit, OnDestroy {
 
   sendEnquiry(): void {
     const phoneRaw = this.accountProfile?.phoneNumbers?.[0]?.instance || this.accountProfile?.accountLinkedPhNo || '';
-    const phone = phoneRaw.replace(/[^0-9]/g, '');
-    if (!phone) {
+    // const phone = phoneRaw.replace(/[^0-9]/g, '');
+    if (!phoneRaw) {
       this.toastService.showError('Provider WhatsApp number not available');
       return;
     }
@@ -1960,7 +1960,7 @@ export class ItemComponent implements OnInit, OnDestroy {
                     encodeURIComponent(ask) + "%0A" + 
                     encodeURIComponent(link);
     // const message = encodeURIComponent(messageParts.join(' '));
-    const whatsappUrl = `https://wa.me/+91${phone}?text=${message}`;
+    const whatsappUrl = `https://wa.me/${phoneRaw}?text=${message}`;
     window.open(whatsappUrl, '_blank');
   }
 
