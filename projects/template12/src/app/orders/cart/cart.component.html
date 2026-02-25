@@ -108,6 +108,10 @@
                                 <span>Net Total</span>
                                 <span>₹{{getAmountInDecimalPoints(cartDataHome?.netTotal ?? getItemsTotalMrp(items))}}</span>
                             </div>
+                            <div class="summary-row" *ngIf="cartDataHome.taxTotal && cartDataHome.taxTotal > 0">
+                                <span>Tax</span>
+                                <span>₹{{getAmountInDecimalPoints(cartDataHome.taxTotal)}}</span>
+                            </div>
                             <div class="summary-row discount-row" *ngIf="getItemsDiscount(items) > 0">
                                 <span>Discount on MRP</span>
                                 <span>- ₹{{getAmountInDecimalPoints(getItemsDiscount(items))}}</span>
@@ -123,7 +127,7 @@
                             <div class="summary-coupon-list"
                                 *ngIf="cartDataHome?.providerCoupons && cartDataHome.providerCoupons.length > 0">
                                 <div class="coupon-item" *ngFor="let coupon of cartDataHome.providerCoupons">
-                                    <span>{{coupon.couponCode}}</span>
+                                      <span>({{coupon.couponCode}})</span>
                                     <button type="button" class="coupon-remove" (click)="removeOrderCoupon(coupon, cartDataHome?.uid)">
                                         <i class="fa fa-window-close" aria-hidden="true"></i>
                                     </button>
@@ -138,10 +142,7 @@
                                     </button>
                                 </div>
                             </div>
-                            <div class="summary-row" *ngIf="cartDataHome.taxTotal && cartDataHome.taxTotal > 0">
-                                <span>Tax</span>
-                                <span>₹{{getAmountInDecimalPoints(cartDataHome.taxTotal)}}</span>
-                            </div>
+                           
                             <div class="summary-row" *ngIf="getPlatformFee(cartDataHome) > 0">
                                 <span>Platform Fee</span>
                                 <span>₹{{getAmountInDecimalPoints(getPlatformFee(cartDataHome))}}</span>
@@ -274,7 +275,7 @@
                             <div class="summary-coupon-list"
                                 *ngIf="cartDataStore?.providerCoupons && cartDataStore.providerCoupons.length > 0">
                                 <div class="coupon-item" *ngFor="let coupon of cartDataStore.providerCoupons">
-                                    <span>{{coupon.couponCode}}</span>
+                                    <span>({{coupon.couponCode}})</span>
                                     <button type="button" class="coupon-remove" (click)="removeOrderCoupon(coupon, cartDataStore?.uid)">
                                         <i class="fa fa-window-close" aria-hidden="true"></i>
                                     </button>
