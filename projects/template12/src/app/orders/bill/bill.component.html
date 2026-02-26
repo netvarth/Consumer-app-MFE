@@ -14,17 +14,10 @@
                 <div class="row">
                     <div class="c-outer m0">
                         <div class="c-body">
-                            <div class="card title-gb">
+                            <div class="card title-gb card-title-gb">
                                 <h5 class="mt-2">{{billTitle}}<a class="pull-left me-4 back-btn"
                                         (click)="goBack()"><i class="fa fa-arrow-left"></i></a></h5>
-                            </div>
-                            <div class="copy one">
-                                <div class="col-a ps-0 col-md-12 col-lg-12 col-xl-12 col-sm-12 col-12 p-0">
-                                    <div class="card bill-section no-padding-small">
-                                        <div class="bill-section-content">
-                                            <div class="col-md-12 col-sm-12 col-lg-12 bill-wrapper viewBill no-padding-small"
-                                                *ngIf="invoiceDetailsById">
-                                                <div class="global-icons col-md-12 col-sm-12 col-lg-12">
+                                     <div class=" d-flex align-items-center gap-3">
                                                     <button type="button" class="download-btn" (click)="downloadMe()"
                                                         [disabled]="fileDownloading" [matTooltipClass]="tooltipcls"
                                                         [matTooltip]="fileDownloading ? 'Preparing PDF...' : 'Download'"
@@ -33,6 +26,14 @@
                                                             aria-hidden="true"></i>
                                                     </button>
                                                 </div>
+                            </div>
+                            <div class="copy one">
+                                <div class="col-a ps-0 col-md-12 col-lg-12 col-xl-12 col-sm-12 col-12 p-0">
+                                    <div class="card bill-section no-padding-small">
+                                        <div class="bill-section-content">
+                                            <div class="col-md-12 col-sm-12 col-lg-12 bill-wrapper viewBill no-padding-small"
+                                                *ngIf="invoiceDetailsById">
+                                               
                                                 <div id="receipt" class="receipt">
                                                     <div class="bill-header" *ngIf="!showPaidlist">
                                                         <div
@@ -42,7 +43,7 @@
                                                                     <img *ngIf="storeLogo" [src]="storeLogo"
                                                                         class="rounded-circle" width="80" height="80">
                                                                 </div>
-                                                                <div class="">
+                                                                <div class="store-details">
                                                                     <h3 class="fw-bold"
                                                                         *ngIf="invoiceDetailsById && invoiceDetailsById.store && invoiceDetailsById.store.details && invoiceDetailsById.store.details.name">
                                                                         {{invoiceDetailsById.store.details.name |
@@ -50,9 +51,10 @@
                                                                     </h3>
                                                                     <span class="columns rightalign"
                                                                         *ngIf="invoiceDetailsById && invoiceDetailsById.store && invoiceDetailsById.store.details && invoiceDetailsById.store.details.locationName">
+                                                                       <span class="fa fa-map-marker">&nbsp;</span>
                                                                         <span
                                                                             class="dynamic">{{invoiceDetailsById.store.details.locationName}}</span>
-                                                                        <span class="icon-location"></span>
+                                                                        
                                                                     </span>
                                                                 </div>
                                                             </div>
@@ -152,7 +154,7 @@
                                                                     *ngIf="invoiceDetailsById.items && invoiceDetailsById.items.length > 0">
                                                                     <div class="list">
                                                                         <div class="list-content">
-                                                                            <div class="c-row one bill-table-head itemlist">
+                                                                            <div class="itemlisting">
                                                                                 <div class="head-name">Item</div>
                                                                                 <div class="head-quantity">Qty</div>
                                                                                 <div class="head-rate">Price(₹)</div>
@@ -167,7 +169,7 @@
                                                                     <div class="list"
                                                                         *ngFor="let item of invoiceDetailsById.items; let i = index">
                                                                         <div class="list-content">
-                                                                            <div class="c-row one itemlist">
+                                                                            <div class="c-row one itemlist d-flex justify-content-between">
                                                                                 <div *ngIf="item.orderItemDetails && item.orderItemDetails.spItem && item.orderItemDetails.spItem.name"
                                                                                     class="head-name">
                                                                                     {{item.orderItemDetails.spItem.name

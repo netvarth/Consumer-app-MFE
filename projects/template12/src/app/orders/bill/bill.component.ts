@@ -947,6 +947,9 @@ export class BillComponent implements OnInit, OnDestroy {
     }
 
     async downloadMe() {
+        if (this.fileDownloading) {
+            return;
+        }
         this.fileDownloading = true;
         await new Promise(resolve => setTimeout(resolve, 100));
         this.cdRef.detectChanges();
@@ -970,19 +973,28 @@ export class BillComponent implements OnInit, OnDestroy {
             source.style.overflow = 'visible';
 
             const bounds = source.getBoundingClientRect();
+            const contentWidth = Math.max(source.scrollWidth || 0, Math.floor(bounds.width) || 0);
+            const contentHeight = Math.max(source.scrollHeight || 0, Math.floor(bounds.height) || 0);
+            const baseScale = Math.min(2, Math.max(1, window.devicePixelRatio || 1));
+            const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+            const maxPixels = isIOS ? 5_000_000 : 8_000_000;
+            const safeScale = Math.max(
+                0.7,
+                Math.min(baseScale, Math.sqrt(maxPixels / Math.max(1, contentWidth * contentHeight)))
+            );
             const options = {
-                scale: 2,
+                scale: safeScale,
                 useCORS: true,
                 backgroundColor: '#FFFFFF',
-                width: source.scrollWidth || bounds.width,
-                height: source.scrollHeight || bounds.height,
-                windowWidth: source.scrollWidth || bounds.width,
-                windowHeight: source.scrollHeight || bounds.height,
+                width: contentWidth,
+                height: contentHeight,
+                windowWidth: contentWidth,
+                windowHeight: contentHeight,
                 scrollX: 0,
                 scrollY: 0
             };
 
-            let canvas;
+            let canvas: HTMLCanvasElement;
             try {
                 canvas = await html2canvas(source, options);
             } finally {
@@ -991,42 +1003,53 @@ export class BillComponent implements OnInit, OnDestroy {
                 source.style.maxWidth = prevMaxWidth;
             }
 
-            const marginPx = 24;
-            const zoomedOutCanvas = doc.createElement('canvas');
-            zoomedOutCanvas.width = canvas.width + marginPx * 2;
-            zoomedOutCanvas.height = canvas.height + marginPx * 2;
-
-            const ctx = zoomedOutCanvas.getContext('2d');
-            if (ctx) {
-                ctx.fillStyle = '#ffffff';
-                ctx.fillRect(0, 0, zoomedOutCanvas.width, zoomedOutCanvas.height);
-                ctx.drawImage(canvas, marginPx, marginPx);
-            }
-
-            const imgData = zoomedOutCanvas.toDataURL('image/png');
             const pdf = new jsPDF('p', 'mm', 'a4');
             const pdfWidth = pdf.internal.pageSize.getWidth();
             const pdfHeight = pdf.internal.pageSize.getHeight();
+            const marginMm = 8;
+            const usableWidthMm = pdfWidth - marginMm * 2;
+            const usableHeightMm = pdfHeight - marginMm * 2;
+            const pxPerMm = canvas.width / usableWidthMm;
+            const pageHeightPx = Math.max(1, Math.floor(usableHeightMm * pxPerMm));
 
-            const canvasWidth = zoomedOutCanvas.width;
-            const canvasHeight = zoomedOutCanvas.height;
-            const canvasAspectRatio = canvasWidth / canvasHeight;
-            const imgHeightOnPdf = pdfWidth / canvasAspectRatio;
+            const pageCanvas = doc.createElement('canvas');
+            const pageCtx = pageCanvas.getContext('2d', { willReadFrequently: false });
+            if (!pageCtx) {
+                throw new Error('Could not prepare PDF canvas');
+            }
 
-            let heightLeft = imgHeightOnPdf;
-            let position = 0;
+            pageCanvas.width = canvas.width;
+            let yOffset = 0;
+            let pageIndex = 0;
+            const jpegQuality = isIOS ? 0.72 : 0.8;
 
-            pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeightOnPdf);
-            heightLeft -= pdfHeight;
+            while (yOffset < canvas.height) {
+                const sliceHeight = Math.min(pageHeightPx, canvas.height - yOffset);
+                pageCanvas.height = sliceHeight;
+                pageCtx.fillStyle = '#ffffff';
+                pageCtx.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
+                pageCtx.drawImage(
+                    canvas,
+                    0, yOffset, canvas.width, sliceHeight,
+                    0, 0, pageCanvas.width, pageCanvas.height
+                );
 
-            while (heightLeft > 0) {
-                position -= pdfHeight;
-                pdf.addPage();
-                pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeightOnPdf);
-                heightLeft -= pdfHeight;
+                const imgData = pageCanvas.toDataURL('image/jpeg', jpegQuality);
+                const sliceHeightMm = sliceHeight / pxPerMm;
+                if (pageIndex > 0) {
+                    pdf.addPage();
+                }
+                pdf.addImage(imgData, 'JPEG', marginMm, marginMm, usableWidthMm, sliceHeightMm, undefined, 'FAST');
+
+                yOffset += sliceHeight;
+                pageIndex++;
             }
 
             pdf.save(this.getInvoiceFileName());
+            pageCanvas.width = 0;
+            pageCanvas.height = 0;
+            canvas.width = 0;
+            canvas.height = 0;
         } catch (error) {
             this.toastService.showError('Could not generate PDF');
         } finally {

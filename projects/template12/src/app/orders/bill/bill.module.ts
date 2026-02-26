@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { BillComponent } from './bill.component';
 import { 
   CapitalizeFirstPipeModule, 
@@ -16,6 +17,7 @@ const routes: Routes = [
   declarations: [BillComponent],
   imports: [
     CommonModule,
+    MatTooltipModule,
     CapitalizeFirstPipeModule,
     DateFormatPipeModule,
     PaymentsModule,
