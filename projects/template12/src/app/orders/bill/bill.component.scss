@@ -124,7 +124,7 @@ button {
 
 .bill-section .bill-section-content .bill-wrapper .section-three .bill-breakup .list .list-content .c-row.one {
   display: flex;
-  justify-content: end !important;
+  justify-content: space-between !important;
 }
 
 .bill-section .bill-section-content .bill-wrapper .section-three .bill-breakup .list .list-content .c-row.one .name {
@@ -385,7 +385,7 @@ button {
 
 .bill-section .bill-section-content .bill-wrapper .section-one,
 .bill-section .bill-section-content .bill-wrapper .section-three {
-  padding: 20px;
+  padding: 10px;
   border-bottom: 1px solid #dbdbdb;
 }
 
@@ -747,9 +747,16 @@ a:hover {
 }
 
 .head-name {
-  padding-right: 15px;
-  // flex-basis: 40%;
-  position: relative;
+//  padding-right: 15px; 
+    /* position: relative; */
+    // width: 36px;
+    /* word-break: break-all; */
+    display: flex;
+    // line-break: after-white-space;
+    white-space: normal !important;
+    word-break: break-all;
+    // overflow: scroll;
+    flex-basis: 18%;
 }
 
 .head-rate {
