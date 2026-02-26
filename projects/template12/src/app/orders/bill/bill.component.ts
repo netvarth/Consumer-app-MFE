@@ -971,6 +971,7 @@ export class BillComponent implements OnInit, OnDestroy {
             const prevWidth = source.style.width;
             const prevMaxWidth = source.style.maxWidth;
             source.style.overflow = 'visible';
+            await this.waitForReceiptImages(source);
 
             const bounds = source.getBoundingClientRect();
             const contentWidth = Math.max(source.scrollWidth || 0, Math.floor(bounds.width) || 0);
@@ -991,7 +992,19 @@ export class BillComponent implements OnInit, OnDestroy {
                 windowWidth: contentWidth,
                 windowHeight: contentHeight,
                 scrollX: 0,
-                scrollY: 0
+                scrollY: 0,
+                imageTimeout: 15000,
+                onclone: (clonedDoc: Document) => {
+                    const clonedReceipt = clonedDoc.getElementById('receipt') || clonedDoc.getElementById('payment-receipt');
+                    if (!clonedReceipt) {
+                        return;
+                    }
+                    const clonedImages = Array.from(clonedReceipt.querySelectorAll('img'));
+                    clonedImages.forEach((img: HTMLImageElement) => {
+                        img.setAttribute('crossorigin', 'anonymous');
+                        img.setAttribute('referrerpolicy', 'no-referrer');
+                    });
+                }
             };
 
             let canvas: HTMLCanvasElement;
@@ -1061,6 +1074,31 @@ export class BillComponent implements OnInit, OnDestroy {
     private getInvoiceFileName(): string {
         const identifier = this.invoiceDetailsById?.invoiceNum || this.billnumber;
         return identifier ? `Invoice-${identifier}.pdf` : 'Invoice.pdf';
+    }
+
+    private async waitForReceiptImages(container: HTMLElement, timeoutMs = 6000): Promise<void> {
+        const images = Array.from(container.querySelectorAll('img')) as HTMLImageElement[];
+        if (!images.length) {
+            return;
+        }
+        await Promise.all(images.map(img => this.waitForImage(img, timeoutMs)));
+    }
+
+    private waitForImage(img: HTMLImageElement, timeoutMs: number): Promise<void> {
+        if (img.complete) {
+            return Promise.resolve();
+        }
+        return new Promise(resolve => {
+            const onDone = () => {
+                img.removeEventListener('load', onDone);
+                img.removeEventListener('error', onDone);
+                clearTimeout(timer);
+                resolve();
+            };
+            const timer = window.setTimeout(onDone, timeoutMs);
+            img.addEventListener('load', onDone, { once: true });
+            img.addEventListener('error', onDone, { once: true });
+        });
     }
     /**
      * Cash Button Pressed
