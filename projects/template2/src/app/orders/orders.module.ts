@@ -9,6 +9,7 @@ const routes: Routes = [
   { path: 'checkout', loadChildren: () => import('./checkout/checkout.module').then(m => m.CheckoutModule) },
   { path: 'status/:id', loadChildren: () => import('./status/status.module').then(m => m.StatusModule) },  
   { path: 'bill/:id', loadChildren: () => import('./bill/bill.module').then(m => m.BillModule) },
+  { path: 'wishlist', loadChildren: () => import('./wishlist/wishlist.module').then(m => m.WishlistModule) },
   { path: ':id', loadChildren: () => import('./details/details.module').then(m => m.DetailsModule) },
 ]
 

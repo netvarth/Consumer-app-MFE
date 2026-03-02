@@ -7,6 +7,7 @@ export const imageConstants = {
     "linkedin": 'assets/images/LINKEDIN.svg',
     "pinterest": 'assets/images/Pintrest.svg',
     "facebook": 'assets/images/Facebook.svg',
+    "whatsapp": 'assets/images/whatsapp.svg',
     "share": 'assets/images/Share.svg',
     "phone_no": 'assets/images/Phone.svg',
     "email_id": 'assets/images/Email.svg',

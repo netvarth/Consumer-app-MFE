@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { projectConstantsLocal, SubscriptionService } from 'jconsumer-shared';
-import { TemplateService } from '../template/template.service';
+import { TemplateService } from '../template.service';
 
 @Component({
   selector: 'app-basic-profile',

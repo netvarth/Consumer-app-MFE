@@ -1,64 +1,256 @@
-<div id="page" *ngIf="templateJson">
-    <div id="footer-bar" class="footer-bar-1">
-        <a (click)="menuSelected(templateJson.section1)"
-            [ngClass]="{'active-nav' : selectedIndex === templateJson.section1.title }" *ngIf="templateJson.section1"><i
-                class="fa"
-                [ngClass]="[templateJson.section1.theme?templateJson.section1.theme:'',templateJson.section1.icon?templateJson.section1.icon:'fa-home']"></i><span>{{templateJson.section1.title
-                | translate}}</span></a>
-        <a (click)="menuSelected(templateJson.section2)"
-            [ngClass]="{'active-nav' : selectedIndex === templateJson.section2.title }" *ngIf="templateJson.section2"><i
-                class="fa fa-medkit"
-                [ngClass]="[templateJson.section2.theme?templateJson.section.theme:'',templateJson.section2.icon?templateJson.section2.icon:'fa-medkit']"></i><span>{{templateJson.section2.title
-                | translate}}</span></a>
-        <a (click)="menuSelected(templateJson.section3)" class="middle"
-            [ngClass]="{'active-nav' : selectedIndex === templateJson.section3.title }" *ngIf="templateJson.section3"><i
-                class="fa fa-users"
-                [ngClass]="[templateJson.section1.theme?templateJson.section1.theme:'',templateJson.section3.icon?templateJson.section3.icon:'fa-users']"></i><span>{{templateJson.section3.title
-                | translate}}</span></a>
-        <a (click)="menuSelected(templateJson.section4)"
-            [ngClass]="{'active-nav' : selectedIndex === templateJson.section4.title }" *ngIf="templateJson.section4"><i
-                class="fa fa-gear"
-                [ngClass]="[templateJson.section1.theme?templateJson.section1.theme:'',templateJson.section4.icon?templateJson.section4.icon:'fa-gear']"></i><span>{{templateJson.section4.title
-                | translate}}</span></a>
-        <a (click)="menuSelected(templateJson.section5)"
-            [ngClass]="{'active-nav' : selectedIndex === templateJson.section5.title }" *ngIf="templateJson.section5"><i
-                class="fa fa-address-book"
-                [ngClass]="templateJson.section5.theme?templateJson.section5.theme:'fa-address-book'"></i><span>{{templateJson.section5.title}}</span></a>
+<div class="fashion-home" *ngIf="templateJson">
+  <section class="search-shell">
+    <app-item-search
+      [accountID]="accountId"
+      [catalogEncids]="selectedCatalogs"
+      [autoFocusOnMobile]="false"
+      (selectedItemsEmit)="onItemSearchSelected($event)">
+    </app-item-search>
+  </section>
+  <section class="hero-shell">
+    <div class="hero-media" (click)="gotoItems()">
+      <img [src]="resolveAsset(homeDesign.heroImage )" alt="Hero banner" loading="eager" decoding="async" />
+      <img [src]="resolveAsset(homeDesign.heroImagesub )" alt="Hero sub banner" loading="eager" decoding="async" />
     </div>
-    <div class="page-content header-clear-small pb-100">
-        <section class="pageitem" *ngIf="templateJson.section1 && selectedIndex==templateJson.section1.title">
-            <app-template [section]="templateJson.section1" [terminologiesjson]="terminologiesjson" [templateJson]="templateJson"
-            [accountProfile]="accountProfile" [selectedLocation]="selectedLocation" [settings]="settings" 
-            [apptSettings]="apptSettings" [galleryJson]="galleryJson" [accountConfig]="accountConfig" [apptServices]="apptServices"
-            [checkinServices]="checkinServices" [donationServices]="donationServices"></app-template>
-        </section>
-        <section class="pageitem mgn-bt-70 col-12 p-0"
-            *ngIf="templateJson.section2 && selectedIndex==templateJson.section2.title">             
-            <app-template [section]="templateJson.section2" [terminologiesjson]="terminologiesjson" [templateJson]="templateJson"
-            [accountProfile]="accountProfile" [selectedLocation]="selectedLocation" [settings]="settings" [apptSettings]="apptSettings"
-             [galleryJson]="galleryJson" [accountConfig]="accountConfig" [apptServices]="apptServices" [checkinServices]="checkinServices"
-             [donationServices]="donationServices"></app-template>
-        </section>
-        <section class="col-12 p-0"
-            *ngIf="templateJson.section3 && selectedIndex==templateJson.section3.title">
-            <app-template [section]="templateJson.section3" [terminologiesjson]="terminologiesjson" [templateJson]="templateJson"
-            [accountProfile]="accountProfile" [selectedLocation]="selectedLocation" [settings]="settings"
-            [apptSettings]="apptSettings" [galleryJson]="galleryJson" [accountConfig]="accountConfig" [apptServices]="apptServices"
-            [checkinServices]="checkinServices" [donationServices]="donationServices"> </app-template>
-        </section>
-        <section class="ftco-section bg-light" id="counselling-section"
-            *ngIf="templateJson.section4 && selectedIndex==templateJson.section4.title">
-            <app-template [section]="templateJson.section4" [terminologiesjson]="terminologiesjson" [templateJson]="templateJson"
-            [accountProfile]="accountProfile" [selectedLocation]="selectedLocation" [settings]="settings"  
-            [apptSettings]="apptSettings" [galleryJson]="galleryJson" [accountConfig]="accountConfig" [apptServices]="apptServices"
-            [checkinServices]="checkinServices" [donationServices]="donationServices"></app-template>
-        </section>
-        <section class="ftco-section contact-section" id="contact-section"
-            *ngIf="templateJson.section5 && selectedIndex==templateJson.section5.title">
-            <app-template [section]="templateJson.section5" [terminologiesjson]="terminologiesjson" [templateJson]="templateJson"
-            [accountProfile]="accountProfile" [selectedLocation]="selectedLocation" [settings]="settings"
-            [apptSettings]="apptSettings" [galleryJson]="galleryJson" [accountConfig]="accountConfig" [apptServices]="apptServices"
-            [checkinServices]="checkinServices" [donationServices]="donationServices"></app-template>
-        </section>
+    <!-- <div class="hero-copy">
+      <h1>{{ homeDesign.heroTitle || 'THE GREAT INDIAN WEDDING sale' }}</h1>
+      <p>{{ homeDesign.heroSubTitle || 'FLAT 25% OFF' }}</p>
+      <button type="button" class="hero-cta" (click)="onPrimaryCta()">
+        {{ homeDesign.heroCta || 'EXPLORE NOW' }}
+      </button>
+    </div> -->
+  </section>
+
+  <section class="section-block reveal-on-scroll" *ngIf="categories?.length">
+    <h2 class="section-title">{{ homeDesign.categoriesTitle }}</h2>
+    <p class="section-subtitle">{{ homeDesign.categoriesSubTitle || '' }}</p>
+    <div class="grid-two">
+      <article class="product-card" *ngFor="let item of visibleCategories; trackBy: trackByIndex" (click)="onCardClick(item)">
+        <div class="media-wrap">
+          <img [src]="resolveAsset(item?.image || item?.url || item?.media)" [alt]="item?.title || item?.name || 'Category'" loading="lazy" decoding="async" />
+        </div>
+        <div class="meta-wrap">
+          <h3>{{ item?.title || item?.name }}</h3>
+          <p *ngIf="item?.subTitle || item?.price" class="price-inline">
+            <span class="price-value">{{ item?.subTitle || item?.price }}</span>
+            <span class="price-mrp" *ngIf="!item?.subTitle && item?.mrp">{{ item?.mrp }}</span>
+          </p>
+        </div>
+      </article>
     </div>
+    <div
+      class="items-load-more-trigger"
+      *ngIf="hasMoreCategories()"
+      lazyLoadTrigger
+      [lazyLoadEnabled]="hasMoreCategories()"
+      (lazyLoadTrigger)="loadMoreCategories()"></div>
+  </section>
+
+  <section class="section-block reveal-on-scroll" *ngIf="preBookingCollection?.length">
+    <h2 class="section-title">{{ homeDesign.preBookingTitle }}</h2>
+    <p class="section-subtitle">{{ homeDesign.preBookingSubTitle || '' }}</p>
+    <div class="grid-two">
+      <article class="product-card" *ngFor="let item of visiblePreBookingCollection; trackBy: trackByIndex" (click)="onCardClick(item)">
+        <div class="media-wrap">
+          <img [src]="resolveAsset(item?.image || item?.url || item?.media)" [alt]="item?.title || item?.name || 'Collection item'" loading="lazy" decoding="async" />
+        </div>
+        <div class="meta-wrap">
+          <h3>{{ item?.title || item?.name || 'Collection' }}</h3>
+          <p *ngIf="item?.price" class="price-inline">
+            <span class="price-value">{{ item?.price }}</span>
+            <span class="price-mrp" *ngIf="item?.mrp">{{ item?.mrp }}</span>
+          </p>
+        </div>
+      </article>
+    </div>
+    <div
+      class="items-load-more-trigger"
+      *ngIf="hasMorePreBookingCollection()"
+      lazyLoadTrigger
+      [lazyLoadEnabled]="hasMorePreBookingCollection()"
+      (lazyLoadTrigger)="loadMorePreBookingCollection()"></div>
+    <button type="button" class="pill-btn" (click)="onShowMore('prebooking')">{{ homeDesign.preBookingCta || 'Show More' }}</button>
+  </section>
+
+  <section class="section-block reveal-on-scroll" *ngIf="reels?.length">
+    <h2 class="section-title">{{ homeDesign.reelsTitle || 'Shop By Reels' }}</h2>
+    <p class="section-subtitle">{{ homeDesign.reelsSubTitle || '' }}</p>
+    <div class="reel-grid" (scroll)="onReelScroll($event)">
+      <article class="reel-card" *ngFor="let reel of visibleReels; let i = index; trackBy: trackByIndex" [class.active]="activeReelIndex === i" (click)="onCardClick(reel)">
+        <div class="reel-media">
+          <video
+            [poster]="resolveAsset(reel?.poster || reel?.image)"
+            [src]="getReelVideoSrc(reel)"
+            autoplay
+            loop
+            muted
+            playsinline
+            preload="auto"
+            (loadedmetadata)="forcePlay($event)"
+            (canplay)="forcePlay($event)"
+          ></video>
+          <div class="reel-wrap">
+            <div class="reel-wrap-main">
+          <img [src]="resolveAsset(reel?.poster || reel?.image)" [alt]="reel?.title || reel?.name || 'Reel'" loading="lazy" decoding="async" />
+          </div>
+          <div class="reel-wrap-sub">
+            <h3>{{ reel?.title || reel?.name}}</h3>
+          <p *ngIf="reel?.price" class="price-inline">
+            <span class="price-value">{{ reel?.price }}</span>
+            <span class="price-mrp" *ngIf="reel?.mrp">{{ reel?.mrp }}</span>
+          </p>
+          </div>
+        </div>
+        </div>
+        
+      </article>
+    </div>
+    <div
+      class="items-load-more-trigger"
+      *ngIf="hasMoreReels()"
+      lazyLoadTrigger
+      [lazyLoadEnabled]="hasMoreReels()"
+      (lazyLoadTrigger)="loadMoreReels()"></div>
+  </section>
+
+  <section class="section-block reveal-on-scroll" *ngIf="newArrivals?.length">
+    <h2 class="section-title">{{ homeDesign.newArrivalsTitle || 'New Arrivals' }}</h2>
+    <p class="section-subtitle">{{ homeDesign.newArrivalsSubTitle || '' }}</p>
+    <div class="grid-two">
+      <article class="product-card" *ngFor="let item of visibleNewArrivals; trackBy: trackByIndex" (click)="onCardClick(item)">
+        <div class="media-wrap">
+          <img [src]="resolveAsset(item?.image || item?.url || item?.media)" [alt]="item?.title || item?.name || 'New arrival'" loading="lazy" decoding="async" />
+        </div>
+        <div class="meta-wrap">
+          <h3>{{ item?.title || item?.name || 'New Arrival' }}</h3>
+          <p *ngIf="item?.price" class="price-inline">
+            <span class="price-value">{{ item?.price }}</span>
+            <span class="price-mrp" *ngIf="item?.mrp">{{ item?.mrp }}</span>
+          </p>
+        </div>
+      </article>
+    </div>
+    <div
+      class="items-load-more-trigger"
+      *ngIf="hasMoreNewArrivals()"
+      lazyLoadTrigger
+      [lazyLoadEnabled]="hasMoreNewArrivals()"
+      (lazyLoadTrigger)="loadMoreNewArrivals()"></div>
+    <button type="button" class="pill-btn" (click)="onShowMore('new-arrivals')">{{ homeDesign.newArrivalsCta || 'Show More' }}</button>
+  </section>
+
+  <section class="section-block reveal-on-scroll" *ngIf="customerReviews?.length">
+    <h2 class="section-title centered">{{ homeDesign.reviewsTitle || 'Customer Review' }}</h2>
+    <div class="reviews-track" (scroll)="onReviewScroll($event)">
+      <article class="review-card" *ngFor="let review of visibleCustomerReviews; let i = index; trackBy: trackByIndex" [class.active]="activeReviewIndex === i">
+        <div class="review-avatar-wrap">
+          <img [src]="resolveAsset(review?.avatar || review?.image)" [alt]="review?.name || 'Reviewer'" loading="lazy" decoding="async" />
+        </div>
+        <div class="review-stars">
+          <i class="fa fa-star" *ngFor="let _ of getStars(review?.rating)"></i>
+        </div>
+        <p class="review-text">{{ review?.text || review?.description || '' }}</p>
+        <h3 class="review-name">{{ review?.name || '' }}</h3>
+      </article>
+    </div>
+    <div
+      class="items-load-more-trigger"
+      *ngIf="hasMoreCustomerReviews()"
+      lazyLoadTrigger
+      [lazyLoadEnabled]="hasMoreCustomerReviews()"
+      (lazyLoadTrigger)="loadMoreCustomerReviews()"></div>
+    <div class="dots" *ngIf="visibleCustomerReviews.length > 1">
+<span class="dot" 
+      *ngFor="let review of visibleCustomerReviews  | slice:0:-1; let i = index" 
+      [class.active]="activeReviewIndex === i">
+</span>
+    </div>
+  </section>
+
+  <!-- <footer class="fashion-footer reveal-on-scroll">
+    <div class="footer-brand">
+      <img *ngIf="logoUrl" [src]="resolveAsset(logoUrl)" alt="Brand logo" loading="lazy" decoding="async" />
+      <h3>{{ brandName }}</h3>
+      <p>{{ homeDesign.footerTagline || '' }}</p>
+    </div>
+
+    <div class="footer-socials">
+      <a *ngFor="let social of socialLinks; trackBy: trackByIndex" [href]="social?.url || 'javascript:void(0)'" target="_blank" rel="noopener" aria-label="Social link">
+        <i class="fa" [ngClass]="social?.icon || 'fa-circle'"></i>
+      </a>
+    </div>
+
+    <div class="footer-columns">
+      <div class="footer-col" *ngFor="let col of footerColumns; trackBy: trackByIndex">
+        <h4>{{ col?.title }}</h4>
+        <a *ngFor="let link of col?.links; trackBy: trackByIndex" [href]="link?.url || 'javascript:void(0)'" target="_blank" rel="noopener">{{ link?.label }}</a>
+      </div>
+    </div>
+  </footer> -->
+
+  <div id="footer-bar" class="footer-bar-1">
+    <a (click)="menuSelected(templateJson.section1)"
+      [ngClass]="{'active-nav' : selectedIndex === templateJson.section1?.title }" *ngIf="templateJson.section1">
+      <ng-container
+        *ngIf="templateJson.section1.icon?.includes('.svg') || templateJson.section1.icon?.startsWith('http'); else section1FaIcon">
+        <img class="nav-icon" [src]="templateJson.section1.icon" [alt]="templateJson.section1.title" loading="lazy" />
+      </ng-container>
+      <ng-template #section1FaIcon>
+        <i class="fa"
+          [ngClass]="[templateJson.section1.theme ? templateJson.section1.theme : '', templateJson.section1.icon ? templateJson.section1.icon : 'fa-home']"></i>
+      </ng-template>
+      <span>{{ templateJson.section1.title | translate }}</span>
+    </a>
+
+    <a (click)="menuSelected(templateJson.section2)"
+      [ngClass]="{'active-nav' : selectedIndex === templateJson.section2?.title }" *ngIf="templateJson.section2">
+      <ng-container
+        *ngIf="templateJson.section2.icon?.includes('.svg') || templateJson.section2.icon?.startsWith('http'); else section2FaIcon">
+        <img class="nav-icon" [src]="templateJson.section2.icon" [alt]="templateJson.section2.title" loading="lazy" />
+      </ng-container>
+      <ng-template #section2FaIcon>
+        <i class="fa"
+          [ngClass]="[templateJson.section2.theme ? templateJson.section2.theme : '', templateJson.section2.icon ? templateJson.section2.icon : 'fa-medkit']"></i>
+      </ng-template>
+      <span>{{ templateJson.section2.title | translate }}</span>
+    </a>
+
+    <a (click)="menuSelected(templateJson.section3)"
+      [ngClass]="{'active-nav' : selectedIndex === templateJson.section3?.title }" *ngIf="templateJson.section3">
+      <ng-container
+        *ngIf="templateJson.section3.icon?.includes('.svg') || templateJson.section3.icon?.startsWith('http'); else section3FaIcon">
+        <img class="nav-icon" [src]="templateJson.section3.icon" [alt]="templateJson.section3.title" loading="lazy" />
+      </ng-container>
+      <ng-template #section3FaIcon>
+        <i class="fa"
+          [ngClass]="[templateJson.section3.theme ? templateJson.section3.theme : '', templateJson.section3.icon ? templateJson.section3.icon : 'fa-users']"></i>
+      </ng-template>
+      <span>{{ templateJson.section3.title | translate }}</span>
+    </a>
+
+    <a (click)="menuSelected(templateJson.section4)"
+      [ngClass]="{'active-nav' : selectedIndex === templateJson.section4?.title }" *ngIf="templateJson.section4">
+      <ng-container
+        *ngIf="templateJson.section4.icon?.includes('.svg') || templateJson.section4.icon?.startsWith('http'); else section4FaIcon">
+        <img class="nav-icon" [src]="templateJson.section4.icon" [alt]="templateJson.section4.title" loading="lazy" />
+      </ng-container>
+      <ng-template #section4FaIcon>
+        <i class="fa" [ngClass]="[templateJson.section4.theme || '', templateJson.section4.icon || 'fa-gear']"></i>
+      </ng-template>
+      <span>{{ templateJson.section4.title | translate }}</span>
+    </a>
+
+    <a (click)="menuSelected(templateJson.section5)"
+      [ngClass]="{'active-nav' : selectedIndex === templateJson.section5?.title }" *ngIf="templateJson.section5">
+      <ng-container
+        *ngIf="templateJson.section5.icon?.includes('.svg') || templateJson.section5.icon?.startsWith('http'); else section5FaIcon">
+        <img class="nav-icon" [src]="templateJson.section5.icon" [alt]="templateJson.section5.title" loading="lazy" />
+      </ng-container>
+      <ng-template #section5FaIcon>
+        <i class="fa"
+          [ngClass]="[templateJson.section5.theme ? templateJson.section5.theme : '', templateJson.section5.icon ? templateJson.section5.icon : 'fa-address-book']"></i>
+      </ng-template>
+      <span>{{ templateJson.section5.title }}</span>
+    </a>
+  </div>
 </div>

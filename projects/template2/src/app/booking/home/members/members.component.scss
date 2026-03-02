@@ -599,3 +599,160 @@ button.menu {
   background: transparent;
   border: none;
 }
+
+/* Member popup redesign */
+.member-outer {
+  width: 100%;
+  margin-bottom: 17px;
+
+  border-bottom: 1px solid #e1e0e0;
+}
+
+.member-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 0;
+}
+
+.member-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 4px 10px 2px;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.member-card:focus {
+  outline: none;
+}
+
+.member-card--selected {
+  background: transparent;
+  color: #000000;
+}
+
+.member-card--disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.member-card__radio {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #c7cdd6;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+  position: relative;
+  transition: border-color 0.2s ease, background 0.2s ease;
+  background: #fff;
+}
+
+.member-card__radio::after {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ff7a00;
+  transform: scale(0);
+  transition: transform 0.2s ease;
+}
+
+.member-card--selected .member-card__radio {
+  border-color: #ff6400;
+  background: #fff1e6;
+}
+
+.member-card--selected .member-card__radio::after,
+.member-card__radio--readonly::after {
+  transform: scale(1);
+  background: #ff6400;
+}
+
+.member-card__details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+}
+
+.member-card__name {
+  font-weight: 500;
+  color: #000000;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+// .member-card__title {
+//   color: #000000;
+//   font-weight: 600;
+//   font-size: 13px;
+// }
+
+.member-card__contact {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #000000;
+  font-size: 13px;
+  letter-spacing: 0.2px;
+  margin-left: 7px;
+}
+
+.member-card__contact .fa {
+  color: #000000 !important;
+  font-size: 16px !important;
+}
+
+.member-card__status {
+  font-size: 12px;
+  font-weight: 600;
+  color: #9ca3af;
+}
+
+.member-list.read-only .member-card {
+  cursor: default;
+  box-shadow: none;
+  background: #f9fafb;
+}
+
+.member-card__radio--readonly {
+  border-color: #ff7a00;
+}
+
+.member-card:not(:last-child) {
+  border-bottom: 1px solid #e7ebf0;
+}
+
+.member-card__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.member-card__edit {
+  color: #9aa8c4 !important;
+  font-size: 15px !important;
+}
+
+// .member-card--selected .member-card__name,
+// .member-card--selected .member-card__contact {
+//   color: #123868;
+// }
+
+// .member-card--selected .member-card__contact .fa {
+//   color: #123868 !important;
+// }

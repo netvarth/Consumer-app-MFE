@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FormMessageDisplayService, projectConstantsLocal } from 'jconsumer-shared';
+import { IntlTelInputLoaderService } from '../../shared/intl-tel-input-loader.service';
 
 @Component({
   selector: 'app-communications',
@@ -32,7 +33,8 @@ export class CommunicationsComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    public fed_service: FormMessageDisplayService
+    public fed_service: FormMessageDisplayService,
+    public intlTelInputLoader: IntlTelInputLoaderService
   ) { }
 
   ngOnInit(): void {

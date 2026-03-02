@@ -1,11 +1,14 @@
-import { Location } from "@angular/common";
-import { Component, HostListener, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { DOCUMENT, Location } from "@angular/common";
+import { Component, ElementRef, HostListener, Inject, OnDestroy, OnInit, ViewChild, ChangeDetectorRef } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, NavigationExtras, Router } from "@angular/router";
 import { ConsumerService, DateFormatPipe, ErrorMessagingService, Messages, PaytmService, projectConstantsLocal, RazorpayService, SharedService, ToastService, WordProcessor } from "jconsumer-shared";
 import { Subscription } from "rxjs";
 import { CouponNotesComponent } from "../../shared/coupon-notes/coupon-notes.component";
 import { PrintService } from "./print.service";
+import { BookingService } from "../booking.service";
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 
 @Component({
     selector: 'app-bill',
@@ -15,6 +18,7 @@ import { PrintService } from "./print.service";
 export class BillComponent implements OnInit, OnDestroy {
 
     @ViewChild('consumer_bill') paytmview;
+    // @ViewChild('receipt') shareview?: ElementRef;
     loadingPaytm: boolean = false;
     smallmobileDevice: boolean = false;
     tabDeviceDisplay: boolean = false;
@@ -40,7 +44,9 @@ export class BillComponent implements OnInit, OnDestroy {
             _billDate: null,
             billTime: null,
             billNumber: null,
+            invoiceNum:null,
             haveNotes: false,
+            amountPaid: null,
             discounts: [],
             coupons: [],
             services: [],
@@ -81,7 +87,8 @@ export class BillComponent implements OnInit, OnDestroy {
     gross_amnt_cap = Messages.GROSS_AMNT_CAP;
     gstin_cap = Messages.GSTIN_CAP;
     newDateFormat_date = projectConstantsLocal.DATE_MM_DD_YY_FORMAT;
-
+     fileDownloading = false;
+    hideLocationGlobal: boolean = false;
     constructor(
         private sharedService: SharedService,
         private activatedRoute: ActivatedRoute,
@@ -95,7 +102,10 @@ export class BillComponent implements OnInit, OnDestroy {
         private razorpayService: RazorpayService,
         private dialog: MatDialog,
         private printService: PrintService,
-        private dateFormat: DateFormatPipe
+        private dateFormat: DateFormatPipe,
+        private bookingService: BookingService,
+        private cdRef: ChangeDetectorRef,
+        @Inject(DOCUMENT) public document,
     ) {
         this.onResize();
         this.wordProcessor.setTerminologies(this.sharedService.getTerminologies());
@@ -130,12 +140,14 @@ export class BillComponent implements OnInit, OnDestroy {
             businessName: null,
             gstNumber: null,
             refundAmount: null,
+            amountPaid: null,
             dueDate: null,
             _dueDate: null,
             billDate: null,
             _billDate: null,
             billTime: null,
             billNumber: null,
+            invoiceNum:null,
             haveNotes: false,
             discounts: [],
             coupons: [],
@@ -149,11 +161,13 @@ export class BillComponent implements OnInit, OnDestroy {
         if (window.innerWidth <= 500) {
             this.smallmobileDevice = true;
             this.tabDeviceDisplay = false;
-            this.desktopDeviceDisplay = false;            
+            this.desktopDeviceDisplay = false;
+            this.booking['isDesktop'] = false;
         } else if (window.innerWidth > 500 && window.innerWidth <= 767) {
             this.smallmobileDevice = false;
             this.tabDeviceDisplay = true;
             this.desktopDeviceDisplay = false;
+            this.booking['isDesktop'] = false;
         } else if (window.innerWidth > 767) {
             this.booking['isDesktop'] = true;
             this.smallmobileDevice = false;
@@ -181,6 +195,9 @@ export class BillComponent implements OnInit, OnDestroy {
         let accountConfig = this.sharedService.getAccountConfig();
         if (accountConfig && accountConfig['theme']) {
             this.theme = accountConfig['theme'];
+        }
+        if (accountConfig?.locationVisible) {
+            this.hideLocationGlobal = accountConfig?.locationVisible;
         }
         this.loadBookingInfo();
         if (!this.booking['isPaid']) {
@@ -286,6 +303,9 @@ export class BillComponent implements OnInit, OnDestroy {
         if (invoice.departmentName){
             this.booking['invoiceExtras']['departmentName'] = invoice.departmentName;
         }
+         if (invoice.invoiceNum){
+            this.booking['invoiceExtras']['invoiceNum'] = invoice.invoiceNum;
+        }
         this.booking['invoiceExtras']['items']= invoice.itemList;
     }
     setBillExtras(bill) {
@@ -300,7 +320,7 @@ export class BillComponent implements OnInit, OnDestroy {
             this.booking['invoiceExtras']['refundAmount'] = Math.abs(bill.amountDue);
         }
         if (bill.accountProfile.location && bill.accountProfile.location.place) {
-            this.booking['location'] = bill.accountProfile.location.place;;
+            this.booking['location'] = bill.accountProfile.location.place;
         }
         if (bill.hasOwnProperty('createdDate')) {
             const datearr = bill.createdDate.split(' ');
@@ -332,13 +352,18 @@ export class BillComponent implements OnInit, OnDestroy {
         if (bill.departmentName){
             this.booking['invoiceExtras']['departmentName'] = bill.departmentName;
         }
+         if (bill.invoiceNum){
+            this.booking['invoiceExtras']['invoiceNum'] = bill.invoiceNum;
+        }
         this.booking['invoiceExtras']['items']= bill.items;
+
+        console.log("this.booking['invoiceExtras']['items']",this.booking['invoiceExtras']['items']);
     }
 
     getInvoice() {
         const _this = this;
         return new Promise(function (resolve, reject) {
-            let subs = _this.consumerService.getInvoice(_this.accountID, _this.booking['invoiceID']).subscribe(
+            let subs = _this.bookingService.getBookingInvoiceDetailsByuuid(_this.accountID, _this.booking['invoiceID']).subscribe(
                 (invoice) => {
                     resolve(invoice);
                 }
@@ -394,6 +419,97 @@ export class BillComponent implements OnInit, OnDestroy {
         console.log("this.booking",this.booking);
         this.printService.print(this.booking);
     }
+  async downloadMe() {
+        this.fileDownloading = true;
+        await new Promise(resolve => setTimeout(resolve, 100));
+        this.cdRef.detectChanges();
+        const doc: Document = (this.document as Document) || document;
+        const htmlContainer = doc.getElementById('payment-receipt') as HTMLElement | null;
+        if (!htmlContainer) {
+            console.error('Element not found');
+            this.fileDownloading = false;
+            return;
+        }
+        htmlContainer.style.visibility = 'visible';
+        try {
+            const source = htmlContainer;
+            const prevOverflow = source.style.overflow;
+            const prevWidth = source.style.width;
+            const prevMaxWidth = source.style.maxWidth;
+            source.style.overflow = 'visible';
+            // source.style.width = '794px';
+            // source.style.maxWidth = '100%';
+
+            const bounds = source.getBoundingClientRect();
+            const options = {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: '#FFFFFF',
+                width: source.scrollWidth || bounds.width,
+                height: source.scrollHeight || bounds.height,
+                windowWidth: source.scrollWidth || bounds.width,
+                windowHeight: source.scrollHeight || bounds.height,
+                scrollX: 0,
+                scrollY: 0
+            };
+            let canvas;
+            try {
+                canvas = await html2canvas(source, options);
+            } finally {
+                source.style.overflow = prevOverflow;
+                source.style.width = prevWidth;
+                source.style.maxWidth = prevMaxWidth;
+            }
+            const marginPx = 24;
+            const zoomedOutCanvas = doc.createElement('canvas');
+            zoomedOutCanvas.width = canvas.width + marginPx * 2;
+            zoomedOutCanvas.height = canvas.height + marginPx * 2;
+
+            const ctx = zoomedOutCanvas.getContext('2d');
+            if (ctx) {
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, zoomedOutCanvas.width, zoomedOutCanvas.height);
+                ctx.drawImage(canvas, marginPx, marginPx);
+            }
+
+            const imgData = zoomedOutCanvas.toDataURL('application/pdf');
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
+
+            const canvasWidth = zoomedOutCanvas.width;
+            const canvasHeight = zoomedOutCanvas.height;
+            const canvasAspectRatio = canvasWidth / canvasHeight;
+            const imgHeightOnPdf = pdfWidth / canvasAspectRatio;
+
+            let heightLeft = imgHeightOnPdf;
+            let position = 0;
+
+            pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeightOnPdf);
+            heightLeft -= pdfHeight;
+
+            while (heightLeft > 0) { 
+                position -= pdfHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeightOnPdf);
+                heightLeft -= pdfHeight;
+            }
+
+            pdf.save(this.getInvoiceFileName());
+        } catch (error) {
+            console.error('Error during PDF generation:', error);
+            this.toastService.showError('Could not generate PDF');
+            // this.snackbarService?.openSnackBar('Could not generate PDF', { panelClass: 'snackbarerror' });
+        } finally {
+            this.fileDownloading = false;
+            htmlContainer.style.visibility = 'hidden';
+            // htmlContainer!.innerHTML = '';
+        }
+    }
+    private getInvoiceFileName(): string {
+        const identifier = this.booking['invoiceExtras']['invoiceNum'] || this.booking['invoiceExtras']['billNumber'];
+        return identifier ? `Invoice-${identifier}.pdf` : 'Invoice.pdf';
+    }
     indian_payment_mode_onchange(event) {
         this.selectedPaymentMode = event.value;
         this.isInternatonal = false;
@@ -426,7 +542,7 @@ export class BillComponent implements OnInit, OnDestroy {
         const _this = this;
         return new Promise(function (resolve, reject) {
             if (_this.booking['isInvoice']) {
-                let subs = _this.consumerService.consumerPayment_invocie(paymentInput).subscribe(
+                let subs = _this.bookingService.makePayment_booking(paymentInput).subscribe(
                     (response) => {
                         resolve(response);
                     }, (error) => { reject(error) }
@@ -454,11 +570,11 @@ export class BillComponent implements OnInit, OnDestroy {
             let paymentInput = {
                 accountId: this.accountID,
                 amount: this.booking['invoice'].amountDue,
-                purpose: this.booking['isInvoice'] ? 'financeInvoicePayment' : 'billPayment',
+                purpose: this.booking['isInvoice'] ? 'bookingInvoice' : 'billPayment',
                 serviceId: 0,
                 isInternational: this.isInternatonal,
                 paymentMode: this.selectedPaymentMode,
-                uuid: this.booking['isInvoice'] ? this.booking['invoice'].invoiceUid : this.booking['uid']
+                uuid: this.booking['isInvoice'] ? this.booking.invoiceID : this.booking['uid']
             };
             if (paymentInput.uuid != null && paymentInput.paymentMode != null && paymentInput.amount !== 0) {
                 if (this.booking['isInvoice']) {

@@ -24,7 +24,9 @@ export class QuickActionsComponent implements OnInit {
     if (action.link && action.link.startsWith('http')) {
       window.open(action.link, "_system");
     } else if (action.link){
-      this.router.navigateByUrl(this.sharedService.getRouteID() + "/" + action.link);
+      let url = this.sharedService.getRouteID() + '/'  + action.link;
+      console.log("Url:", url);
+      this.router.navigateByUrl(url);
     } else if (action.type==='menu') {
       this.actionPerformed.emit(action);
     }

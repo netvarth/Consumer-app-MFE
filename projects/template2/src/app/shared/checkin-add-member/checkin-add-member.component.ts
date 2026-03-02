@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, } from '@angular/core';
-import { CommonService, Messages, StorageService, WordProcessor } from 'jconsumer-shared';
+import { CommonService, Messages, WordProcessor } from 'jconsumer-shared';
 
 @Component({
   selector: 'app-checkin-consumer-add-member',
@@ -23,21 +23,14 @@ export class CheckinAddMemberComponent implements OnInit {
   @Input() calledFrom: any;
   @Output() returnDetails = new EventEmitter<any>();
   @Input() globalsettings: any;
-  salutation: any = [];
   title = '';
   constructor(
     private wordProcessor: WordProcessor,
-    private commonService: CommonService,
-    private storageService: StorageService
-
+    private commonService: CommonService
   ) {
   }
   ngOnInit() {
     this.customer_label = this.wordProcessor.getTerminologyTerm('customer');
-    this.storageService.getSalutations().then((data: any) => {
-      console.log('accountStorageService123', data)
-      this.salutation = data;
-    });
   }
   isNumeric(evt) {
     return !this.commonService.isNumber(evt);

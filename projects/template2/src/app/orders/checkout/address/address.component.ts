@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmBoxComponent, ConsumerService, ErrorMessagingService, FormMessageDisplayService, OrderService, projectConstantsLocal, SharedService, ToastService } from 'jconsumer-shared';
@@ -21,7 +21,7 @@ export class AddressComponent implements OnInit {
 
   newAddress: any;
   canceldialogRef: any;
-
+  cdnPath: string = '';
   addedAddresses: any = [];
   clicked: any = false;
   config: any;
@@ -29,6 +29,9 @@ export class AddressComponent implements OnInit {
   activeKey: number = -1;
   countryCode: any;
   phonenoHolder: any;
+  isSmallDevice: boolean = false;
+  isAddressSheetOpen: boolean = false;
+  pendingDeliveryAddress: any = null;
   constructor(
     private formBuilder: FormBuilder,
     private orderService: OrderService,
@@ -41,14 +44,28 @@ export class AddressComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.updateDeviceType();
     this.config = this.sharedService.getTemplateJSON();
     if (this.config.theme) {
       this.theme = this.config.theme;
     }
+    this.cdnPath = this.sharedService.getCDNPath();
     console.log("Delivery Address Param: ", this.deliveryAddressP);
 
     this.createForm();
     this.getAddresses();
+  }
+
+  @HostListener('window:resize')
+  onResize(): void {
+    this.updateDeviceType();
+  }
+
+  private updateDeviceType(): void {
+    this.isSmallDevice = window.innerWidth < 830;
+    if (!this.isSmallDevice) {
+      this.isAddressSheetOpen = false;
+    }
   }
   isFormInvalid() {
     let invalid = false;
@@ -110,7 +127,7 @@ export class AddressComponent implements OnInit {
         postalCode: ['', Validators.compose([Validators.required, Validators.maxLength(6), Validators.minLength(6), Validators.pattern(projectConstantsLocal.VALIDATOR_ONLYNUMBER)])],
         landMark: ['', Validators.compose([Validators.required])],
         state: ['', Validators.compose([Validators.required, Validators.pattern(projectConstantsLocal.VALIDATOR_CHARONLY)])],
-        country: ['', Validators.compose([Validators.required, Validators.pattern(projectConstantsLocal.VALIDATOR_CHARONLY)])]
+        country: ['India', Validators.compose([Validators.required, Validators.pattern(projectConstantsLocal.VALIDATOR_CHARONLY)])]
       }
     )
   }
@@ -199,6 +216,15 @@ export class AddressComponent implements OnInit {
         this.addedAddresses = address.map((element, index) => {
           return { ...element, key: index };
         });
+        if (this.pendingDeliveryAddress) {
+          const matchedPending = this.addedAddresses.find((item) => item.key === this.pendingDeliveryAddress.key);
+          this.pendingDeliveryAddress = matchedPending || this.addedAddresses[0] || null;
+        }
+        if (!this.addedAddresses.length) {
+          this.deliveryAddress = null;
+          this.isEditable = true;
+          this.closeAddressSheet();
+        }
         if (this.deliveryAddressP) {
           this.deliveryAddress = this.addedAddresses.filter(address => (
             address.firstName === this.deliveryAddressP.firstName &&
@@ -214,6 +240,8 @@ export class AddressComponent implements OnInit {
           this.deliveryAddressP = null;
         } else if (this.addedAddresses.length > 0 && !this.deliveryAddress) {
           this.deliveryAddress = this.addedAddresses[0];
+        } else if (!this.addedAddresses.length) {
+          this.isEditable = true;
         } else {
           this.addAddress();
         }
@@ -267,5 +295,44 @@ export class AddressComponent implements OnInit {
   }
   selectAddress(selectedAddress) {
     this.deliveryAddress = selectedAddress;
+  }
+
+  openAddressSheet(): void {
+    this.pendingDeliveryAddress = this.deliveryAddress;
+    this.isAddressSheetOpen = true;
+  }
+
+  closeAddressSheet(): void {
+    this.isAddressSheetOpen = false;
+  }
+
+  saveAddressSheetSelection(): void {
+    if (this.pendingDeliveryAddress) {
+      this.deliveryAddress = this.pendingDeliveryAddress;
+    }
+    this.closeAddressSheet();
+  }
+
+  addAddressFromSheet(): void {
+    this.closeAddressSheet();
+    this.addAddress();
+  }
+
+  editAddressFromSheet(addressData, index, type?): void {
+    this.closeAddressSheet();
+    this.editAddress(addressData, index, type);
+  }
+
+  deleteAddressFromSheet(address, index): void {
+    this.closeAddressSheet();
+    this.deleteAddress(address, index);
+    this.pendingDeliveryAddress = this.deliveryAddress;
+  }
+
+  scrollToAddressList() {
+    const el = document.getElementById('savedAddressList');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }
 }

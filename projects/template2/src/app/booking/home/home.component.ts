@@ -1513,7 +1513,7 @@ export class HomeComponent implements OnInit, OnDestroy{
           }
         } else if (this.bookStep === 2) {
           if (this.bookingId) {
-            _this.router.navigate([this.sharedService.getRouteID(), 'dashboard', 'bookings']);
+            _this.router.navigate([this.sharedService.getRouteID(), 'bookings']);
           } else {
             this.bookStep = 6;
             if (this.locations && this.locations.length == 1 && this.users.length === 0 && this.departments && this.departments.length === 0) {
@@ -1578,7 +1578,7 @@ export class HomeComponent implements OnInit, OnDestroy{
           }
         } else if (this.bookStep === 2) {
           if (this.bookingId) {
-            _this.router.navigate([this.sharedService.getRouteID(), 'dashboard', 'bookings']);
+            _this.router.navigate([this.sharedService.getRouteID(), 'bookings']);
           } else {
             this.bookStep = 6;
             if (this.locations && this.locations.length == 1 && this.users && this.users.length === 0 && this.departments && this.departments.length === 0) {

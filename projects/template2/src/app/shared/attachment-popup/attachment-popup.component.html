@@ -8,9 +8,9 @@
     <div class="attachment">
       <ng-container *ngIf="mediafiles.length >0">
         <ul *ngFor="let file of mediafiles;let i = index ">
-          <li>
+          <li (click)="showFile(file)">
             <img style="width:100%;" [src]="file.s3path || file.thumbPath" alt="" /><a href="javascript:void(0);"
-              (click)="showFile(file)">{{file.fileName
+              >{{file.fileName
               ?file.fileName.split('.')[0]:'image'}}-{{file.type?file.type:'file'}}</a>
           </li>
         </ul>

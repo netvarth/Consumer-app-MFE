@@ -1,9 +1,9 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ItemsCardComponent } from './items-card.component';
-import { CarouselModule } from 'ngx-owl-carousel-o';
 
 import { ButtonModule } from 'primeng/button';
+import { TooltipModule } from 'primeng/tooltip';
 
 @NgModule({
   declarations: [
@@ -11,9 +11,10 @@ import { ButtonModule } from 'primeng/button';
   ],
   imports: [
     CommonModule,
-    CarouselModule,
-    ButtonModule
+    ButtonModule,
+    TooltipModule
   ],
-  exports:[ItemsCardComponent]
+  exports:[ItemsCardComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class ItemsCardModule { }

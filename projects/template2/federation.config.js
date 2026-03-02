@@ -5,7 +5,7 @@ module.exports = withNativeFederation({
   name: 'template2',
 
   exposes: {
-    './Home': './projects/template2/src/app/home/home.module.ts',
+    './Home': './projects/template2/src/app/home/home.module.ts'
   },
 
   shared: {

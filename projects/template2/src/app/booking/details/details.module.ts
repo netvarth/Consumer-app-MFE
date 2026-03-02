@@ -1,8 +1,8 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DetailsComponent } from './details.component';
 import { RouterModule, Routes } from '@angular/router';
-import { CapitalizeFirstPipeModule, ErrrorMessageModule, I8nModule, LoadingSpinnerModule, QuestionnaireModule, ToastService } from 'jconsumer-shared';
+import { CapitalizeFirstPipeModule, ErrrorMessageModule, I8nModule, LoadingSpinnerModule, ToastService } from 'jconsumer-shared';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from "@angular/material/expansion";
 import { MatTabsModule } from "@angular/material/tabs";
@@ -18,6 +18,7 @@ import { ServiceImageComponent } from './service-image/service-image.component';
 import { MeetingInfoComponent } from './meeting-info/meeting-info.component';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
+import { QuestionnaireModule } from '../../shared/questionaire/edit/questionnaire.module';
 
 
 const routes: Routes = [
@@ -32,7 +33,7 @@ const routes: Routes = [
     MeetingInfoComponent
   ],
   imports: [
-    [RouterModule.forChild(routes)],
+    RouterModule.forChild(routes),
     MatDialogModule,
     CommonModule,
     LoadingSpinnerModule,
@@ -54,6 +55,7 @@ const routes: Routes = [
   exports: [
     DetailsComponent
   ],
-  providers:[ToastService, MessageService]
+  providers:[ToastService, MessageService],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
 })
 export class DetailsModule { }

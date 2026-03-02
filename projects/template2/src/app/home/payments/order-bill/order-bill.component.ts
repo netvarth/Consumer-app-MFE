@@ -211,16 +211,10 @@ export class OrderBillComponent implements OnInit, OnDestroy {
     }
     ngOnInit() {
         this.accountId = this.sharedService.getAccountID();
-        this.accountConfig = this.accountService.getAccountConfig();
+        this.accountConfig = this.sharedService.getAccountConfig();
         if (this.accountConfig && this.accountConfig['theme']) {
             this.theme = this.accountConfig['theme'];
         }
-        // if (this.accountService.getJson(this.account['coupon'])) {
-        //     this.couponList.JC = this.accountService.getJson(this.account['coupon']);
-        // }
-        // if (this.accountService.getJson(this.account['providerCoupon'])) {
-        //     this.couponList.OWN = this.accountService.getJson(this.account['providerCoupon']);
-        // }
         this.getInvoice(this.accountId, this.uuid, this.ynwUuid);
 
     }

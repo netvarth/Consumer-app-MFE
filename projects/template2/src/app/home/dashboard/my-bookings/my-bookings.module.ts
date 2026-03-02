@@ -13,6 +13,8 @@ import { AttachmentPopupModule } from '../../../shared/attachment-popup/attachme
 import { GalleryModule } from '../../../shared/gallery/gallery.module';
 import { AddInboxMessagesModule } from '../../../shared/add-inbox-messages/add-inbox-messages.module';
 import { WLCardModule } from '../../../shared/wl-card/wl-card.module';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTooltipModule } from '@angular/material/tooltip';
 const routes: Routes = [
   { path:'', component: MyBookingsComponent}
 ]
@@ -25,6 +27,7 @@ const routes: Routes = [
     WLCardModule,
     MatSelectModule,
     MatDialogModule,
+    MatTooltipModule,
     FormsModule,
     CapitalizeFirstPipeModule,
     FormMessageDisplayModule,
@@ -35,6 +38,7 @@ const routes: Routes = [
     I8nModule,
     AddInboxMessagesModule,
     ErrrorMessageModule,
+    MatButtonModule,
     [RouterModule.forChild(routes)]
   ],
   exports: [MyBookingsComponent]

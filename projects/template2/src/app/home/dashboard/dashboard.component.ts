@@ -174,11 +174,11 @@ export class DashboardComponent {
   }
   actionPerformTo(cstmTxt) {
     if (cstmTxt === 'My Orders') {
-      this.router.navigate([this.sharedService.getRouteID(), 'dashboard', 'orders']);
+      this.router.navigate([this.sharedService.getRouteID(), 'orders']);
     } else if (cstmTxt === 'My Payments') {
       this.paymentsClicked()
     } else if (cstmTxt === 'My Bookings') {
-      this.router.navigate([this.sharedService.getRouteID(), 'dashboard', 'bookings']);
+      this.router.navigate([this.sharedService.getRouteID(), 'bookings']);
     } else if (cstmTxt === 'My Documents') {
       this.documentClicked();
     }

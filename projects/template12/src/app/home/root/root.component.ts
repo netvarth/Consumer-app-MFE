@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+﻿import { AfterViewInit, Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -197,6 +197,7 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     this.selectedLocation = this.accountService.getActiveLocation();
     this.templateJson = this.sharedService.getTemplateJSON();
+    this.normalizeTemplateConfigForRoot();
     this.selectedCatalogs = this.templateJson?.extras?.selectedCatalogs || [];
 
     let notification = this.accountService.getJson(this.lStorageService.getitemfromLocalStorage('appNotification'));
@@ -1381,7 +1382,89 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
     return firstEntry?.item || firstEntry;
   }
 
-  // ——— HERO / CARDS / BLOG DATA ———
+  // â€”â€”â€” HERO / CARDS / BLOG DATA â€”â€”â€”
+  private normalizeTemplateConfigForRoot() {
+    if (!this.templateJson || typeof this.templateJson !== 'object') {
+      return;
+    }
+
+    const sectionKeys = ['section1', 'section2', 'section3', 'section4', 'section5'];
+    sectionKeys.forEach((key) => {
+      const section = this.templateJson?.[key];
+      if (!section || typeof section !== 'object') {
+        return;
+      }
+      if (!section.icon) {
+        section.icon = section['icon-image'] || section.iconImage || '';
+      }
+    });
+
+    const section1 = this.templateJson?.section1 || {};
+    const actions = Array.isArray(section1?.actions) ? section1.actions : [];
+    if (!actions.length) {
+      return;
+    }
+
+    const getActionList = (index: number): any[] => {
+      const block = actions[index];
+      return Array.isArray(block?.action) ? block.action : [];
+    };
+
+    const categoryHeader = actions[2] || {};
+    const preBookingHeader = actions[5] || {};
+    const newArrivalsHeader = actions[7] || {};
+
+    const heroCards = getActionList(0);
+    const categories = [...getActionList(3), ...getActionList(4)].map((item) => this.normalizeHomeCard(item));
+    const preBookingCollection = getActionList(6).map((item) => this.normalizeHomeCard(item));
+    const newArrivals = getActionList(8).map((item) => this.normalizeHomeCard(item, true));
+
+    if (!Array.isArray(section1.categories) || !section1.categories.length) {
+      section1.categories = categories;
+    }
+    if (!Array.isArray(section1.preBookingCollection) || !section1.preBookingCollection.length) {
+      section1.preBookingCollection = preBookingCollection;
+    }
+    if (!Array.isArray(section1.products) || !section1.products.length) {
+      section1.products = newArrivals;
+    }
+
+    const derivedHomeDesign: any = {
+      heroImage: heroCards?.[0]?.image || '',
+      heroImagesub: heroCards?.[1]?.image || '',
+      categoriesTitle: categoryHeader?.subTitle || categoryHeader?.title || '',
+      categoriesSubTitle: categoryHeader?.title || '',
+      categories: categories,
+      preBookingTitle: preBookingHeader?.title || '',
+      preBookingSubTitle: preBookingHeader?.subTitle || '',
+      preBookingCollection: preBookingCollection,
+      preBookingCta: 'Show More',
+      newArrivalsTitle: newArrivalsHeader?.title || '',
+      newArrivalsSubTitle: newArrivalsHeader?.subTitle || '',
+      newArrivals: newArrivals,
+      newArrivalsCta: 'View All'
+    };
+
+    const configuredHomeDesign = this.templateJson?.homeDesign || this.templateJson?.home || this.templateJson?.landingPage || {};
+    this.templateJson.homeDesign = { ...derivedHomeDesign, ...configuredHomeDesign };
+  }
+
+  private normalizeHomeCard(item: any, mapPrice = false): any {
+    if (!item || typeof item !== 'object') {
+      return item;
+    }
+    const normalized = { ...item };
+    if (!normalized.title) {
+      normalized.title = item?.titleCenter || item?.name || '';
+    }
+    if (!normalized.subTitle && item?.description) {
+      normalized.subTitle = item.description;
+    }
+    if (mapPrice && !normalized.price) {
+      normalized.price = item?.mrp || '';
+    }
+    return normalized;
+  }
   private hydrateTemplateContent() {
     this.heroSection = this.templateJson?.heroSection || null;
     this.homeDesign = this.templateJson?.homeDesign || this.templateJson?.home || this.templateJson?.landingPage || {};
@@ -1896,3 +1979,4 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 }
+

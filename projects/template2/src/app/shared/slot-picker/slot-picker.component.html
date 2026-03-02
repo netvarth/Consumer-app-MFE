@@ -1,40 +1,53 @@
-<div class="pb-0 px-auto mb-2 font-weight-bold text-left">
-  <div class="clearfix"></div>
-</div>
-<div *ngIf="slots && slots.length > 0 && !mode" class="freeslots token m-1 mt-2">
-  <mat-chip-list>
-    <mat-chip *ngFor="let slot of slots, let i= index" class="text-center mb-2 me-2" 
-    [class.selected] = "selectedSlot && (slot.id === selectedSlot.id)"
-      [selected]="selectedSlot && (slot.id === selectedSlot.id)" (click)="slotPicked(slot)">
-      <span>
-        {{slot.queueSchedule.timeSlots[0]['sTime'] + ' - ' + slot.queueSchedule.timeSlots[0]['eTime']}}
-      </span>
-    </mat-chip>
-  </mat-chip-list>
-</div>
-<div *ngIf="slots && slots.length > 0 && mode" class="freeslots m-1 my-3" [ngClass]="mode?mode:''">
-  <mat-chip-list selectable [multiple]="multipleSelection">
-    <div *ngIf="!showMoreAvailableSlots" class="p-2 matChipList">
-      <mat-chip *ngFor="let slot of slots | slice:0:12" class="text-center mb-2 me-2" #c="matChip"
-        [selected]="selectedSlot && selectedSlot.indexOf(slot)!=-1" [disabled]="!slot.active"
-        [class.selected] = "selectedSlot && selectedSlot.indexOf(slot)!=-1"
-        (click)="slot.active && processSlots(slot);">
-        <span *ngIf="slot.displayTime" class="mx-auto">{{slot.displayTime}}</span>
-      </mat-chip>
+<div class="slot-picker-root" [ngClass]="theme ? [theme] : []">
+  <div class="pb-0 px-auto mb-2 font-weight-bold text-left" *ngIf="variant !== 'pill'">
+    <div class="col-md-12 col-12 col-sm-12">
+      <h6 class="custom text-dark"><b>{{'Choose Time' | translate}}</b></h6>
     </div>
-    <div *ngIf="showMoreAvailableSlots" [class.internal-scroll]="showMoreAvailableSlots">
-      <mat-chip *ngFor="let slot of slots" class="text-center mb-2 me-2" #c="matChip"
-        [selected]="selectedSlot && selectedSlot.indexOf(slot)!==-1" [disabled]="!slot.active"
-        (click)="slot.active && processSlots(slot);" [class.selected] = "selectedSlot && selectedSlot.indexOf(slot)!=-1">
-        <span class="mx-auto" *ngIf="slot.displayTime">{{slot.displayTime}}</span>
+    <div class="clearfix"></div>
+  </div>
+  <div *ngIf="slots && slots.length > 0 && !mode" class="freeslots token m-1">
+    <mat-chip-list>
+      <mat-chip *ngFor="let slot of slots, let i= index" class="text-center mx-auto"
+        [selected]="selectedSlot && (slot.id === selectedSlot.id)" [class.selected]="selectedSlot && (slot.id === selectedSlot.id)" (click)="slotPicked(slot)">
+        <span >
+          {{slot.queueSchedule.timeSlots[0]['sTime'] + ' - ' + slot.queueSchedule.timeSlots[0]['eTime']}}
+        </span>
       </mat-chip>
-    </div>
-  </mat-chip-list>
-  <div *ngIf="smallDevice">
-    <div class="text-center mx-auto my-3" *ngIf="slots && slots.length > 12">
-      <button type="button" id="btn_showmoreslots" class="more_btn text-capitalize px-2 py-1" (click)="showMoreTimeSlots()">
-        {{'Show' | translate}} <span *ngIf="!showMoreAvailableSlots">{{'More' | translate}}</span>
-        <span *ngIf="showMoreAvailableSlots">{{'Less' | translate}}</span>
-      </button>
+    </mat-chip-list>
+  </div>
+
+  <div *ngIf="slots && slots.length > 0 && mode" class="freeslots m-1 my-3"
+    [ngClass]="[mode?mode:'', variant === 'pill' ? 'slot-picker-pill' : '']">
+    <mat-chip-list selectable [multiple]="multipleSelection">
+        <div *ngIf="!showMoreAvailableSlots" class="col-md-12 col-lg-12 col-sm-12 col-12 text-center">
+            <mat-chip *ngFor="let slot of slots | slice:0:12" class="text-center" #c="matChip"
+            [selected]="selectedSlot && selectedSlot.indexOf(slot)!=-1"
+            [class.selected]="selectedSlot && selectedSlot.indexOf(slot)!=-1"  [disabled]="!slot.active"
+                (click)="slot.active && processSlots(slot);" >
+                <span class="mx-auto">{{slot.displayTime}}</span>
+            </mat-chip>
+        </div>
+        <div *ngIf="showMoreAvailableSlots" [class.internal-scroll] = "showMoreAvailableSlots">
+            <mat-chip *ngFor="let slot of slots" class="text-center" #c="matChip"
+            [selected]="selectedSlot && selectedSlot.indexOf(slot)!==-1"
+            [class.selected]="selectedSlot && selectedSlot.indexOf(slot)!=-1"  [disabled]="!slot.active"
+                (click)="slot.active && processSlots(slot);">
+                <span class="mx-auto">{{slot.displayTime}}</span>
+            </mat-chip>
+        </div>
+    </mat-chip-list>
+    <div class="mb-2"
+       [ngClass]="{'text-start': variant === 'pill', 'text-center': variant !== 'pill', 'mx-auto': variant !== 'pill'}"
+       *ngIf="slots && slots.length > 12">
+        <button type="button" class="more_btn"
+            [ngClass]="{'text-capitalize px-2 py-1': variant !== 'pill'}"
+            [attr.style]="variant === 'pill' ? 'background: transparent !important; border: none !important; box-shadow: none !important; color: #fd7029 !important;' : null"
+            (click)="showMoreTimeSlots()">
+            <span *ngIf="variant !== 'pill' && !showMoreAvailableSlots">{{'Show More' | translate}}</span>
+            <span *ngIf="variant !== 'pill' && showMoreAvailableSlots">{{'Show Less' | translate}}</span>
+            <span *ngIf="variant === 'pill' && !showMoreAvailableSlots">View All Slots</span>
+            <span *ngIf="variant === 'pill' && showMoreAvailableSlots">{{'Show Less' | translate}}</span>
+        </button>
     </div>
   </div>
+</div>

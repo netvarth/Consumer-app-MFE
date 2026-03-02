@@ -35,7 +35,7 @@ export class DatePaginationComponent implements OnInit, OnChanges {
     if (this.paymentRequestId) {
       this.minDate = new Date(this.selected_date);
     } else {
-      this.minDate = new Date();
+       this.minDate = new Date(this.availableDates[0]);
     }
     this.maxDate = new Date((this.minDate.getFullYear() + 4), 12, 31);
     this.minDate = this.moment(this.minDate).format("YYYY-MM-DD");
