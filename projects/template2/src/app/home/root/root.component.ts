@@ -1961,7 +1961,16 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     }));
   }
-  gotoItems(){
+  gotoItems(link?: string) {
+    const target = (link || '').toString().trim();
+    if (target) {
+      if (target.startsWith('http')) {
+        window.open(target, '_blank');
+        return;
+      }
+      this.router.navigateByUrl(target.startsWith('/') ? target : `/${target}`);
+      return;
+    }
     this.router.navigate([this.sharedService.getRouteID(), 'items']);
   }
   onItemSearchSelected(event: any) {

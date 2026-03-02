@@ -7,9 +7,10 @@ import { TableModule } from 'primeng/table';
 import { FormsModule } from '@angular/forms';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { ConfirmBoxModule, CurrencyService, ErrrorMessageModule } from 'jconsumer-shared';
-import { ApplyCouponModule } from '../../home/apply-coupon/apply-coupon.module';
 import { AuthenticationModule } from '../../shared/authentication/authentication.module';
 import { TabMenuModule } from 'primeng/tabmenu';
+import { ItemsCardModule } from '../../home/items-card/items-card.module';
+import { ApplyCouponModule } from '../../shared/apply-coupon/apply-coupon.module';
 
 const routes:Routes = [
   { path: '', component:CartComponent}
@@ -28,6 +29,7 @@ const routes:Routes = [
     AuthenticationModule,
     ConfirmBoxModule,
     ApplyCouponModule,
+    ItemsCardModule,
     ErrrorMessageModule,
     TabMenuModule,
     [RouterModule.forChild(routes)]

@@ -8,7 +8,6 @@ import {
   CurrencyService, 
   ErrrorMessageModule, 
   FormMessageDisplayModule,
-  PaymentModesModule,
   PaymentsModule,
   PhoneInputModule,
 } from 'jconsumer-shared';
@@ -22,6 +21,8 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { TimelineModule } from 'primeng/timeline';
 import { AddressComponent } from './address/address.component';
 import { ApplyCouponModule } from '../../home/apply-coupon/apply-coupon.module';
+import { PaymentModesModule as PaymentModesNewModule } from '../../shared/payment-modes-new/payment-modes.module';
+import { PaymentModesModule as PaymentModesLegacyModule } from '../../shared/payment-modes/payment-modes.module';
 
 const routes: Routes = [
   {path: '', component: CheckoutComponent}
@@ -43,7 +44,8 @@ const routes: Routes = [
     InputTextModule,
     InputTextareaModule,
     FormMessageDisplayModule,
-    PaymentModesModule, 
+    PaymentModesNewModule,
+    PaymentModesLegacyModule,
     DropdownModule,
     InputNumberModule,
     ConfirmBoxModule,

@@ -8,7 +8,7 @@
     </app-item-search>
   </section>
   <section class="hero-shell">
-    <div class="hero-media" (click)="gotoItems()">
+    <div class="hero-media" (click)="gotoItems(homeDesign?.link)">
       <img [src]="resolveAsset(homeDesign.heroImage )" alt="Hero banner" loading="eager" decoding="async" />
       <img [src]="resolveAsset(homeDesign.heroImagesub )" alt="Hero sub banner" loading="eager" decoding="async" />
     </div>

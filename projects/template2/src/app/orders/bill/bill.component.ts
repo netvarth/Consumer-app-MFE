@@ -5,6 +5,8 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { ConsumerService, DateFormatPipe, Messages, OrderService, PaytmService, projectConstantsLocal, RazorpayService, SharedService, ToastService, WordProcessor } from 'jconsumer-shared';
 import { CouponNotesComponent } from '../../shared/coupon-notes/coupon-notes.component';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 
 @Component({
     selector: 'app-bill',
@@ -132,6 +134,7 @@ export class BillComponent implements OnInit, OnDestroy {
     desktopDeviceDisplay = false;
     storeLogo: any;
     ynwUuid: any;
+    fileDownloading = false;
     constructor(
         public _sanitizer: DomSanitizer,
         private wordProcessor: WordProcessor,
@@ -941,6 +944,161 @@ export class BillComponent implements OnInit, OnDestroy {
         } else {
             printWindow.close();
         }
+    }
+
+    async downloadMe() {
+        if (this.fileDownloading) {
+            return;
+        }
+        this.fileDownloading = true;
+        await new Promise(resolve => setTimeout(resolve, 100));
+        this.cdRef.detectChanges();
+
+        const doc: Document = (this.document as Document) || document;
+        const htmlContainer = (doc.getElementById('receipt') || doc.getElementById('payment-receipt')) as HTMLElement | null;
+        if (!htmlContainer) {
+            this.toastService.showError('Could not generate PDF');
+            this.fileDownloading = false;
+            return;
+        }
+
+        const prevVisibility = htmlContainer.style.visibility;
+        htmlContainer.style.visibility = 'visible';
+
+        try {
+            const source = htmlContainer;
+            const prevOverflow = source.style.overflow;
+            const prevWidth = source.style.width;
+            const prevMaxWidth = source.style.maxWidth;
+            source.style.overflow = 'visible';
+            await this.waitForReceiptImages(source);
+
+            const bounds = source.getBoundingClientRect();
+            const contentWidth = Math.max(source.scrollWidth || 0, Math.floor(bounds.width) || 0);
+            const contentHeight = Math.max(source.scrollHeight || 0, Math.floor(bounds.height) || 0);
+            const baseScale = Math.min(2, Math.max(1, window.devicePixelRatio || 1));
+            const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+            const maxPixels = isIOS ? 5_000_000 : 8_000_000;
+            const safeScale = Math.max(
+                0.7,
+                Math.min(baseScale, Math.sqrt(maxPixels / Math.max(1, contentWidth * contentHeight)))
+            );
+            const options = {
+                scale: safeScale,
+                useCORS: true,
+                backgroundColor: '#FFFFFF',
+                width: contentWidth,
+                height: contentHeight,
+                windowWidth: contentWidth,
+                windowHeight: contentHeight,
+                scrollX: 0,
+                scrollY: 0,
+                imageTimeout: 15000,
+                onclone: (clonedDoc: Document) => {
+                    const clonedReceipt = clonedDoc.getElementById('receipt') || clonedDoc.getElementById('payment-receipt');
+                    if (!clonedReceipt) {
+                        return;
+                    }
+                    const clonedImages = Array.from(clonedReceipt.querySelectorAll('img'));
+                    clonedImages.forEach((img: HTMLImageElement) => {
+                        img.setAttribute('crossorigin', 'anonymous');
+                        img.setAttribute('referrerpolicy', 'no-referrer');
+                    });
+                }
+            };
+
+            let canvas: HTMLCanvasElement;
+            try {
+                canvas = await html2canvas(source, options);
+            } finally {
+                source.style.overflow = prevOverflow;
+                source.style.width = prevWidth;
+                source.style.maxWidth = prevMaxWidth;
+            }
+
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
+            const marginMm = 8;
+            const usableWidthMm = pdfWidth - marginMm * 2;
+            const usableHeightMm = pdfHeight - marginMm * 2;
+            const pxPerMm = canvas.width / usableWidthMm;
+            const pageHeightPx = Math.max(1, Math.floor(usableHeightMm * pxPerMm));
+
+            const pageCanvas = doc.createElement('canvas');
+            const pageCtx = pageCanvas.getContext('2d', { willReadFrequently: false });
+            if (!pageCtx) {
+                throw new Error('Could not prepare PDF canvas');
+            }
+
+            pageCanvas.width = canvas.width;
+            let yOffset = 0;
+            let pageIndex = 0;
+            const jpegQuality = isIOS ? 0.72 : 0.8;
+
+            while (yOffset < canvas.height) {
+                const sliceHeight = Math.min(pageHeightPx, canvas.height - yOffset);
+                pageCanvas.height = sliceHeight;
+                pageCtx.fillStyle = '#ffffff';
+                pageCtx.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
+                pageCtx.drawImage(
+                    canvas,
+                    0, yOffset, canvas.width, sliceHeight,
+                    0, 0, pageCanvas.width, pageCanvas.height
+                );
+
+                const imgData = pageCanvas.toDataURL('image/jpeg', jpegQuality);
+                const sliceHeightMm = sliceHeight / pxPerMm;
+                if (pageIndex > 0) {
+                    pdf.addPage();
+                }
+                pdf.addImage(imgData, 'JPEG', marginMm, marginMm, usableWidthMm, sliceHeightMm, undefined, 'FAST');
+
+                yOffset += sliceHeight;
+                pageIndex++;
+            }
+
+            pdf.save(this.getInvoiceFileName());
+            pageCanvas.width = 0;
+            pageCanvas.height = 0;
+            canvas.width = 0;
+            canvas.height = 0;
+        } catch (error) {
+            this.toastService.showError('Could not generate PDF');
+        } finally {
+            this.fileDownloading = false;
+            htmlContainer.style.visibility = prevVisibility;
+        }
+    }
+
+    private getInvoiceFileName(): string {
+        const identifier = this.invoiceDetailsById?.invoiceNum || this.billnumber;
+        return identifier ? `Invoice-${identifier}.pdf` : 'Invoice.pdf';
+    }
+
+    private async waitForReceiptImages(container: HTMLElement, timeoutMs = 6000): Promise<void> {
+        const images = Array.from(container.querySelectorAll('img')) as HTMLImageElement[];
+        if (!images.length) {
+            return;
+        }
+        await Promise.all(images.map(img => this.waitForImage(img, timeoutMs)));
+    }
+
+    private waitForImage(img: HTMLImageElement, timeoutMs: number): Promise<void> {
+        if (img.complete) {
+            return Promise.resolve();
+        }
+        return new Promise(resolve => {
+            const onDone = () => {
+                img.removeEventListener('load', onDone);
+                img.removeEventListener('error', onDone);
+                clearTimeout(timer);
+                resolve();
+            };
+            const timer = window.setTimeout(onDone, timeoutMs);
+            img.addEventListener('load', onDone, { once: true });
+            img.addEventListener('error', onDone, { once: true });
+        });
     }
     /**
      * Cash Button Pressed
