@@ -297,9 +297,8 @@ export class ConfirmPageComponent implements OnInit, OnDestroy {
   }
   ngOnInit() {
     this.accountConfig = this.sharedService.getAccountConfig();
-    if (this.accountConfig && this.accountConfig['theme']) {
-      this.theme = this.accountConfig['theme'];
-    }
+    const config = this.sharedService.getTemplateJSON();
+    this.theme = config?.theme || this.accountConfig?.theme || this.theme;
     this.wordProcessor.setTerminologies(this.sharedService.getTerminologies());
     this.provider_label = this.wordProcessor.getTerminologyTerm('provider');
     this.accountID = this.sharedService.getAccountID();

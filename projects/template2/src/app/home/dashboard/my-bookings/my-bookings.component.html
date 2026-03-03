@@ -82,7 +82,7 @@
                 <mat-grid-tile *ngFor="let booking of apptRequests;" style="border-radius:15px;"
                   (click)="showBookingDetails(booking, 'request')">
                   <ng-container>
-                    <app-appt-card [booking]="booking" type="request" [extras]="extras"
+                    <app-appt-card [booking]="booking" type="request" [extras]="extras" [theme]="theme"
                       (actionPerformed)="cardClicked($event)"></app-appt-card>
                   </ng-container>
                 </mat-grid-tile>
@@ -99,7 +99,7 @@
                   (click)="showBookingDetails(booking, 'request')">
                   <!-- Appointments -->
                   <ng-container>
-                    <app-appt-card [booking]="booking" type="request" [extras]="extras"
+                    <app-appt-card [booking]="booking" type="request" [extras]="extras" [theme]="theme"
                       (actionPerformed)="cardClicked($event)"></app-appt-card>
                   </ng-container>
                 </mat-grid-tile>
@@ -134,7 +134,7 @@
                   (click)="showBookingDetails(booking, 'today')">
                   <!-- Appointments -->
                   <ng-container *ngIf="booking.apptStatus">
-                    <app-appt-card [booking]="booking" type="today" [extras]="extras"
+                    <app-appt-card [booking]="booking" type="today" [extras]="extras" [theme]="theme"
                       (actionPerformed)="cardClicked($event)"></app-appt-card>
                   </ng-container>
                   <!-- Checkins -->
@@ -158,7 +158,7 @@
                   (click)="showBookingDetails(booking, 'today')">
                   <!-- Appointments -->
                   <ng-container *ngIf="booking.apptStatus">
-                    <app-appt-card [booking]="booking" type="today" [extras]="extras"
+                    <app-appt-card [booking]="booking" type="today" [extras]="extras" [theme]="theme"
                       (actionPerformed)="cardClicked($event)"></app-appt-card>
                   </ng-container>
                   <!-- Checkins -->
@@ -187,7 +187,7 @@
                   (click)="showBookingDetails(booking, 'future')">
                   <!-- Appointments -->
                   <ng-container *ngIf="booking.apptStatus">
-                    <app-appt-card [booking]="booking" type="future" [extras]="extras"
+                    <app-appt-card [booking]="booking" type="future" [extras]="extras" [theme]="theme"
                       (actionPerformed)="cardClicked($event)"></app-appt-card>
                   </ng-container>
                   <!-- Checkins -->
@@ -210,7 +210,7 @@
                   (click)="showBookingDetails(booking, 'future')">
                   <!-- Appointments -->
                   <ng-container *ngIf="booking.apptStatus">
-                    <app-appt-card type="future" [booking]="booking" [extras]="extras"
+                    <app-appt-card type="future" [booking]="booking" [extras]="extras" [theme]="theme"
                       (actionPerformed)="cardClicked($event)"></app-appt-card>
                   </ng-container>
                   <!-- Checkins -->

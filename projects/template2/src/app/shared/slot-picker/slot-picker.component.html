@@ -41,7 +41,7 @@
        *ngIf="slots && slots.length > 12">
         <button type="button" class="more_btn"
             [ngClass]="{'text-capitalize px-2 py-1': variant !== 'pill'}"
-            [attr.style]="variant === 'pill' ? 'background: transparent !important; border: none !important; box-shadow: none !important; color: #fd7029 !important;' : null"
+            [attr.style]="variant === 'pill' ? 'background: transparent !important; border: none !important; box-shadow: none !important; color: var(--template12-accent-color, #fd7029) !important;' : null"
             (click)="showMoreTimeSlots()">
             <span *ngIf="variant !== 'pill' && !showMoreAvailableSlots">{{'Show More' | translate}}</span>
             <span *ngIf="variant !== 'pill' && showMoreAvailableSlots">{{'Show Less' | translate}}</span>

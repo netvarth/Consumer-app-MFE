@@ -325,6 +325,9 @@ export class HomeComponent implements OnInit, OnDestroy{
     _this.onResize();
     this.serverDate = this.lStorageService.getitemfromLocalStorage('sysdate');
     this.account = this.sharedService.getAccountInfo();
+    const accountConfig = this.sharedService.getAccountConfig();
+    const config = this.sharedService.getTemplateJSON();
+    this.theme = config?.theme || accountConfig?.theme || this.theme;
     console.log("Terminologies", this.sharedService.getTerminologies());
     
     this.wordProcessor.setTerminologies(this.sharedService.getTerminologies());

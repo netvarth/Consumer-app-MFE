@@ -97,10 +97,10 @@
             && bookingInfo.service?.serviceType === 'virtualService'
             && (bookingInfo.service?.virtualCallingModes?.[0]?.callingMode === 'GoogleMeet'
               || bookingInfo.service?.virtualCallingModes?.[0]?.callingMode === 'Zoom')">
-          <a class="cta-button" id="btnJoinVideo" *ngIf="meetingDetails?.joiningUrl"
+          <a class="cta-button"  id="btnJoinVideo" *ngIf="meetingDetails?.joiningUrl"
             [href]="meetingDetails.joiningUrl" target="_blank">
-            <i class="fa fa-video-camera" aria-hidden="true"></i>
-            <span>{{'Join Video Consultation' | translate}}</span>
+            <i class="fa fa-video-camera" style="color: #ffffff;" aria-hidden="true"></i>
+            <span style="color: #ffffff;">{{'Join Video Consultation' | translate}}</span>
           </a>
         </div>
 
@@ -108,8 +108,8 @@
             && bookingInfo.service?.serviceType === 'virtualService'
             && bookingInfo.service?.virtualCallingModes?.[0]?.callingMode === 'VideoCall'">
           <button type="button" class="cta-button" id="btnJoinJaldeeVideo" (click)="joinMeeting()">
-            <i class="fa fa-video-camera" aria-hidden="true"></i>
-            <span>{{'Join Video Consultation' | translate}}</span>
+            <i class="fa fa-video-camera" style="color: #ffffff;" aria-hidden="true"></i>
+            <span style="color: #ffffff;">{{'Join Video Consultation' | translate}}</span>
           </button>
         </div>
       </ng-container>

@@ -177,7 +177,7 @@
     <div class="w-100 p-2 slotPicker" *ngIf="allSlots && allSlots.length > 0 && selectedService['multipleSelection']">
       <app-slot-picker (slotSelected)="slotSelected($event)" [selectedSlot]="selectedSlots" [slots]="allSlots"
         [mode]="'appt'" [multiple]="selectedService['multipleSelection']"
-        [criteria]="selectedService.showOnlyAvailableSlots">
+        [criteria]="selectedService.showOnlyAvailableSlots" [theme]="theme">
       </app-slot-picker>
     </div>
   </ng-container>
@@ -199,7 +199,8 @@
     </div>
   </div>
   <div class="w-100 p-2 slotPicker" *ngIf="queuejson && queuejson.length > 0">
-    <app-slot-picker (slotSelected)="qSelected($event)" [slots]="queuejson" [selectedSlot]="queuejson[0]">
+    <app-slot-picker (slotSelected)="qSelected($event)" [slots]="queuejson" [selectedSlot]="queuejson[0]"
+      [theme]="theme">
     </app-slot-picker>
   </div>
   <div class="w-100 p-2 slotdiv red mt-3 text-center noAvailable"

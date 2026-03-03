@@ -1,4 +1,4 @@
-<section class="confirm-appointment-page container no-padding confirm-aptckn no-padding-small" [ngClass]="theme ? theme : ''">
+<section class="confirm-appointment-page container no-padding confirm-aptckn no-padding-small" [ngClass]="theme">
   <div class="confirm-appointment-wrapper" *ngIf="!apiloading">
     <article class="confirm-appointment-card" *ngIf="appointment && appointment.apptStatus !== 'Requested'">
       <div id="scriptContainer"></div>

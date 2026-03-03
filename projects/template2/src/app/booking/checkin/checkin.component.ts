@@ -429,9 +429,8 @@ export class CheckinComponent implements OnInit, OnDestroy {
         this.account = this.sharedService.getAccountInfo();
         this.settingsjson = this.sharedService.getJson(this.account['settings']);
         this.accountConfig = this.sharedService.getAccountConfig();
-        if (this.accountConfig && this.accountConfig['theme']) {
-            this.theme = this.accountConfig['theme'];
-        }
+        const config = this.sharedService.getTemplateJSON();
+        this.theme = config?.theme || this.accountConfig?.theme || this.theme;
         if (this.accountConfig && this.accountConfig['bookingPolicy']) {
             this.bookingPolicy = true;
             if (this.accountConfig['bookingPolicyContent']) {

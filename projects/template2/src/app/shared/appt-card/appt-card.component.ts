@@ -13,6 +13,7 @@ export class ApptCardComponent implements OnInit, OnChanges {
   @Input() booking;
   @Input() type;
   @Input() extras;
+  @Input() theme: string | null = null;
   @Output() actionPerformed = new EventEmitter<any>();
   @Input() smallDevice;
   @Input() history;

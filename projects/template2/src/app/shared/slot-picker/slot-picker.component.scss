@@ -113,15 +113,15 @@
 
  .slot-picker-pill mat-chip.selected,
  .slot-picker-pill mat-chip.mat-chip-selected {
-  background: rgb(253 112 41 / 14%) !important;
-  border-color: #fd7029 !important;
+  background: color-mix(in srgb, var(--template12-accent-color, #fd7029) 14%, #ffffff) !important;
+  border-color: var(--template12-accent-color, #fd7029) !important;
 
 }
 :host ::ng-deep {
   .slot-picker-pill mat-chip.selected .mdc-evolution-chip__text-label,
   .slot-picker-pill mat-chip.mat-chip-selected .mdc-evolution-chip__text-label
   {
-      color: #fd7029 !important;
+      color: var(--template12-accent-color, #fd7029) !important;
   }
 }
 

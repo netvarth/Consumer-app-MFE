@@ -107,7 +107,7 @@
     color: #ffffff;
 }
 .history-card__header.appointment {
-    background: linear-gradient(45deg, #f57737 0%, #bb3f00 100%);
+    background: linear-gradient(45deg, var(--template12-accent-color, #f57737) 0%, #765B50 100%);
 }
 
 .history-card__header.waitlist {

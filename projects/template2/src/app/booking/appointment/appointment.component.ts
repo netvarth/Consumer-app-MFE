@@ -328,9 +328,8 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
         this.accountConfig = this.sharedService.getAccountConfig();
         this.selectedLocation = this.accountService.getActiveLocation();
         this.lStorageService.setitemonLocalStorage('c-location', this.selectedLocation.id);
-        if (this.accountConfig && this.accountConfig['theme']) {
-            this.theme = this.accountConfig['theme'];
-        }
+        const config = this.sharedService.getTemplateJSON();
+        this.theme = config?.theme || this.accountConfig?.theme || this.theme;
         if (this.accountConfig && this.accountConfig['bookingPolicy']) {
             this.bookingPolicy = true;
             if (this.accountConfig['bookingPolicyContent']) {
