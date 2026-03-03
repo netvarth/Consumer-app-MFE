@@ -237,11 +237,11 @@
                         <div class="d-flex gap-2">
                           <div class="">
                             <img *ngIf="order.deliveryType=='STORE_PICKUP'" class="home_delivery"
-                              src="{{cdnPath}}assets/images/order/Storepickup.svg" [matTooltip]="'Store Pickup'" />
+                              src="{{cdnPath}}assets/images/rx-order/Storepickup.svg" [matTooltip]="'Store Pickup'" />
                             <img *ngIf="order.deliveryType=='HOME_DELIVERY'" class="store_pickup"
-                              src="{{cdnPath}}assets/images/order/Delivery.svg" [matTooltip]="'Home Delivery'" />
+                              src="{{cdnPath}}assets/images/rx-order/Delivery.svg" [matTooltip]="'Home Delivery'" />
                             <img *ngIf="order.deliveryType!='STORE_PICKUP' && order.deliveryType!='HOME_DELIVERY'"
-                              class="store_pickup" src="{{cdnPath}}assets/images/order/e-delivery.png"
+                              class="store_pickup" src="{{cdnPath}}assets/images/rx-order/e-delivery.png"
                               [matTooltip]="'Electronic Delivery'" />
                           </div>
                           <div>

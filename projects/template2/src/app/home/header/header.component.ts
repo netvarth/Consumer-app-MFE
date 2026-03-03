@@ -448,13 +448,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
       return normalizedLink;
     }
     if (normalizedLink === 'dashboard' || normalizedLink === 'bookings') {
-      return 'orders';
+      return 'dashboard';
     }
     if (normalizedLink.endsWith('/dashboard')) {
-      return normalizedLink.replace(/\/dashboard$/, '/orders');
+      return normalizedLink;
     }
     if (normalizedLink.endsWith('/bookings')) {
-      return normalizedLink.replace(/\/bookings$/, '/orders');
+      return normalizedLink.replace(/\/bookings$/, '/dashboard');
     }
     return normalizedLink;
   }

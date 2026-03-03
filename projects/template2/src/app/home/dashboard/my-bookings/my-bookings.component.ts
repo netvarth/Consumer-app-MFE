@@ -196,9 +196,8 @@ export class MyBookingsComponent implements OnInit, OnDestroy {
     public _sanitizer: DomSanitizer) {
       this.cdnPath = this.sharedService.getCDNPath();
       this.ordrIconUrl = `${this.cdnPath}customapp/assets/images/shopping-cart-of-checkered-design.svg`;
-    if (this.lStorageService.getitemfromLocalStorage('onlineOrder')) {
-      this.onlineOrder = this.lStorageService.getitemfromLocalStorage('onlineOrder');
-    }
+    const storedOnlineOrder = this.parseBoolean(this.lStorageService.getitemfromLocalStorage('onlineOrder'));
+    this.onlineOrder = storedOnlineOrder !== null ? storedOnlineOrder : false;
     if (this.lStorageService.getitemfromLocalStorage('partner')) {
       this.isPartnerLogin = this.lStorageService.getitemfromLocalStorage('partner')
     }
@@ -323,6 +322,7 @@ export class MyBookingsComponent implements OnInit, OnDestroy {
       this.getCallbackRequestList();
       this.getCallbackRequestHistoryList();
     }
+    this.resolveOnlineOrderAvailability();
     this.restoreDashboardPreference();
     _this.initConsumer();
     this.subs.add(this.galleryService.getMessage().subscribe(input => {
@@ -369,6 +369,36 @@ export class MyBookingsComponent implements OnInit, OnDestroy {
     } else if (wantsBookings && (this.enabledWaitlist || this.enableAppt) && this.showOrder) {
       this.showBookings();
     }
+  }
+
+  private parseBoolean(value: any): boolean | null {
+    if (value === true || value === 'true') {
+      return true;
+    }
+    if (value === false || value === 'false') {
+      return false;
+    }
+    return null;
+  }
+
+  private resolveOnlineOrderAvailability() {
+    const storedOnlineOrder = this.parseBoolean(this.lStorageService.getitemfromLocalStorage('onlineOrder'));
+    if (storedOnlineOrder !== null) {
+      this.onlineOrder = storedOnlineOrder;
+      return;
+    }
+    const filter = {
+      'accountId-eq': this.accountId,
+      'onlineOrder-eq': true,
+      'status-eq': 'Active'
+    };
+    this.orderService.getStores(filter).subscribe((stores: any) => {
+      this.onlineOrder = Array.isArray(stores) && stores.length > 0;
+      this.lStorageService.setitemonLocalStorage('onlineOrder', this.onlineOrder);
+      this.restoreDashboardPreference();
+    }, () => {
+      this.onlineOrder = false;
+    });
   }
   getApptRequests() {
     this.loading = true;
@@ -1224,7 +1254,7 @@ export class MyBookingsComponent implements OnInit, OnDestroy {
     const navigationExtras: NavigationExtras = {
       queryParams: queryParams
     };
-    this.router.navigate([this.customId, 'orderdetails'], navigationExtras);
+    this.router.navigate([this.sharedService.getRouteID(), 'order', order.uid], navigationExtras);
     this.subscriptionService.sendMessage({ ttype: 'hideItemSearch', value: 0 });
   }
   setOrderStatus(original) {
@@ -1239,7 +1269,11 @@ export class MyBookingsComponent implements OnInit, OnDestroy {
       console.log("orderData", orderData)
       this.createCart(this.orderData).then(data => {
         console.log("data", data)
-        this.router.navigate([this.sharedService.getRouteID(), 'cart'])
+        if (data) {
+          this.router.navigate([this.sharedService.getRouteID(), 'order', 'cart']);
+        } else {
+          this.api_loading = false;
+        }
       })
     },
       error => {

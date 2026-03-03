@@ -96,9 +96,13 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
   visibleNewArrivals: any[] = [];
   customerReviews: any[] = [];
   visibleCustomerReviews: any[] = [];
+  heroSlides: any[] = [];
+  essentials: any[] = [];
+  visibleEssentials: any[] = [];
   socialLinks: any[] = [];
   footerColumns: any[] = [];
   selectedCatalogs: any[] = [];
+  activeHeroIndex = 0;
   activeReviewIndex = 0;
   activeReelIndex = 0;
   readonly reelsBatchSize = 4;
@@ -1413,11 +1417,13 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
     const categoryHeader = actions[2] || {};
     const preBookingHeader = actions[5] || {};
     const newArrivalsHeader = actions[7] || {};
+    const essentialsHeader = actions[9] || {};
 
     const heroCards = getActionList(0);
     const categories = [...getActionList(3), ...getActionList(4)].map((item) => this.normalizeHomeCard(item));
     const preBookingCollection = getActionList(6).map((item) => this.normalizeHomeCard(item));
     const newArrivals = getActionList(8).map((item) => this.normalizeHomeCard(item, true));
+    const essentials = [...getActionList(10), ...getActionList(11)].map((item) => this.normalizeHomeCard(item));
 
     if (!Array.isArray(section1.categories) || !section1.categories.length) {
       section1.categories = categories;
@@ -1432,6 +1438,7 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
     const derivedHomeDesign: any = {
       heroImage: heroCards?.[0]?.image || '',
       heroImagesub: heroCards?.[1]?.image || '',
+      heroSlides: heroCards.map((item) => this.normalizeHomeCard(item)),
       categoriesTitle: categoryHeader?.subTitle || categoryHeader?.title || '',
       categoriesSubTitle: categoryHeader?.title || '',
       categories: categories,
@@ -1442,7 +1449,10 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
       newArrivalsTitle: newArrivalsHeader?.title || '',
       newArrivalsSubTitle: newArrivalsHeader?.subTitle || '',
       newArrivals: newArrivals,
-      newArrivalsCta: 'View All'
+      newArrivalsCta: 'View All',
+      essentialsTitle: essentialsHeader?.title || '',
+      essentialsSubTitle: essentialsHeader?.subTitle || '',
+      essentials: essentials
     };
 
     const configuredHomeDesign = this.templateJson?.homeDesign || this.templateJson?.home || this.templateJson?.landingPage || {};
@@ -1468,6 +1478,16 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
   private hydrateTemplateContent() {
     this.heroSection = this.templateJson?.heroSection || null;
     this.homeDesign = this.templateJson?.homeDesign || this.templateJson?.home || this.templateJson?.landingPage || {};
+    this.heroSlides = this.getArrayWithFallback(
+      this.homeDesign?.heroSlides,
+      this.homeDesign?.hero,
+      this.homeDesign?.banners
+    );
+    if (!this.heroSlides.length) {
+      this.heroSlides = [this.homeDesign?.heroImage, this.homeDesign?.heroImagesub]
+        .filter(Boolean)
+        .map((image: string) => ({ image }));
+    }
 
     const section1 = this.templateJson?.section1 || {};
     const comingSoon = section1?.comingSoon || {};
@@ -1502,6 +1522,11 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
       section1?.products
     );
     this.visibleNewArrivals = this.newArrivals.slice(0, this.listBatchSize);
+    this.essentials = this.getArrayWithFallback(
+      this.homeDesign?.essentials,
+      section1?.essentials
+    );
+    this.visibleEssentials = this.essentials.slice(0, this.listBatchSize);
     this.customerReviews = this.getArrayWithFallback(
       this.homeDesign?.customerReviews,
       this.homeDesign?.reviews,
@@ -1657,6 +1682,19 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     const index = Math.round(element.scrollLeft / cardWidth);
     this.activeReviewIndex = Math.max(0, Math.min(this.visibleCustomerReviews.length - 1, index));
+  }
+  onHeroScroll(event: Event) {
+    const element = event?.target as HTMLElement;
+    if (!element || !this.heroSlides?.length) {
+      return;
+    }
+    const cardWidth = element.clientWidth;
+    if (!cardWidth) {
+      this.activeHeroIndex = 0;
+      return;
+    }
+    const index = Math.round(element.scrollLeft / cardWidth);
+    this.activeHeroIndex = Math.max(0, Math.min(this.heroSlides.length - 1, index));
   }
   onReelScroll(event: Event) {
     const element = event?.target as HTMLElement;
