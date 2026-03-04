@@ -963,7 +963,7 @@ export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, A
                             );
                         } else {
                             this.loggedIn = false;
-                            this.setAnalytics('dateTime_withoutlogin');
+                            // this.setAnalytics('dateTime_withoutlogin');
                         }
                     });
                     break;
