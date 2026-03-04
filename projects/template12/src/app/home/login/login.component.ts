@@ -557,36 +557,14 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewChecked {
         if (this.target) {
           target = this.target;
         }
-        if (target) {
-          if (!this.isSessionCart) {
-            this.cartData = this.lStorageService.getitemfromLocalStorage('cartData');
-            if (this.cartData && this.cartData.items && this.cartData.items.length > 0) {
-              this.items = this.cartData.items;
-              this.loggedUser = this.groupService.getitemFromGroupStorage('jld_scon');
-              this.createCart().then(data => {
-                this.lStorageService.removeitemfromLocalStorage('cartData')
-                this.lStorageService.removeitemfromLocalStorage('deliveryType')
-                this.subscriptionService.sendMessage({ ttype: 'refresh', value: 'refresh' });
-              })
-            }
+        this.syncSessionCartAfterLogin().finally(() => {
+          if (target) {
+            _this.lStorageService.removeitemfromLocalStorage('target');
+            _this.router.navigateByUrl(target);
+          } else {
+            this.goToDashboard();
           }
-          _this.lStorageService.removeitemfromLocalStorage('target');
-          _this.router.navigateByUrl(target);
-        } else {
-          if (!this.isSessionCart) {
-            this.cartData = this.lStorageService.getitemfromLocalStorage('cartData');
-            if (this.cartData && this.cartData.items && this.cartData.items.length > 0) {
-              this.items = this.cartData.items;
-              this.loggedUser = this.groupService.getitemFromGroupStorage('jld_scon');
-              this.createCart().then(data => {
-                this.lStorageService.removeitemfromLocalStorage('cartData')
-                this.lStorageService.removeitemfromLocalStorage('deliveryType')
-                this.subscriptionService.sendMessage({ ttype: 'refresh', value: 'refresh' });
-              })
-            }
-          }
-          this.goToDashboard();
-        }
+        });
       });
   }
   goBack() {
@@ -622,6 +600,7 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewChecked {
   signUpConsumer() {
     const _this = this;
     _this.phoneError = '';
+    this.btnClicked = true;
     if (_this.phoneNumber) {
       _this.dialCode = _this.phoneNumber.dialCode;
       const pN = _this.phoneNumber.e164Number.trim();
@@ -642,50 +621,37 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewChecked {
       if (_this.lStorageService.getitemfromLocalStorage('googleToken')) {
         credentials['userProfile']['email'] = _this.email;
         _this.authService.signUp(credentials).then((response) => {
-          let credentials: any = {
+          const credentials: any = {
             accountId: _this.sharedService.getAccountID()
           }
           credentials['mUniqueId'] = this.lStorageService.getitemfromLocalStorage('mUniqueId');
-          this.authService.login(credentials).then((response) => {
-            console.log("Login Response:", response);
-            // _this.ngZone.run(
-            //   () => {
-            _this.lStorageService.removeitemfromLocalStorage('c_authorizationToken');
-            _this.performAction();
-            //   }
-            // )
-          });
+          this.loginAfterSignup(credentials);
         }, (error) => {
           let errorObj = this.errorService.getApiError(error);
           this.toastService.showError(errorObj);
+          this.btnClicked = false;
         })
       } else {
         if (_this.dialCode !== '+91') {
           credentials['userProfile']['email'] = _this.emailId;
         }
         _this.authService.signUp(credentials).then((response) => {
-          let credentials: any = {
+          const credentials: any = {
             accountId: _this.sharedService.getAccountID(),
             countryCode: _this.dialCode,
             loginId: phoneNum
           }
           credentials['mUniqueId'] = this.lStorageService.getitemfromLocalStorage('mUniqueId');
-          this.authService.login(credentials).then((response) => {
-            console.log("Login Response:", response);
-            // _this.ngZone.run(
-            //   () => {
-            _this.lStorageService.removeitemfromLocalStorage('c_authorizationToken');
-            _this.performAction();
-            //   }
-            // )
-          });
+          this.loginAfterSignup(credentials);
         }, (error) => {
           let errorObj = this.errorService.getApiError(error);
           this.toastService.showError(errorObj);
+          this.btnClicked = false;
         });
       }
     } else {
       _this.phoneError = 'Mobile number required';
+      this.btnClicked = false;
     }
   }
   resetApiErrors() {
@@ -693,35 +659,136 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   createCart() {
-    let cartInfo = {}
-    cartInfo['store'] = {
-      'encId': this.storeEncId
+    const sections = this.getCartSectionsForSync(this.cartData);
+    const createdCarts: any[] = [];
+    if (!sections.length) {
+      return Promise.resolve(createdCarts);
     }
-    cartInfo['providerConsumer'] = {
-      'id': this.loggedUser.providerConsumer
+    const tasks = sections.map((section) => {
+      const mappedItems = section.items
+        .map((item) => {
+          const encId = this.getCartItemEncId(item);
+          if (!encId) {
+            return null;
+          }
+          return {
+            catalogItem: { encId },
+            quantity: Number(item?.quantity) || 1
+          };
+        })
+        .filter((item) => !!item);
+      if (!mappedItems.length) {
+        return Promise.resolve(false);
+      }
+      const cartInfo: any = {
+        store: { encId: this.storeEncId },
+        providerConsumer: { id: this.loggedUser.providerConsumer },
+        deliveryType: section.deliveryType,
+        items: mappedItems,
+        orderCategory: 'SALES_ORDER',
+        orderSource: 'PROVIDER_CONSUMER'
+      };
+      return new Promise((resolve) => {
+        this.orderService.createCart(cartInfo).subscribe(
+          (data) => {
+            createdCarts.push(data);
+            resolve(data);
+          }, (error) => {
+            let errorObj = this.errorService.getApiError(error);
+            this.toastService.showError(errorObj);
+            resolve(false);
+          }
+        );
+      });
+    });
+    return Promise.all(tasks).then(() => createdCarts);
+  }
+
+  private hasSessionCartItems(cartData: any): boolean {
+    const homeCount = cartData?.HOME_DELIVERY?.items?.length || 0;
+    const storeCount = cartData?.STORE_PICKUP?.items?.length || 0;
+    const legacyCount = cartData?.items?.length || 0;
+    return (homeCount + storeCount + legacyCount) > 0;
+  }
+
+  private getCartSectionsForSync(cartData: any): Array<{ deliveryType: string; items: any[] }> {
+    const sections: Array<{ deliveryType: string; items: any[] }> = [];
+    const homeItems = cartData?.HOME_DELIVERY?.items || [];
+    const storeItems = cartData?.STORE_PICKUP?.items || [];
+    if (homeItems.length > 0) {
+      sections.push({ deliveryType: 'HOME_DELIVERY', items: homeItems });
     }
-    if (this.lStorageService.getitemfromLocalStorage('deliveryType')) {
-      this.deliveryType = this.lStorageService.getitemfromLocalStorage('deliveryType');
+    if (storeItems.length > 0) {
+      sections.push({ deliveryType: 'STORE_PICKUP', items: storeItems });
     }
-    cartInfo['deliveryType'] = this.deliveryType;
-    cartInfo['items'] = this.items.map((item) => ({
-      catalogItem: {
-        encId: item.encId,
-      },
-      quantity: item.quantity,
-    }));
-    cartInfo['orderCategory'] = 'SALES_ORDER';
-    cartInfo['orderSource'] = 'PROVIDER_CONSUMER';
-    return new Promise((resolve, reject) => {
-      this.orderService.createCart(cartInfo).subscribe(
-        (data) => {
-          resolve(data);
-        }, (error) => {
-          resolve(false);
-          let errorObj = this.errorService.getApiError(error);
-          this.toastService.showError(errorObj);
+    if (sections.length === 0 && cartData?.items?.length > 0) {
+      const fallbackDeliveryType = this.lStorageService.getitemfromLocalStorage('deliveryType') || 'HOME_DELIVERY';
+      sections.push({ deliveryType: fallbackDeliveryType, items: cartData.items });
+    }
+    return sections;
+  }
+
+  private syncSessionCartAfterLogin(): Promise<void> {
+    if (this.isSessionCart) {
+      return Promise.resolve();
+    }
+    this.cartData = this.lStorageService.getitemfromLocalStorage('cartData');
+    if (!this.hasSessionCartItems(this.cartData)) {
+      return Promise.resolve();
+    }
+    this.loggedUser = this.groupService.getitemFromGroupStorage('jld_scon');
+    return this.createCart().then((createdCarts: any[]) => {
+      if (createdCarts && createdCarts.length > 0) {
+        this.lStorageService.removeitemfromLocalStorage('cartData');
+        this.lStorageService.removeitemfromLocalStorage('deliveryType');
+        this.subscriptionService.sendMessage({ ttype: 'refresh', value: 'refresh' });
+      }
+    });
+  }
+
+  private getCartItemEncId(item: any): string {
+    return item?.encId
+      || item?.spItem?.encId
+      || item?.spItemDto?.encId
+      || item?.catalogItem?.encId
+      || item?.catalogItem?.spItem?.encId
+      || item?.catalogItem?.spItemDto?.encId
+      || '';
+  }
+
+  private loginAfterSignup(credentials: any): void {
+    this.authService.login(credentials).then((response) => {
+      console.log("Login Response:", response);
+      this.lStorageService.removeitemfromLocalStorage('c_authorizationToken');
+      this.btnClicked = false;
+      this.performAction();
+    }, (error: any) => {
+      if (error.status === 401 && error.error === 'Session Already Exist') {
+        const activeUser = this.lStorageService.getitemfromLocalStorage('jld_scon');
+        if (!activeUser) {
+          this.authService.doLogout().then(() => {
+            this.authService.login(credentials).then((retryResponse) => {
+              console.log("Login Retry Response:", retryResponse);
+              this.lStorageService.removeitemfromLocalStorage('c_authorizationToken');
+              this.btnClicked = false;
+              this.performAction();
+            }, (retryError: any) => {
+              let retryErrorObj = this.errorService.getApiError(retryError);
+              this.toastService.showError(retryErrorObj);
+              this.btnClicked = false;
+            });
+          }, () => {
+            this.btnClicked = false;
+          });
+        } else {
+          this.btnClicked = false;
+          this.performAction();
         }
-      );
+      } else {
+        let errorObj = this.errorService.getApiError(error);
+        this.toastService.showError(errorObj);
+        this.btnClicked = false;
+      }
     });
   }
 }

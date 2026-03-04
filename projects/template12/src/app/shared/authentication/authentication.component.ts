@@ -400,6 +400,7 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
   signUpConsumer() {
     const _this = this;
     _this.phoneError = '';
+    this.btnClicked = true;
     if (_this.phoneNumber) {
       _this.dialCode = _this.phoneNumber.dialCode;
       const pN = _this.phoneNumber.e164Number.trim();
@@ -420,65 +421,84 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
       if (_this.lStorageService.getitemfromLocalStorage('googleToken')) {
         credentials['userProfile']['email'] = _this.email;
         _this.authService.signUp(credentials).then((response) => {
-          let credentials = {
+          const credentials = {
             accountId: _this.accountId
           }
-          _this.authService.login(credentials).then(
-            () => {
-              _this.lStorageService.removeitemfromLocalStorage('c_authorizationToken');
-              _this.lStorageService.removeitemfromLocalStorage('c_authorizationToken');
-              _this.lStorageService.removeitemfromLocalStorage('googleToken');
-              _this.ngZone.run(() => {
-                _this.setProviderConsumer().then(
-                  () => {
-                    _this.actionPerformed.emit('success');
-                    _this.cd.detectChanges();
-                  }
-                );
-              });
-            }, (error) => {
-              let errorObj = this.errorService.getApiError(error);
-              this.toastService.showError(errorObj);
-            });
+          _this.loginAfterSignup(credentials, true);
           console.log("Signup Success:", response);
         }, (error) => {
           let errorObj = this.errorService.getApiError(error);
           this.toastService.showError(errorObj);
+          this.btnClicked = false;
         })
       } else {
         if (_this.dialCode !== '+91') {
           credentials['userProfile']['email'] = _this.emailId;
         }
         _this.authService.signUp(credentials).then((response) => {
-          let credentials = {
+          const credentials = {
             accountId: _this.accountId,
             countryCode: _this.dialCode,
             loginId: phoneNum
           }
-          _this.authService.login(credentials).then((response) => {
-            _this.authService.setLoginData(response, credentials);
-            console.log("Login Response:", response);
-            _this.ngZone.run(() => {
-              _this.setProviderConsumer().then(
-                () => {
-                  _this.actionPerformed.emit('success');
-                  _this.cd.detectChanges();
-                }
-              );
-
-            });
-          }, (error) => {
-            let errorObj = this.errorService.getApiError(error);
-            this.toastService.showError(errorObj);;
-          })
+          _this.loginAfterSignup(credentials, false, credentials);
         }, (error) => {
           let errorObj = this.errorService.getApiError(error);
           this.toastService.showError(errorObj);
+          this.btnClicked = false;
         });
       }
     } else {
       _this.phoneError = 'Mobile number required';
+      this.btnClicked = false;
     }
+  }
+
+  private loginAfterSignup(credentials: any, isGoogleFlow = false, setLoginDataCredentials?: any): void {
+    this.authService.login(credentials).then((response) => {
+      if (setLoginDataCredentials) {
+        this.authService.setLoginData(response, setLoginDataCredentials);
+      }
+      this.finalizeSignupLogin(isGoogleFlow);
+    }, (error: any) => {
+      if (error.status === 401 && error.error === 'Session Already Exist') {
+        const activeUser = this.lStorageService.getitemfromLocalStorage('jld_scon');
+        if (!activeUser) {
+          this.authService.doLogout().then(() => {
+            this.authService.login(credentials).then((retryResponse) => {
+              if (setLoginDataCredentials) {
+                this.authService.setLoginData(retryResponse, setLoginDataCredentials);
+              }
+              this.finalizeSignupLogin(isGoogleFlow);
+            }, (retryError) => {
+              let retryErrorObj = this.errorService.getApiError(retryError);
+              this.toastService.showError(retryErrorObj);
+              this.btnClicked = false;
+            });
+          }, () => {
+            this.btnClicked = false;
+          });
+          return;
+        }
+      }
+      let errorObj = this.errorService.getApiError(error);
+      this.toastService.showError(errorObj);
+      this.btnClicked = false;
+    });
+  }
+
+  private finalizeSignupLogin(isGoogleFlow: boolean): void {
+    this.lStorageService.removeitemfromLocalStorage('c_authorizationToken');
+    if (isGoogleFlow) {
+      this.lStorageService.removeitemfromLocalStorage('googleToken');
+    }
+    this.ngZone.run(() => {
+      this.setProviderConsumer().then(() => {
+        this.btnClicked = false;
+        this.actionPerformed.emit('success');
+        this.cd.detectChanges();
+      });
+    });
   }
 
   /**
