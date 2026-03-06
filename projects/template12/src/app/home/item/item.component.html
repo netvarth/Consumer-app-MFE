@@ -131,9 +131,10 @@
                         <div class="item-size-options" *ngFor="let attribute of item.itemAttributes">
                             <div class="attribute-stl">{{ attribute.attribute }}</div>
                             <div class="value-container">
-                                <button *ngFor="let value of attribute.values" class="user-button"
+                                <button *ngFor="let value of attribute.values" class="user-button"  type="button"
                                     [ngClass]="{ 'highlightcolor': selectedValues[attribute.attribute] === value }"
-                                    (click)="selectValue(attribute.attribute, value)">
+                                    (mousedown)="preventAttributeButtonFocus($event)"
+                                    (click)="selectValue(attribute.attribute, value, $event)">
                                     {{ value }}
                                 </button>
                             </div>
