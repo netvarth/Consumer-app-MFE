@@ -1265,7 +1265,14 @@ export class ItemComponent implements OnInit, OnDestroy {
       });
     }
   }
-  selectValue(attribute: string, value: any) {
+   preventAttributeButtonFocus(event: MouseEvent): void {
+    event.preventDefault();
+  }
+selectValue(attribute: string, value: any, event?: Event) {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    } 
     this.selectedValues[attribute] = value;
     this.getAttributeItems(this.item)
     this.quantity = 1;
