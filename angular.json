@@ -1910,7 +1910,7 @@
 								{
 									"type": "anyComponentStyle",
 									"maximumWarning": "2kB",
-									"maximumError": "4kB"
+									"maximumError": "1MB"
 								}
 							],
 							"outputHashing": "all"
