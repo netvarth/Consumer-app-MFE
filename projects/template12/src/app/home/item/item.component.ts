@@ -580,25 +580,81 @@ export class ItemComponent implements OnInit, OnDestroy {
       itemData?.name ||
       'Product';
     const description =
-      itemData?.spItemDto?.shortDesc ||
-      itemData?.spItem?.description ||
-      itemData?.shortDesc ||
-      '';
-    const image =
-      itemData?.spItemDto?.attachments?.[0]?.s3path ||
-      itemData?.spItem?.attachments?.[0]?.s3path ||
-      this.cdnPath + 'assets/images/rx-order/items/Items.svg';
-    const url = window.location.href;
+      this.normalizeMetaText(
+        itemData?.spItemDto?.shortDesc ||
+        itemData?.spItem?.description ||
+        itemData?.shortDesc ||
+        ''
+      );
+    const image = this.getSocialImageUrl(itemData);
+    const url = this.toAbsoluteUrl(window.location.href);
+    const siteName =
+      this.account?.businessName ||
+      this.accountProfile?.businessName ||
+      this.sharedService.getRouteID() ||
+      'Jaldee';
 
     this.titleService.setTitle(title);
     this.metaService.updateTag({ name: 'description', content: description || '' });
     this.metaService.updateTag({ name: 'keywords', content: title || 'Webpage' });
     this.metaService.updateTag({ name: 'robots', content: 'index, follow' });
     this.metaService.updateTag({ property: 'og:title', content: title || '' });
-    this.metaService.updateTag({ property: 'og:site_name', content: title || '' });
+    this.metaService.updateTag({ property: 'og:site_name', content: siteName });
+    this.metaService.updateTag({ property: 'og:type', content: 'product' });
     this.metaService.updateTag({ property: 'og:description', content: description || '' });
     this.metaService.updateTag({ property: 'og:image', content: image || '' });
+    this.metaService.updateTag({ property: 'og:image:secure_url', content: image || '' });
+    this.metaService.updateTag({ property: 'og:image:alt', content: title || 'Product image' });
     this.metaService.updateTag({ property: 'og:url', content: url });
+    this.metaService.updateTag({ name: 'twitter:card', content: 'summary_large_image' });
+    this.metaService.updateTag({ name: 'twitter:title', content: title || '' });
+    this.metaService.updateTag({ name: 'twitter:description', content: description || '' });
+    this.metaService.updateTag({ name: 'twitter:image', content: image || '' });
+  }
+
+  private normalizeMetaText(value: string): string {
+    return (value || '').replace(/\s+/g, ' ').trim();
+  }
+
+  private getSocialImageUrl(itemData: any): string {
+    const attachments = [
+      ...(Array.isArray(itemData?.spItemDto?.attachments) ? itemData.spItemDto.attachments : []),
+      ...(Array.isArray(itemData?.spItem?.attachments) ? itemData.spItem.attachments : []),
+      ...(Array.isArray(itemData?.attachments) ? itemData.attachments : [])
+    ];
+    const imageAttachment = attachments.find((attachment: any) => {
+      const derivedImage = this.getAttachmentImageSource(attachment);
+      if (derivedImage) {
+        return true;
+      }
+      const source = attachment?.s3path;
+      return typeof source === 'string' && !this.isVideoLikeSource(this.normalizeMediaUrl(source));
+    });
+    const resolvedImage =
+      this.getAttachmentImageSource(imageAttachment) ||
+      imageAttachment?.s3path ||
+      this.getDefaultSocialImageUrl();
+    return this.toAbsoluteUrl(resolvedImage) || this.getDefaultSocialImageUrl();
+  }
+
+  private getDefaultSocialImageUrl(): string {
+    return this.toAbsoluteUrl('/assets/images/docNew.png');
+  }
+
+  private toAbsoluteUrl(url: string): string {
+    if (!url || typeof url !== 'string') {
+      return '';
+    }
+    if (/^https?:\/\//i.test(url)) {
+      return url;
+    }
+    if (url.startsWith('//')) {
+      return `${window.location.protocol}${url}`;
+    }
+    if (url.startsWith('/')) {
+      return `${window.location.origin}${url}`;
+    }
+    return `${window.location.origin}/${url.replace(/^\/+/, '')}`;
   }
 
   private getCurrentCatalogEncId(): string | undefined {
@@ -1927,7 +1983,7 @@ export class ItemComponent implements OnInit, OnDestroy {
 
   sendEnquiry(): void {
     const phoneRaw = this.accountProfile?.phoneNumbers?.[0]?.instance || this.accountProfile?.accountLinkedPhNo || '';
-    // const phone = phoneRaw.replace(/[^0-9]/g, '');
+    const phone = phoneRaw.replace(/[^0-9]/g, '');
     if (!phoneRaw) {
       this.toastService.showError('Provider WhatsApp number not available');
       return;
@@ -1968,7 +2024,7 @@ export class ItemComponent implements OnInit, OnDestroy {
                     encodeURIComponent(ask) + "%0A" + 
                     encodeURIComponent(link);
     // const message = encodeURIComponent(messageParts.join(' '));
-    const whatsappUrl = `https://wa.me/${phoneRaw}?text=${message}`;
+    const whatsappUrl = `https://wa.me/${phone}?text=${message}`;
     window.open(whatsappUrl, '_blank');
   }
 
