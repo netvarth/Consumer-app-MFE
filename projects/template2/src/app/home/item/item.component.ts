@@ -157,6 +157,13 @@ export class ItemComponent implements OnInit, OnDestroy {
     this.subscriptions.unsubscribe();
     this.clearMediaLoadFallbackTimer();
   }
+
+  private scrollViewportToTop(): void {
+    if (typeof window === 'undefined') {
+      return;
+    }
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }
   private resolveStoreContext(): boolean {
     const activeStore = this.accountService.getActiveStore();
     const storedEncId = this.lStorageService.getitemfromLocalStorage('storeEncId');
@@ -178,13 +185,12 @@ export class ItemComponent implements OnInit, OnDestroy {
   }
 
   scrollToElement(elementId: string): void {
-    setTimeout(() => {
-      const element = document.getElementById(elementId);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-    }, 500);
+    this.scrollViewportToTop();
+    const element = document.getElementById(elementId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'auto', block: 'start', inline: 'nearest' });
+      this.scrollViewportToTop();
+    }
   }
   itemActionPerformed(itemID: any) {
     this.getSoCatalogItemById(itemID);
@@ -213,11 +219,11 @@ export class ItemComponent implements OnInit, OnDestroy {
         if (this.prevItem != params['id']) {
           this.itemEncid = params['id']
           this.virtualItem = false;
+          this.scrollViewportToTop();
           // Reset selected image when navigating to a new item
           this.selectedItemImage = null;
           this.getSoCatalogItemById(this.itemEncid);
           this.prevItem = this.itemEncid;
-          this.scrollToElement('itemContainer');
         }
       }
       this.isSessionCart = this.lStorageService.getitemfromLocalStorage('isSessionCart')
@@ -1186,9 +1192,6 @@ export class ItemComponent implements OnInit, OnDestroy {
 
   viewItems(item: any) {
     this.router.navigate([this.sharedService.getRouteID(), 'item', item.encId]);
-    setTimeout(() => {
-      this.itemActionPerformed(item.encId);
-    }, 100);
   }
 
   cartActionPerformed(input: any) {

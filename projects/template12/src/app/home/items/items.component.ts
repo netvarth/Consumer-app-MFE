@@ -116,6 +116,8 @@ export class ItemsComponent implements OnInit, AfterViewInit, OnDestroy {
   showAllTypes = false;
   showAllGroups = false;
   private scrollObserver: IntersectionObserver | null = null;
+  private readonly itemsScrollStorageKey = 'itemsPageScrollTop';
+  private pendingScrollRestore = false;
   constructor(
     private router: Router,
     private location: Location,
@@ -181,10 +183,8 @@ export class ItemsComponent implements OnInit, AfterViewInit, OnDestroy {
       });   
     })
     this.subscriptionService.sendMessage({ ttype: 'refresh', value: 'refresh' });
-    if(this.lStorageService.getitemfromLocalStorage('itemTarget')) {
-      this.itemTarget = this.lStorageService.getitemfromLocalStorage('itemTarget')
-      this.scrollToElement(this.itemTarget);
-    }
+    this.itemTarget = this.lStorageService.getitemfromLocalStorage('itemTarget');
+    this.pendingScrollRestore = this.hasPendingScrollRestore();
     this.isSessionCart = this.lStorageService.getitemfromLocalStorage('isSessionCart')
   }
 
@@ -214,6 +214,42 @@ export class ItemsComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     if (this.priceFilterTimer) {
       clearTimeout(this.priceFilterTimer);
+    }
+  }
+
+  private hasPendingScrollRestore(): boolean {
+    return this.lStorageService.getitemfromLocalStorage(this.itemsScrollStorageKey) !== null || !!this.itemTarget;
+  }
+
+  private saveCurrentScrollPosition(): void {
+    if (typeof window === 'undefined') {
+      return;
+    }
+    this.lStorageService.setitemonLocalStorage(this.itemsScrollStorageKey, window.scrollY || document.documentElement.scrollTop || 0);
+  }
+
+  private restorePendingScrollPosition(): void {
+    if (!this.pendingScrollRestore || typeof window === 'undefined') {
+      return;
+    }
+    const savedScrollTop = this.lStorageService.getitemfromLocalStorage(this.itemsScrollStorageKey);
+    if (savedScrollTop !== null && savedScrollTop !== undefined && savedScrollTop !== '') {
+      const scrollTop = Number(savedScrollTop);
+      if (!Number.isNaN(scrollTop)) {
+        this.pendingScrollRestore = false;
+        setTimeout(() => {
+          window.scrollTo({ top: scrollTop, left: 0, behavior: 'auto' });
+          this.lStorageService.removeitemfromLocalStorage(this.itemsScrollStorageKey);
+          this.lStorageService.removeitemfromLocalStorage('itemTarget');
+          this.itemTarget = null;
+        }, 0);
+        return;
+      }
+      this.lStorageService.removeitemfromLocalStorage(this.itemsScrollStorageKey);
+    }
+    if (this.itemTarget) {
+      this.pendingScrollRestore = false;
+      this.scrollToElement(this.itemTarget);
     }
   }
 
@@ -505,6 +541,7 @@ export class ItemsComponent implements OnInit, AfterViewInit, OnDestroy {
               this.updateHasMore();
               setTimeout(() => {
                 this.initScrollObserver();
+                this.restorePendingScrollPosition();
               }, 0);
               this.itemsLoading = false;
               this.loading = false;
@@ -529,6 +566,7 @@ export class ItemsComponent implements OnInit, AfterViewInit, OnDestroy {
         this.updateHasMore();
         setTimeout(() => {
           this.initScrollObserver();
+                this.restorePendingScrollPosition();
         }, 0);
         this.itemsLoading = false;
         this.loading = false;
@@ -797,6 +835,7 @@ export class ItemsComponent implements OnInit, AfterViewInit, OnDestroy {
         itemEncid: item.encId
       }
     }
+      this.saveCurrentScrollPosition();
       this.lStorageService.setitemonLocalStorage('itemTarget', target);
       this.router.navigate([this.sharedService.getRouteID(), 'item', item.encId], navigationExtras);
   }
@@ -1224,6 +1263,7 @@ export class ItemsComponent implements OnInit, AfterViewInit, OnDestroy {
           this.updateHasMore();
           setTimeout(() => {
             this.initScrollObserver();
+                this.restorePendingScrollPosition();
           }, 0);
           this.itemsLoading = false;
           this.loading = false;
@@ -1305,6 +1345,7 @@ export class ItemsComponent implements OnInit, AfterViewInit, OnDestroy {
           this.updateHasMore();
           setTimeout(() => {
             this.initScrollObserver();
+                this.restorePendingScrollPosition();
           }, 0);
           this.itemsLoading = false;
           this.loading = false;
