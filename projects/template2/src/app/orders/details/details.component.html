@@ -111,6 +111,10 @@
                         Live Tracking</a>
                 </div>
             </div>
+            <div *ngIf="orderData.notesFromCustomer" class="card order-card p-4 mt-2">
+                <div class="fw-bold mb-1">Notes</div>
+                <div class="customerNotes">{{orderData.notesFromCustomer}}</div>
+            </div>
         </div>
         <div class="col-lg-7 mt-2 mt-md-0">
             <div class="card order-card">
@@ -134,6 +138,8 @@
                         </div>
                         <div>
                             <div *ngIf="item.netTotal" class="price">₹{{getAmountInDecimalPoints(item.netTotal)}}</div>
+                            <button *ngIf="orderData.orderStatus == 'ORDER_COMPLETED'" type="button" class="add-review-btn mt-1"
+                                (click)="openReviewPopup(item)">{{hasItemReview(item?.encId) ? 'Reviewed' : 'Add Review'}}</button>
                         </div>
                     </div>
                 </div>
@@ -211,5 +217,81 @@
                 </div>
             </div>
         </div>
+    </div>
+</div>
+
+<div *ngIf="showReviewPopup" class="review-overlay" (click)="closeReviewPopup()" [ngClass]="theme">
+    <div class="review-popup order-card" (click)="$event.stopPropagation()">
+        <div class="review-popup-header">
+            <div class="review-title-row">
+                <button type="button" class="icon-btn" (click)="closeReviewPopup()">
+                    <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                </button>
+                <div class="review-title">{{selectedItemReview ? 'Edit Review for' : 'Add Review for'}}
+                    {{selectedReviewItem?.spItem?.name || 'Item'}}</div>
+            </div>
+            <button type="button" class="icon-btn" (click)="closeReviewPopup()">
+                <i class="fa fa-times" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <div class="review-rating-row">
+            <div class="review-rating-score">{{ selectedRating || 0 }} <i class="fa fa-star" aria-hidden="true"></i></div>
+            <div class="review-rating-stars">
+                <button *ngFor="let star of reviewStars" type="button" class="star-btn"
+                    [class.active]="star <= selectedRating" [disabled]="isReviewReadonly()" (click)="setRating(star)">
+                    <i class="fa" [ngClass]="star <= selectedRating ? 'fa-star' : 'fa-star-o'" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="review-textarea-wrap">
+            <textarea class="review-textarea" rows="4" maxlength="500" placeholder="Share your experience..."
+                [readOnly]="isReviewReadonly()" [value]="reviewMessage"
+                (input)="updateReviewMessage($any($event.target).value)"></textarea>
+            <div class="review-count">{{reviewMessage.length}} / 500</div>
+        </div>
+
+        <div class="upload-title">Upload Photos / Video</div>
+
+        <div class="review-media-row">
+            <button type="button" class="upload-card" (click)="openReviewFilePicker()">
+                <div class="upload-plus">+</div>
+                <div class="upload-icons">
+                    <i class="fa fa-camera" aria-hidden="true"></i>
+                    <i class="fa fa-video-camera" aria-hidden="true"></i>
+                </div>
+            </button>
+
+            <div class="media-preview-card" *ngFor="let media of reviewMediaPreviews; let i = index">
+                <img *ngIf="!media.isVideo" [src]="media.url" alt="Review upload preview">
+                <video *ngIf="media.isVideo" [src]="media.url" muted playsinline></video>
+                <div *ngIf="media.isVideo" class="video-indicator">
+                    <i class="fa fa-play" aria-hidden="true"></i>
+                </div>
+                <button type="button" class="remove-media-btn" (click)="removeReviewMedia(i)">
+                    <i class="fa fa-times" aria-hidden="true"></i>
+                </button>
+            </div>
+
+            <div class="media-preview-card" *ngFor="let media of existingReviewMedia; let i = index">
+                <img *ngIf="!media.isVideo" [src]="media.url" [alt]="media.fileName || 'Review media'">
+                <video *ngIf="media.isVideo" [src]="media.url" controls playsinline></video>
+                <div *ngIf="media.isVideo" class="video-indicator">
+                    <i class="fa fa-play" aria-hidden="true"></i>
+                </div>
+                <button type="button" class="remove-media-btn" (click)="removeExistingReviewMedia(i)">
+                    <i class="fa fa-times" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+
+        <input #reviewFileInput type="file" multiple accept="image/*,video/*" class="d-none"
+            (change)="onReviewFilesSelected($event)">
+
+        <button type="button" class="submit-review-btn btn-confirm p-button-primary btn-primary"
+            [disabled]="selectedRating === 0 || reviewSubmitting" (click)="submitReview()">
+            {{getReviewActionLabel()}}
+        </button>
     </div>
 </div>

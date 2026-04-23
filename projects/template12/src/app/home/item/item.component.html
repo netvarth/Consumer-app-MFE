@@ -45,6 +45,14 @@
                         <button type="button" class="share-btn" (click)="openShareSheet()" aria-label="Share item">
                             <i class="fa fa-share-alt" aria-hidden="true"></i>
                         </button>
+                        <button type="button" class="item-top-rating item-top-rating-mobile" *ngIf="itemRatingCount > 0"
+                            (click)="scrollToElement('itemReviewsSection')">
+                            <span class="item-top-rating-score" [ngClass]="getRatingColorClass(averageItemRating)">
+                                {{ averageItemRating | number:'1.1-1' }} <i class="fa fa-star" aria-hidden="true"></i>
+                            </span>
+                            <span class="item-top-rating-divider">|</span>
+                            <span class="item-top-rating-count">{{ itemRatingCount }} Ratings</span>
+                        </button>
                         <div *ngIf="selectedItemImage"
                              class="item-preview-inner"
                              [class.is-video]="isVideoAttachment(selectedItemImage)"
@@ -109,6 +117,14 @@
                                </span>
                            </div>
                         </div>
+                        <button type="button" class="item-top-rating item-top-rating-desktop" *ngIf="itemRatingCount > 0"
+                            (click)="scrollToElement('itemReviewsSection')">
+                            <span class="item-top-rating-score" [ngClass]="getRatingColorClass(averageItemRating)">
+                                {{ averageItemRating | number:'1.1-1' }} <i class="fa fa-star" aria-hidden="true"></i>
+                            </span>
+                            <span class="item-top-rating-divider">|</span>
+                            <span class="item-top-rating-count">{{ itemRatingCount }} Ratings</span>
+                        </button>
                     </div>
                     <div class="item-price-row" *ngIf="!hidePrices">
                         <span class="price1">RS.{{ !virtualItem ? item?.price : itemAttributes?.price | number:'1.0-0'
@@ -264,6 +280,92 @@
                     </div>
                 </div>
             </div>
+            <div class="item-reviews card" *ngIf="itemRatingCount > 0" id="itemReviewsSection">
+                <div class="item-reviews-header">Ratings & Reviews<i class="fa fa-star-o" aria-hidden="true"></i></div>
+                <div class="item-reviews-layout">
+                    <div class="item-rating-summary">
+                        <div class="item-rating-score" [ngClass]="getRatingColorClass(averageItemRating)">
+                            {{ averageItemRating | number:'1.1-1' }}
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                        </div>
+                        <div class="item-rating-count">
+                            {{ itemRatingCount }} Verified Buyers
+                        </div>
+                    </div>
+                    <div class="item-rating-breakdown">
+                        <div class="item-rating-row" *ngFor="let stat of itemRatingBreakdown">
+                            <div class="item-rating-label"
+                                [ngClass]="{
+                                    'rating-star-1': stat.stars === 1,
+                                    'rating-star-2': stat.stars === 2,
+                                    'rating-star-3': stat.stars === 3
+                                }">{{ stat.stars }} <i class="fa fa-star" aria-hidden="true"></i></div>
+                            <div class="item-rating-track">
+                                <span class="item-rating-fill"
+                                    [ngClass]="{
+                                        'rating-star-1': stat.stars === 1,
+                                        'rating-star-2': stat.stars === 2,
+                                        'rating-star-3': stat.stars === 3
+                                    }"
+                                    [style.width.%]="stat.percentage"></span>
+                            </div>
+                            <div class="item-rating-value">{{ stat.count }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="item-reviews-subheader">What Customers Said <i class="fa fa-star-o" aria-hidden="true"></i></div>
+                <div class="item-review-list">
+                    <div class="item-review-card" *ngFor="let review of visibleItemReviews">
+                        <div class="item-review-topline">
+                            <div class="item-review-stars" [ngClass]="getRatingColorClass(review?.rating)">
+                                <i class="fa" *ngFor="let star of reviewStars"
+                                    [ngClass]="star <= (review?.rating || 0) ? 'fa-star' : 'fa-star-o'" aria-hidden="true"></i>
+                                <span class="item-review-score">{{ review?.rating | number:'1.1-1' }}</span>
+                            </div>
+                        </div>
+                        <div class="item-review-text" *ngIf="review?.comments">{{ review?.comments }}</div>
+                        <div class="item-review-meta">
+                            <span class="item-review-author" *ngIf="review?.providerConsumerName">
+                                <i class="fa fa-user-o" aria-hidden="true"></i>
+                                {{ review?.providerConsumerName }}
+                            </span>
+                            <span class="item-review-date">{{ getReviewDate(review) }}</span>
+                        </div>
+                        <div class="item-review-media" *ngIf="getReviewMedia(review).length">
+                            <ng-container *ngFor="let media of getReviewMedia(review)">
+                                <button *ngIf="!media.isVideo" type="button" class="item-review-image-trigger"
+                                    (click)="openReviewImagePopup(media.url)">
+                                    <img [src]="media.url" alt="Review media">
+                                </button>
+                                <button *ngIf="media.isVideo" type="button" class="item-review-video-trigger"
+                                    (click)="openReviewVideoPopup(media.url)">
+                                    <img *ngIf="getReviewVideoPreviewSrc(media); else reviewVideoPlaceholder"
+                                        [src]="getReviewVideoPreviewSrc(media)"
+                                        alt="Review video preview"
+                                        (load)="onReviewVideoPreviewLoaded(media.url)">
+                                    <ng-template #reviewVideoPlaceholder>
+                                        <span class="item-review-video-placeholder">
+                                            <i class="fa fa-file-video-o" aria-hidden="true"></i>
+                                        </span>
+                                    </ng-template>
+                                    <span class="item-review-video-overlay">
+                                        <i class="fa fa-play" aria-hidden="true"></i>
+                                    </span>
+                                </button>
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+                <button *ngIf="itemReviews.length > 2 && !showAllReviews" type="button" class="item-review-view-all"
+                    (click)="showAllReviews = true">
+                    View all {{ itemReviews.length }} reviews
+                </button>
+                <button *ngIf="itemReviews.length > 2 && showAllReviews" type="button" class="item-review-view-all"
+                    (click)="showAllReviews = false">
+                    View less
+                </button>
+            </div>
             <div class="col-lg-12 mt-4" *ngIf="!cartDisabled">
                 <div class=" d-flex justify-content-between align-items-center">
                     <div>
@@ -280,6 +382,35 @@
                     (actionPerformed)="cartActionPerformed($event)"></app-items-card>
             </div>
         </div>
+    </div>
+</div>
+
+<div class="review-video-popup-backdrop" *ngIf="showReviewVideoPopup" (click)="closeReviewVideoPopup()"></div>
+<div class="review-video-popup" *ngIf="showReviewVideoPopup" (click)="$event.stopPropagation()">
+    <button type="button" class="review-video-popup-close" (click)="closeReviewVideoPopup()" aria-label="Close video">
+        <i class="fa fa-times" aria-hidden="true"></i>
+    </button>
+    <div class="review-popup-stage">
+        <div class="review-video-popup-loading" *ngIf="reviewVideoLoading">
+            <i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+            <span>Loading video...</span>
+        </div>
+        <video *ngIf="selectedReviewVideoUrl" [src]="selectedReviewVideoUrl" controls autoplay playsinline
+            preload="auto"
+            controlsList="nodownload nofullscreen noplaybackrate"
+            disablePictureInPicture
+            (loadeddata)="onReviewVideoPopupLoaded()"
+            (canplay)="onReviewVideoPopupLoaded()"></video>
+    </div>
+</div>
+
+<div class="review-video-popup-backdrop" *ngIf="showReviewImagePopup" (click)="closeReviewImagePopup()"></div>
+<div class="review-video-popup review-image-popup" *ngIf="showReviewImagePopup" (click)="$event.stopPropagation()">
+    <button type="button" class="review-video-popup-close" (click)="closeReviewImagePopup()" aria-label="Close image">
+        <i class="fa fa-times" aria-hidden="true"></i>
+    </button>
+    <div class="review-popup-stage">
+        <img *ngIf="selectedReviewImageUrl" [src]="selectedReviewImageUrl" alt="Review image preview">
     </div>
 </div>
 

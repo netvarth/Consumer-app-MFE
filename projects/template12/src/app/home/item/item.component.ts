@@ -110,6 +110,18 @@ export class ItemComponent implements OnInit, OnDestroy {
   itemGroups: Array<{ id: number | string; groupName?: string; name?: string }> = [];
   isShareSheetOpen: boolean = false;
   mediaLoading: boolean = false;
+  itemReviews: any[] = [];
+  reviewStars = [1, 2, 3, 4, 5];
+  showAllReviews = false;
+  averageItemRating = 0;
+  itemRatingCount = 0;
+  itemRatingBreakdown: { stars: number; count: number; percentage: number; }[] = [];
+  showReviewVideoPopup = false;
+  selectedReviewVideoUrl = '';
+  reviewVideoLoading = false;
+  showReviewImagePopup = false;
+  selectedReviewImageUrl = '';
+  reviewMediaLoadedState: { [url: string]: boolean } = {};
   private mediaLoadToken = 0;
   private mediaLoadFallbackTimer: any;
   private readonly minItemLoadMs = 1000;
@@ -399,6 +411,7 @@ export class ItemComponent implements OnInit, OnDestroy {
     let sub = this.orderService.getSoCatalogItemById(this.accountId, itemID).subscribe((itemData: any) => {
       if (itemData) {
         this.item = itemData;
+        this.loadItemReviews();
         this.setMetaTagsFromItem(itemData);
         if (itemData && itemData.spItemDto && itemData.spItemDto.id) {
           this.itemId = itemData.spItemDto.id;
@@ -469,6 +482,66 @@ export class ItemComponent implements OnInit, OnDestroy {
     if (this.itemLoadToken === token) {
       this.loading = false;
     }
+  }
+
+  private loadItemReviews(): void {
+    const itemId = this.item?.spItem?.id;
+    this.resetItemReviews();
+    if (!itemId) {
+      return;
+    }
+    const filter = {
+      'itemId-eq': itemId
+    };
+    const sub = this.wishlistService.getItemReviews(filter).subscribe(
+      (reviews: any) => {
+        const allReviews = Array.isArray(reviews)
+          ? reviews
+          : Array.isArray(reviews?.items)
+            ? reviews.items
+            : [];
+        this.itemReviews = allReviews.filter((review) => review?.status === 'PUBLISHED');
+        this.setItemReviewSummary();
+      },
+      () => {
+        this.resetItemReviews();
+      }
+    );
+    this.subscriptions.add(sub);
+  }
+
+  private resetItemReviews(): void {
+    this.itemReviews = [];
+    this.showAllReviews = false;
+    this.averageItemRating = 0;
+    this.itemRatingCount = 0;
+    this.itemRatingBreakdown = [5, 4, 3, 2, 1].map((stars) => ({ stars, count: 0, percentage: 0 }));
+  }
+
+  get visibleItemReviews(): any[] {
+    return this.showAllReviews ? this.itemReviews : this.itemReviews.slice(0, 2);
+  }
+
+  private setItemReviewSummary(): void {
+    const ratings = this.itemReviews
+      .map((review) => Number(review?.rating || 0))
+      .filter((rating) => rating > 0);
+    this.itemRatingCount = ratings.length;
+    if (!ratings.length) {
+      this.averageItemRating = 0;
+      this.itemRatingBreakdown = [5, 4, 3, 2, 1].map((stars) => ({ stars, count: 0, percentage: 0 }));
+      return;
+    }
+    const total = ratings.reduce((sum, rating) => sum + rating, 0);
+    this.averageItemRating = total / ratings.length;
+    this.itemRatingBreakdown = [5, 4, 3, 2, 1].map((stars) => {
+      const count = ratings.filter((rating) => Math.round(rating) === stars).length;
+      return {
+        stars,
+        count,
+        percentage: count ? (count / ratings.length) * 100 : 0
+      };
+    });
   }
   actionPerformed(event: any) {
     this.addToCart(this.action);
@@ -1406,6 +1479,98 @@ export class ItemComponent implements OnInit, OnDestroy {
       return true;
     }
     return /\.(mp4|webm|ogg)$/i.test(attachment.s3path);
+  }
+
+  getRatingColorClass(rating: any): string {
+    const safeRating = Math.max(0, Math.min(5, Math.round(Number(rating || 0))));
+    if (safeRating === 1) {
+      return 'rating-star-1';
+    }
+    if (safeRating === 2) {
+      return 'rating-star-2';
+    }
+    if (safeRating === 3) {
+      return 'rating-star-3';
+    }
+    return '';
+  }
+
+  getReviewDate(review: any): string {
+    const value = review?.createdDate || review?.updatedDate;
+    if (!value) {
+      return '';
+    }
+    return new Date(value).toLocaleDateString('en-GB', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
+    });
+  }
+
+  getReviewMedia(review: any): { url: string; isVideo: boolean; }[] {
+    const mediaSources = [
+      ...(Array.isArray(review?.imgUpload) ? review.imgUpload : []),
+      ...(Array.isArray(review?.attachments) ? review.attachments : [])
+    ];
+    const uniqueMedia = new Map<string, { url: string; isVideo: boolean; }>();
+    mediaSources.forEach((media, index) => {
+      const url = media?.s3path || media?.url || media?.drive?.s3path || media?.drive?.url;
+      if (!url) {
+        return;
+      }
+      const fileType = (media?.fileType || media?.type || '').toString().toLowerCase();
+      const key = media?.driveId || media?.id || media?.uuid || url || `${index}`;
+      if (!uniqueMedia.has(key)) {
+        uniqueMedia.set(key, {
+          url,
+          isVideo: fileType.includes('mp4') || fileType.includes('video')
+        });
+      }
+    });
+    return Array.from(uniqueMedia.values());
+  }
+
+  openReviewVideoPopup(url: string): void {
+    if (!url) {
+      return;
+    }
+    this.selectedReviewVideoUrl = url;
+    this.reviewVideoLoading = true;
+    this.showReviewVideoPopup = true;
+  }
+
+  closeReviewVideoPopup(): void {
+    this.showReviewVideoPopup = false;
+    this.selectedReviewVideoUrl = '';
+    this.reviewVideoLoading = false;
+  }
+
+  openReviewImagePopup(url: string): void {
+    if (!url) {
+      return;
+    }
+    this.selectedReviewImageUrl = url;
+    this.showReviewImagePopup = true;
+  }
+
+  closeReviewImagePopup(): void {
+    this.showReviewImagePopup = false;
+    this.selectedReviewImageUrl = '';
+  }
+
+  onReviewVideoPreviewLoaded(url: string): void {
+    if (!url) {
+      return;
+    }
+    this.reviewMediaLoadedState[url] = true;
+  }
+
+  getReviewVideoPreviewSrc(media: any): string {
+    return media?.poster || media?.thumbnail || media?.thumb || media?.preview || media?.thumbPath || media?.drive?.thumbPath || '';
+  }
+
+  onReviewVideoPopupLoaded(): void {
+    this.reviewVideoLoading = false;
   }
 
   onVideoReady(): void {

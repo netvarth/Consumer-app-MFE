@@ -571,6 +571,404 @@
     font-family: "Playfair Display", "Georgia", "Times New Roman", serif;
 }
 
+.item-reviews {
+    max-width: 1200px;
+    margin: 22px auto 0;
+    padding: 18px 8px 0;
+    border: none;
+    border-radius: 0;
+    background: #fff;
+    box-shadow: none;
+}
+
+.item-reviews-header {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    color: #22314a;
+    text-transform: uppercase;
+    font-family: "Montserrat", "Trebuchet MS", sans-serif;
+}
+
+.item-reviews-header i,
+.item-reviews-subheader i {
+    color: #7f8794;
+    font-size: 11px;
+}
+
+.item-reviews-layout {
+    display: grid;
+    grid-template-columns: 160px minmax(0, 340px);
+    gap: 24px;
+    padding-top: 18px;
+    border-top: 1px solid #e8edf2;
+    margin-top: 12px;
+}
+
+.item-rating-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+    justify-content: center;
+    min-height: 112px;
+    padding-right: 24px;
+    border-right: 1px solid #e8edf2;
+}
+
+.item-rating-score {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 38px;
+    font-weight: 500;
+    color: #22314a;
+    line-height: 1;
+    font-family: "Montserrat", "Trebuchet MS", sans-serif;
+}
+
+.item-rating-score i {
+    font-size: 22px;
+}
+
+.item-rating-score i,
+.item-rating-label i,
+.item-review-stars i {
+    color: #14967f;
+}
+
+.item-rating-count {
+    font-size: 13px;
+    color: #566273;
+    font-family: "Montserrat", "Trebuchet MS", sans-serif;
+    font-weight: 500;
+}
+
+.item-rating-breakdown {
+    display: grid;
+    align-content: center;
+    gap: 8px;
+}
+
+.item-rating-row {
+    display: grid;
+    grid-template-columns: 26px minmax(0, 1fr) 28px;
+    gap: 8px;
+    align-items: center;
+    font-family: "Montserrat", "Trebuchet MS", sans-serif;
+}
+
+.item-rating-label,
+.item-rating-value {
+    font-size: 12px;
+    color: #7b8795;
+}
+
+.item-rating-label.rating-star-1,
+.item-rating-label.rating-star-1 i {
+    color: #d64545;
+}
+
+.item-rating-label.rating-star-2,
+.item-rating-label.rating-star-2 i {
+    color: #e58a2b;
+}
+
+.item-rating-label.rating-star-3,
+.item-rating-label.rating-star-3 i {
+    color: #7bbf58;
+}
+
+.item-rating-track {
+    height: 4px;
+    border-radius: 999px;
+    background: #edf1f4;
+    overflow: hidden;
+}
+
+.item-rating-fill {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: #14967f;
+}
+
+.item-rating-fill.rating-star-1 {
+    background: #d64545;
+}
+
+.item-rating-fill.rating-star-2 {
+    background: #e58a2b;
+}
+
+.item-rating-fill.rating-star-3 {
+    background: #7bbf58;
+}
+
+.item-review-list {
+    margin-top: 14px;
+    display: grid;
+    gap: 16px;
+}
+
+.item-review-view-all {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 12px;
+    border: none;
+    background: transparent;
+    padding: 0;
+    color: #14967f;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: "Montserrat", "Trebuchet MS", sans-serif;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    text-align: left;
+    justify-content: flex-start;
+}
+
+.item-reviews-subheader {
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid #e8edf2;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    color: #22314a;
+    text-transform: uppercase;
+    font-family: "Montserrat", "Trebuchet MS", sans-serif;
+}
+
+.item-review-card {
+    border: 1px solid #dfe5ea;
+    border-radius: 4px;
+    padding: 14px 18px 14px;
+    background: #fff;
+}
+
+.item-review-topline {
+    display: flex;
+    justify-content: flex-start;
+    gap: 12px;
+    align-items: center;
+}
+
+.item-review-stars {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 14px;
+    flex-wrap: wrap;
+}
+
+.item-review-score,
+.item-review-date,
+.item-review-author {
+    font-family: "Montserrat", "Trebuchet MS", sans-serif;
+    font-size: 12px;
+    color: #7f8794;
+}
+
+.item-review-score {
+    margin-left: 6px;
+    font-weight: 600;
+    color: #14967f;
+}
+
+.item-review-meta {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    font-family: "Montserrat", "Trebuchet MS", sans-serif;
+    font-size: 11px;
+    color: #9aa3ad;
+}
+
+.item-review-author {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.item-review-author i {
+    color: #a5adb7;
+    font-size: 12px;
+}
+
+.item-review-text {
+    margin-top: 8px;
+    color: #2f3945;
+    font-size: 14px;
+    line-height: 1.7;
+    font-family: "Montserrat", "Trebuchet MS", sans-serif;
+}
+
+.item-review-media {
+    margin-top: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.item-review-image-trigger {
+    width: 86px;
+    height: 86px;
+    border: 1px solid #e3e7eb;
+    padding: 0;
+    background: #f7f7f7;
+    border-radius: 4px;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.item-review-image-trigger img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.item-review-video-trigger {
+    width: 86px;
+    height: 86px;
+    border: none;
+    padding: 0;
+    background: #111;
+    position: relative;
+    cursor: pointer;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid #e3e7eb;
+}
+
+.item-review-video-trigger img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.item-review-video-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #2b2b2b 0%, #111 100%);
+    color: #fff;
+    font-size: 28px;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.item-review-video-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.18);
+    color: #fff;
+    font-size: 20px;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.review-video-popup-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.72);
+    z-index: 1100;
+}
+
+.review-video-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(94vw, 980px);
+    height: min(82vh, 640px);
+    background: #f6f6f6;
+    border-radius: 6px;
+    padding: 56px 20px 20px;
+    z-index: 1101;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #d8d8d8;
+}
+
+.review-popup-stage {
+    width: 100%;
+    height: 100%;
+    background: #000;
+    border: 1px solid #1b1b1b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.review-video-popup-loading {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: #fff;
+    font-family: "Montserrat", "Trebuchet MS", sans-serif;
+    font-size: 14px;
+}
+
+.review-video-popup video {
+    width: 100%;
+    height: 100%;
+    display: block;
+    background: #000;
+    object-fit: contain;
+}
+
+.review-image-popup {
+    background: #f6f6f6;
+}
+
+.review-image-popup img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+    background: #000;
+}
+
+.review-video-popup-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 999px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    color: #1f1f1f;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1;
+    cursor: pointer;
+    z-index: 4;
+    font-family: "Montserrat", "Trebuchet MS", sans-serif;
+    border: none;
+}
+
 .whatsapp {
     position: fixed;
     bottom: 90px;
@@ -674,6 +1072,95 @@
 
     .spec-grid {
         grid-template-columns: 1fr;
+    }
+
+    .item-reviews {
+        margin-top: 16px;
+        padding: 14px 12px;
+        border-radius: 0;
+        border-left: 0;
+        border-right: 0;
+        box-shadow: none;
+    }
+
+    .item-reviews-layout {
+        grid-template-columns: 108px minmax(0, 1fr);
+        gap: 14px;
+        align-items: start;
+        padding-top: 14px;
+    }
+
+    .item-rating-summary {
+        padding-right: 12px;
+        min-height: 92px;
+        justify-content: center;
+    }
+
+    .item-rating-row {
+        grid-template-columns: 24px minmax(0, 1fr) 26px;
+        gap: 6px;
+    }
+
+    .item-rating-score {
+        font-size: 28px;
+    }
+
+    .item-rating-score i {
+        font-size: 18px;
+    }
+
+    .item-rating-count {
+        font-size: 11px;
+        line-height: 1.35;
+    }
+
+    .item-rating-label,
+    .item-rating-value {
+        font-size: 11px;
+    }
+
+    .item-reviews-subheader {
+        margin-top: 14px;
+        padding-top: 14px;
+        font-size: 13px;
+    }
+
+    .item-review-topline {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        gap: 6px;
+    }
+
+    .item-review-card {
+        padding: 12px;
+        border-radius: 8px;
+    }
+
+    .item-review-text {
+        margin-top: 8px;
+        font-size: 12px;
+        line-height: 1.55;
+    }
+
+    .item-review-meta {
+        gap: 8px;
+    }
+
+    .item-review-media {
+        margin-top: 10px;
+        gap: 8px;
+    }
+
+    .item-review-image-trigger,
+    .item-review-video-trigger {
+        width: 84px;
+        height: 84px;
+    }
+
+    .review-video-popup {
+        width: calc(100vw - 24px);
+        padding: 12px;
     }
 }
 .actionImge{
@@ -859,4 +1346,3 @@
     margin-top: 14px;
     font-family: "Montserrat", "Trebuchet MS", sans-serif;
 }
-

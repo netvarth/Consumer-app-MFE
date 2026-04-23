@@ -164,4 +164,19 @@ export class WishlistService {
   private emitIds(): void {
     this.idsSubject.next(new Set(this.itemsMap.keys()));
   }
+
+  addFeedbackForItem(payload: any) {
+    const url = 'consumer/sorder/item/feedback';
+    return this.serviceMeta.httpPost(url, payload);
+  }
+
+  getItemReviews(filter: any) {
+    const url = 'consumer/sorder/item/feedback';
+    return this.serviceMeta.httpGet(url, null, filter);
+  }
+
+  updateFeedbackForItem(payload, uid) {
+    const url = 'consumer/sorder/item/feedback/' + uid;
+    return this.serviceMeta.httpPut(url, payload);
+  }
 }
