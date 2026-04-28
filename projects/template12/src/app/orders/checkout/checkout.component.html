@@ -351,6 +351,10 @@
             <span>Tax Total</span>
             <span>&#8377;{{ getTaxTotalAmount() | number: '1.2-2' }}</span>
           </div>
+          <div class="pricing-row" *ngIf="getDeliveryChargesAmount() > 0">
+            <span>Delivery Charge</span>
+            <span>&#8377;{{ getDeliveryChargesAmount() | number: '1.2-2' }}</span>
+          </div>
           <div class="pricing-row">
             <span>Total With Tax</span>
             <span>&#8377;{{ getNetTotalWithTax() | number: '1.2-2' }}</span>

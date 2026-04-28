@@ -1005,6 +1005,16 @@ confirm() {
     return 0;
   }
 
+  getDeliveryChargesAmount(): number {
+    if (this.cartData?.deliveryCharges != null) {
+      return this.toNumber(this.cartData.deliveryCharges);
+    }
+    if (this.orderData?.deliveryCharges != null) {
+      return this.toNumber(this.orderData.deliveryCharges);
+    }
+    return 0;
+  }
+
   getNetTotalWithTax(): number {
     return this.getTotalBeforeTax() + this.getTaxTotalAmount();
   }

@@ -351,6 +351,13 @@ export class CartComponent implements OnInit {
     ) || 0;
   }
 
+  getDeliveryCharges(cartData: any): number {
+    if (!cartData) {
+      return 0;
+    }
+    return Number(cartData.deliveryCharges ?? 0) || 0;
+  }
+
   // goBack() {
   //   this.location.back();
   // }
