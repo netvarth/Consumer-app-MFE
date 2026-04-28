@@ -142,7 +142,10 @@
                                     </button>
                                 </div>
                             </div>
-                           
+                            <div class="summary-row" *ngIf="getDeliveryCharges(cartDataHome) > 0">
+                                <span>Delivery Charge</span>
+                                <span>₹{{getAmountInDecimalPoints(getDeliveryCharges(cartDataHome))}}</span>
+                            </div>
                             <div class="summary-row" *ngIf="getPlatformFee(cartDataHome) > 0">
                                 <span>Platform Fee</span>
                                 <span>₹{{getAmountInDecimalPoints(getPlatformFee(cartDataHome))}}</span>
