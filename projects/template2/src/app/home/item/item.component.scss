@@ -96,22 +96,27 @@
     grid-area: 1 / 1;
     opacity: 0;
     transition: opacity 0.25s ease;
+    pointer-events: none;
 }
 
 .item-preview-inner:not(.is-video) .item-media-image {
     opacity: 1;
+    pointer-events: auto;
 }
 
 .item-preview-inner.is-video .item-media-image {
     opacity: 1;
+    pointer-events: auto;
 }
 
 .item-preview-inner.is-video.video-ready .item-media-image {
     opacity: 0;
+    pointer-events: none;
 }
 
 .item-preview-inner.is-video.video-ready .item-media-video {
     opacity: 1;
+    pointer-events: auto;
 }
 
 .item-info {

@@ -14,6 +14,7 @@ import { AccordionModule } from 'primeng/accordion';
 import { DropdownModule } from 'primeng/dropdown';
 import { DialogService } from 'primeng/dynamicdialog';
 import { MessageService } from 'primeng/api';
+import { ImageVideoViewerComponent } from '../../shared/image-video-viewer/image-video-viewer.component';
 
 const routes: Routes = [
   { path: '', component: ItemComponent}
@@ -34,6 +35,7 @@ const routes: Routes = [
     ErrrorMessageModule,
     DropdownModule,
     AuthenticationModule,
+    ImageVideoViewerComponent,
     RouterModule.forChild(routes)
   ],
   exports: [

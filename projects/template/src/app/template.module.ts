@@ -40,6 +40,7 @@ const routes: Routes = [
       // 
       return loadRemoteModule({
         remoteEntry: getVersionedRemoteEntry(remoteEntry),
+        // remoteEntry: remoteEntry,
         exposedModule: './DynamicHome'
       }).then(m => m.HomeGeneratorModule)
         .catch(err => {

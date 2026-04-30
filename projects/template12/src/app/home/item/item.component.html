@@ -27,7 +27,8 @@
                     <div class="item-selector item-width" *ngIf="thumbnailAttachments?.length > 0">
                         <div class="item pointer-cursor" *ngFor="let attachment of thumbnailAttachments"
                             [class.selected]="selectedItemImage?.s3path === attachment?.s3path"
-                            (click)="setSelectedItemImage(attachment)">
+                            (click)="setSelectedItemImage(attachment)"
+                            (dblclick)="openItemMediaViewer(attachment)">
                             <ng-container *ngIf="isVideoAttachment(attachment); else imageThumb">
                                 <div class="item-thumb-video-wrapper" aria-label="Video attachment">
                                     <i class="fa fa-play item-thumb-video-icon" aria-hidden="true"></i>
@@ -56,18 +57,19 @@
                         <div *ngIf="selectedItemImage"
                              class="item-preview-inner"
                              [class.is-video]="isVideoAttachment(selectedItemImage)"
-                             [class.video-ready]="isVideoReady">
+                             [class.video-ready]="isVideoReady"
+                             (click)="openItemMediaViewer(selectedItemImage)">
                             <div class="item-media-layer item-media-image">
                                 <ng-container *ngIf="isVideoAttachment(selectedItemImage); else previewableImage">
                                     <img [src]="getPreviewImageSrc(selectedItemImage)" alt="Video preview" width="100%"
                                         (error)="handlePreviewImageError($event)">
                                 </ng-container>
                                 <ng-template #previewableImage>
-                                    <p-image [src]="getPreviewImageSrc(selectedItemImage)" alt="Image" [preview]="true" height="auto"
+                                    <p-image [src]="getPreviewImageSrc(selectedItemImage)" alt="Image" [preview]="false" height="auto"
                                         width="100%"></p-image>
                                 </ng-template>
                             </div>
-                            <div class="item-media-layer item-media-video">
+                            <div class="item-media-layer item-media-video" *ngIf="isVideoAttachment(selectedItemImage)">
                                 <video class="item-video"
                                        [src]="selectedItemImage.s3path"
                                        [attr.poster]="getVideoPoster(selectedItemImage)"
@@ -86,7 +88,7 @@
                                        (abort)="onVideoError()"
                                        (waiting)="onVideoWaiting()"></video>
                                 <div class="item-video-controls" *ngIf="isVideoAttachment(selectedItemImage)">
-                                    <button type="button" class="item-video-mute" (click)="toggleVideoMute()">
+                                    <button type="button" class="item-video-mute" (click)="$event.stopPropagation(); toggleVideoMute()">
                                         {{ isVideoMuted ? 'Unmute' : 'Mute' }}
                                     </button>
                                 </div>
@@ -385,6 +387,12 @@
     </div>
 </div>
 
+<app-image-video-viewer
+    *ngIf="showItemMediaViewer"
+    [media]="itemViewerMedia"
+    [initialIndex]="itemMediaViewerIndex"
+    (closed)="closeItemMediaViewer()">
+</app-image-video-viewer>
 <div class="review-video-popup-backdrop" *ngIf="showReviewVideoPopup" (click)="closeReviewVideoPopup()"></div>
 <div class="review-video-popup" *ngIf="showReviewVideoPopup" (click)="$event.stopPropagation()">
     <button type="button" class="review-video-popup-close" (click)="closeReviewVideoPopup()" aria-label="Close video">

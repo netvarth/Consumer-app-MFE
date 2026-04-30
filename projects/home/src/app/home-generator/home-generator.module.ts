@@ -40,6 +40,7 @@ routes.push(
       //  remoteEntry: getVersionedRemoteEntry(remoteUrl),
       return loadRemoteModule({
         remoteEntry: getVersionedRemoteEntry(remoteUrl),
+        // remoteEntry: remoteUrl,
         exposedModule: './Home'
       }).then(m => m.HomeModule);
     }

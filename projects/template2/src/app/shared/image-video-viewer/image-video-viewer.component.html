@@ -1,0 +1,35 @@
+<div class="ivv-backdrop" *ngIf="visible && media?.length" [style.--ivv-duration]="animationDuration + 'ms'">
+  <button type="button" class="ivv-close" (click)="close()" aria-label="Close viewer">
+    <span aria-hidden="true">&times;</span>
+  </button>
+  <button type="button" class="ivv-nav ivv-nav-prev" (click)="prev()" [disabled]="activeIndex === 0" aria-label="Previous media">
+    <span aria-hidden="true">&#8249;</span>
+  </button>
+  <button type="button" class="ivv-nav ivv-nav-next" (click)="next()" [disabled]="activeIndex === media.length - 1" aria-label="Next media">
+    <span aria-hidden="true">&#8250;</span>
+  </button>
+
+  <div class="ivv-stage" [class.is-zoomed]="scale > 1" (wheel)="onWheel($event)" (pointerdown)="onStagePointerDown($event)"
+    (pointermove)="onStagePointerMove($event)" (pointerup)="onStagePointerUp($event)" (pointercancel)="onStagePointerUp($event)"
+    (touchstart)="onTouchStart($event)" (touchmove)="onTouchMove($event)">
+    <div class="ivv-track" [class.is-dragging]="isDragging" [style.transform]="trackTransform">
+      <div class="ivv-slide" *ngFor="let item of media; let index = index">
+        <ng-container *ngIf="shouldRender(index)">
+          <img *ngIf="item.type === 'image'" class="ivv-image" [src]="item.src" [alt]="item.alt || 'Media image'"
+            loading="lazy" draggable="false"
+            [style.transform]="index === activeIndex ? 'translate3d(' + translateX + 'px,' + translateY + 'px,0) scale(' + scale + ')' : ''"
+            (dblclick)="onImageDoubleClick()" (click)="onImageTap()">
+          <video *ngIf="item.type === 'video'" #viewerVideo class="ivv-video" [src]="item.src" [poster]="item.poster || null"
+            [attr.data-index]="index" controls playsinline preload="metadata" controlsList="nodownload">
+          </video>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <div class="ivv-dots" *ngIf="media.length > 1" aria-label="Media pagination">
+    <button type="button" class="ivv-dot" *ngFor="let item of media; let index = index" [class.is-active]="index === activeIndex"
+      (click)="goTo(index)" [attr.aria-label]="'Show media ' + (index + 1)">
+    </button>
+  </div>
+</div>

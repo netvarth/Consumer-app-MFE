@@ -19,6 +19,7 @@ import { FillQnrComponent } from '../fill-qnr/fill-qnr.component';
 import { ItemService } from './item.service';
 import { Subscription } from 'rxjs';
 import { WishlistService } from '../../shared/wishlist.service';
+import { ImageVideoViewerMedia } from '../../shared/image-video-viewer/image-video-viewer.component';
 
 @Component({
   selector: 'app-item',
@@ -121,6 +122,9 @@ export class ItemComponent implements OnInit, OnDestroy {
   reviewVideoLoading = false;
   showReviewImagePopup = false;
   selectedReviewImageUrl = '';
+  showItemMediaViewer = false;
+  itemMediaViewerIndex = 0;
+  itemViewerMedia: ImageVideoViewerMedia[] = [];
   reviewMediaLoadedState: { [url: string]: boolean } = {};
   private mediaLoadToken = 0;
   private mediaLoadFallbackTimer: any;
@@ -131,6 +135,20 @@ export class ItemComponent implements OnInit, OnDestroy {
   onResize() {
     if (window.innerWidth < 768) {
       this.isSmallDevice = true;
+    }
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscapeKey(): void {
+    if (this.showItemMediaViewer) {
+      this.closeItemMediaViewer();
+      return;
+    }
+    if (this.showReviewVideoPopup) {
+      this.closeReviewVideoPopup();
+    }
+    if (this.showReviewImagePopup) {
+      this.closeReviewImagePopup();
     }
   }
   constructor(
@@ -805,6 +823,44 @@ export class ItemComponent implements OnInit, OnDestroy {
     this.trackSelectedMediaLoad(item);
   }
 
+
+  openItemMediaViewer(attachment?: any): void {
+    const media = this.getItemViewerMedia();
+    if (!media.length) {
+      return;
+    }
+    const selected = attachment || this.selectedItemImage;
+    const selectedSrc = selected?.s3path || selected?.src;
+    const foundIndex = media.findIndex((item) => item.src === selectedSrc);
+    this.itemMediaViewerIndex = foundIndex >= 0 ? foundIndex : 0;
+    this.itemViewerMedia = media;
+    this.showItemMediaViewer = true;
+  }
+
+  closeItemMediaViewer(): void {
+    this.showItemMediaViewer = false;
+    this.itemViewerMedia = [];
+  }
+
+  getItemViewerMedia(): ImageVideoViewerMedia[] {
+    const attachments = this.thumbnailAttachments?.length
+      ? this.thumbnailAttachments
+      : (this.selectedItemImage ? [this.selectedItemImage] : []);
+    return attachments
+      .map((attachment: any) => {
+        const src = attachment?.s3path || attachment?.src;
+        if (!src) {
+          return null;
+        }
+        return {
+          type: this.isVideoAttachment(attachment) ? 'video' : 'image',
+          src,
+          poster: this.isVideoAttachment(attachment) ? this.getVideoPoster(attachment) : undefined,
+          alt: attachment?.caption || attachment?.fileName || this.getShareItemName()
+        } as ImageVideoViewerMedia;
+      })
+      .filter((media: ImageVideoViewerMedia | null): media is ImageVideoViewerMedia => !!media);
+  }
   handleImageError(event: any) {
     // Fallback to default image if image fails to load
     if (this.isVideoAttachment(this.selectedItemImage)) {
