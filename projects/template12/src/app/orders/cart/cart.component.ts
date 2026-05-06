@@ -596,9 +596,157 @@ export class CartComponent implements OnInit {
         this.lStorageService.setitemonLocalStorage('storeEncId', fallbackStoreEncId);
       }
     }
+    if (input?.action === 'addToCart' && !this.isVirtualCatalogItem(target)) {
+      this.addCatalogItemToCart(target);
+      return;
+    }
+
     if (encId) {
       this.router.navigate([this.sharedService.getRouteID(), 'item', encId]);
     }
+  }
+
+  private addCatalogItemToCart(item: any) {
+    if (!item) {
+      return;
+    }
+    const catalogItemEncId = this.getCatalogItemEncId(item);
+    if (!catalogItemEncId) {
+      this.toastService.showError('Item not available');
+      return;
+    }
+    const quantity = 1;
+    const deliveryType = this.resolveCartDeliveryType(item);
+    this.authService.goThroughLogin().then((status) => {
+      if (status) {
+        this.loggedIn = true;
+        this.loggedUser = this.groupService.getitemFromGroupStorage('jld_scon');
+        this.ensureStoreEncId().then((hasStore) => {
+          if (!hasStore) {
+            this.toastService.showError('Store not available');
+            return;
+          }
+          const cartInfo = {
+            store: {
+              encId: this.storeEncId
+            },
+            providerConsumer: {
+              id: this.loggedUser.providerConsumer
+            },
+            deliveryType,
+            items: [
+              {
+                catalogItem: {
+                  encId: catalogItemEncId
+                },
+                quantity
+              }
+            ],
+            orderCategory: 'SALES_ORDER',
+            orderSource: 'PROVIDER_CONSUMER'
+          };
+          this.orderService.createCart(cartInfo).subscribe(
+            () => {
+              this.toastService.showSuccess('Item added to cart');
+              this.subscriptionService.sendMessage({ ttype: 'refresh', value: 'refresh' });
+              this.getCart();
+            },
+            (error) => {
+              const errorObj = this.errorService.getApiError(error);
+              this.toastService.showError(errorObj);
+            }
+          );
+        });
+        return;
+      }
+      this.addCatalogItemToLocalCart(item, deliveryType, quantity);
+    });
+  }
+
+  private addCatalogItemToLocalCart(item: any, deliveryType: 'HOME_DELIVERY' | 'STORE_PICKUP', quantity: number) {
+    const cartData = this.lStorageService.getitemfromLocalStorage('cartData') || {
+      HOME_DELIVERY: { items: [], netTotal: 0, taxTotal: 0, netRate: 0 },
+      STORE_PICKUP: { items: [], netTotal: 0, taxTotal: 0, netRate: 0 }
+    };
+    if (!cartData[deliveryType]) {
+      cartData[deliveryType] = { items: [], netTotal: 0, taxTotal: 0, netRate: 0 };
+    }
+    const targetCart = cartData[deliveryType];
+    const orderList = targetCart.items || [];
+    const encId = this.getCatalogItemEncId(item);
+    if (!encId) {
+      this.toastService.showError('Item not available');
+      return;
+    }
+    const existingItem = orderList.find((orderItem: any) => this.getCatalogItemEncId(orderItem) === encId);
+    if (existingItem) {
+      existingItem.quantity = (Number(existingItem.quantity) || 1) + quantity;
+      this.updateLocalCartItemTotals(existingItem);
+    } else {
+      const newItem = {
+        ...item,
+        quantity,
+        price: item.price || 0,
+        netTotal: quantity * (item.taxableAmount || item.price || 0),
+        totalTaxAmount: quantity * (item.taxAmount || 0),
+        netRate: quantity * (item.price || 0)
+      };
+      orderList.push(newItem);
+    }
+    targetCart.items = orderList;
+    this.updateLocalCartTotals(targetCart);
+    this.lStorageService.setitemonLocalStorage('cartData', cartData);
+    this.cartData = cartData;
+    this.items = cartData?.HOME_DELIVERY?.items || [];
+    this.cartDataHome = cartData?.HOME_DELIVERY;
+    this.storeItems = cartData?.STORE_PICKUP?.items || [];
+    this.cartDataStore = cartData?.STORE_PICKUP;
+    this.supportAllDelivery = this.items.length > 0 && this.storeItems.length > 0;
+    this.setTabItems();
+    const totalItems = this.items.length + this.storeItems.length;
+    this.subscriptionService.sendMessage({ ttype: 'cartChanged', value: totalItems });
+    this.subscriptionService.sendMessage({ ttype: 'refresh', value: 'refresh' });
+    this.toastService.showSuccess('Item added to cart');
+  }
+
+  private updateLocalCartItemTotals(item: any) {
+    const quantity = Number(item.quantity) || 1;
+    item.netTotal = quantity * (item.taxableAmount || item.price || 0);
+    item.totalTaxAmount = quantity * (item.taxAmount || 0);
+    item.netRate = quantity * (item.price || 0);
+  }
+
+  private updateLocalCartTotals(cart: any) {
+    const orderList = cart.items || [];
+    cart.netTotal = orderList.reduce((total, item) => total + (Number(item.netTotal) || 0), 0);
+    cart.taxTotal = orderList.reduce((total, item) => total + (Number(item.totalTaxAmount) || 0), 0);
+    cart.netRate = orderList.reduce((total, item) => total + (Number(item.netRate) || 0), 0);
+  }
+
+  private resolveCartDeliveryType(item: any): 'HOME_DELIVERY' | 'STORE_PICKUP' {
+    const prefersHome = this.showHomeDelivery || !this.showStorePickup;
+    const homeDelivery = item?.homeDelivery ?? item?.spItemDto?.homeDelivery ?? item?.spItem?.homeDelivery;
+    const storePickup = item?.storePickup ?? item?.spItemDto?.storePickup ?? item?.spItem?.storePickup;
+    if (prefersHome && homeDelivery !== false) {
+      return 'HOME_DELIVERY';
+    }
+    if (!prefersHome && storePickup !== false) {
+      return 'STORE_PICKUP';
+    }
+    return homeDelivery ? 'HOME_DELIVERY' : 'STORE_PICKUP';
+  }
+
+  private isVirtualCatalogItem(item: any): boolean {
+    return item?.itemNature === 'VIRTUAL_ITEM'
+      || item?.spItemDto?.itemNature === 'VIRTUAL_ITEM'
+      || item?.spItem?.itemNature === 'VIRTUAL_ITEM';
+  }
+
+  private getCatalogItemEncId(item: any): any {
+    return item?.encId
+      || item?.catalogItem?.encId
+      || item?.spItem?.encId
+      || item?.spItemDto?.encId;
   }
 
   private loadSimilarItems() {

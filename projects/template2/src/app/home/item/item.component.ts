@@ -1324,16 +1324,165 @@ export class ItemComponent implements OnInit, OnDestroy {
   }
 
   cartActionPerformed(input: any) {
-    if (input.action == 'addToCart') {
-      this.virtualItem = false;
-      this.itemDeliveryType = input?.itemDeliveryType;
-      this.itemActionPerformed(input.value.encId);
-      setTimeout(() => {
-        this.addToCart(null);
-      }, 200);
-    } else {
+    if (input.action == 'addToCart' && !this.isVirtualCatalogItem(input.value)) {
+      this.addCatalogItemToCart(input.value);
+      return;
+    }
+    if (input.value?.encId) {
       this.viewItems(input.value);
     }
+  }
+
+  private addCatalogItemToCart(item: any) {
+    if (!item) {
+      return;
+    }
+    const catalogItemEncId = this.getCatalogItemEncId(item);
+    if (!catalogItemEncId) {
+      this.toastService.showError('Item not available');
+      return;
+    }
+    const quantity = 1;
+    const deliveryType = this.resolveCatalogItemDeliveryType(item);
+    this.authService.goThroughLogin().then((status: any) => {
+      if (status) {
+        this.loggedIn = true;
+        this.loggedUser = this.groupService.getitemFromGroupStorage('jld_scon');
+        this.isLogin = false;
+        const storeEncId = this.resolveStoreEncId(item);
+        if (!storeEncId) {
+          this.toastService.showError('Store not available');
+          return;
+        }
+        const cartInfo = {
+          store: {
+            encId: storeEncId
+          },
+          providerConsumer: {
+            id: this.loggedUser.providerConsumer
+          },
+          deliveryType,
+          items: [
+            {
+              catalogItem: {
+                encId: catalogItemEncId
+              },
+              quantity
+            }
+          ],
+          orderCategory: 'SALES_ORDER',
+          orderSource: 'PROVIDER_CONSUMER'
+        };
+        this.orderService.createCart(cartInfo).subscribe(
+          () => {
+            this.toastService.showSuccess('Item added to cart');
+            this.subscriptionService.sendMessage({ ttype: 'refresh', value: 'refresh' });
+            this.setAnalytics('addToCart');
+          },
+          (error: any) => {
+            const errorObj = this.errorService.getApiError(error);
+            this.toastService.showError(errorObj);
+          }
+        );
+        return;
+      }
+      if (!this.isSessionCart) {
+        this.addCatalogItemToLocalCart(item, deliveryType, quantity);
+        return;
+      }
+      this.loggedIn = false;
+      this.isLogin = true;
+    });
+  }
+
+  private addCatalogItemToLocalCart(item: any, deliveryType: 'HOME_DELIVERY' | 'STORE_PICKUP', quantity: number) {
+    const encId = this.getCatalogItemEncId(item);
+    if (!encId) {
+      this.toastService.showError('Item not available');
+      return;
+    }
+    const cartData = this.lStorageService.getitemfromLocalStorage('cartData') || {
+      HOME_DELIVERY: { items: [], netTotal: 0, taxTotal: 0, netRate: 0 },
+      STORE_PICKUP: { items: [], netTotal: 0, taxTotal: 0, netRate: 0 }
+    };
+    if (!cartData[deliveryType]) {
+      cartData[deliveryType] = { items: [], netTotal: 0, taxTotal: 0, netRate: 0 };
+    }
+    const targetCart = cartData[deliveryType];
+    const orderList = targetCart.items || [];
+    const existingItem = orderList.find((orderItem: any) => this.getCatalogItemEncId(orderItem) === encId);
+    if (existingItem) {
+      existingItem.quantity = (Number(existingItem.quantity) || 1) + quantity;
+      this.updateLocalCartItemTotals(existingItem);
+    } else {
+      orderList.push({
+        ...item,
+        quantity,
+        price: item.price || 0,
+        netTotal: quantity * (item.taxableAmount || item.price || 0),
+        totalTaxAmount: quantity * (item.taxAmount || 0),
+        netRate: quantity * (item.price || 0)
+      });
+    }
+    targetCart.items = orderList;
+    this.updateLocalCartTotals(targetCart);
+    this.lStorageService.setitemonLocalStorage('cartData', cartData);
+    const totalItems = (cartData.HOME_DELIVERY?.items?.length || 0) + (cartData.STORE_PICKUP?.items?.length || 0);
+    this.subscriptionService.sendMessage({ ttype: 'cartChanged', value: totalItems });
+    this.subscriptionService.sendMessage({ ttype: 'refresh', value: 'refresh' });
+    this.toastService.showSuccess('Item added to cart');
+    this.setAnalytics('addToCart');
+  }
+
+  private updateLocalCartItemTotals(item: any) {
+    const quantity = Number(item.quantity) || 1;
+    item.netTotal = quantity * (item.taxableAmount || item.price || 0);
+    item.totalTaxAmount = quantity * (item.taxAmount || 0);
+    item.netRate = quantity * (item.price || 0);
+  }
+
+  private updateLocalCartTotals(cart: any) {
+    const orderList = cart.items || [];
+    cart.netTotal = orderList.reduce((total, item) => total + (Number(item.netTotal) || 0), 0);
+    cart.taxTotal = orderList.reduce((total, item) => total + (Number(item.totalTaxAmount) || 0), 0);
+    cart.netRate = orderList.reduce((total, item) => total + (Number(item.netRate) || 0), 0);
+  }
+
+  private resolveCatalogItemDeliveryType(item: any): 'HOME_DELIVERY' | 'STORE_PICKUP' {
+    const homeDelivery = item?.homeDelivery ?? item?.spItemDto?.homeDelivery ?? item?.spItem?.homeDelivery;
+    const storePickup = item?.storePickup ?? item?.spItemDto?.storePickup ?? item?.spItem?.storePickup;
+    if (this.itemDeliveryType === 'STORE_PICKUP' && storePickup !== false) {
+      return 'STORE_PICKUP';
+    }
+    if (homeDelivery !== false) {
+      return 'HOME_DELIVERY';
+    }
+    return 'STORE_PICKUP';
+  }
+
+  private resolveStoreEncId(item: any): any {
+    const storeEncId = this.storeEncId
+      || this.accountService.getActiveStore()
+      || this.lStorageService.getitemfromLocalStorage('storeEncId')
+      || item?.store?.encId;
+    if (storeEncId) {
+      this.storeEncId = storeEncId;
+      this.lStorageService.setitemonLocalStorage('storeEncId', storeEncId);
+    }
+    return storeEncId;
+  }
+
+  private isVirtualCatalogItem(item: any): boolean {
+    return item?.itemNature === 'VIRTUAL_ITEM'
+      || item?.spItemDto?.itemNature === 'VIRTUAL_ITEM'
+      || item?.spItem?.itemNature === 'VIRTUAL_ITEM';
+  }
+
+  private getCatalogItemEncId(item: any): any {
+    return item?.encId
+      || item?.catalogItem?.encId
+      || item?.spItem?.encId
+      || item?.spItemDto?.encId;
   }
 
   toggleContent() {

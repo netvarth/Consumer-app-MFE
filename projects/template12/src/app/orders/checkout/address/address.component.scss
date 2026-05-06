@@ -615,7 +615,7 @@
   }
 
   .section-title {
-    font-size: 11px;
+    font-size: 15px;
   }
 
   .form-grid {
@@ -631,19 +631,19 @@
   }
 
   .field label {
-    font-size: 10px;
+    font-size: 14px;
   }
 
   .field input,
   .field textarea,
   ::ng-deep ngx-intl-tel-input input {
     padding: 7px 9px;
-    font-size: 11px !important;
+    font-size: 15px !important;
     border-radius: 4px !important;
   }
 
   .helper-text {
-    font-size: 9px;
+    font-size: 13px;
   }
 
   .address-type {
@@ -652,12 +652,12 @@
 
   .radio-pill {
     padding: 4px 8px;
-    font-size: 10px;
+    font-size: 14px;
     gap: 4px;
   }
 
   .default-check {
-    font-size: 10px;
+    font-size: 14px;
     gap: 6px;
     margin-top: 6px;
   }
@@ -669,7 +669,7 @@
   .btn-save,
   .btn-cancel {
     padding: 8px 14px;
-    font-size: 11px;
+    font-size: 15px;
   }
 
   // Radio button adjustments for mobile
