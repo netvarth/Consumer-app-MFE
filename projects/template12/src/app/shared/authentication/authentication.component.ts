@@ -147,6 +147,12 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
       this.setupResponsiveGoogleButton();
     });
   }
+
+  private resolveGoogleIntegration(): boolean {
+    const effectiveAccountConfig = this.accountConfig || this.sharedService.getAccountConfig();
+    return effectiveAccountConfig?.['googleIntegration'] !== false;
+  }
+
   ngOnInit(): void {
     this.lStorageService.removeitemfromLocalStorage('login');
     this.lStorageService.removeitemfromLocalStorage('logout');
@@ -165,10 +171,8 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
       || null;
     this.loadCartSummary();
     //
-    if (this.accountConfig && this.accountConfig['googleIntegration'] === false) {
-      this.googleIntegration = false;
-    } else {
-      this.googleIntegration = true;
+    this.googleIntegration = this.resolveGoogleIntegration();
+    if (this.googleIntegration) {
       setTimeout(() => {
         if (this.googleIntegration && this.googleBtnNew) {
           this.initGoogleButton();

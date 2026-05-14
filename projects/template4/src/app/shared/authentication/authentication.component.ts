@@ -214,6 +214,11 @@ export class AuthenticationComponent implements OnInit, OnDestroy, AfterViewInit
     }
   }
 
+  private resolveGoogleIntegration(): boolean {
+    const effectiveAccountConfig = this.accountConfig || this.accountConfiguration;
+    return effectiveAccountConfig?.['googleIntegration'] !== false;
+  }
+
 
   ngOnInit(): void {
 
@@ -231,16 +236,12 @@ export class AuthenticationComponent implements OnInit, OnDestroy, AfterViewInit
     this.setLoginProperties();
 
     // console.log("Account Configuration:", this.accountConfiguration);
-    if (this.accountConfig && this.accountConfig['googleIntegration'] === false) {
-      this.googleIntegration = false;
-    } else {
-      this.googleIntegration = true;
-      if (this.googleIntegration && !(this.isAndroidBridgeAvailable || this.isIOSBridgeAvailable)) {
-        // Render after Angular finishes the first pass; handles *ngIf async DOM
-        setTimeout(() => {
-          this.initGoogleButton();
-        });
-      }
+    this.googleIntegration = this.resolveGoogleIntegration();
+    if (this.googleIntegration && !(this.isAndroidBridgeAvailable || this.isIOSBridgeAvailable)) {
+      // Render after Angular finishes the first pass; handles *ngIf async DOM
+      setTimeout(() => {
+        this.initGoogleButton();
+      });
     }
     this.loading = false;
     this.resetCounter(this.refreshTime);
