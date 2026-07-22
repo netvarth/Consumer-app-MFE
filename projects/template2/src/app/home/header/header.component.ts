@@ -96,11 +96,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
       } else {
         if (this.lStorageService.getitemfromLocalStorage('cartData')) {
           let cartData = this.lStorageService.getitemfromLocalStorage('cartData');
-          const hdCount = cartData?.HOME_DELIVERY?.items?.length || 0;
-          const spCount = cartData?.STORE_PICKUP?.items?.length || 0;
+          const hdCount = (cartData?.HOME_DELIVERY?.items || []).filter((item: any) => !item?.buyNow).length || 0;
+          const spCount = (cartData?.STORE_PICKUP?.items || []).filter((item: any) => !item?.buyNow).length || 0;
 
           if (hdCount > 0 || spCount > 0) {
             this.cartCount = hdCount + spCount;
+          } else {
+            this.cartCount = 0;
           }
         } else {
           this.isLoggedIn = false;
@@ -112,12 +114,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
   setCartCount(userID: any) {
     this.orderService.getCart(userID).subscribe(
       (cartInfo: any) => {
-        const count1 = cartInfo[0]?.items?.length || 0;
-        const count2 = cartInfo[1]?.items?.length || 0;
+        const carts = Array.isArray(cartInfo) ? cartInfo : [cartInfo];
+        const regularCarts = carts.filter((cart: any) => !cart?.buyNow);
+        const count = regularCarts.reduce((total: number, cart: any) => total + (cart?.items?.length || 0), 0);
 
-        if (count1 > 0 || count2 > 0) {
-          this.cartCount = count1 + count2;
-        }
+        this.cartCount = count;
       }
     )
   }

@@ -150,6 +150,10 @@
                                 <span>Platform Fee</span>
                                 <span>₹{{getAmountInDecimalPoints(getPlatformFee(cartDataHome))}}</span>
                             </div>
+                            <div class="d-flex justify-content-between free mt-2"
+                                *ngIf="cartDataHome?.amountForFreeDelivery > 0" style="color: #1fbb72;">
+                                <div>Add &#8377;{{ cartDataHome?.amountForFreeDelivery | number: '1.2-2' }} more to your cart to unlock <strong>FREE</strong> delivery.</div>
+                            </div>
                             <div class="summary-total" *ngIf="cartDataHome.netRate">
                                 <span>Total Amount</span>
                                 <span>₹{{getAmountInDecimalPoints(cartDataHome.netRate)}}</span>

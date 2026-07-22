@@ -355,6 +355,10 @@
             <span>Delivery Charge</span>
             <span>&#8377;{{ getDeliveryChargesAmount() | number: '1.2-2' }}</span>
           </div>
+          <div class="pricing-row" *ngIf="cartData?.amountForFreeDelivery > 0" style="color: #1fbb72;">
+            <span>Add &#8377;{{ cartData?.amountForFreeDelivery | number: '1.2-2' }} more to unlock <strong>FREE</strong> delivery.</span>
+            <span></span>
+          </div>
           <div class="pricing-row">
             <span>Total With Tax</span>
             <span>&#8377;{{ getNetTotalWithTax() | number: '1.2-2' }}</span>
