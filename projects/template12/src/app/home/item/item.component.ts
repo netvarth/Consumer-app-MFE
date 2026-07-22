@@ -1001,7 +1001,8 @@ export class ItemComponent implements OnInit, OnDestroy {
               this.questionnaireList = data;
               const navigationExtras: NavigationExtras = {
                 queryParams: {
-                  deliveryType: this.itemDeliveryType
+                  deliveryType: this.itemDeliveryType,
+                  buyNow: !!param
                 }
               }
               console.log(this.questionnaireList)
@@ -1018,7 +1019,7 @@ export class ItemComponent implements OnInit, OnDestroy {
                     this.questionAnswers = result
                     if (this.questionAnswers.answers.answerLine && this.questionAnswers.answers.answerLine.length > 0) {
                       this.lStorageService.setitemonLocalStorage('serviceOPtionInfo', this.questionAnswers);
-                      _this.createCart().then(data => {
+                      _this.createCart(!!param).then(data => {
                         _this.cartId = data;
                         if (!data) {
                           _this.finishAddToCartLoading(preservedScrollY);
@@ -1037,7 +1038,7 @@ export class ItemComponent implements OnInit, OnDestroy {
                       })
                     }
                   } else {
-                    _this.createCart().then(data => {
+                    _this.createCart(!!param).then(data => {
                       _this.cartId = data;
                       if (!data) {
                         _this.finishAddToCartLoading(preservedScrollY);
@@ -1058,7 +1059,7 @@ export class ItemComponent implements OnInit, OnDestroy {
                 });
               }
               else {
-                _this.createCart().then(data => {
+                _this.createCart(!!param).then(data => {
                   _this.cartId = data;
                   if (!data) {
                     _this.finishAddToCartLoading(preservedScrollY);
@@ -1278,7 +1279,7 @@ export class ItemComponent implements OnInit, OnDestroy {
   //     );
   //   });
   // }
-  createCart() {
+  createCart(buyNow: boolean = false) {
     if (!this.resolveStoreContext()) {
       this.toastService.showError('Store information is unavailable. Please refresh and try again.');
       return Promise.resolve(false);
@@ -1301,6 +1302,7 @@ export class ItemComponent implements OnInit, OnDestroy {
           quantity: this.quantity
         }
       ],
+      buyNow,
       orderCategory: 'SALES_ORDER',
       orderSource: 'PROVIDER_CONSUMER'
     };

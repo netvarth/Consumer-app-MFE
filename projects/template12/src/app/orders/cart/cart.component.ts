@@ -58,6 +58,7 @@ export class CartComponent implements OnInit {
   storeItems: any[];
   cartDataStore: any = [];
   cartDataHome: any = [];
+  isBuyNow: boolean = false;
   similarItemsHome: any[] = [];
   similarItemsStore: any[] = [];
   private storeEncIdValidated = false;
@@ -103,6 +104,11 @@ export class CartComponent implements OnInit {
     this.activatedRoute.queryParams.subscribe(qparams => {
       if (qparams && qparams['target']) {
         this.target = qparams['target'];
+      }
+      if (qparams && qparams['buyNow'] !== undefined) {
+        this.isBuyNow = qparams['buyNow'] === true || qparams['buyNow'] === 'true';
+      } else {
+        this.isBuyNow = false;
       }
     })
     this.storeEncId = this.lStorageService.getitemfromLocalStorage('storeEncId')
@@ -364,7 +370,7 @@ export class CartComponent implements OnInit {
 
   getCart() {
     this.orderService.getCart(this.providerConsumerId).subscribe(data => {
-      this.cartData = data;
+      this.cartData = Array.isArray(data) ? data.filter((cart: any) => !cart?.buyNow) : [];
       this.items = [];
       this.storeItems = [];
       let homeDelivery = false;
@@ -424,7 +430,8 @@ export class CartComponent implements OnInit {
         const navigationExtras: NavigationExtras = {
           queryParams: {
             target: this.target,
-            deliveryType: type
+            deliveryType: type,
+            buyNow: this.isBuyNow
           }
         }
         this.router.navigate([this.sharedService.getRouteID(), 'order', 'checkout'], navigationExtras)
@@ -432,7 +439,8 @@ export class CartComponent implements OnInit {
       } else {
         const navigationExtras: NavigationExtras = {
           queryParams: {
-            deliveryType: type
+            deliveryType: type,
+            buyNow: this.isBuyNow
           }
         }
         this.router.navigate([this.sharedService.getRouteID(), 'order', 'checkout'], navigationExtras)

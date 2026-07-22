@@ -98,6 +98,8 @@ export class CheckoutComponent implements OnInit {
   roundedValue: any = 0;
   convenienceBaseAmount: number = 0;
   selectedDeliveryType: any;
+  isBuyNow: boolean = false;
+  regularCartCount: number = 0;
   showSummaryDetails = false;
   isCartLoading = true;
   readonly slideConfirmThreshold = 0.85;
@@ -150,7 +152,6 @@ export class CheckoutComponent implements OnInit {
     this.accountProfile = this.sharedService.getJson(this.account['businessProfile']);
     console.log("this.loggedUser", this.loggedUser)
     this.providerConsumerId = this.loggedUser.providerConsumer;
-    this.getCart()
     this.activatedRoute.queryParams.subscribe(qparams => {
       if (qparams && qparams['status']) {
         this.status = true;
@@ -167,6 +168,12 @@ export class CheckoutComponent implements OnInit {
       if (qparams && qparams['deliveryType']) {
         this.selectedDeliveryType = qparams['deliveryType'];
       }
+      if (qparams && qparams['buyNow'] !== undefined) {
+        this.isBuyNow = qparams['buyNow'] === true || qparams['buyNow'] === 'true';
+      } else {
+        this.isBuyNow = false;
+      }
+      this.getCart();
     })
     this.setTimeline();
     this.loadCartNote();
@@ -342,15 +349,15 @@ export class CheckoutComponent implements OnInit {
     this.isCartLoading = true;
     this.orderService.getCart(this.providerConsumerId).subscribe(data => {
       if (data) {
-        this.cartData = data;
-        console.log('this.cartData1113', this.selectedDeliveryType);
-        if (Array.isArray(this.cartData)) {
-          if (this.selectedDeliveryType) {
-            this.cartData = this.cartData.find(item => item.deliveryType === this.selectedDeliveryType) || null;
-          } else {
-            this.cartData = this.cartData[0] || null;
-          }
-        }
+        const carts = Array.isArray(data) ? data : [data];
+        this.regularCartCount = carts
+          .filter((item: any) => !item?.buyNow)
+          .reduce((total: number, item: any) => total + (item?.items?.length || 0), 0);
+        this.cartData = carts.find((item: any) => {
+          const matchesBuyNow = !!item?.buyNow === this.isBuyNow;
+          const matchesDelivery = this.selectedDeliveryType ? item?.deliveryType === this.selectedDeliveryType : true;
+          return matchesBuyNow && matchesDelivery;
+        }) || carts.find((item: any) => !!item?.buyNow === this.isBuyNow) || carts[0] || null;
         if (!this.cartData) {
           this.cartId = null;
           this.items = [];
@@ -363,8 +370,7 @@ export class CheckoutComponent implements OnInit {
         console.log('this.cartData1112', this.cartData);
         this.items = Array.isArray(this.cartData.items) ? this.cartData.items : [];
         this.convenienceBaseAmount = this.resolveConvenienceAmountFromCart(this.cartData);
-        // this.deliveryType = this.cartData.deliveryType;
-        this.subscriptionService.sendMessage({ ttype: 'cartChanged', value: this.items.length })
+        this.subscriptionService.sendMessage({ ttype: 'cartChanged', value: this.regularCartCount })
         this.subscriptionService.sendMessage({ ttype: 'hideCartFooter', value: 0 });
         this.deliveryType = this.cartData.deliveryType;
         // Reset payment flow state whenever we (re)load cart data
@@ -1185,6 +1191,17 @@ confirm() {
     this.convenientFeeTax = 0;
     this.amountWithAllCharges = 0;
     this.convenientFeeObj = null;
+  }
+
+  editOrder() {
+    const navigationExtras: NavigationExtras = {
+      queryParams: {
+        target: 'checkout',
+        deliveryType: this.selectedDeliveryType || this.deliveryType,
+        buyNow: this.isBuyNow
+      }
+    };
+    this.router.navigate([this.sharedService.getRouteID(), 'order', 'cart'], navigationExtras);
   }
 
   private applyConvenienceForMode(selectedMode: any, isInternational: boolean): void {
