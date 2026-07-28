@@ -1,7 +1,8 @@
 import { Component, Inject, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
-import { CommonService, DateTimeProcessor, Messages, SharedService, StorageService } from 'jconsumer-shared';
+import { CommonService, DateTimeProcessor, Messages, SharedService } from 'jconsumer-shared';
+import { IntlTelInputLoaderService } from '../../shared/intl-tel-input-loader.service';
 
 @Component({
   selector: 'app-consumer-add-member',
@@ -62,16 +63,15 @@ export class AddMemberComponent implements OnInit {
   }
   address: any;
   mobileNumber: any;
-  salutation: any;
   cdnPath: string = '';
   constructor(
     public dialogRef: MatDialogRef<AddMemberComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     public translate: TranslateService,
     private commonService: CommonService,
-    private storageService: StorageService,
     private dateTimeProcessor: DateTimeProcessor,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    public intlTelInputLoader: IntlTelInputLoaderService
   ) {
     this.cdnPath = this.sharedService.getCDNPath();
     console.log('AddMemberComponent', data)
@@ -131,9 +131,6 @@ export class AddMemberComponent implements OnInit {
       }
       this.email = this.consumerData.email || '';
     }
-    this.storageService.getSalutations().then((data: any) => {
-      this.salutation = data;
-    });
   }
   isNumericSign(evt) {
     return this.commonService.isNumericSign(evt);

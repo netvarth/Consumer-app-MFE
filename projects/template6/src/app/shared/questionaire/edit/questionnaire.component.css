@@ -172,7 +172,7 @@
 .qnrDisableState .card,
 .qnrDisableState .dropzone-default,
 .qnrDisableState .dz-image-preview {
-  background: #eeeeee9e !important;
+  background: #ededed !important;
 }
 
 .qnr-section {
@@ -182,13 +182,13 @@
 }
 
 .qnrsec {
-  padding: 10px;
+  padding: 0 !important;
 }
 
 .section-shadow {
-  margin: 20px 10px;
-  padding: 20px !important;
-  box-shadow: 0 0 10px rgb(0 0 0 / 12%) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-shadow: none !important;
 }
 
 .gridSection .gridColumn {
@@ -237,8 +237,8 @@
 
 .form-group.card {
   border: 1px solid #dadce063 !important;
-  border-radius: 8px !important;
-  padding: 20px 5px !important;
+  border-radius: 11px !important;
+  padding: 23px 19px !important;
 }
 
 .docname {
@@ -255,10 +255,24 @@
     border: none !important;
   }
 
-  .edit {
-    padding: 2px 12px;
-    border-radius: 10px !important;
-  }
+    .edit {
+      padding: 2px 12px;
+      border-radius: 10px !important;
+      color: #f75b1b !important;
+      background-color: #ffffff !important;
+      border: 1px solid #f75b1b !important;
+    }
+    .update {
+      padding: 2px 12px;
+      border-radius: 10px !important;
+      color: #f75b1b !important;
+      background-color: #ffffff !important;
+      border: 1px solid #f75b1b !important;
+    }
+}
+.fa-pencil{
+  font-size: 1.05rem !important;
+    color: #f75b1b !important;
 }
 
 .col-xl-12,
@@ -268,8 +282,8 @@
 .col-lg-12 {
   position: relative;
   width: 100%;
-  padding-right: 12.5px;
-  padding-left: 12.5px;
+  /* padding-right: 12.5px;
+  padding-left: 12.5px; */
 }
 
 @media (min-width: 1200px) {
@@ -279,9 +293,9 @@
   }
 }
 
-.qnrsec {
+/* .qnrsec {
   padding: 10px;
-}
+} */
 
 .p-10 {
   padding: 8px !important;
@@ -325,6 +339,7 @@
   font-size: 1rem;
   font-weight: 400;
   color: #3f4254;
+  /* margin-top: 6px; */
 }
 
 label {
@@ -387,9 +402,9 @@ label {
   flex-direction: column;
   min-width: 0;
   word-wrap: break-word;
-  background-color: #fff;
+  background-color: #ffffff;
   background-clip: border-box;
-  border: 1px solid #EBEDF3;
+  border: 1px solid #ffffff;
   border-radius: 0.42rem;
 }
 

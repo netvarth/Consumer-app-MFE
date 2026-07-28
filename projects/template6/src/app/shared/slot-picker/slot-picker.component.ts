@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, input, Input, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-slot-picker',
@@ -12,6 +12,8 @@ export class SlotPickerComponent implements OnInit {
   @Output() slotSelected = new EventEmitter<any>(); // return the selected slots
   @Input() mode; // appt/checkin
   @Input() multiple; // To enable multiple selection
+  @Input() theme: string | null = null;
+  @Input() variant: 'default' | 'pill' = 'default';
   showMoreAvailableSlots = true; // Toggle number of slots to be displayed
   multipleSelection = false;
   smallDevice:boolean;

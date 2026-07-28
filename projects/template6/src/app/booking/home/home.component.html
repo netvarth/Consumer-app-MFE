@@ -8,7 +8,7 @@
         </div>
     </div>
 </div>
-<section #bookingContainer class="booking-container p-0 container">
+<section #bookingContainer class="booking-container p-0 container" [ngClass]="theme">
     <a #modal data-bs-toggle="modal" data-bs-target="#bookingModal" ></a>
     <div [ngClass]="{block: (modalOpen)}" class="modal fade" id="bookingModal" tabindex="-1" role="dialog" #bookingModal
         aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -180,7 +180,7 @@
                 </div>
                 <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 p-0" data-wizard-type="step-content"
                     data-wizard-state="current" *ngIf="bookStep === 2">
-                    <app-date-time-selection [paymentRequestId]="paymentRequestId"
+                    <app-date-time-selection [paymentRequestId]="paymentRequestId" [theme]="theme"
                         (actionPerformed)="bookingActionPerformed($event)"></app-date-time-selection>
                 </div>
                 <div class="lbl col-sm-12 col-md-12 col-lg-12 col-12 p-0" data-wizard-type="step-content"

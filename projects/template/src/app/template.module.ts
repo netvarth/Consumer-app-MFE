@@ -39,8 +39,8 @@ const routes: Routes = [
       console.log("Template ID:", templateId);
       // 
       return loadRemoteModule({
-        remoteEntry: getVersionedRemoteEntry(remoteEntry),
-        // remoteEntry: remoteEntry,
+        // remoteEntry: getVersionedRemoteEntry(remoteEntry),
+        remoteEntry: remoteEntry,
         exposedModule: './DynamicHome'
       }).then(m => m.HomeGeneratorModule)
         .catch(err => {

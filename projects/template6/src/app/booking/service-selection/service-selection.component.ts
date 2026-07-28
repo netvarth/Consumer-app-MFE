@@ -80,10 +80,10 @@ ngOnChanges() {}
     const _this = this;
     this.accountService.getUserInformation(this.accountProfile.uniqueId, this.selectedUser.id).then(
       (userAccountInfo: any)=> {
-        this.userProfile = _this.accountService.getJson(userAccountInfo['providerBusinessProfile']);
+        this.userProfile = _this.sharedService.getJson(userAccountInfo['providerBusinessProfile']);
         console.log(' this.userProfile', this.userProfile)
         _this.setBasicProfile(this.userProfile);
-        let virtualFields =  this.accountService.getJson(userAccountInfo['providerVirtualFields']);
+        let virtualFields =  this.sharedService.getJson(userAccountInfo['providerVirtualFields']);
         this.setUserVirtualFields(virtualFields);
 
       }

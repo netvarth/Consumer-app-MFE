@@ -24,14 +24,14 @@ export class BasicProfileComponent implements OnInit {
   }
 
   bookNow() {
-    this.subscriptionService.sendMessage({ ttype: 'menu', value: 'services' });
+    this.subscriptionService.sendMessage({ttype:'menu', value: 'services'});
   }
 
   communicate() {
-    this.subscriptionService.sendMessage({ ttype: 'communicate' });
+    this.subscriptionService.sendMessage({ttype:'communicate'});
   }
   aboutUs() {
-    this.subscriptionService.sendMessage({ ttype: 'menu', value: 'about' });
+    this.subscriptionService.sendMessage({ttype:'menu', value: 'about'});
   }
   getSocialdet(key, field) {
     const retdet = this.orgsocial_list.filter(

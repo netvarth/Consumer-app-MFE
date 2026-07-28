@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthenticationComponent } from './authentication.component';
+import { GoogleSigninButtonComponent } from './google-signin-button/google-signin-button.component';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { NgOtpInputModule } from 'ng-otp-input';
@@ -11,7 +12,8 @@ import { ErrrorMessageModule, LoadingSpinnerModule, PhoneInputModule } from 'jco
 
 @NgModule({
   declarations: [
-    AuthenticationComponent
+    AuthenticationComponent,
+    GoogleSigninButtonComponent
   ],
   imports: [
     CommonModule,
@@ -26,7 +28,8 @@ import { ErrrorMessageModule, LoadingSpinnerModule, PhoneInputModule } from 'jco
     ErrrorMessageModule
   ],
   exports: [
-    AuthenticationComponent
+    AuthenticationComponent,
+    GoogleSigninButtonComponent
   ]
 })
 export class AuthenticationModule { }

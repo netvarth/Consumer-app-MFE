@@ -5,6 +5,7 @@ import { DOCUMENT, Location } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { AccountService, AuthService, CommonService, ConsumerService, DateTimeProcessor, ErrorMessagingService, FormMessageDisplayService, JGalleryService, LocalStorageService, Messages, PaytmService, projectConstantsLocal, QuestionaireService, RazorpayService, SharedService, StorageService, SubscriptionService, ToastService, WordProcessor } from 'jconsumer-shared';
 import { Subscription } from 'rxjs';
+import { IntlTelInputLoaderService } from '../shared/intl-tel-input-loader.service';
 
 @Component({
     selector: 'app-donation',
@@ -114,7 +115,8 @@ export class DonationComponent implements OnInit, OnDestroy {
         private subscriptionService: SubscriptionService,
         private accountService: AccountService,
         private commonService: CommonService,
-        private galleryService: JGalleryService
+        private galleryService: JGalleryService,
+        public intlTelInputLoader: IntlTelInputLoaderService
     ) {
         this.cdnPath = this.sharedService.getCDNPath();
         const response = {
@@ -208,7 +210,7 @@ export class DonationComponent implements OnInit, OnDestroy {
         if (_this.lStorageService.getitemfromLocalStorage('ios')) {
             _this.from_iOS = true;
         }
-        _this.services = _this.accountService.getJson(_this.account['donationServices']);
+        _this.services = _this.sharedService.getJson(_this.account['donationServices']);
         if (_this.services.length > 0) {
             if (!_this.selectedServiceId) {
                 _this.selectedServiceId = _this.services[0].id;

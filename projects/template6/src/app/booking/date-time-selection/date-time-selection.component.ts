@@ -22,6 +22,7 @@ export class DateTimeSelectionComponent implements OnInit {
   selectedApptsTime;
   bookingDate;
   @Input() paymentRequestId;
+  @Input() theme: string | null = null;
   @Output() actionPerformed = new EventEmitter<any>();
   serverDate: any;
   moment;

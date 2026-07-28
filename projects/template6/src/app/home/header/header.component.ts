@@ -1,8 +1,9 @@
 import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
+import { NavigationEnd, NavigationExtras, Router } from '@angular/router';
 import { AccountService, AuthService, GroupStorageService, LocalStorageService, Messages, OrderService, SharedService, SubscriptionService } from 'jconsumer-shared';
 import { TranslateService } from '@ngx-translate/core';
+import { WishlistService } from '../../shared/wishlist.service';
 
 @Component({
   selector: 'app-header',
@@ -13,7 +14,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   restrictNavigation: boolean = false;
   isLoggedIn: boolean = false;
   loggedUser: any;
-  accountConfig: any;
   logo: any;
   valueToSearch: any;
   categorySelected: any;
@@ -27,6 +27,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   searchOption: any = false;
   theme: any;
   cartCount: number = 0;
+  wishlistCount: number = 0;
   config: any;
   accountID: any;
   hideItemSearch: any = false;
@@ -44,6 +45,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription = new Subscription();
   selectedLocation: any;
   activeMenuItem = '';
+  hideLocationGlobal: boolean = false;
+  headerTitle: any;
+
   constructor(
     private lStorageService: LocalStorageService,
     private subscriptionService: SubscriptionService,
@@ -54,27 +58,24 @@ export class HeaderComponent implements OnInit, OnDestroy {
     public translate: TranslateService,
     private orderService: OrderService,
     private accountService: AccountService,
-    private activatedRoute: ActivatedRoute
+    private wishlistService: WishlistService
   ) {
-    console.log("Header component loaded");
     this.cdnPath = this.sharedService.getCDNPath();
     this.onResize();
-    this.activatedRoute.queryParams.subscribe((qparams: any) => {
-      if (qparams['_t'] && qparams['_t'] !== '') {
-        this.activeMenuItem = qparams['_t'];
-      } else {
-        this.activeMenuItem = '';
-      }
-    })
+    this.subscriptions.add(
+      this.router.events.subscribe((event) => {
+        if (event instanceof NavigationEnd) {
+          this.setActiveMenuFromUrl(event.urlAfterRedirects || event.url);
+        }
+      })
+    );
+    this.setActiveMenuFromUrl(this.router.url);
     console.log("Order Header Compoent Constructor");
     this.accountID = this.sharedService.getAccountID();
     this.storeEncId = this.lStorageService.getitemfromLocalStorage('storeEncId')
     this.isSessionCart = this.lStorageService.getitemfromLocalStorage('isSessionCart')
     this.translate.use(JSON.parse(localStorage.getItem('translatevariable')));
-    // this.initHeader('refresh');
-  }
-  ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
+    this.initHeader('refresh');
   }
   initHeader(refresh: any) {
     const activeUser = this.groupService.getitemFromGroupStorage('jld_scon');
@@ -84,19 +85,24 @@ export class HeaderComponent implements OnInit, OnDestroy {
       console.log(this.loggedUser);
       if (refresh) {
         this.setCartCount(this.loggedUser.providerConsumer ? this.loggedUser.providerConsumer : this.loggedUser.id);
+        this.setWishlistCount(this.loggedUser.providerConsumer ? this.loggedUser.providerConsumer : this.loggedUser.id);
       }
     } else {
+      this.wishlistService.clear();
+      this.wishlistCount = 0;
       if (this.isSessionCart) {
         this.isLoggedIn = false;
         this.cartCount = 0;
       } else {
         if (this.lStorageService.getitemfromLocalStorage('cartData')) {
           let cartData = this.lStorageService.getitemfromLocalStorage('cartData');
-          const hdCount = cartData?.HOME_DELIVERY?.items?.length || 0;
-          const spCount = cartData?.STORE_PICKUP?.items?.length || 0;
+          const hdCount = (cartData?.HOME_DELIVERY?.items || []).filter((item: any) => !item?.buyNow).length || 0;
+          const spCount = (cartData?.STORE_PICKUP?.items || []).filter((item: any) => !item?.buyNow).length || 0;
 
           if (hdCount > 0 || spCount > 0) {
             this.cartCount = hdCount + spCount;
+          } else {
+            this.cartCount = 0;
           }
         } else {
           this.isLoggedIn = false;
@@ -108,22 +114,71 @@ export class HeaderComponent implements OnInit, OnDestroy {
   setCartCount(userID: any) {
     this.orderService.getCart(userID).subscribe(
       (cartInfo: any) => {
-        const count1 = cartInfo[0]?.items?.length || 0;
-        const count2 = cartInfo[1]?.items?.length || 0;
+        const carts = Array.isArray(cartInfo) ? cartInfo : [cartInfo];
+        const regularCarts = carts.filter((cart: any) => !cart?.buyNow);
+        const count = regularCarts.reduce((total: number, cart: any) => total + (cart?.items?.length || 0), 0);
 
-        if (count1 > 0 || count2 > 0) {
-          this.cartCount = count1 + count2;
-        }
+        this.cartCount = count;
       }
     )
   }
+
+  setWishlistCount(userID: any) {
+    this.wishlistService.getallWishlistItems(userID).subscribe(
+      (wishlistItems: any) => {
+        this.wishlistService.clear();
+        const list = this.extractWishlistItems(wishlistItems);
+        list.forEach((wish: any) => {
+          const itemEncId = wish?.catalogItem?.encId;
+          if (!itemEncId) {
+            return;
+          }
+          this.wishlistService.add({ encId: itemEncId });
+          if (wish?.id) {
+            this.wishlistService.setWishlistItemUid(itemEncId, wish.id);
+          }
+          const spCode = wish?.spItem?.spCode;
+          if (spCode) {
+            this.wishlistService.setWishlistItemSpCode(itemEncId, spCode);
+          }
+        });
+        this.wishlistCount = this.wishlistService.getIds().length;
+      },
+      () => {
+        this.wishlistCount = this.wishlistService.getIds().length;
+      }
+    );
+  }
+
+  private extractWishlistItems(wishlistItems: any): any[] {
+    if (!Array.isArray(wishlistItems)) {
+      return [];
+    }
+    const hasWrappedItems = wishlistItems.some((entry) => Array.isArray(entry?.items));
+    if (hasWrappedItems) {
+      return wishlistItems.reduce((acc: any[], entry: any) => {
+        if (Array.isArray(entry?.items)) {
+          acc.push(...entry.items);
+        }
+        return acc;
+      }, []);
+    }
+    return wishlistItems;
+  }
+
   ngOnInit(): void {
     this.config = this.sharedService.getTemplateJSON();
-    console.log("Header Config:", this.config);
-    this.isCartVisible = this.config.header?.showCart;
+    const showCartConfig = this.config?.header?.showCart;
+    this.isCartVisible = showCartConfig === undefined || showCartConfig === null
+      ? true
+      : !(showCartConfig === false || showCartConfig === 'false');
     this.headerName = this.config.header?.name ? this.config.header.name : 'header1';
     if (this.config && this.config['theme']) {
       this.theme = this.config['theme'];
+    }
+    let accountConfig = this.sharedService.getAccountConfig();
+    if (accountConfig?.locationVisible) {
+      this.hideLocationGlobal = accountConfig?.locationVisible;
     }
     this.accountID = this.sharedService.getAccountID();
     if (this.config?.extras?.selectedCatalogs?.length > 0) {
@@ -133,19 +188,26 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
     let account = this.sharedService.getAccountInfo();
     this.locations = this.sharedService.getJson(account['location']);
-    let accountProfile = this.sharedService.getJson(account['businessProfile']);
+    let accountProfile = this.accountService.getJson(account['businessProfile']);
+    this.headerTitle = accountProfile.businessName;
     if (accountProfile.businessLogo && accountProfile.businessLogo.length > 0) {
       this.logo = accountProfile.businessLogo[0].s3path;
     } else {
       this.logo = accountProfile.logo?.url;
     }
-
-
     this.initSubscriptions();
-    this.initHeader('refresh');
-    if (this.accountService.getAccountLocations()) {
-      this.selectedLocation = this.accountService.getActiveLocation();
+    const wishlistSub = this.wishlistService.changes$.subscribe((ids: Set<string>) => {
+      this.wishlistCount = ids.size;
+    });
+    this.subscriptions.add(wishlistSub);
+    this.initHeader(null);
+    const activeLoc = this.accountService.getActiveLocation();
+    if (activeLoc) {
+      this.selectedLocation = activeLoc;
       this.showLocation = true;
+      if (!this.accountService.getAccountLocations()) {
+        this.accountService.setAccountLocations(this.locations);
+      }
     } else {
       this.setAccountLocations(this.locations);
       this.showLocation = true;
@@ -253,36 +315,178 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
   }
   changeLocation(location) {
-    const request = {
+    const response = {
       ttype: 'locationChanged'
     }
     this.selectedLocation = location;
     this.accountService.setActiveLocation(this.selectedLocation);
-    let prevLocationSelected = this.lStorageService.getitemfromLocalStorage('c-location');
-    if (prevLocationSelected !== this.selectedLocation.id) {
-      this.lStorageService.setitemonLocalStorage('c-location', this.selectedLocation.id);
-      this.subscriptionService.sendMessage(request);
-    }
+    this.lStorageService.setitemonLocalStorage('c-location', this.selectedLocation.id);
+    this.subscriptionService.sendMessage(response);
   }
   menuClicked(action) {
-    if (action.link && action.link.startsWith('http')) {
-      window.open(action.link, "_system");
-    } else {
-      this.activeMenuItem = action.link;
-      const queryParams = { ['_t']: action.link };
-      this.router.navigate([this.sharedService.getRouteID()], {
-        queryParams: queryParams,
-        queryParamsHandling: 'merge'
-      }).then(() => {
-        // this.router.navigate[(this.sharedService.getRouteID())];
+    const routeId = this.sharedService.getRouteID();
+    const rawLink = (action?.link || '').toString().trim();
+    const resolved = this.resolveMenuTarget(rawLink, routeId);
+
+    if (resolved?.externalUrl) {
+      window.open(resolved.externalUrl, "_system");
+      return;
+    }
+
+    const normalizedLink = this.resolveMenuLink(action, (resolved?.path || '').replace(/^\/+|\/+$/g, ''));
+    if (!normalizedLink || normalizedLink === 'home' || normalizedLink === routeId || normalizedLink === `${routeId}/home`) {
+      this.activeMenuItem = 'home';
+      this.router.navigate([routeId], { queryParams: resolved?.queryParams || {} });
+      return;
+    }
+
+    const relativePath = this.getRelativePathForRoute(normalizedLink, routeId);
+    const segments = relativePath.split('/').filter(Boolean);
+    this.activeMenuItem = normalizedLink;
+    this.router.navigate([routeId, ...segments], { queryParams: resolved?.queryParams || {} });
+  }
+
+  private getRelativePathForRoute(linkPath: string, routeId: string): string {
+    const normalizedPath = (linkPath || '').replace(/^\/+|\/+$/g, '');
+    const normalizedRoute = (routeId || '').replace(/^\/+|\/+$/g, '');
+    if (!normalizedPath || !normalizedRoute) {
+      return normalizedPath;
+    }
+
+    if (normalizedPath.startsWith(`capp/${normalizedRoute}/`)) {
+      return normalizedPath.substring(`capp/${normalizedRoute}/`.length);
+    }
+    if (normalizedPath === `capp/${normalizedRoute}`) {
+      return '';
+    }
+    if (normalizedPath.startsWith(`${normalizedRoute}/`)) {
+      return normalizedPath.substring(normalizedRoute.length + 1);
+    }
+    if (normalizedPath === normalizedRoute) {
+      return '';
+    }
+
+    // Handle paths that carry an extra prefix in WebView, e.g. "<prefix>/<routeId>/items".
+    const pathParts = normalizedPath.split('/').filter(Boolean);
+    const routeIndex = pathParts.findIndex((part) => part.toLowerCase() === normalizedRoute.toLowerCase());
+    if (routeIndex >= 0) {
+      return pathParts.slice(routeIndex + 1).join('/');
+    }
+
+    return normalizedPath;
+  }
+
+  private resolveMenuTarget(rawLink: string, routeId: string): { path: string; queryParams: any; externalUrl?: string } {
+    if (!rawLink) {
+      return { path: '', queryParams: {} };
+    }
+    if (!/^https?:\/\//i.test(rawLink)) {
+      return this.splitPathAndQuery(rawLink);
+    }
+    try {
+      const currentOrigin = window.location.origin;
+      const parsed = new URL(rawLink, currentOrigin);
+      const normalizedPath = parsed.pathname.replace(/^\/+|\/+$/g, '');
+      const isInternal =
+        parsed.origin === currentOrigin &&
+        (
+          normalizedPath === routeId ||
+          normalizedPath.startsWith(`${routeId}/`) ||
+          normalizedPath === `capp/${routeId}` ||
+          normalizedPath.startsWith(`capp/${routeId}/`)
+        );
+      if (isInternal) {
+        const pathWithoutPrefix = normalizedPath.startsWith('capp/')
+          ? normalizedPath.substring('capp/'.length)
+          : normalizedPath;
+        const queryParams: any = {};
+        parsed.searchParams.forEach((value, key) => {
+          queryParams[key] = value;
+        });
+        return { path: pathWithoutPrefix, queryParams };
+      }
+      return { path: rawLink, queryParams: {}, externalUrl: rawLink };
+    } catch {
+      return { path: rawLink, queryParams: {} };
+    }
+  }
+
+  private splitPathAndQuery(link: string): { path: string; queryParams: any } {
+    const [pathPart, queryPart] = (link || '').split('?');
+    const queryParams: any = {};
+    if (queryPart) {
+      const search = new URLSearchParams(queryPart);
+      search.forEach((value, key) => {
+        queryParams[key] = value;
       });
     }
+    return { path: pathPart || '', queryParams };
+  }
+
+  private resolveMenuLink(action: any, normalizedLink: string): string {
+    const title = (action?.title || '').toString().trim().toLowerCase();
+    const normalized = (normalizedLink || '').toLowerCase();
+
+    if (
+      normalized === 'products' ||
+      normalized === 'product' ||
+      normalized === 'catalog' ||
+      normalized === 'catalogue' ||
+      normalized === 'shop'
+    ) {
+      return 'items';
+    }
+    if (
+      !normalized &&
+      (title === 'products' || title === 'product' || title === 'catalog' || title === 'catalogue' || title === 'shop')
+    ) {
+      return 'items';
+    }
+
+    const isOrderHistory =
+      title.includes('order history') || title.includes('my orders') || title === 'orders';
+    if (!isOrderHistory) {
+      return normalizedLink;
+    }
+    if (normalizedLink === 'dashboard' || normalizedLink === 'bookings') {
+      return 'dashboard';
+    }
+    if (normalizedLink.endsWith('/dashboard')) {
+      return normalizedLink;
+    }
+    if (normalizedLink.endsWith('/bookings')) {
+      return normalizedLink.replace(/\/bookings$/, '/dashboard');
+    }
+    return normalizedLink;
+  }
+
+  private setActiveMenuFromUrl(url: string): void {
+    const routeId = this.sharedService.getRouteID();
+    const normalized = (url || '').split('?')[0].replace(/^\/+|\/+$/g, '');
+    const routeIdPrefix = `capp/${routeId}/`;
+    const routeRoot = `capp/${routeId}`;
+    if (!normalized || normalized === routeRoot) {
+      this.activeMenuItem = 'home';
+      return;
+    }
+    if (normalized.startsWith(routeIdPrefix)) {
+      const tail = normalized.substring(routeIdPrefix.length);
+      this.activeMenuItem = tail ? `${routeId}/${tail}` : 'home';
+      return;
+    }
+    if (normalized === routeId) {
+      this.activeMenuItem = 'home';
+      return;
+    }
+    this.activeMenuItem = normalized;
   }
   @HostListener('window:resize', ['$event'])
   onResize() {
-    if (window.innerWidth < 870) {
-      this.smallDevice = true;
-    }
+    this.smallDevice = window.innerWidth < 870;
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   doLogout() {
@@ -290,15 +494,21 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.authService.doLogout().then(
       () => {
         _this.initHeader(null);
-        _this.gotoActiveHome();
+        _this.gotoActiveHome(true);
         _this.subscriptionService.sendMessage({ ttype: 'hideCartFooter', value: 0 });
       }
     );
+  }
+   inboxiconClick() {
+    this.redirectto('inbox');
   }
   redirectto(mod: string) {
     switch (mod) {
       case 'profile':
         this.router.navigate([this.sharedService.getRouteID(), 'profile']);
+        break;
+      case 'orders':
+        this.router.navigate([this.sharedService.getRouteID(), 'orders']);
         break;
       case 'inbox':
         let qParams = {};
@@ -322,6 +532,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
       case 'contactus':
         this.router.navigate([this.sharedService.getRouteID(), 'contactus']);
         break;
+      case 'wishlist':
+        this.router.navigate([this.sharedService.getRouteID(), 'order', 'wishlist']);
+        break;
     }
   }
   showSearch() {
@@ -335,17 +548,17 @@ export class HeaderComponent implements OnInit, OnDestroy {
         if (status) {
           this.viewDashboard();
         } else {
-          let dashboardUrl = this.sharedService.getRouteID() + '/dashboard';
+          let dashboardUrl = this.sharedService.getRouteID();
           this.lStorageService.setitemonLocalStorage('target', dashboardUrl);
           this.router.navigate([this.sharedService.getRouteID(), 'login']);
         }
       });
   }
   viewDashboard() {
-    let dashboardUrl = this.sharedService.getRouteID() + '/dashboard';
+    let dashboardUrl = this.sharedService.getRouteID() + '/bookings';
     this.router.navigateByUrl(dashboardUrl);
   }
-  gotoActiveHome() {
+  gotoActiveHome(isLoggedOut?: boolean) {
     const source = this.lStorageService.getitemfromLocalStorage('source');
     console.log("Source:", source);
     if (source) {
@@ -357,7 +570,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
       this.lStorageService.setitemonLocalStorage('storeEncId', this.storeEncId);
       this.lStorageService.setitemonLocalStorage('isSessionCart', this.isSessionCart);
       this.router.navigate([this.sharedService.getRouteID()]);
-      // }
+      // Inform Home to refresh state after navigating home
+      // this.subscriptionService.sendMessage({ ttype: 'refresh', value: 'refresh' });
+      if (isLoggedOut) {
+        this.subscriptionService.sendMessage({ ttype: 'logout', value: 0 });
+      }
     }
   }
 

@@ -4,7 +4,7 @@ import { SharedService } from 'jconsumer-shared';
 @Component({
   selector: 'app-service-image',
   templateUrl: './service-image.component.html',
-  styleUrl: './service-image.component.scss'
+  styleUrls: ['./service-image.component.scss']
 })
 export class ServiceImageComponent {
 

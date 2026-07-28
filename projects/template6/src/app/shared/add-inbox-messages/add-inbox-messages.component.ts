@@ -149,7 +149,7 @@ export class AddInboxMessagesComponent implements OnInit, OnDestroy {
   }
   ngOnInit() {
     this.createForm();
-    this.ynw_credentials = this.accountService.getJson(this.lStorageService.getitemfromLocalStorage('ynw-credentials'));
+    this.ynw_credentials = this.sharedService.getJson(this.lStorageService.getitemfromLocalStorage('ynw-credentials'));
     if (this.phone) {
       if (this.countryCode.startsWith('+')) {
         this.countryCod = this.countryCode.substring(1);

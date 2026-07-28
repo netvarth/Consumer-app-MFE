@@ -109,4 +109,26 @@ export class MembersComponent implements OnInit {
     }
     this.memberSelected.emit(this.selectedMember);
   }
+
+  getPhoneDisplay(member) {
+    if (!member) {
+      return '';
+    }
+    const number = member.phoneNo || member.primaryMobileNo || (member.whatsAppNum && member.whatsAppNum.number) || '';
+    const code = member.countryCode || (member.whatsAppNum && member.whatsAppNum.countryCode) || '';
+    return number ? `${code ?  code + ' ' : ''}${number}` : '';
+  }
+
+  getEmailDisplay(member) {
+    if (member && member.email) {
+      return member.email;
+    }
+    if (this.parentCustomer && this.parentCustomer.userProfile && this.parentCustomer.userProfile.email) {
+      return this.parentCustomer.userProfile.email;
+    }
+    if (this.parentCustomer && this.parentCustomer.email) {
+      return this.parentCustomer.email;
+    }
+    return '';
+  }
 }

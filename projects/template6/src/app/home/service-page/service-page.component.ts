@@ -82,7 +82,6 @@ export class ServicePageComponent implements OnInit, OnDestroy {
     this.subscription = this.subscriptionService.getMessage().subscribe(
       (response) => {
         if (response.ttype === 'locationChanged') {
-          alert("In Service Page");
           this.changeLocation(this.accountService.getActiveLocation());
         }
       });
@@ -106,9 +105,9 @@ export class ServicePageComponent implements OnInit, OnDestroy {
       this.theme = this.accountConfig['theme'];
     }
     this.settings = this.sharedService.getJson(this.account['settings']);
-    this.apptSettings = this.accountService.getJson(this.account['appointmentsettings']);
-    this.accountProfile = this.accountService.getJson(this.account['businessProfile']);
-    let donationServicesList = this.accountService.getJson(this.account['donationServices'])
+    this.apptSettings = this.sharedService.getJson(this.account['appointmentsettings']);
+    this.accountProfile = this.sharedService.getJson(this.account['businessProfile']);
+    let donationServicesList = this.sharedService.getJson(this.account['donationServices'])
     console.log("Donation Services:", donationServicesList);
     if (donationServicesList) {
       let donationServices = donationServicesList.filter(service => service.id == this.serviceId);
@@ -127,7 +126,7 @@ export class ServicePageComponent implements OnInit, OnDestroy {
     this.accountId = this.accountProfile.id;
     this.uniqueId = this.accountProfile['uniqueId'];
     this.customId = this.accountProfile['customId'] ? this.accountProfile['customId'] : this.accountProfile['accEncUid'];
-    this.setAccountCoupons(this.accountService.getJson(this.account['coupon']));
+    this.setAccountCoupons(this.sharedService.getJson(this.account['coupon']));
   }
 
   setAccountCoupons(res) {
@@ -194,75 +193,76 @@ export class ServicePageComponent implements OnInit, OnDestroy {
     let queryParam = {
       loc_id: location.id,
       type: 'Appointment',
-      locname: location.place,
-      googleMapUrl: location.googleMapUrl,
-      futureAppt: true,
+      // locname: location.place,
+      // googleMapUrl: location.googleMapUrl,
+      // futureAppt: true,
       service_id: service.id,
-      sel_date: service.serviceAvailability.nextAvailableDate
+      // sel_date: service.serviceAvailability.nextAvailableDate
     };
-    if (!location.futureAppt) {
-      queryParam['futureAppt'] = false;
-    }
+    // if (!location.futureAppt) {
+    //   queryParam['futureAppt'] = false;
+    // }
     if (service.provider) {
       queryParam['user'] = service.provider.id;
     }
-    if (service['serviceType'] === 'virtualService') {
-      queryParam['tel_serv_stat'] = true;
-    } else {
-      queryParam['tel_serv_stat'] = false;
-    }
-    if (service['department']) {
-      queryParam['dept'] = service['department'];
-    }
-    if (location.time) {
-      queryParam['ctime'] = location.time
-    }
-    if (location.date) {
-      queryParam['cdate'] = location.date
-      service.serviceAvailability.nextAvailableDate = location.date
-    }
-    const dtoday = this.dateTimeProcessor.getStringFromDate_YYYYMMDD(this.dateTimeProcessor.getLocaleDateFromServer(this.serverDate));
-    if (dtoday === service.serviceAvailability.nextAvailableDate) {
-      queryParam['cur'] = false;
-    } else {
-      queryParam['cur'] = true;
-    }
+    // if (service['serviceType'] === 'virtualService') {
+    //   queryParam['tel_serv_stat'] = true;
+    // } else {
+    //   queryParam['tel_serv_stat'] = false;
+    // }
+    // if (service['department']) {
+    //   queryParam['dept'] = service['department'];
+    // }
+    // if (location.time) {
+    //   queryParam['ctime'] = location.time
+    // }
+    // if (location.date) {
+    //   queryParam['cdate'] = location.date
+    //   service.serviceAvailability.nextAvailableDate = location.date
+    // }
+    // const dtoday = this.dateTimeProcessor.getStringFromDate_YYYYMMDD(this.dateTimeProcessor.getLocaleDateFromServer(this.serverDate));
+    // if (dtoday === service.serviceAvailability.nextAvailableDate) {
+    //   queryParam['cur'] = false;
+    // } else {
+    //   queryParam['cur'] = true;
+    // }
     const navigationExtras: NavigationExtras = {
       queryParams: queryParam
     };
-    this.router.navigate([this.sharedService.getRouteID(), 'appointment'], navigationExtras);
+    // this.router.navigate([this.customId, 'appointment'], navigationExtras);
+    this.router.navigate([this.sharedService.getRouteID(), 'booking'], navigationExtras);
   }
   checkinClicked(location, service) {
     let queryParam = {
       loc_id: location.id,
       type: 'Waitlist',
-      locname: location.place,
+      // locname: location.place,
       // googleMapUrl: gMapUrl,
       // sel_date: curdate,
       service_id: service.id,
-      sel_date: service.serviceAvailability.availableDate
+      // sel_date: service.serviceAvailability.availableDate
     };
     if (service.provider) {
       queryParam['user'] = service.provider.id;
     }
-    const dtoday = this.dateTimeProcessor.getStringFromDate_YYYYMMDD(this.dateTimeProcessor.getLocaleDateFromServer(this.serverDate));
-    if (dtoday === service.serviceAvailability.availableDate) {
-      queryParam['cur'] = false;
-    } else {
-      queryParam['cur'] = true;
-    }
-    if (service['serviceType'] === 'virtualService') {
-      queryParam['tel_serv_stat'] = true;
-    } else {
-      queryParam['tel_serv_stat'] = false;
-    }
-    if (service['department']) {
-      queryParam['dept'] = service['department'];
-    }
+    // const dtoday = this.dateTimeProcessor.getStringFromDate_YYYYMMDD(this.dateTimeProcessor.getLocaleDateFromServer(this.serverDate));
+    // if (dtoday === service.serviceAvailability.availableDate) {
+    //   queryParam['cur'] = false;
+    // } else {
+    //   queryParam['cur'] = true;
+    // }
+    // if (service['serviceType'] === 'virtualService') {
+    //   queryParam['tel_serv_stat'] = true;
+    // } else {
+    //   queryParam['tel_serv_stat'] = false;
+    // }
+    // if (service['department']) {
+    //   queryParam['dept'] = service['department'];
+    // }
     const navigationExtras: NavigationExtras = {
       queryParams: queryParam,
     };
-    this.router.navigate([this.sharedService.getRouteID(), 'appointment'], navigationExtras);
+    this.router.navigate([this.sharedService.getRouteID(), 'booking'], navigationExtras);
     // this.router.navigate([this.customId, 'checkin'], navigationExtras);
   }
   changeLocation(loc: any) {
@@ -385,7 +385,7 @@ export class ServicePageComponent implements OnInit, OnDestroy {
       this.userId = servicedetails.provider.id;
       this.accountService.getUserInformation(this.uniqueId, this.userId).then(
         (userAccountInfo: any) => {
-          let userProfile = _this.accountService.getJson(userAccountInfo['providerBusinessProfile']);
+          let userProfile = _this.sharedService.getJson(userAccountInfo['providerBusinessProfile']);
           _this.setBasicProfile(userProfile);
         }
       );

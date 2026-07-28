@@ -1,5 +1,5 @@
-import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, Renderer2, ViewChild } from '@angular/core';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { AccountService, AuthService, ConsumerService, GroupStorageService, LocalStorageService, OrderService, SharedService, SubscriptionService, ThemeService } from 'jconsumer-shared';
 import { Subscription } from 'rxjs';
 
@@ -34,7 +34,14 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   oneTimeQnrEnabled: boolean = false;
   onetimeQuestionnaireList: any;
   providerConsumerId: any;
+  callback: any;
+  showWelcomePopup = false;
+  welcomeImageUrl = '';
+  templateJson;
+  welcomePopupStorageKey = 'welcomePopupShown';
+  private welcomePopupTimer: any;
   private subscriptions: Subscription = new Subscription();
+  header: boolean = true;
   constructor(
     private orderService: OrderService,
     private sharedService: SharedService,
@@ -45,14 +52,59 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     private subscriptionService: SubscriptionService,
     private themeService: ThemeService,
     private authService: AuthService,
-    private consumerService: ConsumerService
+    private consumerService: ConsumerService,
+    private activatedRoute: ActivatedRoute,
+    private renderer: Renderer2
   ) {
     this.onResize();
+    this.loadFontAwesome();
+    this.activatedRoute.queryParams.subscribe(qparams => {
+      if (qparams && qparams['cl_dt']) {
+        console.log(qparams['cl_dt']);
+        if ((qparams['cl_dt'] == "true" || qparams['cl_dt'] == true) && !this.lStorageService.getitemfromLocalStorage('cleared')) {
+          this.clearStorage();
+        }
+      }
+      if (qparams && qparams['callback']) {
+        this.callback = qparams['callback'];
+      }
+      if (qparams && qparams['inst_id']) {
+        this.lStorageService.setitemonLocalStorage('installId', qparams['inst_id']);
+      }
+      if (qparams && qparams['app_id']) {
+        this.lStorageService.setitemonLocalStorage('appId', qparams['app_id']);
+        this.lStorageService.setitemonLocalStorage('dash_visible', true)
+      }
+
+      if (qparams && qparams['muid']) {
+        this.lStorageService.setitemonLocalStorage('mUniqueId', qparams['muid']);
+      }
+      if (qparams && qparams['mode']) {
+        this.lStorageService.setitemonLocalStorage('ios', true);
+      }
+      if (qparams && qparams['lan']) {
+        if (this.lStorageService.getitemfromLocalStorage('translatevariable')) {
+        } else {
+          this.lStorageService.setitemonLocalStorage('translatevariable', qparams['lan']);
+        }
+      }
+      if (qparams && qparams['notification']) {
+        this.lStorageService.setitemonLocalStorage('appNotification', qparams['notification']);
+      }
+      
+      // if (this.lStorageService.getitemfromLocalStorage('partner')) {
+      //   this.categoryType = 'LAB_SYNC';
+      //   this.isPartnerLogin = true;
+      // }
+    });
     // this.router.routeReuseStrategy.shouldReuseRoute = function () {
     //   return false;
     // };
   }
   ngOnDestroy(): void {
+    if (this.welcomePopupTimer) {
+      clearTimeout(this.welcomePopupTimer);
+    }
     this.subscriptions.unsubscribe();
     this.cartFooterSubscription.unsubscribe();
   }
@@ -67,6 +119,22 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     }
   }
 
+  setLoginProperties() {
+    console.log(this.accountConfig);
+
+    if (this.accountConfig && this.accountConfig['login']) {
+      if (this.accountConfig['login'] && this.accountConfig['login']['backgroundImage']) {
+        this.loginBackground = this.accountConfig['login']['backgroundImage'];
+      }
+      if (this.accountConfig['login'] && this.accountConfig['login']['align']) {
+        this.alignClass = this.accountConfig['login']['align'];
+      }
+      if (this.accountConfig['login'] && this.accountConfig['login']['className']) {
+        this.customClass = this.accountConfig['login']['className'];
+      }
+    }
+  }
+
   ngAfterViewInit() {
     let account = this.sharedService.getAccountInfo();
     this.accountId = this.sharedService.getAccountID();
@@ -75,12 +143,51 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     this.locations = this.sharedService.getJson(account['location']);
     console.log("Locations:", this.locations);
     this.accountService.setActiveLocation(this.locations[0]);
+    this.config = this.sharedService.getTemplateJSON();
+    if (this.config.theme) {
+      this.theme = this.config.theme;
+      let themeURL = this.sharedService.getCDNPath() + `customapp/assets/scss/themes/`;
+      this.themeService.loadTheme(themeURL, this.theme);
+    }
+    if (this.accountConfig) {
+      if (this.accountConfig['theme']) {
+        this.theme = this.accountConfig['theme'];
+      }
+      this.authService.goThroughLogin().then((status: any) => {
+        if (this.accountConfig['loginRequired'] && !status) {
+          this.loginRequired = true;
+          this.setLoginProperties();
+        } else {
+          this.loginRequired = false;
+        }
+      })
+    }
+
     this.cartFooterSubscription = this.subscriptionService.getMessage().subscribe((message) => {
       switch (message.ttype) {
         case 'refresh':
           console.log("message", message);
           this.hideFooter = false;
           this.initHeader(message.value ? "refresh" : null);
+          // Re-evaluate auth state when other modules broadcast refresh (e.g., login route)
+          this.authService.goThroughLogin().then((status: any) => {
+            if (this.accountConfig['loginRequired'] && !status) {
+              this.loginRequired = true;
+              this.setLoginProperties();
+            } else {
+              this.loginRequired = false;
+              this.finishLoading();
+            }
+          });
+          break;
+        case 'logout':
+          // On logout, show the login overlay again if login is required
+          this.isLoggedIn = false;
+          this.loggedIn = false;
+          if (this.accountConfig && this.accountConfig['loginRequired']) {
+            this.loginRequired = true;
+            this.setLoginProperties();
+          }
           break;
         case 'cartChanged':
           this.cartCount = message.value;
@@ -91,32 +198,61 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
           this.hideFooter = true;
           console.log("CartCountChanged22:", this.cartCount);
           break;
+        case 'hideHeader':
+          this.header = false;
+          break;
+        case 'showHeader':
+          this.header = true;
+          break;
       }
     })
-    this.config = this.sharedService.getTemplateJSON();
-    if (this.config.theme) {
-      this.theme = this.config.theme;
-      let themeURL = this.sharedService.getCDNPath() + `customapp/assets/scss/themes/`;
-      this.themeService.loadTheme(themeURL, this.theme);
+
+    const alreadyLoggedIn = this.checkLogin && this.checkLogin();
+    this.templateJson = this.sharedService.getTemplateJSON();
+    console.log("this.templateJson", this.templateJson)
+    const welcomePopupState = this.lStorageService.getitemfromLocalStorage(this.welcomePopupStorageKey) || {};
+    const hasSeenWelcomePopup = welcomePopupState && welcomePopupState[this.accountId];
+    if (!alreadyLoggedIn && this.accountConfig?.welcomePageEnabled && this.templateJson?.welcomePage && !hasSeenWelcomePopup) {
+      this.welcomeImageUrl = this.templateJson.welcomePage;
+      this.showWelcomePopup = true;
+      welcomePopupState[this.accountId] = true;
+      this.lStorageService.setitemonLocalStorage(this.welcomePopupStorageKey, welcomePopupState);
+      this.welcomePopupTimer = setTimeout(() => {
+        this.showWelcomePopup = false;
+      }, 10000);
     }
-    this.authService.goThroughLogin().then((status: any) => {
-      if (this.accountConfig['loginRequired'] && !status) {
-        this.loginRequired = true;
-        if (this.accountConfig['login'] && this.accountConfig['login']['backgroundImage']) {
-          this.loginBackground = this.accountConfig['login']['backgroundImage'];
+
+    this.subscriptions.add(
+      this.router.events.subscribe((event) => {
+        if (event instanceof NavigationEnd) {
+          this.scrollToTop();
         }
-        if (this.accountConfig['login'] && this.accountConfig['login']['align']) {
-          this.alignClass = this.accountConfig['login']['align'];
-        }
-        if (this.accountConfig['login'] && this.accountConfig['login']['className']) {
-          this.customClass = this.accountConfig['login']['className'];
-        }
-      } else {
-        this.loginRequired = false;
-        this.finishLoading();
-      }
-    })
+      })
+    );
+
   }
+
+  private ensureTrailingSlash(path: string): string {
+    if (!path) {
+      return '';
+    }
+    return path.endsWith('/') ? path : `${path}/`;
+  }
+
+  private loadFontAwesome() {
+    if (document.getElementById('font-awesome-css')) {
+      return;
+    }
+    const cdnBase = this.ensureTrailingSlash(this.sharedService.getCDNPath() || 'https://jaldeeassets-test.s3.ap-south-1.amazonaws.com/');
+    const href = `${cdnBase}global/font-awesome-v4.7/css/font-awesome.min.css`;
+    const link = this.renderer.createElement('link');
+    link.id = 'font-awesome-css';
+    link.rel = 'stylesheet';
+    link.href = href;
+    this.renderer.appendChild(document.head, link);
+  }
+
+
 
   finishLoading() {
     if (this.accountService.getStores().length == 0) {
@@ -133,6 +269,8 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       this.updateHeaderHeight();
     }, 1000);
   }
+
+
 
   getStores() {
     this.loading = true;
@@ -237,10 +375,30 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       ))
     })
   }
-    oneTimeQnrActionPerformed(status) { 
-    if(status) {
+  oneTimeQnrActionPerformed(status) {
+    if (status) {
       this.loginRequired = false;
       this.finishLoading();
     }
+  }
+
+  private scrollToTop(): void {
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, left: 0 });
+    }
+  }
+  checkLogin() {
+    const login = (this.lStorageService.getitemfromLocalStorage('ynw-credentials')) ? true : false;
+    return login;
+  }
+  closeWelcomePopup() {
+    this.showWelcomePopup = false;
+    if (this.welcomePopupTimer) {
+      clearTimeout(this.welcomePopupTimer);
+    }
+  }
+  clearStorage() {
+    this.lStorageService.clearAll();
+    this.lStorageService.setitemonLocalStorage('cleared', true);
   }
 }

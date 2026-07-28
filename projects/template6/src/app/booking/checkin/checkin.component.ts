@@ -428,10 +428,9 @@ export class CheckinComponent implements OnInit, OnDestroy {
         }
         this.account = this.sharedService.getAccountInfo();
         this.settingsjson = this.sharedService.getJson(this.account['settings']);
-        this.accountConfig = this.accountService.getAccountConfig();
-        if (this.accountConfig && this.accountConfig['theme']) {
-            this.theme = this.accountConfig['theme'];
-        }
+        this.accountConfig = this.sharedService.getAccountConfig();
+        const config = this.sharedService.getTemplateJSON();
+        this.theme = config?.theme || this.accountConfig?.theme || this.theme;
         if (this.accountConfig && this.accountConfig['bookingPolicy']) {
             this.bookingPolicy = true;
             if (this.accountConfig['bookingPolicyContent']) {
@@ -444,22 +443,22 @@ export class CheckinComponent implements OnInit, OnDestroy {
         }
         this.wordProcessor.setTerminologies(this.sharedService.getTerminologies());
         this.consumer_label = this.wordProcessor.getTerminologyTerm('customer');
-        this.accountProfile = this.accountService.getJson(this.account['businessProfile']);
+        this.accountProfile = this.sharedService.getJson(this.account['businessProfile']);
         this.setBasicProfile();
 
-        if (this.accountService.getJson(this.account['coupon'])) {
-            this.s3CouponsList.JC = this.accountService.getJson(this.account['coupon']);
+        if (this.sharedService.getJson(this.account['coupon'])) {
+            this.s3CouponsList.JC = this.sharedService.getJson(this.account['coupon']);
             if (this.s3CouponsList.JC.length > 0) {
                 this.showCouponWB = true;
             }
         }
-        if (this.accountService.getJson(this.account['providerCoupon'])) {
-            this.s3CouponsList.OWN = this.accountService.getJson(this.account['providerCoupon']);
+        if (this.sharedService.getJson(this.account['providerCoupon'])) {
+            this.s3CouponsList.OWN = this.sharedService.getJson(this.account['providerCoupon']);
             if (this.s3CouponsList.OWN.length > 0) {
                 this.showCouponWB = true;
             }
         }
-        const deptUsers = this.accountService.getJson(this.account['departmentProviders']);
+        const deptUsers = this.sharedService.getJson(this.account['departmentProviders']);
         if (!this.departmentEnabled) {
             this.users = deptUsers;
         } else {
@@ -1419,7 +1418,7 @@ export class CheckinComponent implements OnInit, OnDestroy {
     }
     filesSelected(event, type) {
 
-        let loggedUser = this.groupService.getitemFromGroupStorage('ynw-user');
+        let loggedUser = this.groupService.getitemFromGroupStorage('jld_scon');
         const input = event.target.files;
         let fileUploadtoS3 = [];
         if (input.length > 0) {
@@ -2563,7 +2562,7 @@ export class CheckinComponent implements OnInit, OnDestroy {
         const _this = this;
         return new Promise(function (resolve, reject) {
             if (_this.onetimeQuestionnaireList && _this.onetimeQuestionnaireList.labels && _this.onetimeQuestionnaireList.labels.length > 0 && _this.onetimeQuestionnaireList.labels[0].questions.length > 0) {
-                const activeUser = _this.groupService.getitemFromGroupStorage('ynw-user');
+                const activeUser = _this.groupService.getitemFromGroupStorage('jld_scon');
                 const dataToSend: FormData = new FormData();
                 if (_this.oneTimeInfo.files) {
                     for (const pic of _this.oneTimeInfo.files) {

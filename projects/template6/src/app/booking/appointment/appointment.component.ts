@@ -1,20 +1,24 @@
-import { ChangeDetectorRef, Component, ElementRef, HostListener, NgZone, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, ElementRef, HostListener, NgZone, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute, NavigationExtras, Router } from "@angular/router";
 import { MatDialog } from "@angular/material/dialog";
+import { MatSnackBar } from "@angular/material/snack-bar";
 import { Location } from "@angular/common";
 import { TranslateService } from "@ngx-translate/core";
 import { MatCalendarCellCssClasses } from "@angular/material/datepicker";
 import { Subscription } from "rxjs";
-import { AccountService, AuthService, ConsumerService, DateTimeProcessor, ErrorMessagingService, FileService, GroupStorageService, LocalStorageService, Messages, PaytmService, projectConstantsLocal, QuestionaireService, RazorpayService, SharedService, StorageService, SubscriptionService, WordProcessor } from "jconsumer-shared";
+import { AccountService, AuthService, ConsumerService, DateTimeProcessor, ErrorMessagingService, FileService, GroupStorageService, LocalStorageService, Messages, PaytmService, projectConstantsLocal, RazorpayService, SharedService, StorageService, SubscriptionService, WordProcessor } from "jconsumer-shared";
 import { CouponsComponent } from "../../shared/coupons/coupons.component";
+import { ApplyCouponComponent } from "../../shared/apply-coupon/apply-coupon.component";
 import { ConsumerEmailComponent } from "../../shared/consumer-email/consumer-email.component";
+import { BookingService } from "../../booking/booking.service";
+import { QuestionaireService } from "../../shared/questionaire/questionaire-service";
 
 @Component({
     selector: 'app-appointment',
     templateUrl: './appointment.component.html',
     styleUrls: ['./appointment.component.scss']
 })
-export class AppointmentComponent implements OnInit, OnDestroy {
+export class AppointmentComponent implements OnInit, OnDestroy, AfterViewInit, AfterViewChecked {
 
     private subs: Subscription = new Subscription();
     scheduledAppmtId  // scheduled appointment id for reschedule
@@ -41,7 +45,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     terminologies;    // To hold the terminology json
     accountType;      // To know the account type Branch/Individual SP/SP User etc
     appointmentType;  // Reschedule or not
-    multipleSelection;// To allow multiple slot selection or not
+    multipleSelection = 1; // Slots selectable at a time (force single selection)
     scheduledAppointment;// To store the scheduled appointment for rescheduled
     users = [];            // To store the users/providers/doctors
     selectedSlots: any = [] // To hold the appointment slots selected
@@ -56,7 +60,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     loggedIn = true;  // To check whether user logged in or not
     loading = true;
     consumer_label: any;
-
+    loggedUser: any;
     loadingService = true;   // To check whether service details is fetched or not
     isPaymentRequired;
     services: any;    // To store services json
@@ -85,7 +89,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     providerConsumerId; // id of the selected provider consumer
     providerConsumerList: any;
     addmemberobj = { 'fname': '', 'title': '', 'lname': '', 'mobile': '', 'gender': '', 'dob': '' };
-
+    cdnPath: string = '';
     balanceAmount: any;
     paymentDetails: any = [];
 
@@ -116,7 +120,10 @@ export class AppointmentComponent implements OnInit, OnDestroy {
         caption: []
     }; // storing message to be uploaded
     @ViewChild('modal') modal; // referring modal object
+    @ViewChild('membersModalTrigger') membersModalTrigger: ElementRef;
     @ViewChild('closebutton') closebutton;
+    @ViewChild('paymentModeSection') paymentModeSection: ElementRef;
+    @ViewChild(ApplyCouponComponent) applyCouponComp: ApplyCouponComponent;
     action = ''; // To navigate between different actions like note/upload/add familymember/members etc
     loadedConvenientfee;
     checkPolicy = true;
@@ -126,7 +133,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     emailError = null;
     phoneError: string;
     whatsappError = '';
-    disable: boolean;
+    disable = false;
     appointmentIdsList: any[];
     wallet: any;
     pGateway: any;
@@ -177,6 +184,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     isPaymentNeeded;
     isCouponsAvailable: boolean = false;
     confirmButton = { 'caption': 'Confirm', 'disabled': false };
+    payAmountLabel = '';
     amountToPayAfterJCash: any;
     bookingPolicy: boolean;
     bookingPolicyContent: any;
@@ -189,6 +197,13 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     booking_firstName: any;
     booking_lastName: any;
     currentAttachment: any;
+    showLumaSpinner = false;
+    lumaOverlayMode: 'loading' | 'message' = 'loading';
+    lumaOverlayMessage = '';
+    lumaOverlayDismissible = false;
+    showSidebarImage = false;
+    paymentmodescroll = true;
+    pendingScrollToTop = false;
     constructor(
         private activatedRoute: ActivatedRoute,
         private lStorageService: LocalStorageService,
@@ -201,6 +216,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
         private authService: AuthService,
         private groupService: GroupStorageService,
         private dialog: MatDialog,
+        private snackBar: MatSnackBar,
         private router: Router,
         private paytmService: PaytmService,
         private razorpayService: RazorpayService,
@@ -212,12 +228,13 @@ export class AppointmentComponent implements OnInit, OnDestroy {
         private accountService: AccountService,
         public translate: TranslateService,
         private storageService: StorageService,
+        private bookingService: BookingService,
         private sharedService: SharedService
     ) {
         this.moment = this.dateTimeProcessor.getMoment();
         this.serverDate = this.lStorageService.getitemfromLocalStorage('sysdate');
         this.subscriptionService.sendMessage({ ttype: 'hideBookingsAndLocations' });
-
+        this.loggedUser = this.groupService.getitemFromGroupStorage('jld_scon');
         this.subs.add(this.activatedRoute.queryParams.subscribe(
             params => {
                 if(params['ad_loc']) {
@@ -232,7 +249,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                 }
                 if (params['ctime']) {
                     this.selectedTime = params['ctime']
-                }                
+                }
                 this.dateChanged = params['cur'];
                 if (params['sel_date']) {
                     this.appmtDate = params['sel_date'];
@@ -252,15 +269,16 @@ export class AppointmentComponent implements OnInit, OnDestroy {
 
     @HostListener('window:resize', ['$event'])
     onResize() {
-        if (window.innerWidth <= 767) {
-            this.smallDevice = true;
-        } else {
-            this.smallDevice = false;
-        }
+        const width = window.innerWidth;
+        this.smallDevice = width <= 1366;
+        this.showSidebarImage = width >= 880;
     }
 
     ngOnDestroy(): void {
         this.subs.unsubscribe();
+        if (typeof window !== 'undefined' && 'scrollRestoration' in window.history) {
+            window.history.scrollRestoration = 'auto';
+        }
     }
     getRescheduledInfo() {
         const _this = this;
@@ -277,21 +295,28 @@ export class AppointmentComponent implements OnInit, OnDestroy {
         })
     }
     openCoupons(type?: any) {
+        const appliedCodes = this.getAppliedCouponsFromPayment(this.paymentDetails);
         this.coupondialogRef = this.dialog.open(CouponsComponent, {
             width: '50%',
             panelClass: ['commonpopupmainclass', 'popup-class', 'specialclass'],
             disableClose: true,
             data: {
                 couponsList: this.s3CouponsList,
+                selectedCoupons: appliedCodes && appliedCodes.length ? appliedCodes : this.selectedCoupons,
                 type: type,
                 theme: this.theme
             }
         });
-        this.coupondialogRef.afterClosed().subscribe(() => {
+        this.coupondialogRef.afterClosed().subscribe((result: any) => {
+            if (result?.couponCode && this.applyCouponComp) {
+                this.applyCouponComp.applySelectedCoupon(result.couponCode);
+            }
         });
     }
     ngOnInit(): void {
         const _this = this;
+        this.configureScrollRestoration();
+        this.scrollToTop();
         this.onResize();
         let language = this.lStorageService.getitemfromLocalStorage('translatevariable');
         this.translate.setDefaultLang(language);
@@ -300,12 +325,11 @@ export class AppointmentComponent implements OnInit, OnDestroy {
             this.isFutureDate = this.dateTimeProcessor.isFutureDate(this.serverDate, this.appmtDate);
         }
         this.account = this.sharedService.getAccountInfo();
-        this.accountConfig = this.accountService.getAccountConfig();
+        this.accountConfig = this.sharedService.getAccountConfig();
         this.selectedLocation = this.accountService.getActiveLocation();
         this.lStorageService.setitemonLocalStorage('c-location', this.selectedLocation.id);
-        if (this.accountConfig && this.accountConfig['theme']) {
-            this.theme = this.accountConfig['theme'];
-        }
+        const config = this.sharedService.getTemplateJSON();
+        this.theme = config?.theme || this.accountConfig?.theme || this.theme;
         if (this.accountConfig && this.accountConfig['bookingPolicy']) {
             this.bookingPolicy = true;
             if (this.accountConfig['bookingPolicyContent']) {
@@ -318,10 +342,10 @@ export class AppointmentComponent implements OnInit, OnDestroy {
         }
         this.wordProcessor.setTerminologies(this.sharedService.getTerminologies());
         this.consumer_label = this.wordProcessor.getTerminologyTerm('customer');
-        this.accountProfile = this.accountService.getJson(this.account['businessProfile']);
+        this.accountProfile = this.sharedService.getJson(this.account['businessProfile']);
         this.setBasicProfile();
-        const deptUsers = this.accountService.getJson(this.account['departmentProviders']);
-        const settings = this.accountService.getJson(this.account['settings']);
+        const deptUsers = this.sharedService.getJson(this.account['departmentProviders']);
+        const settings = this.sharedService.getJson(this.account['settings']);
         this.departmentEnabled = settings.filterByDept;
         if (!this.departmentEnabled) {
             this.users = deptUsers;
@@ -345,6 +369,15 @@ export class AppointmentComponent implements OnInit, OnDestroy {
             this.fromApp = true;
         }
     }
+    ngAfterViewInit(): void {
+        this.scrollToTop();
+    }
+    ngAfterViewChecked(): void {
+        if (this.pendingScrollToTop && this.bookStep === 5) {
+            this.pendingScrollToTop = false;
+            this.scrollToTop();
+        }
+    }
     privacyClicked(e) {
         e.preventDefault();
         this.privacy = !this.privacy;
@@ -352,6 +385,30 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     privacyCheck(event) {
         this.checkPolicy = event.target.checked;
         this.setButtonVisibility();
+    }
+    private configureScrollRestoration() {
+        if (typeof window !== 'undefined' && 'scrollRestoration' in window.history) {
+            window.history.scrollRestoration = 'manual';
+        }
+    }
+    private scrollToTop() {
+        setTimeout(() => {
+            if (typeof window !== 'undefined') {
+                window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+                document.body.scrollTop = 0;
+                document.documentElement.scrollTop = 0;
+            }
+            if (this.paytmview && this.paytmview.nativeElement) {
+                this.paytmview.nativeElement.scrollTop = 0;
+            }
+        }, 100);
+    }
+    private handleReviewEntry() {
+        if (this.bookStep === 5) {
+            this.paymentmodescroll = true;
+            this.pendingScrollToTop = true;
+            this.scrollToTop();
+        }
     }
     setBasicProfile() {
         this.accountId = this.accountProfile.id;
@@ -457,7 +514,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
             }
         }
         if (this.action !== 'addmember') {
-            this.closebutton.nativeElement.click();
+            this.safeCloseModal();
         }
         setTimeout(() => {
             if (this.action === 'note' || this.action === 'members' || (this.action === 'service' && !this.departmentEnabled)
@@ -496,6 +553,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                                         _this.bookStep = 4;
                                     } else {
                                         _this.bookStep = 5;
+                                        _this.handleReviewEntry();
                                         this.confirmAppointment('next');
                                     }
                                     console.log("Bookstep3:", _this.bookStep);
@@ -504,6 +562,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                                         _this.bookStep = 4;
                                     } else {
                                         _this.bookStep = 5;
+                                        _this.handleReviewEntry();
                                         this.confirmAppointment('next');
                                     }
                                 }
@@ -535,6 +594,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                                         _this.bookStep = 4;
                                     } else {
                                         _this.bookStep = 5;
+                                        _this.handleReviewEntry();
                                         this.confirmAppointment('next');
                                     }
                                     console.log("Bookstep3:", _this.bookStep);
@@ -546,6 +606,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                                         _this.bookStep = 4;
                                     } else {
                                         _this.bookStep = 5;
+                                        _this.handleReviewEntry();
                                         this.confirmAppointment('next');
 
                                     }
@@ -663,6 +724,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                                             console.log("Questions:", questions);
 
                                             _this.bookStep = 5;
+                                            _this.handleReviewEntry();
                                             _this.confirmAppointment('next');
 
                                             _this.loggedIn = true;
@@ -678,6 +740,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                 else {
                     console.log("Else block :")
                     this.bookStep = 5;
+                    this.handleReviewEntry();
                     this.confirmAppointment('next');
                     this.initAppointment();
                 }
@@ -685,11 +748,8 @@ export class AppointmentComponent implements OnInit, OnDestroy {
             }
 
 
-            if (activeService.maxBookingsAllowed > 1 && this.appointmentType != 'reschedule') {
-                this.multipleSelection = activeService.maxBookingsAllowed;
-            } else {
-                this.multipleSelection = 1;
-            }
+            // Restrict to a single slot selection irrespective of maxBookingsAllowed
+            this.multipleSelection = 1;
             if (activeService.virtualCallingModes) {
                 this.setVirtualInfoServiceInfo(activeService, this.appointmentType);
             }
@@ -814,6 +874,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     // BookStep = 2 --- Questionaire
     // BookStep = 3 --- Review/Confirm / File / Note
     goToStep(type) {
+        const previousStep = this.bookStep;
         const _this = this;
         console.log("BookStep1:" + this.bookStep);
         if (type === 'next') {
@@ -838,6 +899,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                                                     _this.bookStep = 4;
                                                 } else {
                                                     _this.bookStep = 5;
+                                                    _this.handleReviewEntry();
                                                     this.confirmAppointment('next');
                                                 }
                                                 console.log("Bookstep2:", _this.bookStep);
@@ -849,6 +911,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                                                     _this.bookStep = 4;
                                                 } else {
                                                     _this.bookStep = 5;
+                                                    _this.handleReviewEntry();
                                                     this.confirmAppointment('next');
                                                 }
                                             }
@@ -879,6 +942,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                                                     _this.bookStep = 4;
                                                 } else {
                                                     _this.bookStep = 5;
+                                                    _this.handleReviewEntry();
                                                     this.confirmAppointment('next');
                                                 }
                                                 console.log("Bookstep2:", _this.bookStep);
@@ -887,6 +951,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                                                     _this.bookStep = 4;
                                                 } else {
                                                     _this.bookStep = 5;
+                                                    _this.handleReviewEntry();
                                                     this.confirmAppointment('next');
                                                 }
                                             }
@@ -1004,6 +1069,10 @@ export class AppointmentComponent implements OnInit, OnDestroy {
         } else {
             this.bookStep = type;
         }
+        if (this.bookStep === 5 && previousStep !== 5) {
+            this.paymentmodescroll = true;
+            this.scrollToTop();
+        }
         if (this.bookStep === 5) {
             this.confirmAppointment('next');
         }
@@ -1011,6 +1080,9 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     }
 
     actionCompleted() {
+        if ((this.action === 'members' || this.action === 'addmember') && this.disable) {
+            return;
+        }
         if (this.action !== 'members' && this.action !== 'addmember' && this.action !== 'note' && this.action !== 'attachment') {
             if (this.appointmentType == 'reschedule' && this.scheduledAppointment.service && this.scheduledAppointment.service.priceDynamic) {
                 this.subs.add(this.consumerService.getAppointmentReschedulePricelist(this.scheduledAppointment.service.id).subscribe(
@@ -1039,6 +1111,9 @@ export class AppointmentComponent implements OnInit, OnDestroy {
         }
     }
     handleSaveMember() {
+        if (this.disable) {
+            return;
+        }
         this.disable = true;
         let derror = '';
         const namepattern = new RegExp(projectConstantsLocal.VALIDATOR_CHARONLY);
@@ -1051,9 +1126,9 @@ export class AppointmentComponent implements OnInit, OnDestroy {
         }
         if (derror === '') {
             const post_data = {
-                    'firstName': this.addmemberobj.fname.trim(),
-                    'lastName': this.addmemberobj.lname.trim(),
-                    'title': this.addmemberobj.title.trim()
+                    'firstName': this.safeTrim(this.addmemberobj.fname),
+                    'lastName': this.safeTrim(this.addmemberobj.lname),
+                    'title': this.safeTrim(this.addmemberobj.title)
             };
             if (this.addmemberobj.mobile !== '') {
                 post_data['primaryMobileNo'] = this.addmemberobj.mobile;
@@ -1073,6 +1148,8 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                 this.setConsumerFamilyMembers(this.parentCustomer).then();
                 setTimeout(() => {
                     this.goBack();
+                    this.disable = false;
+                    this.resetAddMemberObj();
                 }, projectConstantsLocal.TIMEOUT_DELAY);
             },
                 error => {
@@ -1089,38 +1166,49 @@ export class AppointmentComponent implements OnInit, OnDestroy {
             this.apiSuccess = '';
         }, 2000);
     }
+    private resetAddMemberObj() {
+        this.addmemberobj = { 'fname': '', 'title': '', 'lname': '', 'mobile': '', 'gender': '', 'dob': '' };
+    }
     resetApiErrors() {
         this.emailError = null;
     }
     saveMemberDetails() {
+        if (this.disable) {
+            return;
+        }
+        this.disable = true;
         const _this = this;
         this.resetApiErrors();
         this.emailError = '';
         this.phoneError = '';
         this.whatsappError = '';
         this.changePhone = true;
-        if (this.commObj['communicationPhNo'] && this.commObj['communicationPhNo'].trim() !== '') {
+        if (this.safeTrim(this.commObj?.communicationPhNo) !== '') {
         } else {
             // this.snackbarService.openSnackBar('Please enter phone number', { 'panelClass': 'snackbarerror' });
+            this.disable = false;
             return false;
         }
         if (this.selectedService && this.selectedService.virtualCallingModes && this.selectedService.virtualCallingModes[0].callingMode === 'WhatsApp') {
-            if (!this.commObj['comWhatsappCountryCode'] || (this.commObj['comWhatsappCountryCode'] && this.commObj['comWhatsappCountryCode'].trim() === '')) {
+            if (this.safeTrim(this.commObj?.comWhatsappCountryCode) === '') {
                 // this.snackbarService.openSnackBar('Please enter country code', { 'panelClass': 'snackbarerror' });
+                this.disable = false;
                 return false;
             }
-            if (this.commObj['comWhatsappNo'] && this.commObj['comWhatsappNo'].trim() !== '') {
+            if (this.safeTrim(this.commObj?.comWhatsappNo) !== '') {
                 this.callingModes = this.commObj['comWhatsappCountryCode'].replace('+', '') + this.commObj['comWhatsappNo'];
             } else {
                 // this.snackbarService.openSnackBar('Please enter whatsapp number', { 'panelClass': 'snackbarerror' });
+                this.disable = false;
                 return false;
             }
         }
-        if (this.commObj['communicationEmail'] && this.commObj['communicationEmail'].trim() !== '') {
+        if (this.safeTrim(this.commObj?.communicationEmail) !== '') {
             const pattern = new RegExp(projectConstantsLocal.VALIDATOR_EMAIL);
             const result = pattern.test(this.commObj['communicationEmail']);
             if (!result) {
                 this.emailError = "Email is invalid";
+                this.disable = false;
                 return false;
             } else {
                 this.appmtFor[0]['email'] = this.commObj['communicationEmail'];
@@ -1138,14 +1226,27 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                     this.bookStep = 3;
                 }
             }
-        })
-        this.closebutton.nativeElement.click();
+        }).catch(() => {
+            this.disable = false;
+        }).finally(() => {
+            this.disable = false;
+        });
+        this.safeCloseModal();
         setTimeout(() => {
             this.action = '';
+            this.disable = false;
         }, 500);
         return true;
-    }      
-    
+    }
+    private safeTrim(value: any): string {
+        return (value || '').toString().trim();
+    }
+    private safeCloseModal() {
+        if (this.closebutton && this.closebutton.nativeElement) {
+            this.closebutton.nativeElement.click();
+        }
+    }
+
 
     getOneTimeInfo(providerConsumerID, accountId) {
         const _this = this;
@@ -1203,8 +1304,14 @@ export class AppointmentComponent implements OnInit, OnDestroy {
             this.bookStep = 4;
         } else {
             this.bookStep = 5;
+            this.handleReviewEntry();
             this.confirmAppointment();
         }
+    }
+    dismissLumaOverlay() {
+        this.resetConfirmState();
+        // this.showLumaSpinner = false;
+        this.router.navigate([this.customId,'bookings']);
     }
 
     initAppointment() {
@@ -1216,14 +1323,15 @@ export class AppointmentComponent implements OnInit, OnDestroy {
               _this.parentCustomer = spConsumer;
               _this.providerConsumerId = spConsumer.id;
               console.log("Parent Consumer:", spConsumer);
+              if (_this.appointmentType != 'reschedule') {
               _this.apptDetails_firstName = spConsumer.firstName;
               _this.apptDetails_lastName = spConsumer.lastName;
               _this.apptDetails_title = spConsumer.title;
-                if (_this.appointmentType != 'reschedule') {
+                
                     _this.appmtFor.push({ id: spConsumer.id, firstName: spConsumer.firstName, lastName: spConsumer.lastName });
                     _this.prepaymentAmount = _this.appmtFor.length * _this.selectedService.minPrePaymentAmount || 0;
                     _this.serviceCost = _this.selectedService.price;
-                    _this.setConsumerFamilyMembers(spConsumer.id).then(); // Load Family Members                    
+                    _this.setConsumerFamilyMembers(spConsumer.id).then(); // Load Family Members
                             if (!_this.questionnaireLoaded) {
                                 _this.getConsumerQuestionnaire().then(
                                     () => {
@@ -1233,7 +1341,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                                 );
                             } else {
                                 resolve(true);
-                            }                   
+                            }
                 } else {
                     resolve(true);
                 }
@@ -1273,6 +1381,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                         // this.snackbarService.openSnackBar('Please provide ' + this.selectedService.consumerNoteTitle, { 'panelClass': 'snackbarerror' });
                     } else {
                         this.bookStep++;
+                        this.handleReviewEntry();
                         this.confirmAppointment();
                     }
                 }
@@ -1291,7 +1400,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
         const _this = this;
         return new Promise(function (resolve, reject) {
             _this.familyMembers = [];
-            _this.consumerService.getMembers(_this.providerConsumerId).subscribe(            
+            _this.consumerService.getMembers(_this.providerConsumerId).subscribe(
                 (members: any) => {
                     for (const member of members) {
                         if (member.id !== parentId) {
@@ -1313,7 +1422,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
         const _this = this;
         if (spConsumer.email) {
             _this.commObj['communicationEmail'] = spConsumer.email;
-        } 
+        }
         _this.commObj['communicationPhNo'] = spConsumer.phoneNo;
         _this.commObj['communicationPhCountryCode'] = spConsumer.countryCode;
         if (spConsumer.whatsAppNum && spConsumer.whatsAppNum.number && spConsumer.whatsAppNum.number.trim() != '') {
@@ -1372,7 +1481,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                     }
                     _this.locationId = _this.scheduledAppointment.location.id;
                     _this.selectedServiceId = _this.scheduledAppointment.service.id;
-                    _this.appmtDate = _this.scheduledAppointment.appmtDate;                    
+                    _this.appmtDate = _this.scheduledAppointment.appmtDate;
                     console.log('ApptDate:', _this.appmtDate);
                     console.log("Server Date:", _this.serverDate);
                     _this.isFutureDate = _this.dateTimeProcessor.isFutureDate(_this.serverDate, _this.appmtDate);
@@ -1443,8 +1552,9 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     }
 
     filesSelected(event, type) {
-    
-        let loggedUser = this.groupService.getitemFromGroupStorage('ynw-user');
+
+        // use same storage key as other booking flows so owner id is set correctly
+        let loggedUser = this.groupService.getitemFromGroupStorage('jld_scon');
         const input = event.target.files;
         let fileUploadtoS3 = [];
         if (input.length > 0) {
@@ -1483,7 +1593,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                            this.api_loading = false;
                            this.confirmButton['disabled'] = false;
                            _this.subscriptionService.sendMessage({ ttype: 'loading_stop' });
-                                                 
+
                         }
                       }
                     );
@@ -1506,7 +1616,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
         }
         console.log('addWaitlistAttachment',this.filesToUpload)
       }
-    
+
       uploadAudioVideo(data) {
         const _this = this;
         let count = 0;
@@ -1562,8 +1672,13 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     handleSideScreen(action) {
         console.log("This.action:", action);
         this.action = action;
+        if (action === 'members' && this.membersModalTrigger?.nativeElement) {
+            this.membersModalTrigger.nativeElement.click();
+        } else if (this.modal && this.modal.nativeElement) {
+            this.modal.nativeElement.click();
+        }
     }
-    
+
     checkCouponvalidity() {
         const post_Data = this.generateInputForAppointment();
         post_Data['appmtFor'][0]['apptTime'] = this.selectedSlots[0]['time'];
@@ -1586,10 +1701,20 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                 this.setConvenientFee();
             }
             this.setConfirmButton();
-        }, error => {
+            const invalidCoupons = this.getInvalidCouponsFromPayment(this.paymentDetails);
+            if (invalidCoupons.length) {
+                this.applyCouponComp?.markCouponsNotApplicable(invalidCoupons);
+            }
+            const appliedCoupons = this.getAppliedCouponsFromPayment(this.paymentDetails);
+            if (appliedCoupons.length) {
+                this.selectedCoupons = appliedCoupons;
+            } else if (invalidCoupons.length) {
+                this.selectedCoupons = (this.selectedCoupons || []).filter(code => !invalidCoupons.includes(code));
+            }
+         }, error => {
             let errorObj = this.errorService.getApiError(error);
             // this.snackbarService.openSnackBar(this.wordProcessor.getProjectErrorMesssages(errorObj, this.accountService.getTerminologies()), { 'panelClass': 'snackbarerror' });
-        }));
+         }));
     }
     togglepaymentMode() {
         this.shownonIndianModes = !this.shownonIndianModes;
@@ -1628,7 +1753,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
             }
         })
     }
-    confirmAppointment(type?) {
+        confirmAppointment(type?) {
         console.log("this.selectedService",this.selectedService);
         console.log("this.commObj",this.commObj)
         if (this.selectedService && this.selectedService.isPrePayment && (!this.commObj['communicationEmail'] || this.commObj['communicationEmail'] === '')) {
@@ -1657,7 +1782,6 @@ export class AppointmentComponent implements OnInit, OnDestroy {
             }
             this.addApptAdvancePayment(this.selectedSlots[0]);
         }
-        return true;
     }
     setConvenientFee() {
         const _this = this;
@@ -1712,10 +1836,20 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                     this.setConvenientFee();
                 }
                 this.setConfirmButton();
+                const invalidCoupons = this.getInvalidCouponsFromPayment(this.paymentDetails);
+                if (invalidCoupons.length) {
+                    this.applyCouponComp?.markCouponsNotApplicable(invalidCoupons);
+                }
+                const appliedCoupons = this.getAppliedCouponsFromPayment(this.paymentDetails);
+                if (appliedCoupons.length) {
+                    this.selectedCoupons = appliedCoupons;
+                } else if (invalidCoupons.length) {
+                    this.selectedCoupons = (this.selectedCoupons || []).filter(code => !invalidCoupons.includes(code));
+                }
             }, error => {
-                this.isClickedOnce = false;
+                this.resetConfirmState();
                 let errorObj = this.errorService.getApiError(error);
-                // this.snackbarService.openSnackBar(this.wordProcessor.getProjectErrorMesssages(errorObj, this.accountService.getTerminologies()), { 'panelClass': 'snackbarerror' });
+                this.showErrorToast(this.wordProcessor.getProjectErrorMesssages(errorObj, this.sharedService.getTerminologies()));
             }));
     }
     getServiceQuestionaireAnswers() {
@@ -1794,7 +1928,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                 'coupons': this.selectedCoupons,
             };
             console.log(this.selectedMessage)
-            
+
             if (!this.selectedService.noDateTime) {
                 post_Data['appmtDate'] = this.appmtDate
             }
@@ -1810,9 +1944,6 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                     }
                 }
             }
-            if (this.selectedMessage.files.length > 0) {
-                post_Data['attachments'] = this.filesToUpload;
-              }
             if (this.commObj['communicationEmail'] !== '' && this.appmtFor && this.appmtFor[0]) {
                 this.appmtFor[0]['email'] = this.commObj['communicationEmail'];
             }
@@ -1827,7 +1958,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                     return false;
                 }
             }
-          
+
             post_Data['srvAnswers'] = this.getServiceQuestionaireAnswers();
             console.log("Posting Data request:", post_Data);
             return post_Data;
@@ -1853,9 +1984,6 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                 post_Data['useCredit'] = this.isJCreditSelected;
                 post_Data['useJcash'] = this.isJCashSelected;
             }
-            if (this.selectedMessage.files.length > 0) {
-                post_Data['attachments'] = this.filesToUpload;
-              }
             if (this.scheduledAppointment) {
                 post_Data['appmtFor'] = this.scheduledAppointment['appmtFor'];
             } else {
@@ -1887,28 +2015,23 @@ export class AppointmentComponent implements OnInit, OnDestroy {
         const _this = this;
         if (this.selectedService && this.selectedService.isPrePayment && !this.paymentMode && this.paymentDetails.amountRequiredNow > 0) {
             // this.snackbarService.openSnackBar('Please select one payment mode', { 'panelClass': 'snackbarerror' });
-            this.isClickedOnce = false;
+            this.resetConfirmState();
             return false;
         }
         let count = 0;
+        let hasError = false;
         for (let i = 0; i < _this.selectedSlots.length; i++) {
-            console.log(i);
-            console.log(_this.selectedSlots[i]);
-            await _this.takeAppointment(_this.selectedSlots[i]).then(
-                () => {
-                    count++;
-                    if (count === _this.selectedSlots.length) {
-                        _this.paymentOperation(_this.paymentMode);
-                    }
-                    console.log("Hi I am hree");
+            const status = await _this.takeAppointment(_this.selectedSlots[i]);
+            if (status) {
+                count++;
+                if (count === _this.selectedSlots.length) {
+                    _this.paymentOperation(_this.paymentMode);
                 }
-            ).then(
-                (error) => {
-
-                }
-            );
+            } else {
+                hasError = true;
+            }
         }
-        return true;
+        return !hasError;
     }
     showSpec() {
         if (this.showmoreSpec) {
@@ -1927,7 +2050,12 @@ export class AppointmentComponent implements OnInit, OnDestroy {
             } else {
                 let post_Data = _this.generateInputForAppointment();
                 if (!_this.selectedService.date && !_this.selectedService.noDateTime) {
-                    post_Data['appmtFor'][0]['apptTime'] = appmtSlot['time'];
+                    // apply selected slot time to every attendee entry
+                    post_Data['appmtFor'] = (post_Data['appmtFor'] || []).map((person: any, idx: number) => {
+                        const cloned = { ...person };
+                        cloned['apptTime'] = appmtSlot['time'];
+                        return cloned;
+                    });
                 }
                 post_Data['schedule'] = { 'id': appmtSlot['scheduleId'] };
                 console.log("Post data:", post_Data);
@@ -1949,24 +2077,36 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                                 }
                                 parentUid = retData['parent_uuid'];
                             });
-                            _this.submitQuestionnaire(parentUid).then(
-                                () => {
+                            const continueWithServiceOptions = () => {
+                                if (_this.serviceOPtionInfo && _this.serviceOPtionInfo.answers) {
+                                    _this.submitserviceOptionQuestionnaire(parentUid).then(
+                                        () => {
+                                            resolve(true);
+                                        }
+                                    );
+                                } else {
                                     resolve(true);
                                 }
-                            );
-                            if (_this.serviceOPtionInfo && _this.serviceOPtionInfo.answers) {
-                                _this.submitserviceOptionQuestionnaire(parentUid).then(
+                            };
+                            if (_this.filesToUpload && _this.filesToUpload.length > 0) {
+                                _this.consumerNoteAndFileSave(parentUid).then(
                                     () => {
-                                        resolve(true);
+                                        continueWithServiceOptions();
+                                    }
+                                );
+                            } else {
+                                _this.submitQuestionnaire(parentUid).then(
+                                    () => {
+                                        continueWithServiceOptions();
                                     }
                                 );
                             }
 
                         }, error => {
-                            _this.isClickedOnce = false;
-                            _this.confirmButton['disabled'] = false;
+                            _this.resetConfirmState();
                             let errorObj = _this.errorService.getApiError(error);
-                            // _this.snackbarService.openSnackBar(_this.wordProcessor.getProjectErrorMesssages(errorObj, _this.accountService.getTerminologies()), { 'panelClass': 'snackbarerror' });
+                            _this.showErrorToast(_this.wordProcessor.getProjectErrorMesssages(errorObj, _this.sharedService.getTerminologies()));
+                            resolve(false);
 
                         }));
                 } else {
@@ -1986,29 +2126,49 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                                     }
                                 }
                                 parentUid = retData['parent_uuid'];
-                            });                          
-                            _this.submitQuestionnaire(parentUid).then(
-                                () => {
+                            });
+                            const continueWithServiceOptions = () => {
+                                if (_this.serviceOPtionInfo && _this.serviceOPtionInfo.answers) {
+                                    _this.submitserviceOptionQuestionnaire(parentUid).then(
+                                        () => {
+                                            resolve(true);
+                                        }
+                                    );
+                                } else {
                                     resolve(true);
                                 }
-                            );
-                            if (_this.serviceOPtionInfo && _this.serviceOPtionInfo.answers) {
-                                _this.submitserviceOptionQuestionnaire(parentUid).then(
+                            };
+                            if (_this.filesToUpload && _this.filesToUpload.length > 0) {
+                                _this.consumerNoteAndFileSave(parentUid).then(
                                     () => {
-                                        resolve(true);
+                                        continueWithServiceOptions();
+                                    }
+                                );
+                            } else {
+                                _this.submitQuestionnaire(parentUid).then(
+                                    () => {
+                                        continueWithServiceOptions();
                                     }
                                 );
                             }
                         }, error => {
-                            _this.isClickedOnce = false;
-                            _this.confirmButton['disabled'] = false;
+                            _this.resetConfirmState();
                             let errorObj = _this.errorService.getApiError(error);
-                            // _this.snackbarService.openSnackBar(_this.wordProcessor.getProjectErrorMesssages(errorObj, _this.accountService.getTerminologies()), { 'panelClass': 'snackbarerror' });
+                            _this.showErrorToast(_this.wordProcessor.getProjectErrorMesssages(errorObj, _this.sharedService.getTerminologies()));
+                            resolve(false);
                         }));
                 }
             }
         })
     }
+    private getAttachmentsPayload() {
+        // Strip heavy File/base64 refs before sending to API
+        return (this.filesToUpload || []).map((file: any) => {
+            const { fileName, fileSize, caption, fileType, action, order, driveId, owner, ownerType, s3path, uid } = file;
+            return { fileName, fileSize, caption, fileType, action, order, driveId, owner, ownerType, s3path, uid };
+        });
+    }
+
     consumerNoteAndFileSave(uuid) {
         const _this = this;
         const dataToSend = {
@@ -2019,10 +2179,10 @@ export class AppointmentComponent implements OnInit, OnDestroy {
               telegram: false,
               whatsApp: false
             },
-            attachments: this.filesToUpload,
+            attachments: this.getAttachmentsPayload(),
           };
         return new Promise(function (resolve, reject) {
-           
+
             _this.subs.add(_this.consumerService.addAppointmentAttachment(_this.accountId, uuid, dataToSend)
                 .subscribe(
                     () => {
@@ -2031,7 +2191,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                                 () => {
                                     resolve(true);
                                 }
-                            ); 
+                            );
                         } else {
                             let queryParams = {
                                 account_id: _this.accountId,
@@ -2123,7 +2283,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                     if (data.urls && data.urls.length > 0) {
                         for (const url of data.urls) {
                             _this.api_loading_video = true;
-                            _this.subscriptionService.sendMessage({ ttype: 'loading_file_start' });
+                            // _this.subscriptionService.sendMessage({ ttype: 'loading_file_start' });
                             const file = _this.questionAnswers.filestoUpload[url.labelName][url.document];
                             _this.questionaireService.videoaudioS3Upload(file, url.url)
                                 .subscribe(() => {
@@ -2138,7 +2298,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                                                     let errorObj = _this.errorService.getApiError(error);
                                                     // _this.snackbarService.openSnackBar(_this.wordProcessor.getProjectErrorMesssages(errorObj, _this.accountService.getTerminologies()), { 'panelClass': 'snackbarerror' });
                                                     _this.api_loading_video = false;
-                                                    _this.subscriptionService.sendMessage({ ttype: 'loading_file_stop' });
+                                                    // _this.subscriptionService.sendMessage({ ttype: 'loading_file_stop' });
                                                     resolve(false);
                                                 });
                                     }
@@ -2316,7 +2476,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
 
     finishAppointment(status) {
         if (status) {
-            this.isClickedOnce = false;
+            this.resetConfirmState();
             // this.snackbarService.openSnackBar(Messages.PROVIDER_BILL_PAYMENT, { 'panelClass': 'snackbarnormal' });
             let queryParams = {
                 uuid: this.trackUuid
@@ -2389,6 +2549,9 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     addMember() {
         this.action = 'addmember';
         this.disable = false;
+        this.resetAddMemberObj();
+        this.apiError = '';
+        this.apiSuccess = '';
     }
     /**
     *
@@ -2399,6 +2562,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
         const _this = this;
         console.log("selected Member :", selectedMembers);
         _this.appmtFor = selectedMembers;
+        _this.resetPaymentStateOnMemberChange();
         console.log(_this.appmtFor);
         if (_this.selectedService && _this.selectedService.minPrePaymentAmount) {
             _this.prepaymentAmount = _this.appmtFor.length * _this.selectedService.minPrePaymentAmount || 0;
@@ -2413,11 +2577,15 @@ export class AppointmentComponent implements OnInit, OnDestroy {
         this.addmemberobj.gender = obj.gender || '';
         this.addmemberobj.dob = obj.dob || '';
     }
+    isAddMemberReady() {
+        return this.safeTrim(this.addmemberobj.fname) !== '' && this.safeTrim(this.addmemberobj.lname) !== '';
+    }
     handleConsumerNote(vale) {
         this.consumerNote = vale;
     }
 
     popupClosed() {
+        
     }
     rescheduleAppointment() {
         this.btnClicked = true;
@@ -2432,10 +2600,10 @@ export class AppointmentComponent implements OnInit, OnDestroy {
             for (let index = 0; index < this.currentAttachment.length; index++) {
               this.filesToUpload.push(this.currentAttachment[index]);
             }
-            post_Data['attachments'] = this.filesToUpload;
+            post_Data['attachments'] = this.getAttachmentsPayload();
           } else if (this.selectedMessage.files.length > 0 && !this.currentAttachment ) {
-            post_Data['attachments'] = this.filesToUpload;
-  
+            post_Data['attachments'] = this.getAttachmentsPayload();
+
           }
         this.subs.add(this.consumerService.rescheduleConsumerApptmnt(this.accountId, post_Data)
             .subscribe(
@@ -2458,6 +2626,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     }
     closeloading() {
         this.ngZone.run(() => {
+          this.resetConfirmState();
           this.btnClicked = false;
           this.loadingPaytm = false;
           this.subscriptionService.sendMessage({ ttype: 'loading_stop' });
@@ -2574,13 +2743,36 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     getCoupons() {
         const _this = this;
         return new Promise(function (resolve, reject) {
-            _this.consumerService.getApptCoupons(_this.selectedServiceId, _this.locationId)
+            _this.bookingService.getApptCoupons(_this.selectedServiceId, _this.locationId , _this.loggedUser?.providerConsumer)
+
                 .subscribe((res: any) => {
                     resolve(res);
                 }, (error) => {
                     reject(error);
                 });
         });
+    }
+    handleConfirmClick() {
+        if (this.confirmButton['disabled']) {
+            return;
+        }
+        this.isClickedOnce = true;
+        if (this.confirmButton['action'] === 'payment') {
+            this.showLumaSpinner = true;
+            this.lumaOverlayMode = 'loading';
+            this.lumaOverlayMessage = this.translate.instant('Please Wait...') || 'Please Wait...';
+            this.lumaOverlayDismissible = false;
+        }
+        this.setButtonVisibility();
+        this.confirmBooking();
+    }
+    resetConfirmState() {
+        this.isClickedOnce = false;
+        this.showLumaSpinner = false;
+        this.lumaOverlayMode = 'loading';
+        this.lumaOverlayMessage = '';
+        this.lumaOverlayDismissible = false;
+        this.setButtonVisibility();
     }
     confirmBooking() {
         switch (this.confirmButton['action']) {
@@ -2598,17 +2790,33 @@ export class AppointmentComponent implements OnInit, OnDestroy {
                 this.selectedService.noDateTime)) {
             this.confirmButton['caption'] = 'Send Request';
             this.confirmButton['action'] = "request";
+            this.paymentmodescroll = true;
+            this.payAmountLabel = '';
         } else if (this.appointmentType === 'reschedule' && !this.selectedService.noDateTime) {
             this.confirmButton['caption'] = 'Reschedule';
             this.confirmButton['action'] = "reschedule";
+            this.paymentmodescroll = false;
+            this.payAmountLabel = '';
         } else if (this.paymentDetails.amountRequiredNow > 0) {
-            this.confirmButton['caption'] = 'Make Payment';
+            const amountLabel = this.formatAmountForPayButton(this.paymentDetails.amountRequiredNow);
+            this.confirmButton['caption'] = `Pay ${amountLabel}`;
             this.confirmButton['action'] = "payment";
+            this.paymentmodescroll = true;
+            this.payAmountLabel = amountLabel;
         } else {
             this.confirmButton['caption'] = 'Confirm';
             this.confirmButton['action'] = "confirm";
+            this.paymentmodescroll = true;
+            this.payAmountLabel = '';
         }
         this.setButtonVisibility();
+    }
+    private formatAmountForPayButton(amount: any): string {
+        const numericAmount = Number(amount);
+        if (isNaN(numericAmount)) {
+            return '0';
+        }
+        return numericAmount.toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
     }
     setButtonVisibility() {
         if ((this.bookingPolicy && !this.checkPolicy) || this.isClickedOnce) {
@@ -2616,5 +2824,114 @@ export class AppointmentComponent implements OnInit, OnDestroy {
         } else {
             this.confirmButton['disabled'] = false;
         }
+    }
+    private resetPaymentStateOnMemberChange() {
+        this.paymentRequestId = null;
+        this.trackUuid = null;
+    }
+    private showErrorToast(message: string) {
+        const msg = message || this.translate.instant('Something went wrong') || 'Something went wrong';
+        this.apiError = msg;
+        this.snackBar?.open(msg, '', { duration: 4000, panelClass: 'snackbarerror' });
+        setTimeout(() => { this.apiError = ''; }, 4000);
+    }
+    private isCouponAppliedForSummary(entry: any): boolean {
+        if (!entry) {
+            return false;
+        }
+        const systemNote = entry.systemNote || [];
+        const appliedNoteOnly = Array.isArray(systemNote) && systemNote.length === 1 && systemNote.includes('COUPON_APPLIED');
+        return entry.value !== '0.0' || appliedNoteOnly;
+    }
+
+    private getInvalidCouponsFromPayment(details: any): string[] {
+        const codes: string[] = this.selectedCoupons || [];
+        if (!details || !codes.length) {
+            return [];
+        }
+        return codes.filter(code => {
+            const entry = (details.jCouponList && details.jCouponList[code]) ||
+                          (details.proCouponList && details.proCouponList[code]);
+            return !this.isCouponAppliedForSummary(entry);
+        });
+    }
+
+    private getAppliedCouponsFromPayment(details: any): string[] {
+        if (!details) {
+            return [];
+        }
+        const applied: string[] = [];
+        if (details.jCouponList) {
+            Object.keys(details.jCouponList).forEach(code => {
+                if (this.isCouponAppliedForSummary(details.jCouponList[code])) {
+                    applied.push(code);
+                }
+            });
+        }
+        if (details.proCouponList) {
+            Object.keys(details.proCouponList).forEach(code => {
+                if (this.isCouponAppliedForSummary(details.proCouponList[code])) {
+                    applied.push(code);
+                }
+            });
+        }
+        return applied;
+    }
+     scrollToPaymentModeSection(): void {
+        if (this.paymentModeSection && this.paymentModeSection.nativeElement) {
+            this.paymentModeSection.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }
+    getImageSrc(mode: string) {
+         let cdnPath = this.sharedService.getCDNPath();
+        if (!mode) {
+            return '';
+        }
+        const normalized = mode.toString().toLowerCase();
+        const fileMap: { [key: string]: string } = {
+            upi: 'upiPayment.png',
+            cc: 'creditcard.png',
+            dc: 'debitCard.png',
+            nb: 'netBanking.png',
+            wallet: 'wallet.png',
+            paylater: 'payLater.png'
+        };
+        const fileName = fileMap[normalized] || `${normalized}.png`;
+        return `${cdnPath}assets/images/myjaldee/${fileName}`;
+    }
+     getSelectedPaymentModeLabel(): string {
+        if (!this.selectedService?.isPrePayment || !this.paymentMode) {
+            return '';
+        }
+        const modeLabelMap: { [key: string]: string } = {
+            cc: 'Credit Card',
+            dc: 'Debit Card',
+            nb: 'Net Banking',
+            upi: 'UPI',
+            wallet: 'Wallet'
+        };
+        const mapModeLabel = (value: string) => {
+            const normalized = (value || '').toLowerCase();
+            return modeLabelMap[normalized] || value;
+        };
+        const matchedConvenientMode = (this.convenientPaymentModes || []).find((mode: any) => {
+            return mode.mode === this.paymentMode && (mode.isInternational === undefined || mode.isInternational === this.shownonIndianModes);
+        });
+        if (matchedConvenientMode) {
+            const label = matchedConvenientMode.modeDisplayName || matchedConvenientMode.displayName || matchedConvenientMode.mode;
+            return mapModeLabel(label);
+        }
+        if (this.paymentmodes) {
+            const combinedModes = [
+                ...(this.paymentmodes.indiaPay || []),
+                ...(this.paymentmodes.internationalPay || [])
+            ];
+            const fallbackMode = combinedModes.find((mode: any) => mode.mode === this.paymentMode);
+            if (fallbackMode) {
+                const label = fallbackMode.modeDisplayName || fallbackMode.displayName || fallbackMode.mode;
+                return mapModeLabel(label);
+            }
+        }
+        return mapModeLabel(this.paymentMode);
     }
 }

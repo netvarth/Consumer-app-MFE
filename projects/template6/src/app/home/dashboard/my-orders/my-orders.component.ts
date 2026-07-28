@@ -22,7 +22,7 @@ import { InvoiceListComponent } from '../../../shared/invoice-list/invoice-list.
 export class MyOrdersComponent implements OnInit {
   myOrders: any = [];
   limit = 2;
-  orderLimit = 2;
+  orderLimit = 10;
   tDate: any;
   todayDate = new Date();
   accountId: any;

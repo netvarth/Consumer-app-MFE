@@ -1,58 +1,11 @@
-<div class="cover p-0" *ngIf="profile['cover']">
+<div class="" *ngIf="profile">
+
+  <div class="cover no-padding" *ngIf="profile['cover']">
   <img class="profile-img" [src]="profile['cover']" alt="">
 </div>
-<div class="no-cover p-0" *ngIf="!profile['cover']">
-</div>
-<div class="p-2 profile-card">
-  <div class="head-area mt-2 p-2 justify-content-between ">
-    <div>
-      <div class="d-flex displayAlign gap width-sm-100 mb-2">
-        <div *ngIf="profile['logo']">
-          <img class="businessLogo" src="{{profile['logo']}}" />
-        </div>
-        <div class="ms-1">
-          <div class="business_name" *ngIf="profile['businessName']">{{profile['businessName']}}
-          </div>
-          <div class="business_name_2" *ngIf="profile['businessUserName']">
-            {{profile['businessUserName']}}
-          </div>
-          <div *ngIf="selectedLocation">
-            <a [href]="selectedLocation.googleMapUrl" target="_blank" *ngIf="selectedLocation.googleMapUrl!=''"><i
-                class="fa fa-map-marker"></i>&nbsp;{{selectedLocation.place | capitalizeFirst}}</a>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div>
-      <span class="enquiry" *ngIf="extras['enquiry']">
-        <a (click)="communicateHandler()"><i class="fa fa-commenting-o" aria-hidden="true"></i></a>
-      </span>
-    </div>
-  </div>
-  <div class="follow-card" *ngIf="!extras['hideActions']">
-    <div class="pointer-cursor actionbtns">
-      <ul class="bus-actions bus-actions-large  clearfix">
-        <li class="share" [matTooltip]="'Share'" *ngIf="extras['share']">
-          <a class="like-btn" (click)="qrCodegeneraterOnlineID()">
-            <img class="icon" [src]="getSocialIcon('share')" />
-          </a>
-        </li>
-        <li class="share" [matTooltip]="phoneNo.instance" *ngIf="phoneNo">
-          <a class="like-btn" href="tel:{{phoneNo.instance}}" target="_blank">
-            <img class="icon" [src]="getSocialIcon('phone_no')" /></a>
-        </li>
-        <li class="share" [matTooltip]="emailId.instance" *ngIf="emailId">
-          <a class="like-btn" href="mailto:{{emailId.instance}}" target="_blank">
-            <img class="icon" [src]="getSocialIcon('email_id')" /></a>
-        </li>
-        <ng-container *ngIf="extras['icons'] && profile.socialMedia && profile.socialMedia.length>0">
-          <li *ngFor="let soc of profile.socialMedia"><a class="like-btn" rel="noopener" [href]="soc.value"
-              target="_blank"><img class="icon" [src]="getSocialIcon(soc.resource)" /></a>
-          </li>
-        </ng-container>
-        <button id="btn_donate" mat-button *ngIf="extras['donations']" class="nexticon donationbtn"
-          (click)="donationClicked()">Donate</button>
-      </ul>
-    </div>
+  <div class="profile-heading" *ngIf="!profile['cover']">
+    <h1 class="profile-title" *ngIf="profile.businessName">{{profile.businessName}}</h1>
+    <p class="profile-subtitle" *ngIf="profile.tagline">{{profile.tagline}}</p>
+    <span class="profile-pill" *ngIf="profile.badge">{{profile.badge}}</span>
   </div>
 </div>

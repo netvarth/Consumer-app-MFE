@@ -36,8 +36,8 @@ export const routes: Routes = [
         console.log(projectConstants.TEMPLATE + '/remoteEntry.json');
         const remoteUrl = projectConstants.TEMPLATE + '/remoteEntry.json';
         loadRemoteModule({
-          remoteEntry: getVersionedRemoteEntry(remoteUrl),
-          // remoteEntry: remoteUrl,
+          // remoteEntry: getVersionedRemoteEntry(remoteUrl),
+          remoteEntry: remoteUrl,
           exposedModule: './Template'
         })
           .then(m => resolve(m.TemplateModule))  // Resolve with the loaded module

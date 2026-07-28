@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ServiceMeta } from 'jconsumer-shared';
+import { LocalStorageService, ServiceMeta } from 'jconsumer-shared';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +25,8 @@ export class BookingService {
   selectedApptsTime: any;
 
   constructor(
-    private servicemeta: ServiceMeta
+    private servicemeta: ServiceMeta,
+    private lStorageService: LocalStorageService
   ) { }
   setAccountId(accountId) {
     this.accountId = accountId;
@@ -222,7 +223,7 @@ export class BookingService {
     const url = 'consumer/service/' + serviceId + '/location';
     return this.servicemeta.httpGet(url);
   }
-  getCheckinServices(locationId) {
+  getWaitlistServices(locationId) {
     const _this = this;
     return new Promise(function (resolve, reject) {
       _this.getServicesByLocationId(locationId).subscribe(
@@ -254,7 +255,7 @@ export class BookingService {
       } else {
         _this.getAppointmentServices(locationId).then(
           (appointmentServices: any) => {
-            _this.getCheckinServices(locationId).then(
+            _this.getWaitlistServices(locationId).then(
               (wlServices: any) => {
                 let services = [...appointmentServices, ...wlServices];
                 resolve(services);
@@ -388,12 +389,26 @@ export class BookingService {
     const url = 'consumer/payment/modes/convenienceFee/' + provid;
     return this.servicemeta.httpPut(url, data);
   }
-  getApptCoupons(servId, locId) {
-    const url = 'consumer/appointment/service/' + servId + '/location/' + locId + '/coupons';
+  getApptCoupons(servId, locId, id?) {
+    let url;
+    if (this.checkLogin()) {
+      url = 'consumer/appointment/service/' + servId + '/location/' + locId + '/coupons?providerConsumerId=' + id;
+    } else {
+      url = 'consumer/appointment/service/' + servId + '/location/' + locId + '/coupons';
+    }
     return this.servicemeta.httpGet(url);
   }
-  getCheckinCoupons(servId, locId) {
-    const url = 'consumer/waitlist/service/' + servId + '/location/' + locId + '/coupons';
+  checkLogin() {
+    const login = (this.lStorageService.getitemfromLocalStorage('ynw-credentials')) ? true : false;
+    return login;
+  }
+  getCheckinCoupons(servId, locId, id?) {
+    let url;
+    if (this.checkLogin()) {
+      url = 'consumer/waitlist/service/' + servId + '/location/' + locId + '/coupons?providerConsumerId=' + id;
+    } else {
+      url = 'consumer/waitlist/service/' + servId + '/location/' + locId + '/coupons';
+    }
     return this.servicemeta.httpGet(url);
   }
   getServiceById(serviceId, type) {
@@ -428,13 +443,32 @@ export class BookingService {
     const url = 'consumer/ip/pay';
     return this.servicemeta.httpPost(url, data);
   }
+  makePayment_booking(data) {
+    const url = 'consumer/booking/pay';
+    return this.servicemeta.httpPost(url, data);
+  }
+  makePayment_generalInvioce(data) {
+    const url = 'consumer/jp/finance/general/pay';
+    return this.servicemeta.httpPost(url, data);
+  }
   getIpInvoiceDetailsById(accId, uuid) {
     const url = 'consumer/ip/invoice/' + accId + '/' + uuid;
     return this.servicemeta.httpGet(url);
   }
-
+  getBookingInvoiceDetailsById(accId, uuid) {
+    const url = 'consumer/booking/invoice/' + accId + '/' + uuid;
+    return this.servicemeta.httpGet(url);
+  }
+  getGeneralInvoiceDetailsById(accId, uuid) {
+    const url = 'consumer/jp/finance/invoice/general/' + accId + '/' + uuid;
+    return this.servicemeta.httpGet(url);
+  }
+  getGeneralInvoices(accountId, uuid) {
+    const url = 'consumer/booking/invoice/' + accountId + '/booking/' + uuid;
+    return this.servicemeta.httpGet(url);
+  }
+  getBookingInvoiceDetailsByuuid(accId, uuid) {
+    const url = 'consumer/booking/invoice/' + accId + '/' + uuid;
+    return this.servicemeta.httpGet(url);
+  }
 }
-
-
-
-

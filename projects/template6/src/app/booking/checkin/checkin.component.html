@@ -8,7 +8,7 @@
     </div>
 </div>
 <section #consumer_checkin class="consumerCheckin p-0"
-    [ngClass]="[smallDevice?'container':'container-fluid', theme?theme:'']">
+    [ngClass]="[smallDevice ? 'container' : 'container-fluid', theme]">
     <div [ngClass]="{'loadingpaytm': loadingPaytm}"></div>
     <div class="customLoader" *ngIf="loadingPaytm">
         <app-common-innerloading-spinner></app-common-innerloading-spinner>
@@ -77,7 +77,7 @@
                     </div>
                     <div class="col-12" *ngIf="queuejson && queuejson.length > 0">
                         <app-slot-picker (slotSelected)="slotSelected($event)" [slots]="queuejson"
-                            [selectedSlot]="queuejson[0]">
+                            [selectedSlot]="queuejson[0]" [theme]="theme">
                         </app-slot-picker>
                     </div>
                     <div class="col-md-12 col-12 col-sm-12 slotdiv red mt-3 text-center"

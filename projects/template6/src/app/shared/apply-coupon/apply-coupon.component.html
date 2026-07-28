@@ -2,7 +2,7 @@
     <div class="coupon-area d-flex justify-content-between">
         <div class="coupon-head">
             <input (change)="couponCheck($event)" type="checkbox" class="ckbx pull-left mgn-rt-5"
-                style="margin: 0px;">{{'Use Coupon Code' | translate}}
+                style="margin: 0px;">&nbsp;{{'Use Coupon Code' | translate}}
         </div>
         <div class="coupons-icon" (click)="openCoupons()">
             <i class="fa fa-tags  mgn-rt-5"></i>{{'Coupons' | translate}}
@@ -18,11 +18,11 @@
         </div>
         <div style="color: red;" *ngIf="couponError !== null">{{couponError}}</div>
     </div>
-    <div class="px-2 pt-2 my-4"
+    <div class="px-2 pt-2 "
         *ngIf="couponsList && couponsList.length>0">
         <div *ngFor="let coupon of couponsList let i=index">
             <div class="d-flex row coupon-add-msg">
-                <div class="col-md-5 col-sm-7 col-xs-7 col-lg-4 p-0">
+                <div class="col-md-5 col-sm-7 col-xs-7 col-lg-4 no-padding">
                     {{coupon.couponCode}} </div>
                 <div class="col-md-7 col-sm-5 col-5 col-lg-8 delteTC">
                     <span><a *ngIf="coupon.instructions" (click)="toggleterms(i)"

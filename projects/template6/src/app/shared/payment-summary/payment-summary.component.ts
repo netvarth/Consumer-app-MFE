@@ -19,7 +19,15 @@ export class PaymentSummaryComponent implements OnInit {
     public translate: TranslateService) { }
 
   ngOnInit(): void {
-    
-  }
 
+  }
+ isCouponApplied(coupon: any): boolean {
+    const couponValue = coupon?.value;
+    if (!couponValue) {
+      return false;
+    }
+    const systemNote = couponValue.systemNote || [];
+    const appliedNoteOnly = Array.isArray(systemNote) && systemNote.length === 1 && systemNote.includes('COUPON_APPLIED');
+    return couponValue.value !== '0.0' || appliedNoteOnly;
+  }
 }
