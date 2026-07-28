@@ -21,6 +21,7 @@ const routes: Routes = [
       { path: 'members', loadChildren: () => import('./members/members.module').then(m => m.MembersModule) },
       { path: 'payments', loadChildren: () => import('./payments/payments.module').then(m => m.PaymentsModule) },
       { path: 'items', loadChildren: () => import('./items/items.module').then(m => m.ItemsModule) },
+      { path: 'pet-store', loadChildren: () => import('./pet-store/pet-store.module').then(m => m.PetStoreModule) },
       { path: 'categories', loadChildren: () => import('./catagories/catagories.module').then(m => m.CatagoriesModule) },
       { path: 'pay/:id', loadChildren: () => import('./payment-link/payment-link.module').then(m => m.PaymentLinkModule) },
       { path: 'status/:id', loadChildren: () => import('./status/status.module').then(m => m.StatusModule) },

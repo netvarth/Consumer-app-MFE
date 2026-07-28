@@ -42,6 +42,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   private welcomePopupTimer: any;
   private subscriptions: Subscription = new Subscription();
   header: boolean = true;
+  isPetStoreRoute = false;
   constructor(
     private orderService: OrderService,
     private sharedService: SharedService,
@@ -222,9 +223,12 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       }, 10000);
     }
 
+    this.isPetStoreRoute = this.router.url.split('?')[0].endsWith('/pet-store');
+
     this.subscriptions.add(
       this.router.events.subscribe((event) => {
         if (event instanceof NavigationEnd) {
+          this.isPetStoreRoute = event.urlAfterRedirects.split('?')[0].endsWith('/pet-store');
           this.scrollToTop();
         }
       })

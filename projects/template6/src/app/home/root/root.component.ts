@@ -1392,6 +1392,17 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
       return;
     }
 
+    if (!this.templateJson.section5) {
+      const configuredShop = this.templateJson?.petStore?.navigation?.find((item: any) => item?.key === 'shop');
+      this.templateJson.section5 = {
+        ...configuredShop,
+        key: 'shop',
+        title: configuredShop?.title || configuredShop?.label || 'Shop',
+        type: configuredShop?.type || 'action',
+        link: configuredShop?.link || 'pet-store',
+        icon: configuredShop?.icon || '/pet-store/shop-nav.svg'
+      };
+    }
     const sectionKeys = ['section1', 'section2', 'section3', 'section4', 'section5'];
     sectionKeys.forEach((key) => {
       const section = this.templateJson?.[key];
@@ -1609,7 +1620,9 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
       return;
     }
     if (link && typeof link === 'string') {
-      this.router.navigateByUrl(link.startsWith('/') ? link : `/${link}`);
+      const routeId = this.sharedService.getRouteID();
+      const target = link.startsWith('/') || link.startsWith(`${routeId}/`) ? link : `${routeId}/${link}`;
+      this.router.navigateByUrl(target);
       return;
     }
   }

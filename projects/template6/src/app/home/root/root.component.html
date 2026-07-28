@@ -67,19 +67,23 @@
   <div id="footer-bar" class="footer-bar-1">
     <a (click)="menuSelected(templateJson.section1)" [ngClass]="{'active-nav' : selectedIndex === templateJson.section1?.title }" *ngIf="templateJson.section1">
       <img class="nav-icon" [src]="templateJson.section1.icon" [alt]="templateJson.section1.title" loading="lazy" />
-      <span>{{ templateJson.section1.title | translate }}</span>
+      <span>{{ (templateJson.section1.navLabel || templateJson.section1.title) | translate }}</span>
     </a>
     <a (click)="menuSelected(templateJson.section2)" [ngClass]="{'active-nav' : selectedIndex === templateJson.section2?.title }" *ngIf="templateJson.section2">
       <img class="nav-icon" [src]="templateJson.section2.icon" [alt]="templateJson.section2.title" loading="lazy" />
-      <span>{{ templateJson.section2.title | translate }}</span>
+      <span>{{ (templateJson.section2.navLabel || templateJson.section2.title) | translate }}</span>
     </a>
     <a (click)="menuSelected(templateJson.section3)" [ngClass]="{'active-nav' : selectedIndex === templateJson.section3?.title }" *ngIf="templateJson.section3">
       <img class="nav-icon" [src]="templateJson.section3.icon" [alt]="templateJson.section3.title" loading="lazy" />
-      <span>{{ templateJson.section3.title | translate }}</span>
+      <span>{{ (templateJson.section3.navLabel || templateJson.section3.title) | translate }}</span>
     </a>
     <a (click)="menuSelected(templateJson.section4)" [ngClass]="{'active-nav' : selectedIndex === templateJson.section4?.title }" *ngIf="templateJson.section4">
       <img class="nav-icon" [src]="templateJson.section4.icon" [alt]="templateJson.section4.title" loading="lazy" />
-      <span>{{ templateJson.section4.title | translate }}</span>
+      <span>{{ (templateJson.section4.navLabel || templateJson.section4.title) | translate }}</span>
+    </a>
+    <a (click)="menuSelected(templateJson.section5)" [ngClass]="{'active-nav' : selectedIndex === templateJson.section5?.title }" *ngIf="templateJson.section5">
+      <img class="nav-icon" [src]="templateJson.section5.icon" [alt]="templateJson.section5.title" loading="lazy" />
+      <span>{{ (templateJson.section5.navLabel || templateJson.section5.title) | translate }}</span>
     </a>
   </div>
 </div>

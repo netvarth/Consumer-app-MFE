@@ -427,18 +427,23 @@ export class HeaderComponent implements OnInit, OnDestroy {
     const title = (action?.title || '').toString().trim().toLowerCase();
     const normalized = (normalizedLink || '').toLowerCase();
 
+    if (normalized === 'shop') {
+      return 'pet-store';
+    }
     if (
       normalized === 'products' ||
       normalized === 'product' ||
       normalized === 'catalog' ||
-      normalized === 'catalogue' ||
-      normalized === 'shop'
+      normalized === 'catalogue'
     ) {
       return 'items';
     }
+    if (!normalized && title === 'shop') {
+      return 'pet-store';
+    }
     if (
       !normalized &&
-      (title === 'products' || title === 'product' || title === 'catalog' || title === 'catalogue' || title === 'shop')
+      (title === 'products' || title === 'product' || title === 'catalog' || title === 'catalogue')
     ) {
       return 'items';
     }
