@@ -16,6 +16,8 @@ interface PetStoreCard {
   reviews?: number;
   location?: string;
   verified?: boolean;
+  imageAlt?: string;
+  ctaLabel?: string;
 }
 
 interface PetStoreNavItem {
@@ -39,6 +41,12 @@ export class PetStoreComponent implements OnInit {
   brandsTitle = 'Brands';
   shopsTitle = 'Shops';
   seeAllLabel = 'See all »';
+  categoriesSeeAllLabel = '';
+  categoriesSeeAllLink = '';
+  brandsSeeAllLabel = '';
+  brandsSeeAllLink = '';
+  shopsSeeAllLabel = '';
+  shopsSeeAllLink = '';
   viewStoreLabel = 'View Store';
   verifiedLabel = 'Verified store';
   defaultShopType = 'Pet Store';
@@ -93,6 +101,12 @@ export class PetStoreComponent implements OnInit {
     this.brandsTitle = config.brandsTitle || this.brandsTitle;
     this.shopsTitle = config.shopsTitle || this.shopsTitle;
     this.seeAllLabel = config.seeAllLabel || this.seeAllLabel;
+    this.categoriesSeeAllLabel = config.categoriesSeeAllLabel || this.seeAllLabel;
+    this.categoriesSeeAllLink = config.categoriesSeeAllLink || '';
+    this.brandsSeeAllLabel = config.brandsSeeAllLabel || this.seeAllLabel;
+    this.brandsSeeAllLink = config.brandsSeeAllLink || '';
+    this.shopsSeeAllLabel = config.shopsSeeAllLabel || this.seeAllLabel;
+    this.shopsSeeAllLink = config.shopsSeeAllLink || '';
     this.viewStoreLabel = config.viewStoreLabel || this.viewStoreLabel;
     this.verifiedLabel = config.verifiedLabel || this.verifiedLabel;
     this.defaultShopType = config.defaultShopType || this.defaultShopType;
@@ -124,6 +138,13 @@ export class PetStoreComponent implements OnInit {
     }
   }
 
+  openSection(link: string): void {
+    if (link) {
+      this.openLink(link);
+      return;
+    }
+    this.openItems('');
+  }
   openCard(card: PetStoreCard): void {
     if (card.link) {
       this.openLink(card.link);

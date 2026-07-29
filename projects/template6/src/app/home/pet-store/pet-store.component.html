@@ -1,52 +1,70 @@
 <main class="pet-store-page">
   <app-store-header [config]="headerConfig" [searchIcon]="asset('search.svg')" [(searchQuery)]="searchQuery"
     (search)="submitSearch()" (action)="openHeaderAction($event)"></app-store-header>
+
   <section class="category-shell" aria-labelledby="pet-store-heading">
     <h1 id="pet-store-heading">{{ title }}</h1>
     <p>&#128062; {{ subtitle }}</p>
-    <div class="category-row"><button type="button" *ngFor="let item of categories; trackBy: trackByIndex"
-        (click)="openCard(item)"><span><img [src]="item.image" [alt]="item.name || item.title"></span><b>{{ item.name ||
-          item.title }}</b></button></div><button type="button" class="see-all" (click)="openCard({ query: '' })">{{
-      seeAllLabel }}</button>
+    <div class="category-row">
+      <button type="button" *ngFor="let item of categories; trackBy: trackByIndex" (click)="openCard(item)">
+        <span><img [src]="item.image" [alt]="item.imageAlt || item.name || item.title"></span>
+        <b>{{ item.name || item.title }}</b>
+      </button>
+    </div>
+    <button type="button" class="see-all" (click)="openSection(categoriesSeeAllLink)">{{ categoriesSeeAllLabel }}</button>
   </section>
+
   <section class="content-section brands" aria-labelledby="brands-heading">
     <div class="section-heading">
-      <h2 id="brands-heading">{{ brandsTitle }}</h2><button type="button" (click)="openCard({ query: '' })">{{
-        seeAllLabel }}</button>
+      <h2 id="brands-heading">{{ brandsTitle }}</h2>
+      <button type="button" (click)="openSection(brandsSeeAllLink)">{{ brandsSeeAllLabel }}</button>
     </div>
-    <div class="brand-row"><button type="button" *ngFor="let item of brands; trackBy: trackByIndex"
-        (click)="openCard(item)"><span><img [src]="item.image" [alt]="item.name || item.title"
-            loading="lazy"></span><b>{{ item.name || item.title }}</b></button></div>
+    <div class="brand-row">
+      <button type="button" *ngFor="let item of brands; trackBy: trackByIndex" (click)="openCard(item)">
+        <span><img [src]="item.image" [alt]="item.imageAlt || item.name || item.title" loading="lazy"></span>
+        <b>{{ item.name || item.title }}</b>
+      </button>
+    </div>
   </section>
+
   <section class="content-section shops" aria-labelledby="shops-heading">
     <div class="section-heading">
-      <h2 id="shops-heading">{{ shopsTitle }}</h2><button type="button" (click)="openCard({ query: '' })">{{ seeAllLabel
-        }}</button>
+      <h2 id="shops-heading">{{ shopsTitle }}</h2>
+      <button type="button" (click)="openSection(shopsSeeAllLink)">{{ shopsSeeAllLabel }}</button>
     </div>
     <div class="shop-row">
       <article *ngFor="let shop of shops; trackBy: trackByIndex">
-        <div class="shop-avatar"><img [src]="shop.image" [alt]="shop.name || shop.title"><img *ngIf="shop.verified"
-            class="verified" [src]="asset('verified.svg')" [alt]="verifiedLabel"></div>
+        <div class="shop-avatar">
+          <img [src]="shop.image" [alt]="shop.imageAlt || shop.name || shop.title">
+          <img *ngIf="shop.verified" class="verified" [src]="asset('verified.svg')" [alt]="verifiedLabel">
+        </div>
         <h3>{{ shop.name || shop.title }} <i *ngIf="shop.verified" class="fa fa-check-circle verified-badge" [attr.aria-label]="verifiedLabel"></i></h3>
-        <div class="shop-meta"><span>&#9733; {{ shop.rating || 4.8 }} <small>({{ shop.reviews || 175 }})</small></span><em>{{
-            shop.type || defaultShopType }}</em></div>
-        <p><i class="fa fa-map-marker"></i> {{ shop.location || defaultLocation }}</p><button type="button"
-          (click)="openShop(shop)">{{ viewStoreLabel }}</button>
+        <div class="shop-meta">
+          <span>&#9733; {{ shop.rating || 4.8 }} <small>({{ shop.reviews || 175 }})</small></span>
+          <em>{{ shop.type || defaultShopType }}</em>
+        </div>
+        <p><i class="fa fa-map-marker"></i> {{ shop.location || defaultLocation }}</p>
+        <button type="button" (click)="openShop(shop)">{{ shop.ctaLabel || viewStoreLabel }}</button>
       </article>
     </div>
   </section>
+
   <section class="promotion-shell">
     <article class="promotion">
       <div>
         <h2>{{ promotion.title }}</h2>
-        <p>{{ promotion.description }}</p><button type="button" (click)="openPromotion()">{{ promotion.buttonLabel
-          }}</button>
-      </div><img [src]="promotion.image" [alt]="promotion.imageAlt">
+        <p>{{ promotion.description }}</p>
+        <button type="button" (click)="openPromotion()">{{ promotion.buttonLabel }}</button>
+      </div>
+      <img [src]="promotion.image" [alt]="promotion.imageAlt">
     </article>
   </section>
-  <nav class="pet-store-nav" aria-label="Primary navigation"><button type="button"
-      *ngFor="let item of navigation; trackBy: trackByIndex" [class.active]="item.key === 'shop'"
-      (click)="navigate(item)"><img *ngIf="item.icon; else navFallback" [src]="item.icon"
-        [alt]="item.label"><ng-template #navFallback><i class="fa fa-circle-o"></i></ng-template><span>{{ item.label
-        }}</span></button></nav>
+
+  <nav class="pet-store-nav" aria-label="Primary navigation">
+    <button type="button" *ngFor="let item of navigation; trackBy: trackByIndex" [class.active]="item.key === 'shop'" (click)="navigate(item)">
+      <img *ngIf="item.icon; else navFallback" [src]="item.icon" [alt]="item.label">
+      <ng-template #navFallback><i class="fa fa-circle-o"></i></ng-template>
+      <span>{{ item.label }}</span>
+    </button>
+  </nav>
 </main>

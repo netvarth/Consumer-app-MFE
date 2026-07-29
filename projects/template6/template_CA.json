@@ -290,7 +290,9 @@
                                     "cartLink":  "order/cart",
                                     "profileLink":  "profile",
                                     "searchPlaceholder":  "Search for “Skin Medicine”",
-                                    "backgroundImage":  ""
+                                    "backgroundImage":  "",
+                                    "logo":  "",
+                                    "logoAlt":  "Pet store logo"
                                 },
                      "title":  "Pet Store",
                      "subtitle":  "Fast Delivery from Your Nearby Pet Store",
@@ -306,39 +308,53 @@
                                         {
                                             "name":  "Pharmacy",
                                             "image":  "shop-pharmacy.jpg",
-                                            "query":  "medicine"
+                                            "query":  "medicine",
+                                            "imageAlt":  "Pharmacy category",
+                                            "link":  ""
                                         },
                                         {
                                             "name":  "Accessories",
                                             "image":  "shop-accessories.jpg",
-                                            "query":  "accessories"
+                                            "query":  "accessories",
+                                            "imageAlt":  "Accessories category",
+                                            "link":  ""
                                         },
                                         {
                                             "name":  "Foods",
                                             "image":  "shop-foods.jpg",
-                                            "query":  "pet food"
+                                            "query":  "pet food",
+                                            "imageAlt":  "Foods category",
+                                            "link":  ""
                                         }
                                     ],
                      "brands":  [
                                     {
                                         "name":  "Pedigree",
                                         "image":  "brand-pedigree.png",
-                                        "query":  "Pedigree"
+                                        "query":  "Pedigree",
+                                        "imageAlt":  "Pedigree brand logo",
+                                        "link":  ""
                                     },
                                     {
                                         "name":  "Royal Canin",
                                         "image":  "brand-royal-canin.png",
-                                        "query":  "Royal Canin"
+                                        "query":  "Royal Canin",
+                                        "imageAlt":  "Royal Canin brand logo",
+                                        "link":  ""
                                     },
                                     {
                                         "name":  "Farmina",
                                         "image":  "brand-farmina.png",
-                                        "query":  "Farmina"
+                                        "query":  "Farmina",
+                                        "imageAlt":  "Farmina brand logo",
+                                        "link":  ""
                                     },
                                     {
                                         "name":  "Drools",
                                         "image":  "brand-drools.png",
-                                        "query":  "Drools"
+                                        "query":  "Drools",
+                                        "imageAlt":  "Drools brand logo",
+                                        "link":  ""
                                     }
                                 ],
                      "shops":  [
@@ -349,7 +365,11 @@
                                        "rating":  4.8,
                                        "reviews":  175,
                                        "location":  "Thrissur",
-                                       "verified":  true
+                                       "verified":  true,
+                                       "imageAlt":  "Cadas Pet Hub logo",
+                                       "ctaLabel":  "View Store",
+                                       "link":  "",
+                                       "query":  ""
                                    },
                                    {
                                        "name":  "SN PET WORLD",
@@ -358,7 +378,11 @@
                                        "rating":  4.8,
                                        "reviews":  175,
                                        "location":  "Thrissur",
-                                       "verified":  true
+                                       "verified":  true,
+                                       "imageAlt":  "SN PET WORLD logo",
+                                       "ctaLabel":  "View Store",
+                                       "link":  "",
+                                       "query":  ""
                                    }
                                ],
                      "promotion":  {
@@ -367,7 +391,8 @@
                                        "buttonLabel":  "Buy Now",
                                        "image":  "promo-dog.jpg",
                                        "imageAlt":  "Dog beside the Christmas pet food offer",
-                                       "query":  "pet food"
+                                       "query":  "pet food",
+                                       "link":  ""
                                    },
                      "navigation":  [
                                         {
@@ -400,6 +425,12 @@
                                             "icon":  "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/Support.svg",
                                             "link":  "support"
                                         }
-                                    ]
+                                    ],
+                     "categoriesSeeAllLabel":  "See all »",
+                     "categoriesSeeAllLink":  "",
+                     "brandsSeeAllLabel":  "See all »",
+                     "brandsSeeAllLink":  "",
+                     "shopsSeeAllLabel":  "See all »",
+                     "shopsSeeAllLink":  ""
                  }
 }
