@@ -1,4 +1,4 @@
-﻿import { AfterViewInit, Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+﻿import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -18,7 +18,7 @@ import { GalleryService } from '../../shared/gallery/galery-service';
   templateUrl: './root.component.html',
   styleUrls: ['./root.component.scss']
 })
-export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
+export class RootComponent implements OnInit, OnDestroy {
   basicProfile: any = {};
   templateJson: any;
   locationjson: any;
@@ -84,35 +84,6 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
   private subscriptions: Subscription = new Subscription();
   heroSection: any;
   blogConfig: any;
-  assetBasePath = '{{ASSET_BASE_PATH}}';
-  homeDesign: any = {};
-  categories: any[] = [];
-  visibleCategories: any[] = [];
-  preBookingCollection: any[] = [];
-  visiblePreBookingCollection: any[] = [];
-  reels: any[] = [];
-  visibleReels: any[] = [];
-  newArrivals: any[] = [];
-  visibleNewArrivals: any[] = [];
-  customerReviews: any[] = [];
-  visibleCustomerReviews: any[] = [];
-  heroSlides: any[] = [];
-  essentials: any[] = [];
-  visibleEssentials: any[] = [];
-  socialLinks: any[] = [];
-  footerColumns: any[] = [];
-  selectedCatalogs: any[] = [];
-  activeHeroIndex = 0;
-  activeReviewIndex = 0;
-  activeReelIndex = 0;
-  readonly reelsBatchSize = 4;
-  readonly listBatchSize = 4;
-  brandName = 'Kanishta';
-  logoUrl = '';
-  private sectionObserver: IntersectionObserver | null = null;
-  private reelVideoSourceCache = new Map<string, string>();
-  private reelVideoFetchInflight = new Map<string, Promise<string>>();
-  private reelVideoObjectUrls: string[] = [];
   notificationdialogRef;
   addnotedialogRef;
   checkindialogRef;
@@ -170,11 +141,6 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
   ngOnDestroy(): void {
-    this.clearReelVideoObjectUrls();
-    if (this.sectionObserver) {
-      this.sectionObserver.disconnect();
-      this.sectionObserver = null;
-    }
     this.subscriptions.unsubscribe();
   }
   ngOnInit(): void {
@@ -201,8 +167,6 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     this.selectedLocation = this.accountService.getActiveLocation();
     this.templateJson = this.sharedService.getTemplateJSON();
-    this.normalizeTemplateConfigForRoot();
-    this.selectedCatalogs = this.templateJson?.extras?.selectedCatalogs || [];
 
     let notification = this.accountService.getJson(this.lStorageService.getitemfromLocalStorage('appNotification'));
 
@@ -214,9 +178,6 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
       this.resumeLoadingHome();      
     }
 
-  }
-  ngAfterViewInit(): void {
-    this.setupScrollReveal();
   }
   private fetchFutureAppointments() {
     const params: any = { 'apptStatus-neq': 'failed,prepaymentPending,Cancelled,Rejected' };
@@ -368,8 +329,7 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
       this.lStorageService.setitemonLocalStorage('tabIndex', this.selectedIndex);
     } else {
       console.log(section.link);
-      const link = this.resolveSectionLink(section);
-      let url = this.sharedService.getRouteID() + '/' + link;
+      let url = this.sharedService.getRouteID() + '/' + section.link;
       console.log("Url:", url);
 
       this.router.navigateByUrl(url);
@@ -391,34 +351,12 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
     if (action.link && action.link.startsWith('http')) {
       window.open(action.link, "_system");
     } else if (action.link) {
-      const link = this.resolveSectionLink(action);
-      let url = this.sharedService.getRouteID() + '/' + link;
+      let url = this.sharedService.getRouteID() + '/' + action.link;
       console.log("Url:", url);
       this.router.navigateByUrl(url);
     } else if (action.type === 'menu') {
       this.actionPerformed(action);
     }
-  }
-
-  private resolveSectionLink(section: any): string {
-    const rawLink = (section?.link || '').toString().replace(/^\/+|\/+$/g, '');
-    const normalizedLink = rawLink.toLowerCase();
-    const title = (section?.title || '').toString().toLowerCase();
-    const routeAliasMap: { [key: string]: string } = {
-      paboutus: 'about',
-      aboutus: 'about',
-      pfaq: 'faq',
-      psupport: 'support'
-    };
-    if (routeAliasMap[normalizedLink]) {
-      return routeAliasMap[normalizedLink];
-    }
-    const isOrderHistoryTitle =
-      title.includes('order history') || title.includes('my orders') || title === 'orders';
-    if (isOrderHistoryTitle && (normalizedLink === 'dashboard' || normalizedLink === 'bookings')) {
-      return 'orders';
-    }
-    return rawLink;
   }
 
   onViewAllBookings() {
@@ -1386,177 +1324,14 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
     return firstEntry?.item || firstEntry;
   }
 
-  // â€”â€”â€” HERO / CARDS / BLOG DATA â€”â€”â€”
-  private normalizeTemplateConfigForRoot() {
-    if (!this.templateJson || typeof this.templateJson !== 'object') {
-      return;
-    }
-
-    if (!this.templateJson.section5) {
-      const configuredShop = this.templateJson?.petStore?.navigation?.find((item: any) => item?.key === 'shop');
-      this.templateJson.section5 = {
-        ...configuredShop,
-        key: 'shop',
-        title: configuredShop?.title || configuredShop?.label || 'Shop',
-        type: configuredShop?.type || 'action',
-        link: configuredShop?.link || 'pet-store',
-        icon: configuredShop?.icon || '/pet-store/shop-nav.svg'
-      };
-    }
-    const sectionKeys = ['section1', 'section2', 'section3', 'section4', 'section5'];
-    sectionKeys.forEach((key) => {
-      const section = this.templateJson?.[key];
-      if (!section || typeof section !== 'object') {
-        return;
-      }
-      if (!section.icon) {
-        section.icon = section['icon-image'] || section.iconImage || '';
-      }
-    });
-
-    const section1 = this.templateJson?.section1 || {};
-    const actions = Array.isArray(section1?.actions) ? section1.actions : [];
-    if (!actions.length) {
-      return;
-    }
-
-    const getActionList = (index: number): any[] => {
-      const block = actions[index];
-      return Array.isArray(block?.action) ? block.action : [];
-    };
-
-    const categoryHeader = actions[2] || {};
-    const preBookingHeader = actions[5] || {};
-    const newArrivalsHeader = actions[7] || {};
-    const essentialsHeader = actions[9] || {};
-
-    const heroCards = getActionList(0);
-    const categories = [...getActionList(3), ...getActionList(4)].map((item) => this.normalizeHomeCard(item));
-    const preBookingCollection = getActionList(6).map((item) => this.normalizeHomeCard(item));
-    const newArrivals = getActionList(8).map((item) => this.normalizeHomeCard(item, true));
-    const essentials = [...getActionList(10), ...getActionList(11)].map((item) => this.normalizeHomeCard(item));
-
-    if (!Array.isArray(section1.categories) || !section1.categories.length) {
-      section1.categories = categories;
-    }
-    if (!Array.isArray(section1.preBookingCollection) || !section1.preBookingCollection.length) {
-      section1.preBookingCollection = preBookingCollection;
-    }
-    if (!Array.isArray(section1.products) || !section1.products.length) {
-      section1.products = newArrivals;
-    }
-
-    const derivedHomeDesign: any = {
-      heroImage: heroCards?.[0]?.image || '',
-      heroImagesub: heroCards?.[1]?.image || '',
-      heroSlides: heroCards.map((item) => this.normalizeHomeCard(item)),
-      categoriesTitle: categoryHeader?.subTitle || categoryHeader?.title || '',
-      categoriesSubTitle: categoryHeader?.title || '',
-      categories: categories,
-      preBookingTitle: preBookingHeader?.title || '',
-      preBookingSubTitle: preBookingHeader?.subTitle || '',
-      preBookingCollection: preBookingCollection,
-      preBookingCta: 'Show More',
-      newArrivalsTitle: newArrivalsHeader?.title || '',
-      newArrivalsSubTitle: newArrivalsHeader?.subTitle || '',
-      newArrivals: newArrivals,
-      newArrivalsCta: 'View All',
-      essentialsTitle: essentialsHeader?.title || '',
-      essentialsSubTitle: essentialsHeader?.subTitle || '',
-      essentials: essentials
-    };
-
-    const configuredHomeDesign = this.templateJson?.homeDesign || this.templateJson?.home || this.templateJson?.landingPage || {};
-    this.templateJson.homeDesign = { ...derivedHomeDesign, ...configuredHomeDesign };
-  }
-
-  private normalizeHomeCard(item: any, mapPrice = false): any {
-    if (!item || typeof item !== 'object') {
-      return item;
-    }
-    const normalized = { ...item };
-    if (!normalized.title) {
-      normalized.title = item?.titleCenter || item?.name || '';
-    }
-    if (!normalized.subTitle && item?.description) {
-      normalized.subTitle = item.description;
-    }
-    if (mapPrice && !normalized.price) {
-      normalized.price = item?.mrp || '';
-    }
-    return normalized;
-  }
+  // ——— HERO / CARDS / BLOG DATA ———
   private hydrateTemplateContent() {
     this.heroSection = this.templateJson?.heroSection || null;
-    this.homeDesign = this.templateJson?.homeDesign || this.templateJson?.home || this.templateJson?.landingPage || {};
-    this.heroSlides = this.getArrayWithFallback(
-      this.homeDesign?.heroSlides,
-      this.homeDesign?.hero,
-      this.homeDesign?.banners
-    );
-    if (!this.heroSlides.length) {
-      this.heroSlides = [this.homeDesign?.heroImage, this.homeDesign?.heroImagesub]
-        .filter(Boolean)
-        .map((image: string) => ({ image }));
-    }
 
-    const section1 = this.templateJson?.section1 || {};
-    const comingSoon = section1?.comingSoon || {};
-
+    const comingSoon = this.templateJson?.section1?.comingSoon;
     this.comingSoonCards = Array.isArray(comingSoon?.cards) ? comingSoon.cards : [];
-    this.categories = this.getArrayWithFallback(
-      this.homeDesign?.categories,
-      this.homeDesign?.categoryCards,
-      section1?.categories,
-      this.comingSoonCards
-    );
-    this.visibleCategories = this.categories.slice(0, this.listBatchSize);
-    this.preBookingCollection = this.getArrayWithFallback(
-      this.homeDesign?.preBookingCollection,
-      this.homeDesign?.preBookingCollections,
-      this.homeDesign?.collections,
-      section1?.preBookingCollection
-    );
-    this.visiblePreBookingCollection = this.preBookingCollection.slice(0, this.listBatchSize);
-    this.reels = this.getArrayWithFallback(
-      this.homeDesign?.reels,
-      this.homeDesign?.shopByReels,
-      section1?.videos,
-      this.videos
-    );
-    this.visibleReels = this.reels.slice(0, this.reelsBatchSize);
-    this.primeVisibleReelVideoCache();
-    this.newArrivals = this.getArrayWithFallback(
-      this.homeDesign?.newArrivals,
-      this.homeDesign?.products,
-      section1?.newArrivals,
-      section1?.products
-    );
-    this.visibleNewArrivals = this.newArrivals.slice(0, this.listBatchSize);
-    this.essentials = this.getArrayWithFallback(
-      this.homeDesign?.essentials,
-      section1?.essentials
-    );
-    this.visibleEssentials = this.essentials.slice(0, this.listBatchSize);
-    this.customerReviews = this.getArrayWithFallback(
-      this.homeDesign?.customerReviews,
-      this.homeDesign?.reviews,
-      section1?.reviews
-    );
-    this.visibleCustomerReviews = this.customerReviews.slice(0, this.listBatchSize);
-    this.socialLinks = this.getArrayWithFallback(this.homeDesign?.socialLinks, this.homeDesign?.socials);
-    this.footerColumns = this.getArrayWithFallback(this.homeDesign?.footerColumns, this.homeDesign?.footerLinks);
 
-    this.logoUrl = this.getFirstTruthy(
-      this.homeDesign?.footerLogo,
-      this.homeDesign?.logo,
-      this.logoUrl,
-      this.accountProfile?.businessLogo?.[0]?.s3path,
-      this.accountProfile?.logo?.url
-    );
-    this.brandName = this.homeDesign?.brandName || this.accountProfile?.businessName || this.brandName;
-
-    this.blogConfig = section1?.blogs || null;
+    this.blogConfig = this.templateJson?.section1?.blogs || null;
     if (this.blogConfig) {
       const filters = Array.isArray(this.blogConfig.filters) && this.blogConfig.filters.length
         ? this.blogConfig.filters
@@ -1606,271 +1381,6 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   selectBlogFilter(filterKey: string) {
     this.applyBlogFilter(filterKey);
-  }
-  onPrimaryCta() {
-    this.createappoinment();
-  }
-  onCardClick(item: any) {
-    if (!item) {
-      return;
-    }
-    const link = item?.link || item?.url || item?.route;
-    if (link && typeof link === 'string' && link.startsWith('http')) {
-      window.open(link, '_blank');
-      return;
-    }
-    if (link && typeof link === 'string') {
-      const routeId = this.sharedService.getRouteID();
-      const target = link.startsWith('/') || link.startsWith(`${routeId}/`) ? link : `${routeId}/${link}`;
-      this.router.navigateByUrl(target);
-      return;
-    }
-  }
-  onShowMore(sectionKey: string) {
-    const section = this.homeDesign?.[sectionKey] || this.homeDesign?.[`${sectionKey}Section`] || {};
-    if (section?.link) {
-      this.onCardClick(section);
-    }
-  }
-  hasMoreCategories(): boolean {
-    return this.visibleCategories.length < this.categories.length;
-  }
-  loadMoreCategories() {
-    if (!this.hasMoreCategories()) {
-      return;
-    }
-    const nextCount = this.visibleCategories.length + this.listBatchSize;
-    this.visibleCategories = this.categories.slice(0, nextCount);
-  }
-  hasMorePreBookingCollection(): boolean {
-    return this.visiblePreBookingCollection.length < this.preBookingCollection.length;
-  }
-  loadMorePreBookingCollection() {
-    if (!this.hasMorePreBookingCollection()) {
-      return;
-    }
-    const nextCount = this.visiblePreBookingCollection.length + this.listBatchSize;
-    this.visiblePreBookingCollection = this.preBookingCollection.slice(0, nextCount);
-  }
-  hasMoreReels(): boolean {
-    return this.visibleReels.length < this.reels.length;
-  }
-  loadMoreReels() {
-    if (!this.hasMoreReels()) {
-      return;
-    }
-    const nextCount = this.visibleReels.length + this.reelsBatchSize;
-    this.visibleReels = this.reels.slice(0, nextCount);
-    this.primeVisibleReelVideoCache();
-  }
-  hasMoreNewArrivals(): boolean {
-    return this.visibleNewArrivals.length < this.newArrivals.length;
-  }
-  loadMoreNewArrivals() {
-    if (!this.hasMoreNewArrivals()) {
-      return;
-    }
-    const nextCount = this.visibleNewArrivals.length + this.listBatchSize;
-    this.visibleNewArrivals = this.newArrivals.slice(0, nextCount);
-  }
-  hasMoreCustomerReviews(): boolean {
-    return this.visibleCustomerReviews.length < this.customerReviews.length;
-  }
-  loadMoreCustomerReviews() {
-    if (!this.hasMoreCustomerReviews()) {
-      return;
-    }
-    const nextCount = this.visibleCustomerReviews.length + this.listBatchSize;
-    this.visibleCustomerReviews = this.customerReviews.slice(0, nextCount);
-  }
-  onReviewScroll(event: Event) {
-    const element = event?.target as HTMLElement;
-    if (!element || !this.visibleCustomerReviews?.length) {
-      return;
-    }
-    const cardWidth = element.clientWidth / 2;
-    if (!cardWidth) {
-      this.activeReviewIndex = 0;
-      return;
-    }
-    const index = Math.round(element.scrollLeft / cardWidth);
-    this.activeReviewIndex = Math.max(0, Math.min(this.visibleCustomerReviews.length - 1, index));
-  }
-  onHeroScroll(event: Event) {
-    const element = event?.target as HTMLElement;
-    if (!element || !this.heroSlides?.length) {
-      return;
-    }
-    const cardWidth = element.clientWidth;
-    if (!cardWidth) {
-      this.activeHeroIndex = 0;
-      return;
-    }
-    const index = Math.round(element.scrollLeft / cardWidth);
-    this.activeHeroIndex = Math.max(0, Math.min(this.heroSlides.length - 1, index));
-  }
-  onReelScroll(event: Event) {
-    const element = event?.target as HTMLElement;
-    if (!element || !this.visibleReels?.length) {
-      return;
-    }
-    const cardWidth = element.clientWidth / 2;
-    if (!cardWidth) {
-      this.activeReelIndex = 0;
-      return;
-    }
-    const index = Math.round(element.scrollLeft / cardWidth);
-    this.activeReelIndex = Math.max(0, Math.min(this.visibleReels.length - 1, index));
-  }
-  getStars(inputRating: any): number[] {
-    const rating = Math.max(1, Math.min(5, Number(inputRating || 5)));
-    return Array.from({ length: rating }, (_, i) => i);
-  }
-  forcePlay(event: Event) {
-    const video = event?.target as HTMLVideoElement;
-    if (!video) {
-      return;
-    }
-    video.muted = true;
-    video.defaultMuted = true;
-    video.loop = true;
-    video.playsInline = true;
-    const playPromise = video.play();
-    if (playPromise && typeof playPromise.catch === 'function') {
-      playPromise.catch(() => {
-        // Autoplay can still be blocked by browser policy; keep silent for preview mode.
-      });
-    }
-  }
-  trackByIndex(index: number): number {
-    return index;
-  }
-  getReelVideoSrc(reel: any): string {
-    const sourceUrl = this.resolveAsset(reel?.video || reel?.videoUrl || reel?.link || reel?.media);
-    if (!sourceUrl) {
-      return '';
-    }
-    const cached = this.reelVideoSourceCache.get(sourceUrl);
-    if (cached) {
-      return cached;
-    }
-    this.prefetchReelVideo(sourceUrl);
-    return sourceUrl;
-  }
-  resolveAsset(path: string): string {
-    if (!path || typeof path !== 'string') {
-      return '';
-    }
-    if (path.startsWith('http') || path.startsWith('data:') || path.startsWith('//')) {
-      return path;
-    }
-    const trimmedBase = (this.assetBasePath || '').replace(/\/$/, '');
-    const trimmedPath = path.replace(/^\//, '');
-    return trimmedBase ? `${trimmedBase}/${trimmedPath}` : path;
-  }
-  private setupScrollReveal() {
-    if (typeof window === 'undefined' || !('IntersectionObserver' in window)) {
-      return;
-    }
-    if (this.sectionObserver) {
-      this.sectionObserver.disconnect();
-    }
-    this.sectionObserver = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-visible');
-        }
-      });
-    }, { threshold: 0.11 });
-
-    setTimeout(() => {
-      const sections = document.querySelectorAll('.reveal-on-scroll');
-      sections.forEach((section) => this.sectionObserver?.observe(section));
-    });
-  }
-  private getArrayWithFallback(...values: any[]): any[] {
-    for (const value of values) {
-      if (Array.isArray(value) && value.length) {
-        return value;
-      }
-    }
-    return [];
-  }
-  private getFirstTruthy(...values: any[]): any {
-    for (const value of values) {
-      if (value) {
-        return value;
-      }
-    }
-    return '';
-  }
-  private primeVisibleReelVideoCache(): void {
-    if (!Array.isArray(this.visibleReels) || !this.visibleReels.length) {
-      return;
-    }
-    this.visibleReels.forEach((reel) => {
-      const sourceUrl = this.resolveAsset(reel?.video || reel?.videoUrl || reel?.link || reel?.media);
-      if (sourceUrl) {
-        this.prefetchReelVideo(sourceUrl);
-      }
-    });
-  }
-  private prefetchReelVideo(sourceUrl: string): void {
-    if (!sourceUrl || sourceUrl.startsWith('blob:') || sourceUrl.startsWith('data:')) {
-      return;
-    }
-    if (this.reelVideoSourceCache.has(sourceUrl) || this.reelVideoFetchInflight.has(sourceUrl)) {
-      return;
-    }
-    const task = this.resolveReelVideoSource(sourceUrl)
-      .then((resolvedUrl) => {
-        this.reelVideoSourceCache.set(sourceUrl, resolvedUrl || sourceUrl);
-        return resolvedUrl || sourceUrl;
-      })
-      .catch(() => {
-        this.reelVideoSourceCache.set(sourceUrl, sourceUrl);
-        return sourceUrl;
-      })
-      .finally(() => {
-        this.reelVideoFetchInflight.delete(sourceUrl);
-      });
-    this.reelVideoFetchInflight.set(sourceUrl, task);
-  }
-  private async resolveReelVideoSource(sourceUrl: string): Promise<string> {
-    if (typeof window === 'undefined' || typeof fetch === 'undefined') {
-      return sourceUrl;
-    }
-    try {
-      const response = await fetch(sourceUrl, { cache: 'force-cache' });
-      if (!response?.ok) {
-        return sourceUrl;
-      }
-      const blob = await response.blob();
-      if (!blob || !blob.size || typeof URL === 'undefined' || typeof URL.createObjectURL !== 'function') {
-        return sourceUrl;
-      }
-      const blobUrl = URL.createObjectURL(blob);
-      this.reelVideoObjectUrls.push(blobUrl);
-      return blobUrl;
-    } catch {
-      return sourceUrl;
-    }
-  }
-  private clearReelVideoObjectUrls(): void {
-    if (typeof URL === 'undefined' || typeof URL.revokeObjectURL !== 'function') {
-      this.reelVideoObjectUrls = [];
-      return;
-    }
-    this.reelVideoObjectUrls.forEach((url) => {
-      try {
-        URL.revokeObjectURL(url);
-      } catch {
-        // Ignore revoke errors.
-      }
-    });
-    this.reelVideoObjectUrls = [];
-    this.reelVideoSourceCache.clear();
-    this.reelVideoFetchInflight.clear();
   }
 
   handleNotification(notification) {
@@ -1962,16 +1472,16 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
   resumeLoadingHome() {
+    this.hydrateTemplateContent();
+    this.galleryJson = this.sharedService.getJson(this.account['gallery']);
+    this.loadImages(this.galleryJson);
+    this.subscriptionService.sendMessage({ ttype: 'showLocation' });
     if (this.templateJson.section1.blog) {
       this.blogs = this.templateJson.section1.blog;
     }
     if (this.templateJson.section1.videos) {
       this.videos = this.templateJson.section1.videos;
     }
-    this.hydrateTemplateContent();
-    this.galleryJson = this.sharedService.getJson(this.account['gallery']);
-    this.loadImages(this.galleryJson);
-    this.subscriptionService.sendMessage({ ttype: 'showLocation' });
     if (this.templateJson.section1.donations || this.templateJson.section2.donations || this.templateJson.section3.donations) {
       this.getDonationServices();
     }
@@ -2012,31 +1522,4 @@ export class RootComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     }));
   }
-  gotoItems(link?: string) {
-    const target = (link || '').toString().trim();
-    if (target) {
-      if (target.startsWith('http')) {
-        window.open(target, '_blank');
-        return;
-      }
-      this.router.navigateByUrl(target.startsWith('/') ? target : `/${target}`);
-      return;
-    }
-    this.router.navigate([this.sharedService.getRouteID(), 'items']);
-  }
-  onItemSearchSelected(event: any) {
-    if (event?.query) {
-      const navigationExtras: NavigationExtras = {
-        queryParams: {
-          query: event.query
-        }
-      };
-      this.router.navigate([this.sharedService.getRouteID(), 'items'], navigationExtras);
-      return;
-    }
-    if (event?.value?.encId) {
-      this.router.navigate([this.sharedService.getRouteID(), 'item', event.value.encId]);
-    }
-  }
 }
-
