@@ -30,11 +30,23 @@
   </section>
 
   <section class="stores" aria-live="polite">
+    <button *ngFor="let store of stores; trackBy: trackById" type="button" class="store-image-card"
+      (click)="openStore(store)" [attr.aria-label]="(config.storeSelectionPage?.storeCtaLabel || '') + ' ' + store.name">
+      <img *ngIf="store.cardImage && !brokenStoreImages.has(store.id)" [src]="imageUrl(store.cardImage)"
+        [alt]="store.cardImageAlt || store.name" loading="lazy" decoding="async"
+        (error)="markStoreImageBroken(store.id)">
+      <span *ngIf="!store.cardImage || brokenStoreImages.has(store.id)" class="store-image-fallback">
+        <i class="fa fa-paw" aria-hidden="true"></i><strong>{{ store.name }}</strong>
+      </span>
+    </button>
+
+    <!-- Temporarily retained composed card implementation.
     <app-marketplace-store-card *ngFor="let store of stores; trackBy: trackById"
       [store]="store" [page]="config.storeSelectionPage || {}" [imageUrl]="imageUrl(store.cardImage)"
       [distance]="distance(store)" [timingLabel]="config.serviceSelectionPage?.timingsLabel || ''"
       (openStore)="openStore($event)">
     </app-marketplace-store-card>
+    -->
     <div *ngIf="!stores.length" class="empty-state">
       <i class="fa fa-paw" aria-hidden="true"></i>
       <h2>{{ config.storeSelectionPage?.storesEmptyTitle }}</h2>

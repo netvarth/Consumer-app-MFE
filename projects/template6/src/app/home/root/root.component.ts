@@ -1307,6 +1307,29 @@ export class RootComponent implements OnInit, OnDestroy {
     });
   }
   onComingSoonCard(card: any) {
+    const marketplace = this.templateJson?.serviceMarketplace;
+    const actions = Array.isArray(marketplace?.actionCategories)
+      ? marketplace.actionCategories.filter((action: any) => action?.enabled === true)
+      : [];
+    const normalizedTitle = String(card?.title || '').toLowerCase().replace(/^pet\s+/, '').trim();
+    const selectedAction = actions.find((action: any) =>
+      action.key === card?.actionKey ||
+      action.key === card?.serviceMarketplaceActionKey ||
+      String(action.key || '').toLowerCase() === normalizedTitle ||
+      String(action.label || '').toLowerCase() === normalizedTitle
+    );
+
+    if (marketplace?.enabled && selectedAction) {
+      if (marketplace.selection?.persistSelectedAction) {
+        localStorage.setItem('serviceMarketplace.action', selectedAction.key);
+      }
+      const storeRoute = marketplace.routes?.storeSelection || 'service-stores';
+      this.router.navigate([this.sharedService.getRouteID(), storeRoute], {
+        queryParams: { action: selectedAction.key }
+      });
+      return;
+    }
+
     if (card?.link) {
       if (card?.external && typeof window !== 'undefined') {
         window.open(card.link, '_blank');

@@ -1,6 +1,6 @@
 import { CommonModule, Location } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { SharedService } from 'jconsumer-shared';
 import { StoreCardComponent } from '../components/store-card/store-card.component';
 import { ServiceMarketplaceConfig } from '../models/service-marketplace.models';
@@ -32,6 +32,7 @@ describe('StoreSelectionComponent', () => {
       providers: [
         { provide: SharedService, useValue: { getTemplateJSON: () => ({ serviceMarketplace: config }), getRouteID: () => 'account' } },
         { provide: Router, useValue: router },
+        { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap: convertToParamMap({}) } } },
         { provide: Location, useValue: { back: jasmine.createSpy('back') } }
       ]
     }).compileComponents();

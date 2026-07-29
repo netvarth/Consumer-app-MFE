@@ -98,6 +98,11 @@
   min-height: calc(100vh - var(--template12-header-height, 0px));
 }
 
+.bus-page-header .panel-body.immersive-route {
+  margin-top: 0;
+  min-height: 100vh;
+}
+
 .header-container {
   position: fixed;   /* locks it to the viewport */
   top: 0;            /* sticks to the very top */

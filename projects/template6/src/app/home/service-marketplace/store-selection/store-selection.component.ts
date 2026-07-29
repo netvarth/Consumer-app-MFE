@@ -1,6 +1,6 @@
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SharedService } from 'jconsumer-shared';
 import {
   MarketplaceAction,
@@ -31,6 +31,7 @@ export class StoreSelectionComponent implements OnInit {
   selectedActionKey = '';
   locationMessage = '';
   brokenLocationImages = new Set<string>();
+  brokenStoreImages = new Set<string>();
 
   private readonly locationStorageKey = 'serviceMarketplace.location';
   private readonly actionStorageKey = 'serviceMarketplace.action';
@@ -38,6 +39,7 @@ export class StoreSelectionComponent implements OnInit {
   constructor(
     private readonly sharedService: SharedService,
     private readonly router: Router,
+    private readonly route: ActivatedRoute,
     private readonly location: Location
   ) {}
 
@@ -52,11 +54,17 @@ export class StoreSelectionComponent implements OnInit {
       this.config.selection?.defaultLocationId,
       this.config.selection?.persistSelectedLocation ? localStorage.getItem(this.locationStorageKey) : null
     );
-    this.selectedActionKey = this.resolveInitialSelection(
-      this.actions.map((item) => item.key),
-      this.config.selection?.defaultActionKey,
-      this.config.selection?.persistSelectedAction ? localStorage.getItem(this.actionStorageKey) : null
-    );
+    const validActionKeys = this.actions.map((item) => item.key);
+    const routeActionKey = this.route.snapshot.queryParamMap.get('action');
+    const persistedActionKey = this.config.selection?.persistSelectedAction
+      ? localStorage.getItem(this.actionStorageKey)
+      : null;
+    this.selectedActionKey = routeActionKey && validActionKeys.includes(routeActionKey)
+      ? routeActionKey
+      : this.resolveInitialSelection(validActionKeys, this.config.selection?.defaultActionKey, persistedActionKey);
+    if (this.selectedActionKey && this.config.selection?.persistSelectedAction) {
+      localStorage.setItem(this.actionStorageKey, this.selectedActionKey);
+    }
     this.refreshStores();
   }
 
@@ -101,6 +109,7 @@ export class StoreSelectionComponent implements OnInit {
 
   imageUrl(image?: string): string { return resolveMarketplaceImageUrl(this.config?.assetBasePath, image); }
   markLocationImageBroken(id: string): void { this.brokenLocationImages.add(id); }
+  markStoreImageBroken(id: string): void { this.brokenStoreImages.add(id); }
   distance(store: MarketplaceStore): string { return formatDistance(store.distanceKm, this.config?.storeSelectionPage?.distanceSuffix); }
   trackById(_: number, item: { id?: string; key?: string }): string { return item.id || item.key || ''; }
 

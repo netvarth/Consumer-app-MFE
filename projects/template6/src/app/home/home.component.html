@@ -14,7 +14,8 @@
             <div class="header-container" *ngIf="header && !isImmersiveRoute">
                 <app-header [locations]="locations" *ngIf="locations && locations.length > 0"></app-header>
             </div>
-            <div class="panel-body no-padding" *ngIf="locations" [class.header-visible]="!header">
+            <div class="panel-body no-padding" *ngIf="locations" [class.header-visible]="!header"
+                [class.immersive-route]="isImmersiveRoute">
                 <div class="col-12 no-padding">
                     <router-outlet></router-outlet>
                 </div>

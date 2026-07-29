@@ -1,37 +1,286 @@
-:host { display: block; min-height: 100vh; background: #fff; color: #24272d; font-family: Arial, Helvetica, sans-serif; }
-* { box-sizing: border-box; }
-.marketplace-page { width: 100%; max-width: 768px; min-height: 100vh; margin: 0 auto; padding-bottom: max(28px, env(safe-area-inset-bottom)); background: #fff; }
-.page-header { display: grid; grid-template-columns: 48px 1fr 48px; align-items: center; min-height: 88px; padding: 16px 20px 0; border-bottom: 1px solid #e3e3e3; }
-.page-header button, .missing-store button { display: grid; place-items: center; width: 48px; height: 48px; border: 0; background: transparent; color: #050505; cursor: pointer; }
-.page-header i, .missing-store i { font-size: 39px; font-weight: 700; }
-.page-header h1 { overflow: hidden; margin: 0; text-align: center; text-overflow: ellipsis; white-space: nowrap; font-size: clamp(21px, 6vw, 28px); line-height: 1.2; font-weight: 700; }
-.store-summary { display: grid; grid-template-columns: 112px minmax(0,1fr); gap: 17px; padding: 22px 20px 20px; }
-.store-logo { display: grid; place-items: center; width: 112px; height: 126px; overflow: hidden; border-radius: 8px; background: #f2f2f2; color: #bbb; font-size: 38px; }
-.store-logo img { width: 100%; height: 100%; object-fit: cover; }
-.store-summary__copy { align-self: center; min-width: 0; }
-.store-summary h2 { margin: 0 0 8px; font-size: clamp(21px, 5.7vw, 28px); line-height: 1.2; font-weight: 700; }
-.store-summary p { margin: 0; }
-.distance { display: flex; align-items: center; gap: 9px; color: #909090; font-size: 17px; }
-.distance i { font-size: 21px; }
-.address { padding: 16px 2px 0; color: #929292; font-size: 16px; line-height: 1.35; }
-.store-meta { display: flex; margin: 0 20px 12px; min-height: 82px; padding: 14px 8px; border: 1px solid #e8e8e8; border-radius: 17px; }
-.store-meta > div { flex: 1 1 0; display: flex; align-items: flex-start; justify-content: center; gap: 7px; min-width: 0; padding: 0 7px; border-right: 1px solid #e6e6e6; }
-.store-meta > div:last-child { border-right: 0; }
-.store-meta i { margin-top: 2px; color: #fb4300; font-size: 20px; }
-.store-meta p { display: flex; flex-direction: column; min-width: 0; margin: 0; color: #596070; font-size: 14px; line-height: 1.25; }
-.store-meta strong { color: #24272d; font-size: clamp(15px, 4.2vw, 20px); white-space: nowrap; }
-.contact-row { display: flex; align-items: center; justify-content: space-between; min-height: 68px; padding: 10px 20px; background: #f6f6f6; }
-.contact-row p { display: flex; align-items: center; gap: 10px; min-width: 0; margin: 0; color: #090909; font-size: 15px; }
-.contact-row p i { flex: 0 0 auto; font-size: 23px; }
-.contact-row strong { line-height: 1.25; }
-.contact-actions { display: flex; flex: 0 0 auto; gap: 7px; margin-left: 8px; }
-.contact-actions button, .contact-actions a { display: grid; place-items: center; width: 44px; height: 44px; border: 0; color: #000; background: transparent; text-decoration: none; cursor: pointer; }
-.contact-actions i { font-size: 27px; }
-.services { padding: 0 18px; }
-.empty-state { padding: 60px 24px; text-align: center; color: #6b6b6b; }
-.empty-state i { color: #d4d4d4; font-size: 44px; }
-.empty-state h2 { margin: 14px 0 5px; color: #1d1d1d; font-size: 21px; }
-.empty-state p { margin: 0; font-size: 15px; }
-.missing-store { padding: 24px; }
-@media (max-width: 350px) { .store-summary { grid-template-columns: 96px minmax(0,1fr); padding-inline: 14px; } .store-logo { width: 96px; height: 112px; } .store-meta { margin-inline: 12px; } .store-meta > div { padding-inline: 3px; } }
-@media (min-width: 600px) { .store-summary { grid-template-columns: 150px minmax(0,1fr); padding: 28px 34px; } .store-logo { width: 150px; height: 150px; } .store-meta { margin-inline: 34px; } .services { padding-inline: 34px; } }
+:host {
+    display: block;
+    min-height: 100vh;
+    background: #fff;
+    color: #24272d;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.marketplace-page {
+    width: 100%;
+    max-width: 768px;
+    min-height: 100vh;
+    margin: 0 auto;
+    padding-bottom: max(28px, env(safe-area-inset-bottom));
+    background: #fff;
+}
+
+.page-header {
+    display: grid;
+    grid-template-columns: 48px 1fr 48px;
+    align-items: center;
+    min-height: 88px;
+    padding: 16px 20px 0;
+    border-bottom: 1px solid #e3e3e3;
+}
+
+.page-header button,
+.missing-store button {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border: 0;
+    background: transparent;
+    color: #050505;
+    cursor: pointer;
+}
+
+.page-header i,
+.missing-store i {
+    font-size: 26px;
+    font-weight: 600;
+}
+
+.page-header h1 {
+    overflow: hidden;
+    margin: 0;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 18px;
+    line-height: 1.2;
+    font-weight: 600;
+}
+
+.store-summary {
+    display: grid;
+    grid-template-columns: 112px minmax(0, 1fr);
+    gap: 17px;
+    padding: 22px 20px 20px;
+}
+
+.store-logo {
+    display: grid;
+    place-items: center;
+    width: 112px;
+    height: 126px;
+    overflow: hidden;
+    border-radius: 8px;
+    background: #f2f2f2;
+    color: #bbb;
+    font-size: 38px;
+}
+
+.store-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.store-summary__copy {
+    align-self: center;
+    min-width: 0;
+}
+
+.store-summary h2 {
+    margin: 0 0 8px;
+    font-size: clamp(21px, 5.7vw, 28px);
+    line-height: 1.2;
+    font-weight: 700;
+}
+
+.store-summary p {
+    margin: 0;
+}
+
+.distance {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: #909090;
+    font-size: 17px;
+}
+
+.distance i {
+    font-size: 21px;
+}
+
+.address {
+    padding: 16px 2px 0;
+    color: #929292;
+    font-size: 16px;
+    line-height: 1.35;
+}
+
+.store-meta {
+    display: flex;
+    margin: 0 20px 12px;
+    min-height: 82px;
+    padding: 14px 8px;
+    border: 1px solid #e8e8e8;
+    border-radius: 17px;
+}
+
+.store-meta>div {
+    flex: 1 1 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-width: 0;
+    padding: 0 7px;
+    border-right: 1px solid #e6e6e6;
+}
+
+.store-meta>div:last-child {
+    border-right: 0;
+}
+
+.store-meta i {
+    margin-top: 2px;
+    color: #fb4300;
+    font-size: 20px;
+}
+
+.store-meta p {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    margin: 0;
+    color: #596070;
+    font-size: 14px;
+    line-height: 1.25;
+}
+
+.store-meta strong {
+    color: #24272d;
+    font-size: clamp(15px, 4.2vw, 20px);
+    white-space: nowrap;
+}
+
+.contact-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 68px;
+    padding: 10px 20px;
+    background: #f6f6f6;
+}
+
+.contact-row p {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    margin: 0;
+    color: #090909;
+    font-size: 15px;
+}
+
+.contact-row p i {
+    flex: 0 0 auto;
+    font-size: 23px;
+}
+
+.contact-row strong {
+    line-height: 1.25;
+}
+
+.contact-actions {
+    display: flex;
+    flex: 0 0 auto;
+    gap: 7px;
+    margin-left: 8px;
+}
+
+.contact-actions button,
+.contact-actions a {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    color: #000;
+    background: transparent;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.contact-actions i {
+    font-size: 27px;
+}
+
+.services {
+    padding: 0 18px;
+}
+
+.empty-state {
+    padding: 60px 24px;
+    text-align: center;
+    color: #6b6b6b;
+}
+
+.empty-state i {
+    color: #d4d4d4;
+    font-size: 44px;
+}
+
+.empty-state h2 {
+    margin: 14px 0 5px;
+    color: #1d1d1d;
+    font-size: 21px;
+}
+
+.empty-state p {
+    margin: 0;
+    font-size: 15px;
+}
+
+.missing-store {
+    padding: 24px;
+}
+
+@media (max-width: 350px) {
+    .store-summary {
+        grid-template-columns: 96px minmax(0, 1fr);
+        padding-inline: 14px;
+    }
+
+    .store-logo {
+        width: 96px;
+        height: 112px;
+    }
+
+    .store-meta {
+        margin-inline: 12px;
+    }
+
+    .store-meta>div {
+        padding-inline: 3px;
+    }
+}
+
+@media (min-width: 600px) {
+    .store-summary {
+        grid-template-columns: 150px minmax(0, 1fr);
+        padding: 28px 34px;
+    }
+
+    .store-logo {
+        width: 150px;
+        height: 150px;
+    }
+
+    .store-meta {
+        margin-inline: 34px;
+    }
+
+    .services {
+        padding-inline: 34px;
+    }
+}
