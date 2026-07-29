@@ -81,6 +81,27 @@
       More</button>
   </div>
 
+
+    <!-- Coming soon section -->
+  <section class="section-block coming-soon-section">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">{{ templateJson?.section1?.comingSoon?.title}}</p>
+      </div>
+    </div>
+    <div class="coming-grid">
+      <article class="coming-card" *ngFor="let card of comingSoonCards" [style.--accent]="card.accent || '#FFE0CC'"
+        (click)="onComingSoonCard(card)">
+        <img *ngIf="card.image" class="coming-image" [src]="card.image" [alt]="card.title" loading="lazy"
+          decoding="async">
+        <div class="coming-visual" *ngIf="!card.image">
+          <i class="fa" [ngClass]="card.icon || 'fa-paw'"></i>
+        </div>
+      </article>
+    </div>
+  </section>
+
+
   <div class="mgn-up-10 m-3 mgn-bt-10 pad-bt-10 grid-card"
     *ngIf="templateJson && nextBooking && !isBookingCancelled(nextBooking) && !isBookingCompleted(nextBooking)">
     <mat-grid-list [cols]="1" rowHeight="300px" [gutterSize]="'10px'">
@@ -105,24 +126,7 @@
     <img class="ratingcard-img" [src]="templateJson?.ratingcard" loading="lazy" decoding="async">
   </div>
 
-  <!-- Coming soon section -->
-  <section class="section-block coming-soon-section">
-    <div class="section-head">
-      <div>
-        <p class="eyebrow">{{ templateJson?.section1?.comingSoon?.title || 'Coming Soon' }}</p>
-      </div>
-    </div>
-    <div class="coming-grid">
-      <article class="coming-card" *ngFor="let card of comingSoonCards" [style.--accent]="card.accent || '#FFE0CC'"
-        (click)="onComingSoonCard(card)">
-        <img *ngIf="card.image" class="coming-image" [src]="card.image" [alt]="card.title" loading="lazy"
-          decoding="async">
-        <div class="coming-visual" *ngIf="!card.image">
-          <i class="fa" [ngClass]="card.icon || 'fa-paw'"></i>
-        </div>
-      </article>
-    </div>
-  </section>
+
   <!-- Blogs section -->
   <section class="section-block blog-section" *ngIf="blogConfig?.showBlogs && filteredBlogs.length">
     <div class="section-head blog-head">

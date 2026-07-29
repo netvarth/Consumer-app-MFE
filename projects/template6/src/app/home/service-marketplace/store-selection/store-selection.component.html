@@ -1,0 +1,45 @@
+<main class="marketplace-page" *ngIf="config; else unavailable">
+  <header class="page-header">
+    <button type="button" (click)="goBack()" [attr.aria-label]="config.storeSelectionPage?.backLabel">
+      <i class="fa fa-angle-left" aria-hidden="true"></i>
+    </button>
+    <h1>{{ config.storeSelectionPage?.title }}</h1>
+    <span aria-hidden="true"></span>
+  </header>
+
+  <section *ngIf="config.storeSelectionPage?.showLocationSelector" class="location-strip" aria-label="Locations">
+    <button *ngFor="let item of locations; trackBy: trackById" type="button" class="location-option"
+      [class.active]="item.id === selectedLocationId" (click)="selectLocation(item)"
+      [attr.aria-pressed]="item.id === selectedLocationId">
+      <span class="location-circle">
+        <img *ngIf="item.image && !brokenLocationImages.has(item.id)" [src]="imageUrl(item.image)" [alt]="item.imageAlt || item.name"
+          loading="lazy" decoding="async" (error)="markLocationImageBroken(item.id)">
+        <i *ngIf="!item.image || brokenLocationImages.has(item.id)" class="fa" [ngClass]="item.icon || 'fa-map-marker'" aria-hidden="true"></i>
+      </span>
+      <span class="location-name">{{ item.name }}</span>
+    </button>
+  </section>
+  <p *ngIf="locationMessage" class="location-message" role="status">{{ locationMessage }}</p>
+
+  <section *ngIf="config.storeSelectionPage?.showActionFilters && actions.length" class="action-strip" aria-label="Service categories">
+    <button *ngFor="let action of actions; trackBy: trackById" type="button"
+      [class.active]="action.key === selectedActionKey" (click)="selectAction(action)"
+      [attr.aria-pressed]="action.key === selectedActionKey">
+      <i class="fa" [ngClass]="action.icon || 'fa-paw'" aria-hidden="true"></i>{{ action.label }}
+    </button>
+  </section>
+
+  <section class="stores" aria-live="polite">
+    <app-marketplace-store-card *ngFor="let store of stores; trackBy: trackById"
+      [store]="store" [page]="config.storeSelectionPage || {}" [imageUrl]="imageUrl(store.cardImage)"
+      [distance]="distance(store)" [timingLabel]="config.serviceSelectionPage?.timingsLabel || ''"
+      (openStore)="openStore($event)">
+    </app-marketplace-store-card>
+    <div *ngIf="!stores.length" class="empty-state">
+      <i class="fa fa-paw" aria-hidden="true"></i>
+      <h2>{{ config.storeSelectionPage?.storesEmptyTitle }}</h2>
+      <p>{{ config.storeSelectionPage?.storesEmptyDescription }}</p>
+    </div>
+  </section>
+</main>
+<ng-template #unavailable><div class="empty-state page-unavailable" role="status"></div></ng-template>

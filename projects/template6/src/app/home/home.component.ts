@@ -42,7 +42,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   private welcomePopupTimer: any;
   private subscriptions: Subscription = new Subscription();
   header: boolean = true;
-  isPetStoreRoute = false;
+  isImmersiveRoute = false;
   constructor(
     private orderService: OrderService,
     private sharedService: SharedService,
@@ -223,17 +223,22 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       }, 10000);
     }
 
-    this.isPetStoreRoute = this.router.url.split('?')[0].endsWith('/pet-store');
+    this.isImmersiveRoute = this.isFullWidthRoute(this.router.url);
 
     this.subscriptions.add(
       this.router.events.subscribe((event) => {
         if (event instanceof NavigationEnd) {
-          this.isPetStoreRoute = event.urlAfterRedirects.split('?')[0].endsWith('/pet-store');
+          this.isImmersiveRoute = this.isFullWidthRoute(event.urlAfterRedirects);
           this.scrollToTop();
         }
       })
     );
 
+  }
+
+  private isFullWidthRoute(url: string): boolean {
+    const path = url.split('?')[0];
+    return path.endsWith('/pet-store') || path.endsWith('/service-stores') || /\/service-store\/[^/]+$/.test(path);
   }
 
   private ensureTrailingSlash(path: string): string {

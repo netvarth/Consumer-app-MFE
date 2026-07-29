@@ -6,6 +6,9 @@ import { HeaderModule } from './header/header.module';
 import { DialogService } from 'primeng/dynamicdialog';
 import { AuthenticationModule } from '../shared/authentication/authentication.module';
 import { OnetimeQuestionnaireModule } from '../shared/onetime-questionnaire/onetime-questionnaire.module';
+import { ServiceMarketplaceModule } from './service-marketplace/service-marketplace.module';
+import { ServiceSelectionComponent } from './service-marketplace/service-selection/service-selection.component';
+import { StoreSelectionComponent } from './service-marketplace/store-selection/store-selection.component';
 
 const routes: Routes = [
   {
@@ -22,6 +25,8 @@ const routes: Routes = [
       { path: 'payments', loadChildren: () => import('./payments/payments.module').then(m => m.PaymentsModule) },
       { path: 'items', loadChildren: () => import('./items/items.module').then(m => m.ItemsModule) },
       { path: 'pet-store', loadChildren: () => import('./pet-store/pet-store.module').then(m => m.PetStoreModule) },
+      { path: 'service-stores', component: StoreSelectionComponent },
+      { path: 'service-store/:storeId', component: ServiceSelectionComponent },
       { path: 'categories', loadChildren: () => import('./catagories/catagories.module').then(m => m.CatagoriesModule) },
       { path: 'pay/:id', loadChildren: () => import('./payment-link/payment-link.module').then(m => m.PaymentLinkModule) },
       { path: 'status/:id', loadChildren: () => import('./status/status.module').then(m => m.StatusModule) },
@@ -50,6 +55,7 @@ const routes: Routes = [
     HeaderModule,
     AuthenticationModule,
     OnetimeQuestionnaireModule,
+    ServiceMarketplaceModule,
     [RouterModule.forChild(routes)]
   ],
   providers: [

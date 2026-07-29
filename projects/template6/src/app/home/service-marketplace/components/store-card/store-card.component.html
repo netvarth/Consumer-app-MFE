@@ -1,0 +1,25 @@
+<article class="store-card">
+  <div class="store-card__media" [style.background-position]="page.cardImagePosition || 'center'">
+    <img *ngIf="imageUrl && !imageFailed" [src]="imageUrl" [alt]="store.cardImageAlt || store.name"
+      loading="lazy" decoding="async" [style.object-fit]="page.cardImageFit || 'cover'"
+      [style.object-position]="page.cardImagePosition || 'center'" (error)="imageFailed = true">
+    <div *ngIf="!imageUrl || imageFailed" class="image-fallback" aria-hidden="true"><i class="fa fa-paw"></i></div>
+    <div *ngIf="page.showTimingOnCard && store.timing?.display" class="timing-badge">
+      <span>{{ timingLabel }}: {{ store.timing?.display }}</span>
+    </div>
+  </div>
+  <div class="store-card__body">
+    <h2>{{ store.name }}</h2>
+    <div class="store-card__details">
+      <span *ngIf="distance" class="distance"><i class="fa" [ngClass]="page.locationIcon || 'fa-map-marker'"></i>{{ distance }}</span>
+      <span *ngIf="store.rating !== undefined && store.rating !== null" class="rating">
+        {{ store.rating }} <i class="fa" [ngClass]="page.ratingIcon || 'fa-star'"></i>
+      </span>
+    </div>
+    <button type="button" class="store-card__cta" (click)="openStore.emit(store)"
+      [attr.aria-label]="(page.storeCtaLabel || '') + ' ' + store.name">
+      <span class="sr-only">{{ page.storeCtaLabel }}</span>
+      <i class="fa" [ngClass]="page.storeCtaIcon || 'fa-arrow-right'" aria-hidden="true"></i>
+    </button>
+  </div>
+</article>
