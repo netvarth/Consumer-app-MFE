@@ -5,7 +5,10 @@ import { RouterModule, Routes } from '@angular/router';
 import { PetStoreComponent } from './pet-store.component';
 import { StoreHeaderComponent } from './store-header.component';
 
-const routes: Routes = [{ path: '', component: PetStoreComponent }];
+const routes: Routes = [
+  { path: '', component: PetStoreComponent },
+  { path: '**', component: PetStoreComponent }
+];
 
 @NgModule({
   declarations: [PetStoreComponent, StoreHeaderComponent],

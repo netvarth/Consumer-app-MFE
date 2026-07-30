@@ -283,156 +283,185 @@
     "loginRequired":  false,
     "showEnquiry":  true,
     "serviceMarketplace": {"enabled":true,"assetBasePath":"/service-marketplace/","currency":{"code":"INR","symbol":"â‚¹","locale":"en-IN"},"routes":{"storeSelection":"service-stores","serviceSelection":"service-store/:storeId"},"selection":{"defaultLocationId":"thrissur","defaultActionKey":"grooming","persistSelectedLocation":true,"persistSelectedAction":true,"useBrowserLocationForNearYou":true},"storeSelectionPage":{"title":"Select Location","backLabel":"Back","nearYouLabel":"Near You","storesEmptyTitle":"No stores found","storesEmptyDescription":"Try another location or service category.","distanceSuffix":"KM","ratingIcon":"fa-star","locationIcon":"fa-map-marker","storeCtaLabel":"View Services","storeCtaIcon":"fa-arrow-right","showActionFilters":true,"showLocationSelector":true,"showTimingOnCard":true,"cardImageFit":"cover","cardImagePosition":"center"},"serviceSelectionPage":{"backLabel":"Back","verifiedTitle":"Verify","verifiedSubtitle":"Certified","notVerifiedTitle":"Not Verified","experienceSuffix":"Years","experienceSubtitle":"Experience","ratingSubtitle":"Rating","timingsLabel":"Timings","locationActionLabel":"Open location","phoneActionLabel":"Call store","bookNowLabel":"Book Now","startsAtLabel":"Starts at","discountIcon":"fa-lock","servicesEmptyTitle":"No services available","servicesEmptyDescription":"Services for this store will be available soon.","serviceImageFit":"cover","serviceImagePosition":"center"},"actionCategories":[{"key":"booking","label":"Booking","icon":"fa-calendar-check","image":"","sortOrder":1,"enabled":true},{"key":"grooming","label":"Grooming","icon":"fa-scissors","image":"https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/groomingCard.png","sortOrder":2,"enabled":true},{"key":"boarding","label":"Boarding","icon":"fa-house","image":"https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/petassets/boardingCard.png","sortOrder":3,"enabled":true},{"key":"training","label":"Training","icon":"fa-graduation-cap","image":"","sortOrder":4,"enabled":true}],"locations":[{"id":"near-you","name":"Near You","image":"","imageAlt":"Use current location","icon":"fa-location-arrow","useCurrentLocation":true,"enabled":true,"sortOrder":0},{"id":"thrissur","name":"Thrissur","image":"https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/service-marketplace/locations/thrissur.jpg","imageAlt":"Thrissur","useCurrentLocation":false,"enabled":true,"sortOrder":1},{"id":"bengaluru","name":"Bengaluru","image":"https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/service-marketplace/locations/bengaluru.jpg","imageAlt":"Bengaluru","useCurrentLocation":false,"enabled":true,"sortOrder":2},{"id":"chennai","name":"Chennai","image":"https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/service-marketplace/locations/chennai.jpg","imageAlt":"Chennai","useCurrentLocation":false,"enabled":true,"sortOrder":3}],"stores":[{"id":"for-our-pets-thrissur","name":"For Our Pets - Pet Grooming Studio \u0026 Academy Thrissur","shortName":"For Our Pets Thrissur","locationId":"thrissur","actionKeys":["booking","grooming","training"],"cardImage":"https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/service-marketplace/stores/for-our-pets/card.png","cardImageAlt":"For Our Pets pet grooming studio and academy","storeLogo":"https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/service-marketplace/stores/for-our-pets/logo.png","storeLogoAlt":"For Our Pets logo","address":"Thrissur, Kerala","verified":true,"experienceYears":5,"rating":4.9,"reviews":0,"distanceKm":2.3,"timing":{"display":"09:30 AM - 06:00 PM","openTime":"09:30","closeTime":"18:00","timezone":"Asia/Kolkata"},"locationLink":"https://www.google.com/maps/search/?api=1\u0026query=For+Our+Pets+Thrissur","phoneNumber":"+91-XXXXXXXXXX","phoneLink":"","storeLink":"service-store/for-our-pets-thrissur","enabled":true,"sortOrder":1,"services":[{"id":"spa-bath","name":"Spa Bath","description":"Complete drying and brushing with a free vet consultation.","price":1099,"priceDisplay":"â‚¹1099","discount":{"enabled":true,"type":"flat","value":100,"label":"â‚¹100 Discount Available"},"serviceImage":"https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/service-marketplace/services/spa-bath.jpg","serviceImageAlt":"Dog receiving a spa bath","serviceLink":"appointment?store_id=for-our-pets-thrissur\u0026service_id=spa-bath","enabled":true,"sortOrder":1},{"id":"spa-bath-hair-cut","name":"Spa Bath \u0026 Hair Cut","description":"Bath with vet-approved products and a full-body haircut.","price":1099,"priceDisplay":"â‚¹1099","discount":{"enabled":true,"type":"flat","value":100,"label":"â‚¹100 Discount Available"},"serviceImage":"https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/service-marketplace/services/spa-bath-hair-cut.jpg","serviceImageAlt":"Dog receiving a haircut","serviceLink":"appointment?store_id=for-our-pets-thrissur\u0026service_id=spa-bath-hair-cut","enabled":true,"sortOrder":2}]},{"id":"pet-focuz-thrissur","name":"Pet Focuz Thrissur","shortName":"Pet Focuz Thrissur","locationId":"thrissur","actionKeys":["booking","grooming"],"cardImage":"https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/service-marketplace/stores/pet-focuz/card.png","cardImageAlt":"Pet Focuz professional pet grooming studio","storeLogo":"https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/service-marketplace/stores/pet-focuz/logo.png","storeLogoAlt":"Pet Focuz logo","address":"Valarkkavu, Nehru Nagar, Kuriachira, Thrissur","verified":true,"experienceYears":5,"rating":4.9,"reviews":0,"distanceKm":2.3,"timing":{"display":"09:30 AM - 06:00 PM","openTime":"09:30","closeTime":"18:00","timezone":"Asia/Kolkata"},"locationLink":"https://www.google.com/maps/search/?api=1\u0026query=Pet+Focuz+Thrissur","phoneNumber":"+91-XXXXXXXXXX","phoneLink":"","storeLink":"service-store/pet-focuz-thrissur","enabled":true,"sortOrder":2,"services":[{"id":"spa-bath","name":"Spa Bath","description":"Complete drying and brushing FREE vet consultation with each bath.","price":1099,"priceDisplay":"â‚¹1099","discount":{"enabled":true,"type":"flat","value":100,"label":"â‚¹100 Discount Available"},"serviceImage":"https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/service-marketplace/services/spa-bath.jpg","serviceImageAlt":"Dog receiving a spa bath","serviceLink":"appointment?store_id=pet-focuz-thrissur\u0026service_id=spa-bath","enabled":true,"sortOrder":1},{"id":"spa-bath-hair-cut","name":"Spa Bath \u0026 Hair Cut","description":"Bath with vet-approved products for your pets and a full-body haircut.","price":1099,"priceDisplay":"â‚¹1099","discount":{"enabled":true,"type":"flat","value":100,"label":"â‚¹100 Discount Available"},"serviceImage":"https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/service-marketplace/services/spa-bath-hair-cut.jpg","serviceImageAlt":"Dog receiving a haircut","serviceLink":"appointment?store_id=pet-focuz-thrissur\u0026service_id=spa-bath-hair-cut","enabled":true,"sortOrder":2}]}]},
-    "petStore":  {
-                     "assetBasePath":  "/pet-store/",
-                     "header":  {
-                                    "locationLabel":  "Deliver at",
-                                    "locationValue":  "Home",
-                                    "locationLink":  "",
-                                    "cartLink":  "order/cart",
-                                    "profileLink":  "profile",
-                                    "searchPlaceholder":  "Search for “Skin Medicine”",
-                                    "backgroundImage":  "",
-                                    "logo":  "",
-                                    "logoAlt":  "Pet store logo"
-                                },
-                     "title":  "Pet Store",
-                     "subtitle":  "Fast Delivery from Your Nearby Pet Store",
-                     "searchPlaceholder":  "Search for “Skin Medicine”",
-                     "brandsTitle":  "Brands",
-                     "shopsTitle":  "Shops",
-                     "seeAllLabel":  "See all »",
-                     "viewStoreLabel":  "View Store",
-                     "verifiedLabel":  "Verified store",
-                     "defaultShopType":  "Pet Store",
-                     "defaultLocation":  "Thrissur",
-                     "categories":  [
-                                        {
-                                            "name":  "Pharmacy",
-                                            "image":  "shop-pharmacy.jpg",
-                                            "query":  "medicine",
-                                            "imageAlt":  "Pharmacy category",
-                                            "link":  ""
-                                        },
-                                        {
-                                            "name":  "Accessories",
-                                            "image":  "shop-accessories.jpg",
-                                            "query":  "accessories",
-                                            "imageAlt":  "Accessories category",
-                                            "link":  ""
-                                        },
-                                        {
-                                            "name":  "Foods",
-                                            "image":  "shop-foods.jpg",
-                                            "query":  "pet food",
-                                            "imageAlt":  "Foods category",
-                                            "link":  ""
-                                        }
-                                    ],
-                     "brands":  [
-                                    {
-                                        "name":  "Pedigree",
-                                        "image":  "brand-pedigree.png",
-                                        "query":  "Pedigree",
-                                        "imageAlt":  "Pedigree brand logo",
-                                        "link":  ""
-                                    },
-                                    {
-                                        "name":  "Royal Canin",
-                                        "image":  "brand-royal-canin.png",
-                                        "query":  "Royal Canin",
-                                        "imageAlt":  "Royal Canin brand logo",
-                                        "link":  ""
-                                    },
-                                    {
-                                        "name":  "Farmina",
-                                        "image":  "brand-farmina.png",
-                                        "query":  "Farmina",
-                                        "imageAlt":  "Farmina brand logo",
-                                        "link":  ""
-                                    },
-                                    {
-                                        "name":  "Drools",
-                                        "image":  "brand-drools.png",
-                                        "query":  "Drools",
-                                        "imageAlt":  "Drools brand logo",
-                                        "link":  ""
-                                    }
-                                ],
-                     "shops":  [
-                                   {
-                                       "name":  "Cadas Pet Hub",
-                                       "image":  "shop-cadas.png",
-                                       "type":  "Pet Store",
-                                       "rating":  4.8,
-                                       "reviews":  175,
-                                       "location":  "Thrissur",
-                                       "verified":  true,
-                                       "imageAlt":  "Cadas Pet Hub logo",
-                                       "ctaLabel":  "View Store",
-                                       "link":  "",
-                                       "query":  ""
-                                   },
-                                   {
-                                       "name":  "SN PET WORLD",
-                                       "image":  "shop-sn.png",
-                                       "type":  "Pet Store",
-                                       "rating":  4.8,
-                                       "reviews":  175,
-                                       "location":  "Thrissur",
-                                       "verified":  true,
-                                       "imageAlt":  "SN PET WORLD logo",
-                                       "ctaLabel":  "View Store",
-                                       "link":  "",
-                                       "query":  ""
-                                   }
-                               ],
-                     "promotion":  {
-                                       "title":  "Christmas offer 25% OFF",
-                                       "description":  "On all pet food recipes today",
-                                       "buttonLabel":  "Buy Now",
-                                       "image":  "promo-dog.jpg",
-                                       "imageAlt":  "Dog beside the Christmas pet food offer",
-                                       "query":  "pet food",
-                                       "link":  ""
-                                   },
-                     "navigation":  [
-                                        {
-                                            "key":  "home",
-                                            "label":  "Home",
-                                            "icon":  "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/Home.svg",
-                                            "link":  ""
-                                        },
-                                        {
-                                            "key":  "bookings",
-                                            "label":  "Bookings",
-                                            "icon":  "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/Bookings.svg",
-                                            "link":  "dashboard"
-                                        },
-                                        {
-                                            "key":  "shop",
-                                            "label":  "Shop",
-                                            "icon":  "shop-nav.svg",
-                                            "link":  "pet-store"
-                                        },
-                                        {
-                                            "key":  "about",
-                                            "label":  "About Us",
-                                            "icon":  "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/About+us.svg",
-                                            "link":  "about"
-                                        },
-                                        {
-                                            "key":  "support",
-                                            "label":  "Support",
-                                            "icon":  "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/Support.svg",
-                                            "link":  "support"
-                                        }
-                                    ],
-                     "categoriesSeeAllLabel":  "See all »",
-                     "categoriesSeeAllLink":  "",
-                     "brandsSeeAllLabel":  "See all »",
-                     "brandsSeeAllLink":  "",
-                     "shopsSeeAllLabel":  "See all »",
-                     "shopsSeeAllLink":  ""
+    "petStorePage":  {
+                     "schemaVersion": 1,
+                     "enabled": true,
+                     "route": "pet-store",
+                     "assetBasePath":  "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/pet-store/",
+                     "layout": {
+                       "hideParentHeader": true,
+                       "useParentFooterNavigation": true,
+                       "renderOwnHeader": true,
+                       "mobileFirst": true,
+                       "referenceViewportWidth": 654,
+                       "contentMaxWidth": 654,
+                       "pageBackground": "#FFFFFF",
+                       "shopsSectionBackground": "#F7F7F7"
+                     },
+                     "footerNavigationItem": {
+                       "key": "shop",
+                       "label": "Shop",
+                       "icon": "",
+                       "link": "pet-store",
+                       "enabled": true,
+                       "sortOrder": 3
+                     },
+                     "hero": {
+                       "backgroundImage": "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/pet-store/pet-store-header-background.png",
+                       "backgroundImageAlt": "Orange and peach pet store header background",
+                       "backgroundFit": "cover",
+                       "backgroundPosition": "top center",
+                       "logo": {
+                         "image": "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/pet-store/chotaboss-logo-white.png",
+                         "imageAlt": "Chotaboss",
+                         "link": "",
+                         "enabled": true
+                       },
+                       "deliveryLocation": {
+                         "eyebrow": "Deliver at",
+                         "value": "Home",
+                         "locationIcon": "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/pet-store/icons/location-white.svg",
+                         "dropdownIcon": "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/pet-store/icons/chevron-down-white.svg",
+                         "link": "pet-store/location",
+                         "enabled": true
+                       },
+                       "actions": [
+                         {
+                           "key": "cart", "label": "Cart",
+                           "icon": "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/pet-store/icons/cart-white.svg",
+                           "link": "order/cart", "enabled": true, "sortOrder": 1
+                         },
+                         {
+                           "key": "profile", "label": "Profile",
+                           "icon": "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/pet-store/icons/profile-white.svg",
+                           "link": "profile", "enabled": true, "sortOrder": 2
+                         }
+                       ],
+                       "search": {
+                         "enabled": true,
+                         "placeholder": "Search for “Skin Medicine”",
+                         "icon": "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/pet-store/icons/search.svg",
+                         "ariaLabel": "Search pet store products",
+                         "submitOnEnter": true,
+                         "searchRoute": "pet-store/search",
+                         "queryParameter": "q"
+                       },
+                       "intro": {
+                         "title": "Pet Store",
+                         "subtitle": "Fast Delivery from Your Nearby Pet Store",
+                         "subtitleIcon": "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/pet-store/icons/paw-delivery.svg"
+                       }
+                     },
+                     "categories": {
+                       "enabled": true,
+                       "seeAll": { "label": "See all »", "link": "pet-store/categories" },
+                       "items": [
+                         {
+                           "id": "pharmacy", "name": "Pharmacy",
+                           "cardImage": "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/pet-store/categories/pharmacy-card.png",
+                           "imageAlt": "Pharmacy pet products",
+                           "link": "pet-store/products?category=pharmacy", "enabled": true, "sortOrder": 1
+                         },
+                         {
+                           "id": "accessories", "name": "Accessories",
+                           "cardImage": "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/pet-store/categories/accessories-card.png",
+                           "imageAlt": "Pet accessories",
+                           "link": "pet-store/products?category=accessories", "enabled": true, "sortOrder": 2
+                         },
+                         {
+                           "id": "foods", "name": "Foods",
+                           "cardImage": "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/pet-store/categories/foods-card.png",
+                           "imageAlt": "Pet food products",
+                           "link": "pet-store/products?category=foods", "enabled": true, "sortOrder": 3
+                         }
+                       ]
+                     },
+                     "brands": {
+                       "enabled": true,
+                       "title": "Brands",
+                       "seeAll": { "label": "See all »", "link": "pet-store/brands" },
+                       "items": [
+                         {
+                           "id": "pedigree", "name": "Pedigree",
+                           "logo": "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/pet-store/brands/pedigree.png",
+                           "imageAlt": "Pedigree logo",
+                           "link": "pet-store/products?brand=pedigree", "enabled": true, "sortOrder": 1
+                         },
+                         {
+                           "id": "royal-canin", "name": "Royal Canin",
+                           "logo": "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/pet-store/brands/royal-canin.png",
+                           "imageAlt": "Royal Canin logo",
+                           "link": "pet-store/products?brand=royal-canin", "enabled": true, "sortOrder": 2
+                         },
+                         {
+                           "id": "farmina", "name": "Farmina",
+                           "logo": "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/pet-store/brands/farmina.png",
+                           "imageAlt": "Farmina Pet Foods logo",
+                           "link": "pet-store/products?brand=farmina", "enabled": true, "sortOrder": 3
+                         },
+                         {
+                           "id": "drools", "name": "Drools",
+                           "logo": "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/pet-store/brands/drools.png",
+                           "imageAlt": "Drools logo",
+                           "link": "pet-store/products?brand=drools", "enabled": true, "sortOrder": 4
+                         }
+                       ]
+                     },
+                     "shops": {
+                       "enabled": true,
+                       "title": "Shops",
+                       "seeAll": { "label": "See all »", "link": "pet-store/shops" },
+                       "cardMode": "full-image",
+                       "items": [
+                         {
+                           "id": "cadas-pet-hub", "name": "Cadas Pet Hub",
+                           "cardImage": "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/pet-store/shops/cadas-pet-hub-card.png",
+                           "imageAlt": "Cadas Pet Hub store card",
+                           "link": "pet-store/shop/cadas-pet-hub", "enabled": true, "sortOrder": 1
+                         },
+                         {
+                           "id": "sn-pet-world", "name": "SN PET WORLD",
+                           "cardImage": "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/pet-store/shops/sn-pet-world-card.png",
+                           "imageAlt": "SN PET WORLD store card",
+                           "link": "pet-store/shop/sn-pet-world", "enabled": true, "sortOrder": 2
+                         }
+                       ]
+                     },
+                     "offers": {
+                       "enabled": true,
+                       "displayMode": "carousel",
+                       "showIndicators": true,
+                       "showArrows": false,
+                       "autoPlay": true,
+                       "autoPlayIntervalMs": 5000,
+                       "pauseOnInteraction": true,
+                       "loop": true,
+                       "items": [
+                         {
+                           "id": "christmas-offer", "name": "Christmas offer 25% OFF",
+                           "image": "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/pet-store/offers/christmas-offer.png",
+                           "imageAlt": "Christmas pet food offer with a dog",
+                           "link": "pet-store/products?offer=christmas", "enabled": true, "sortOrder": 1
+                         }
+                       ]
+                     },
+                     "emptyStates": {
+                       "categories": {
+                         "title": "No categories available",
+                         "description": "Pet store categories will be available soon."
+                       },
+                       "brands": {
+                         "title": "No brands available",
+                         "description": "Pet brands will be available soon."
+                       },
+                       "shops": {
+                         "title": "No shops available",
+                         "description": "Nearby pet stores will be available soon."
+                       },
+                       "offers": {
+                         "title": "No offers available",
+                         "description": "New pet store offers will appear here."
+                       }
+                     }
                  }
 }

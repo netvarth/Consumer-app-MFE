@@ -111,6 +111,52 @@
   z-index: 1000;     /* keep it above other elements */
   height: 60px;
 }
+
+.parent-footer-nav {
+  position: fixed;
+  z-index: 1001;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  min-height: 72px;
+  padding: 8px max(8px, env(safe-area-inset-right)) max(7px, env(safe-area-inset-bottom))
+    max(8px, env(safe-area-inset-left));
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  border-top: 1px solid #ededed;
+  background: #fff;
+  box-shadow: 0 -3px 14px #0f172a0a;
+}
+
+.parent-footer-nav button {
+  max-width: 132px;
+  min-width: 0;
+  flex: 1 1 0;
+  border: 0;
+  padding: 3px 2px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: #9ca3af;
+  background: transparent;
+  font-size: clamp(9px, 2.5vw, 12px);
+  cursor: pointer;
+}
+
+.parent-footer-nav img,
+.parent-footer-nav i {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  font-size: 22px;
+}
+
+.parent-footer-nav button.active-nav { color: #f4510b; }
+.parent-footer-nav button.active-nav img { filter: sepia(1) saturate(8) hue-rotate(340deg); }
+.parent-footer-nav button:focus-visible { outline: 3px solid #185adb; outline-offset: -2px; }
 /* welcome popup overlay */
 .welcome-overlay {
   position: fixed;

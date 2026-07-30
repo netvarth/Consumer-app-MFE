@@ -43,6 +43,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   private subscriptions: Subscription = new Subscription();
   header: boolean = true;
   isImmersiveRoute = false;
+  footerItems: any[] = [];
   constructor(
     private orderService: OrderService,
     private sharedService: SharedService,
@@ -210,6 +211,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
 
     const alreadyLoggedIn = this.checkLogin && this.checkLogin();
     this.templateJson = this.sharedService.getTemplateJSON();
+    this.footerItems = this.buildFooterItems(this.templateJson);
     console.log("this.templateJson", this.templateJson)
     const welcomePopupState = this.lStorageService.getitemfromLocalStorage(this.welcomePopupStorageKey) || {};
     const hasSeenWelcomePopup = welcomePopupState && welcomePopupState[this.accountId];
@@ -238,7 +240,64 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
 
   private isFullWidthRoute(url: string): boolean {
     const path = url.split('?')[0];
+    const petStoreRoute = this.templateJson?.petStorePage?.route || 'pet-store';
+    const hidePetStoreHeader = this.templateJson?.petStorePage?.layout?.hideParentHeader !== false;
+    if (hidePetStoreHeader && path.includes(`/${petStoreRoute}`)) return true;
     return path.endsWith('/pet-store') || path.endsWith('/service-stores') || /\/service-store\/[^/]+$/.test(path);
+  }
+
+  get showParentFooter(): boolean {
+    if (this.hideFooter || !this.footerItems.length) return false;
+    const petStoreRoute = this.templateJson?.petStorePage?.route || 'pet-store';
+    if (this.router.url.split('?')[0].includes(`/${petStoreRoute}`)) {
+      return this.templateJson?.petStorePage?.layout?.useParentFooterNavigation !== false;
+    }
+    return true;
+  }
+
+  navigateFooter(item: any): void {
+    const routeId = this.sharedService.getRouteID();
+    const link = item.__route || item.link || (item.key === 'home' ? '' : item.key);
+    if (!link) {
+      void this.router.navigate([routeId]);
+      return;
+    }
+    if (link.startsWith('http://') || link.startsWith('https://')) {
+      window.open(link, '_blank', 'noopener,noreferrer');
+      return;
+    }
+    let normalized = link;
+    while (normalized.startsWith('/')) normalized = normalized.slice(1);
+    if (normalized.startsWith('capp/')) normalized = normalized.slice(5);
+    const segments = normalized === routeId || normalized.startsWith(`${routeId}/`)
+      ? normalized.split('/')
+      : [routeId, ...normalized.split('/')];
+    void this.router.navigate(segments);
+  }
+
+  isFooterItemActive(item: any): boolean {
+    const path = this.router.url.split('?')[0];
+    const routeId = this.sharedService.getRouteID();
+    if (item.key === 'shop') return path.includes('/pet-store');
+    if (item.key === 'home') return path === `/${routeId}` || path === `/${routeId}/`;
+    let route = (item.__route || item.link || item.key || '').split('?')[0];
+    while (route.startsWith('/')) route = route.slice(1);
+    return !!route && (path.endsWith(`/${route}`) ||
+      (item.key === 'bookings' && (path.endsWith('/bookings') || path.endsWith('/dashboard'))));
+  }
+
+  private buildFooterItems(template: any): any[] {
+    if (!template) return [];
+    const configuredShop = template.petStorePage?.footerNavigationItem;
+    const shop = template.petStorePage?.enabled === false ? null : {
+      key: 'shop',
+      title: configuredShop?.label || template.petStorePage?.hero?.intro?.title,
+      icon: configuredShop?.icon || '',
+      fallbackIcon: 'fa-shopping-bag',
+      __route: template.petStorePage?.route || 'pet-store'
+    };
+    return [template.section1, template.section3, shop, template.section2, template.section4, template.section5]
+      .filter((item, index, items) => item && items.findIndex(candidate => candidate?.key === item.key) === index);
   }
 
   private ensureTrailingSlash(path: string): string {

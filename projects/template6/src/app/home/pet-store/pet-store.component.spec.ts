@@ -1,67 +1,89 @@
 import { PetStoreComponent } from './pet-store.component';
-import { StoreHeaderComponent } from './store-header.component';
 
 describe('PetStoreComponent', () => {
-  function createComponent(template: any): PetStoreComponent {
+  function createComponent(petStorePage: any): { component: PetStoreComponent; router: any } {
     const sharedService = {
-      getTemplateJSON: () => template,
+      getTemplateJSON: () => ({ petStorePage }),
       getRouteID: () => 'chotaboss'
     };
-    const accountService = { getStores: () => [] };
-    const localStorageService = { setitemonLocalStorage: jasmine.createSpy('setitemonLocalStorage') };
     const router = {
-      navigate: jasmine.createSpy('navigate').and.returnValue(Promise.resolve(true)),
-      navigateByUrl: jasmine.createSpy('navigateByUrl').and.returnValue(Promise.resolve(true))
+      navigate: jasmine.createSpy('navigate').and.returnValue(Promise.resolve(true))
     };
-    return new PetStoreComponent(sharedService as any, accountService as any, localStorageService as any, router as any);
+    const component = new PetStoreComponent(sharedService as any, router as any, document);
+    return { component, router };
   }
 
-  it('renders page content from the petStore JSON configuration', () => {
-    const component = createComponent({
-      logo: '/logo.png',
-      petStore: {
-        assetBasePath: '/pet-store/',
-        title: 'Configured Store',
-        subtitle: 'Configured subtitle',
-        categories: [{ name: 'Treats', image: 'treats.png' }],
-        brands: [{ name: 'Acme', image: 'acme.png' }],
-        shops: [{ name: 'Pet Hub', image: 'hub.png' }],
-        promotion: { title: 'Offer', image: 'offer.png' },
-        navigation: []
+  it('sorts enabled actions and content by sortOrder', () => {
+    const { component } = createComponent({
+      enabled: true,
+      hero: {
+        actions: [
+          { key: 'profile', label: 'Profile', icon: 'profile.svg', enabled: true, sortOrder: 2 },
+          { key: 'disabled', label: 'Disabled', icon: 'disabled.svg', enabled: false, sortOrder: 0 },
+          { key: 'cart', label: 'Cart', icon: 'cart.svg', enabled: true, sortOrder: 1 }
+        ]
+      },
+      categories: {
+        items: [
+          { id: 'food', name: 'Food', enabled: true, sortOrder: 2 },
+          { id: 'hidden', name: 'Hidden', enabled: false, sortOrder: 0 },
+          { id: 'pharmacy', name: 'Pharmacy', enabled: true, sortOrder: 1 }
+        ]
       }
     });
 
     component.ngOnInit();
 
-    expect(component.title).toBe('Configured Store');
-    expect(component.subtitle).toBe('Configured subtitle');
-    expect(component.categories[0].name).toBe('Treats');
-    expect(component.categories[0].image).toBe('/pet-store/treats.png');
-    expect(component.brands[0].name).toBe('Acme');
-    expect(component.shops[0].name).toBe('Pet Hub');
-    expect(component.promotion.title).toBe('Offer');
-    expect(component.headerConfig.logo).toBe('/logo.png');
+    expect(component.actions.map(item => item.key)).toEqual(['cart', 'profile']);
+    expect(component.categories.map(item => item.id)).toEqual(['pharmacy', 'food']);
+    component.ngOnDestroy();
   });
 
-  it('uses safe fallback content when optional arrays are missing', () => {
-    const component = createComponent({ petStore: { assetBasePath: '/pet-store/' } });
+  it('does not navigate for a blank search', () => {
+    const { component, router } = createComponent({
+      hero: { search: { searchRoute: 'pet-store/search', queryParameter: 'q' } }
+    });
+    component.ngOnInit();
+    component.searchQuery = '   ';
+
+    component.submitSearch();
+
+    expect(router.navigate).not.toHaveBeenCalled();
+    component.ngOnDestroy();
+  });
+
+  it('navigates search using the configured route and query parameter', () => {
+    const { component, router } = createComponent({
+      hero: { search: { searchRoute: 'pet-store/search', queryParameter: 'term' } }
+    });
+    component.ngOnInit();
+    component.searchQuery = ' skin & coat ';
+
+    component.submitSearch();
+
+    expect(router.navigate).toHaveBeenCalledWith(
+      ['chotaboss', 'pet-store', 'search'],
+      { queryParams: { term: 'skin & coat' } }
+    );
+    component.ngOnDestroy();
+  });
+
+  it('handles missing optional arrays without fallback content or crashes', () => {
+    const { component } = createComponent({ enabled: true });
 
     expect(() => component.ngOnInit()).not.toThrow();
-    expect(component.categories.length).toBe(3);
-    expect(component.brands.length).toBe(4);
-    expect(component.shops.length).toBe(2);
+    expect(component.categories).toEqual([]);
+    expect(component.brands).toEqual([]);
+    expect(component.shops).toEqual([]);
+    expect(component.offers).toEqual([]);
+    component.ngOnDestroy();
   });
-});
 
-describe('StoreHeaderComponent', () => {
-  it('emits search text as it changes', () => {
-    const component = new StoreHeaderComponent();
-    const emitted: string[] = [];
-    component.searchQueryChange.subscribe(value => emitted.push(value));
+  it('redirects when the configured page is disabled', () => {
+    const { component, router } = createComponent({ enabled: false });
 
-    component.updateSearch('skin medicine');
+    component.ngOnInit();
 
-    expect(component.searchQuery).toBe('skin medicine');
-    expect(emitted).toEqual(['skin medicine']);
+    expect(router.navigate).toHaveBeenCalledWith(['chotaboss']);
   });
 });

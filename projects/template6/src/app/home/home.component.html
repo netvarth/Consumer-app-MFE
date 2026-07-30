@@ -21,6 +21,14 @@
                 </div>
             </div>
         </div>
+      <nav class='parent-footer-nav' *ngIf='showParentFooter' aria-label='Primary navigation'>
+        <button type='button' *ngFor='let item of footerItems' [class.active-nav]='isFooterItemActive(item)'
+          (click)='navigateFooter(item)'>
+          <img *ngIf='item.icon' [src]='item.icon' [alt]='item.title || item.label' loading='lazy'>
+          <i *ngIf='!item.icon' class='fa' [ngClass]='item.fallbackIcon'></i>
+          <span>{{ item.title || item.label }}</span>
+        </button>
+      </nav>
     </div>
 
     <div class="bus-page-header login-container-outer" *ngIf="loginRequired">

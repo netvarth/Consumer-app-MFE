@@ -1,252 +1,183 @@
-import { Component, OnInit } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { Component, HostListener, Inject, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AccountService, LocalStorageService, SharedService } from 'jconsumer-shared';
-import { StoreHeaderConfig } from './store-header.component';
-
-interface PetStoreCard {
-  title?: string;
-  name?: string;
-  image?: string;
-  imageUrl?: string;
-  link?: string;
-  query?: string;
-  encId?: string;
-  type?: string;
-  rating?: number;
-  reviews?: number;
-  location?: string;
-  verified?: boolean;
-  imageAlt?: string;
-  ctaLabel?: string;
-}
-
-interface PetStoreNavItem {
-  key: string;
-  label: string;
-  icon: string;
-  link?: string;
-}
+import { SharedService } from 'jconsumer-shared';
+import { PetStoreAction, PetStoreImageItem, PetStorePageConfig, PetStoreSection } from './pet-store.models';
 
 @Component({
   selector: 'app-pet-store',
   templateUrl: './pet-store.component.html',
   styleUrls: ['./pet-store.component.scss']
 })
-export class PetStoreComponent implements OnInit {
-  title = 'Pet Store';
-  subtitle = 'Fast Delivery from Your Nearby Pet Store';
-  searchPlaceholder = 'Search for “Skin Medicine”';
+export class PetStoreComponent implements OnInit, OnDestroy {
+  config: PetStorePageConfig = {};
+  actions: PetStoreAction[] = [];
+  categories: PetStoreImageItem[] = [];
+  brands: PetStoreImageItem[] = [];
+  shops: PetStoreImageItem[] = [];
+  offers: PetStoreImageItem[] = [];
   searchQuery = '';
-  headerConfig: StoreHeaderConfig = {};
-  brandsTitle = 'Brands';
-  shopsTitle = 'Shops';
-  seeAllLabel = 'See all »';
-  categoriesSeeAllLabel = '';
-  categoriesSeeAllLink = '';
-  brandsSeeAllLabel = '';
-  brandsSeeAllLink = '';
-  shopsSeeAllLabel = '';
-  shopsSeeAllLink = '';
-  viewStoreLabel = 'View Store';
-  verifiedLabel = 'Verified store';
-  defaultShopType = 'Pet Store';
-  defaultLocation = 'Thrissur';
-  assetBasePath = '';
-  categories: PetStoreCard[] = [];
-  brands: PetStoreCard[] = [];
-  shops: PetStoreCard[] = [];
-  promotion: any = {};
-  navigation: PetStoreNavItem[] = [];
+  activeOfferIndex = 0;
+  failedImages = new Set<string>();
 
-  private readonly categoryFallbacks: PetStoreCard[] = [
-    { name: 'Pharmacy', image: 'shop-pharmacy.jpg', query: 'medicine' },
-    { name: 'Accessories', image: 'shop-accessories.jpg', query: 'accessories' },
-    { name: 'Foods', image: 'shop-foods.jpg', query: 'pet food' }
-  ];
-  private readonly brandFallbacks: PetStoreCard[] = [
-    { name: 'Pedigree', image: 'brand-pedigree.png', query: 'Pedigree' },
-    { name: 'Royal Canin', image: 'brand-royal-canin.png', query: 'Royal Canin' },
-    { name: 'Farmina', image: 'brand-farmina.png', query: 'Farmina' },
-    { name: 'Drools', image: 'brand-drools.png', query: 'Drools' }
-  ];
-  private readonly shopFallbacks: PetStoreCard[] = [
-    { name: 'Cadas Pet Hub', image: 'shop-cadas.png', type: 'Pet Store', rating: 4.8, reviews: 175, location: 'Thrissur', verified: true },
-    { name: 'SN PET WORLD', image: 'shop-sn.png', type: 'Pet Store', rating: 4.8, reviews: 175, location: 'Thrissur', verified: true }
-  ];
+  private autoplayTimer?: ReturnType<typeof setInterval>;
+  private pointerStartX?: number;
+  private interactionPaused = false;
+  private reducedMotionQuery?: MediaQueryList;
 
   constructor(
     private readonly sharedService: SharedService,
-    private readonly accountService: AccountService,
-    private readonly localStorageService: LocalStorageService,
-    private readonly router: Router
+    private readonly router: Router,
+    @Inject(DOCUMENT) private readonly document: Document
   ) {}
 
   ngOnInit(): void {
-    const template = this.sharedService.getTemplateJSON() || {};
-    const config = template.petStore || template.petStorePage || template.shopPage || {};
-    this.assetBasePath = this.ensureTrailingSlash(
-      config.assetBasePath || template.assetBasePath || new URL('./pet-store/', import.meta.url).href
-    );
-    this.title = config.title || this.title;
-    this.subtitle = config.subtitle || this.subtitle;
-    this.searchPlaceholder = config.searchPlaceholder || this.searchPlaceholder;
-    const header = config.header || {};
-    this.headerConfig = {
-      ...header,
-      logo: header.logo || template.logo || '',
-      logoAlt: header.logoAlt || `${this.title} logo`,
-      searchPlaceholder: header.searchPlaceholder || this.searchPlaceholder,
-      backgroundImage: this.resolveAsset(header.backgroundImage || header.backgroundImageUrl || '')
-    };
-    this.brandsTitle = config.brandsTitle || this.brandsTitle;
-    this.shopsTitle = config.shopsTitle || this.shopsTitle;
-    this.seeAllLabel = config.seeAllLabel || this.seeAllLabel;
-    this.categoriesSeeAllLabel = config.categoriesSeeAllLabel || this.seeAllLabel;
-    this.categoriesSeeAllLink = config.categoriesSeeAllLink || '';
-    this.brandsSeeAllLabel = config.brandsSeeAllLabel || this.seeAllLabel;
-    this.brandsSeeAllLink = config.brandsSeeAllLink || '';
-    this.shopsSeeAllLabel = config.shopsSeeAllLabel || this.seeAllLabel;
-    this.shopsSeeAllLink = config.shopsSeeAllLink || '';
-    this.viewStoreLabel = config.viewStoreLabel || this.viewStoreLabel;
-    this.verifiedLabel = config.verifiedLabel || this.verifiedLabel;
-    this.defaultShopType = config.defaultShopType || this.defaultShopType;
-    this.defaultLocation = config.defaultLocation || this.defaultLocation;
-    this.categories = this.normalizeCards(config.categories, this.categoryFallbacks);
-    this.brands = this.normalizeCards(config.brands, this.brandFallbacks);
-    this.shops = this.buildShops(config.shops);
-    this.promotion = {
-      title: 'Christmas offer 25% OFF',
-      description: 'On all pet food recipes today',
-      buttonLabel: 'Buy Now',
-      image: this.resolveAsset('promo-dog.jpg'),
-      query: 'pet food',
-      ...(config.promotion || {})
-    };
-    this.promotion.image = this.resolveAsset(this.promotion.image || this.promotion.imageUrl);
-    this.navigation = this.buildNavigation(config.navigation || config.bottomNavigation, template, config.navigationItem);
+    const template = this.sharedService.getTemplateJSON?.() || {};
+    this.config = template.petStorePage || {};
+    if (this.config.enabled === false) {
+      void this.router.navigate([this.sharedService.getRouteID()]);
+      return;
+    }
+
+    this.actions = this.enabledSorted(this.config.hero?.actions);
+    this.categories = this.enabledSorted(this.config.categories?.items);
+    this.brands = this.enabledSorted(this.config.brands?.items);
+    this.shops = this.enabledSorted(this.config.shops?.items);
+    this.offers = this.enabledSorted(this.config.offers?.items);
+    this.reducedMotionQuery = typeof window !== 'undefined'
+      ? window.matchMedia('(prefers-reduced-motion: reduce)')
+      : undefined;
+    this.reducedMotionQuery?.addEventListener?.('change', this.onMotionPreferenceChange);
+    this.document.addEventListener('visibilitychange', this.onVisibilityChange);
+    this.syncAutoplay();
   }
 
-  asset(path: string): string { return this.resolveAsset(path); }
+  ngOnDestroy(): void {
+    this.stopAutoplay();
+    this.reducedMotionQuery?.removeEventListener?.('change', this.onMotionPreferenceChange);
+    this.document.removeEventListener('visibilitychange', this.onVisibilityChange);
+  }
+
+  get pageStyles(): Record<string, string> {
+    const layout = this.config.layout;
+    return {
+      '--pet-store-max-width': `${layout?.contentMaxWidth || 654}px`,
+      '--pet-store-background': layout?.pageBackground || '#fff',
+      '--pet-store-shops-background': layout?.shopsSectionBackground || '#f7f7f7'
+    };
+  }
+
+  get heroStyles(): Record<string, string> {
+    const hero = this.config.hero;
+    return {
+      'background-image': hero?.backgroundImage ? `url(${hero.backgroundImage})` : 'none',
+      'background-size': hero?.backgroundFit || 'cover',
+      'background-position': hero?.backgroundPosition || 'top center'
+    };
+  }
 
   submitSearch(): void {
-    this.openItems(this.searchQuery.trim());
+    const search = this.config.hero?.search;
+    const query = this.searchQuery.trim();
+    if (!query || !search?.searchRoute) return;
+    void this.navigate(search.searchRoute, { [search.queryParameter || 'q']: query });
   }
 
-  openHeaderAction(link: string): void {
-    if (link) {
-      this.openLink(link);
+  onSearchKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Enter' && this.config.hero?.search?.submitOnEnter !== false) {
+      event.preventDefault();
+      this.submitSearch();
     }
   }
 
-  openSection(link: string): void {
-    if (link) {
-      this.openLink(link);
-      return;
+  open(link?: string): void {
+    if (link) void this.navigate(link);
+  }
+
+  imageFailed(item: PetStoreImageItem | PetStoreAction | string): void {
+    const key = typeof item === 'string' ? item : ('id' in item ? item.id : item.key);
+    this.failedImages.add(key);
+    console.warn(`[PetStore] Image failed to load: ${key}`);
+  }
+
+  isImageFailed(item: PetStoreImageItem | PetStoreAction | string): boolean {
+    const key = typeof item === 'string' ? item : ('id' in item ? item.id : item.key);
+    return this.failedImages.has(key);
+  }
+
+  selectOffer(index: number, interacted = true): void {
+    if (!this.offers.length) return;
+    const loop = this.config.offers?.loop !== false;
+    if (loop) {
+      this.activeOfferIndex = (index + this.offers.length) % this.offers.length;
+    } else {
+      this.activeOfferIndex = Math.max(0, Math.min(index, this.offers.length - 1));
     }
-    this.openItems('');
-  }
-  openCard(card: PetStoreCard): void {
-    if (card.link) {
-      this.openLink(card.link);
-      return;
+    if (interacted && this.config.offers?.pauseOnInteraction) {
+      this.interactionPaused = true;
+      this.stopAutoplay();
     }
-    this.openItems(card.query || card.name || card.title || '');
   }
 
-  openShop(shop: PetStoreCard): void {
-    if (shop.encId) {
-      this.accountService.setActiveStore(shop.encId);
-      this.localStorageService.setitemonLocalStorage('storeEncId', shop.encId);
-    }
-    if (shop.link) {
-      this.openLink(shop.link);
-      return;
-    }
-    this.openItems(shop.query || '');
+  onPointerDown(event: PointerEvent): void {
+    this.pointerStartX = event.clientX;
   }
 
-  openPromotion(): void {
-    if (this.promotion.link) {
-      this.openLink(this.promotion.link);
-      return;
-    }
-    this.openItems(this.promotion.query || 'pet food');
+  onPointerUp(event: PointerEvent): void {
+    if (this.pointerStartX === undefined) return;
+    const delta = event.clientX - this.pointerStartX;
+    this.pointerStartX = undefined;
+    if (Math.abs(delta) > 35) this.selectOffer(this.activeOfferIndex + (delta < 0 ? 1 : -1));
   }
 
-  navigate(item: PetStoreNavItem): void {
-    if (item.link) {
-      this.openLink(item.link);
-      return;
-    }
-    const routeId = this.sharedService.getRouteID();
-    const routeMap: Record<string, string[]> = {
-      home: [routeId],
-      bookings: [routeId, 'bookings'],
-      shop: [routeId, 'pet-store'],
-      about: [routeId, 'about'],
-      support: [routeId, 'support']
-    };
-    void this.router.navigate(routeMap[item.key] || [routeId]);
+  trackById(index: number, item: PetStoreImageItem | PetStoreAction): string | number {
+    return ('id' in item ? item.id : item.key) || index;
   }
 
-  trackByIndex(index: number): number { return index; }
-
-  private buildShops(configuredShops: PetStoreCard[] | undefined): PetStoreCard[] {
-    if (Array.isArray(configuredShops) && configuredShops.length) {
-      return this.normalizeCards(configuredShops, []);
-    }
-    const stores = this.accountService.getStores?.() || [];
-    if (!stores.length) {
-      return this.normalizeCards(this.shopFallbacks, []);
-    }
-    return stores.slice(0, 6).map((store: any, index: number) => ({
-      name: store.name || store.storeName || this.shopFallbacks[index % 2].name,
-      image: this.resolveAsset(store.logo?.url || store.logo || this.shopFallbacks[index % 2].image),
-      type: store.type || 'Pet Store',
-      rating: Number(store.rating || 4.8),
-      reviews: Number(store.reviewCount || 175),
-      location: store.location?.place || store.place || 'Thrissur',
-      verified: store.verified !== false,
-      encId: store.encId
-    }));
+  emptyState(section: string): { title?: string; description?: string } {
+    return this.config.emptyStates?.[section] || {};
   }
 
-  private buildNavigation(configured: any, template: any, shopItem: any): PetStoreNavItem[] {
-    const sections = [template.section1, template.section3, shopItem, template.section2, template.section4].filter(Boolean);
-    const source = Array.isArray(configured) && configured.length ? configured : sections;
-    return source.map((item: any, index: number) => ({
-      key: item.key || (index === 2 ? 'shop' : `nav-${index}`),
-      label: item.label || item.title || 'Page',
-      icon: this.resolveAsset(item.icon || item.iconImage || item['icon-image'] || ''),
-      link: item.link
-    }));
+  sectionEnabled(section?: PetStoreSection): boolean {
+    return !!section && section.enabled !== false;
   }
 
-  private normalizeCards(cards: PetStoreCard[] | undefined, fallback: PetStoreCard[]): PetStoreCard[] {
-    const list = Array.isArray(cards) && cards.length ? cards : fallback;
-    return list.map((card) => ({ ...card, image: this.resolveAsset(card.image || card.imageUrl || '') }));
+  private enabledSorted<T extends { enabled?: boolean; sortOrder?: number }>(items?: T[]): T[] {
+    return Array.isArray(items)
+      ? items.filter(item => item?.enabled !== false).slice().sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
+      : [];
   }
 
-  private openItems(query: string): void {
-    const extras = query ? { queryParams: { query } } : undefined;
-    void this.router.navigate([this.sharedService.getRouteID(), 'items'], extras);
-  }
-
-  private openLink(link: string): void {
+  private navigate(link: string, queryParams?: Record<string, string>): Promise<boolean> {
     if (/^https?:\/\//i.test(link)) {
-      window.open(link, '_blank', 'noopener');
-      return;
+      window.open(link, '_blank', 'noopener,noreferrer');
+      return Promise.resolve(true);
     }
     const routeId = this.sharedService.getRouteID();
     const normalized = link.replace(/^\/+/, '').replace(/^capp\//, '');
-    const target = normalized.startsWith(`${routeId}/`) || normalized === routeId ? normalized : `${routeId}/${normalized}`;
-    void this.router.navigateByUrl(target);
+    const segments = normalized === routeId || normalized.startsWith(`${routeId}/`)
+      ? normalized.split('/')
+      : [routeId, ...normalized.split('/')];
+    return this.router.navigate(segments, queryParams ? { queryParams } : undefined);
   }
 
-  private resolveAsset(path: string): string {
-    if (!path || /^(https?:)?\/\//i.test(path) || path.startsWith('data:') || path.startsWith('blob:')) return path || '';
-    return `${this.assetBasePath}${path.replace(/^\.\//, '').replace(/^\//, '')}`;
+  private syncAutoplay(): void {
+    this.stopAutoplay();
+    const offers = this.config.offers;
+    if (!offers || offers.enabled === false || !offers.autoPlay || this.offers.length < 2 || this.interactionPaused ||
+      this.document.hidden || this.reducedMotionQuery?.matches) return;
+    const interval = Math.max(1000, offers.autoPlayIntervalMs || 5000);
+    this.autoplayTimer = setInterval(() => this.selectOffer(this.activeOfferIndex + 1, false), interval);
   }
 
-  private ensureTrailingSlash(path: string): string { return path && !path.endsWith('/') ? `${path}/` : path; }
+  private stopAutoplay(): void {
+    if (this.autoplayTimer) clearInterval(this.autoplayTimer);
+    this.autoplayTimer = undefined;
+  }
+
+  private readonly onVisibilityChange = (): void => this.syncAutoplay();
+  private readonly onMotionPreferenceChange = (): void => this.syncAutoplay();
+
+  @HostListener('window:focus')
+  onWindowFocus(): void { this.syncAutoplay(); }
 }
