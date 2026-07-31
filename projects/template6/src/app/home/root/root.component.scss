@@ -278,9 +278,15 @@
   .cal-day{ color:var(--_fg) !important; font-size:18px !important; font-weight:600 !important; line-height:1 !important; }
   .cal-dow{ color:var(--_fg) !important; font-size:9px !important; font-weight:600 !important; margin-top:4px !important; line-height:1 !important; }
 
-  .dark & .cal-top{ background: var(--primary, hsl(18 100% 50%)) !important; }
-  .dark & .cal-body{ background:#111827 !important; border-color:#374151 !important; }
-}
+    .dark & .cal-top {
+      background: var(--primary, hsl(18 100% 50%)) !important;
+    }
+  
+    .dark & .cal-body {
+      background: #111827 !important;
+      border-color: #374151 !important;
+    }
+    }
 
 /* ---------- Inline actions wrapper ---------- */
 .button-container{ display:flex; align-items:center; gap:12px; }
@@ -423,7 +429,7 @@
   border-radius:10px;
   padding:0;
   box-shadow:0 10px 25px rgba(15,23,42,.08);
-  border:1px solid var(--accent,#f3f4f6);
+  border:1px solid #ffffff;
   position:relative;
   overflow:hidden;
  /*  aspect-ratio:1/1; */
