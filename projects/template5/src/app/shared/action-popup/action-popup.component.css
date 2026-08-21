@@ -1,0 +1,114 @@
+.consumer-action .mat-grid-tile {
+    box-shadow: 10px 10px 15px 0 #cccccc9c;
+    text-align: center;
+}
+
+@media only screen and (max-width: 475px){
+    .consumer-action .action-big {
+        display: none !important;
+    }
+}
+@media (min-width: 476px) {
+    .consumer-action .action-small {
+        display: none !important;
+    }
+}
+
+.consumer-action .width-60 {
+    width: 60px;
+}
+.consumer-action .width-30 {
+    width: 30px;
+}
+.consumer-action .width-70 {
+    width: 70px;
+}
+.consumer-action .width-45 {
+    width: 45px;
+}
+.consumer-action .pad-30 {
+    padding:30px;
+}
+.consumer-action .mat-grid-tile img {
+    cursor:  pointer !important;
+}
+.consumer-action .mat-grid-tile .mat-grid-tile-header, .mat-grid-tile .mat-grid-tile-footer {
+    height:32px !important;
+    padding-left: 5px;
+}
+.consumer-action .footer-text {
+    width: 100%;
+    font-size: 0.7rem;
+    text-align: center;
+}
+
+.consumer-action textarea  {
+    margin-top: 30px;
+    width: 100%;
+    border-color: #0a19313d !important;
+    outline: 0;
+    background: #f9f9f9;
+    height: 153px !important;
+    border: 1px solid #808080a8 !important;
+    margin-bottom: 10px !important;
+}
+.textCard{
+    width: 100%;
+    background: #f9f9f9;
+    height: 153px !important;
+    margin-bottom: 8px;
+
+
+}
+.textCard span{
+   position:absolute;
+   top:50%;
+   left: 50%;
+   transform: translate(-50%,-50%);
+}
+.consumer-action .img-msg {
+    width: 100%;
+    overflow: auto;
+    padding: 30px;
+    background: #ffefc9;
+    height: 210px;
+}
+.consumer-action .snd-btn {
+    width: 100%;
+    background: #274a81;
+    border: none;
+    color: white;
+    border-radius: 4px;
+    padding: 10px;
+}
+.consumer-action .cancel-btn {
+    width: 100%;
+    border: none;
+    color: black;
+    background: #9e9e9e85;
+    border-radius: 4px;
+    padding: 10px;
+}
+.mat-grid-tile-footer {
+    margin: 0px !important;
+}
+.modal_close {
+        position: absolute;
+        background: none;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        color: #fff;
+        right: 0;
+        top: 50%;
+        margin-top: -30px;
+        z-index: 121;
+        width: 60px;
+        height: 60px;
+        display: flex;
+        justify-content: center;
+        align-items: center;   
+}
+.mat-dialog-title {
+    position: relative;
+}

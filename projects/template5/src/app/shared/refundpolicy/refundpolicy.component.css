@@ -1,0 +1,79 @@
+.refund_policy {
+  color: #3c8dbc !important;
+  font-size: 0.8rem !important;
+}
+.refundpol .modal-footer{
+  padding: 0.5rem !important;
+}
+.refundpol .btn {
+  line-height: 0.8  !important;
+}
+.refundpol .refund_size {
+  font-size: 0.9rem !important;
+  text-align: left !important;
+}
+
+body.modal-open {
+  overflow: hidden !important;
+}
+.modal-dialog {
+  margin-top: 100px ;
+}
+.modal-body {
+  max-height: 35vh;
+  padding: 2.75rem;
+  overflow: auto;
+}
+
+
+.modal-dialog .modal-content .modal-header {
+  padding: 15px 10px !important;
+}
+
+.modal-dialog .modal-content .modal-header::before,
+ .modal-dialog .modal-content .modal-header::after {
+  content: none !important;
+}
+
+.modal-dialog .modal-content .modal-header h4 {
+  font-weight: 700 !important;
+  text-decoration: underline !important;
+  text-underline-position: under !important;
+  text-transform: uppercase !important;
+}
+
+.modal-dialog .modal-content .modal-header button i {
+  color: #3c8dbc !important;
+}
+
+ .modal-dialog .modal-content .modal-body h6 {
+  font-weight: 700 !important;
+  text-decoration: underline !important;
+  text-underline-position: under !important;
+  text-transform: uppercase !important;
+}
+
+ .modal-dialog .modal-content .modal-body p {
+  text-align: justify !important;
+}
+
+ .modal-dialog .modal-content .modal-footer button {
+  border: 0 !important;
+  border-radius: 30px !important;
+  height: 50px !important;
+  padding: 10px 30px !important;
+  background: transparent radial-gradient(closest-side at 6% 0%, #3c8dbc 0%, #3c8dbc 100%) 0% 0% no-repeat padding-box;
+  box-shadow: 15px 15px 40px #c3deee !important;
+  opacity: 1 !important;
+  color: white !important;
+  margin: 8px 10px !important;
+}
+@media only screen and (max-width: 500px){
+  .modal-dialog {
+    margin-top: 50px !important;
+    margin: 0px;
+  }
+  .modal-content {
+    height: 100vh;
+  }
+}

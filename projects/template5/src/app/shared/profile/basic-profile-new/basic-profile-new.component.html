@@ -1,0 +1,11 @@
+<div class="" *ngIf="profile">
+
+  <div class="cover no-padding" *ngIf="profile['cover']">
+  <img class="profile-img" [src]="profile['cover']" alt="">
+</div>
+  <div class="profile-heading" *ngIf="!profile['cover']">
+    <h1 class="profile-title" *ngIf="profile.businessName">{{profile.businessName}}</h1>
+    <p class="profile-subtitle" *ngIf="profile.tagline">{{profile.tagline}}</p>
+    <span class="profile-pill" *ngIf="profile.badge">{{profile.badge}}</span>
+  </div>
+</div>

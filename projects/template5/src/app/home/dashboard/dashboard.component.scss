@@ -1,0 +1,176 @@
+.p_consumer_dashboard_container {
+    margin: auto;
+    display: grid;
+    gap: 10px;
+    padding: 10px;
+    grid-template-columns: 50% 50%;
+    padding: 20px;
+}
+
+.p_consumer_dashboard_cont_second_row {
+    margin: auto;
+    display: grid;
+    gap: 30px;
+    padding: 10px;
+    grid-template-columns: 50% 50%;
+    padding: 20px;
+}
+
+.dashboard_card {
+    background: #FFFFFF;
+    border: 1.09757px solid #D8D8D8;
+    border-radius: 8.78058px;
+    padding: 0 20px;
+    cursor: pointer;
+}
+
+.dashboard_card img {
+    height: 50px;
+    width: 50px;
+    object-fit: cover;
+}
+
+.dashboard_card .title {
+    color: #5f6368;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.p_consumer_dashboard_qa .title {
+    color: #0d2348 !important;
+    font-weight: 600;
+    font-size: 17px;
+}
+
+.mailFlex {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    flex-wrap: wrap;
+    margin-top: 15px !important;
+}
+
+.flexCls {
+    display: flex;
+    align-items: center;
+    grid-area: 10px;
+    gap: 10px;
+    border: 1px solid #686C70;
+    padding: 10px;
+    width: 13rem !important;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.sctmSettings {
+    font-size: 25px;
+    color: #fff;
+    margin-top: 5px;
+    margin-left: -1px;
+}
+
+.icon-1 {
+    background: #5971EF;
+    color: #fff;
+    height: 35px;
+    width: 35px;
+    border-radius: 25px;
+    text-align: center;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+.p_consumer_dashboard_btn_cont {
+    display: flex;
+    justify-content: center;
+}
+
+.greetingTxt {
+    color: rgba(0, 0, 0, 0.87);
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.greetingImg {
+    width: 200px !important;
+    height: auto !important;
+}
+
+.userName {
+    color: rgba(0, 0, 0, 0.87);
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.btn_home {
+    background: #436B50;
+    border-radius: 3.64167px;
+    outline: none;
+    border: none;
+    padding: 10px;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 5px;
+}
+
+@media screen and (max-width:400px) {
+    .p_consumer_dashboard_cont_second_row {
+        padding: 0;
+        gap: 10px;
+    }
+    .dashboard_card {
+        padding: 0 10px;
+    }
+}
+
+@media screen and (max-width:991px) {
+    .p_consumer_dashboard_container {
+        gap: 25px;
+        grid-template-columns: 100%;
+    }
+}
+
+@media screen and (max-width:650px) {
+    .p_consumer_dashboard_container {
+        gap: 10px;
+        grid-template-columns: 100%;
+    }
+}
+
+.fa-cog {
+    font-size: 28px !important;
+}
+
+.customCard-2 {
+    padding: 20px;
+    box-shadow: 0 0 10px #0000000d !important;
+    border-radius: 5px;
+    background: #0d2348;
+    background-clip: padding-box;
+    border: none !important;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+.dateInfo {
+   color: #ffffff;
+   font-size: 15px;
+   font-weight: 500;
+ }
+
+ .serviceName {
+   color: #ffffff !important;
+   font-size: 14px;
+   font-weight: 500;
+ }
+
+  .iconCstm {
+   color: #ffffff;
+ }

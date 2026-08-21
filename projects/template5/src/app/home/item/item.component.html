@@ -1,0 +1,474 @@
+<div class="mx-2 pb-5" id="itemContainer" [ngClass]="theme">
+    <div class="confirm-box">
+        <div class="mt-5" *ngIf="loading || mediaLoading">
+            <app-skeleton-loading></app-skeleton-loading>
+        </div>
+        <div class="my-1 login-form_custom" *ngIf="!loading && !mediaLoading && !loggedIn && isLogin">
+            <div class="card card-custom no-margin hgt-adjust">
+                <div class="card-body p-0">
+                    <app-authentication (actionPerformed)="actionPerformed($event)"
+                        [accountId]="accountId"></app-authentication>
+                </div>
+            </div>
+        </div>
+        <div class="item-details-page kanista-item" *ngIf="!loading && !mediaLoading && !isLogin">
+            <div class="item-breadcrumb">
+                <span class="pointer-cursor" (click)="goHome()">Home</span>
+                <span>/</span>
+                <!-- <span class="pointer-cursor" (click)="goProducts()">{{ !virtualItem ? (item?.spItemDto?.itemCategory?.categoryName || 'Products') :
+                    (itemAttributes?.spItemDto?.itemCategory?.categoryName || 'Products') }}</span> -->
+                     <span class="pointer-cursor" (click)="goProducts()">Products</span>
+                <span>/</span>
+                <span class="is-current">{{ !virtualItem ? (item?.parentItemName  || item?.spItem?.name || '') :
+                    (itemAttributes?.parentItemName  || itemAttributes?.spItem?.name || '') }}</span>
+            </div>
+            <div class="item-container card">
+                <div class="item-media">
+                    <div class="item-selector item-width" *ngIf="thumbnailAttachments?.length > 0">
+                        <div class="item pointer-cursor" *ngFor="let attachment of thumbnailAttachments"
+                            [class.selected]="selectedItemImage?.s3path === attachment?.s3path"
+                            (click)="setSelectedItemImage(attachment)"
+                            (dblclick)="openItemMediaViewer(attachment)">
+                            <ng-container *ngIf="isVideoAttachment(attachment); else imageThumb">
+                                <div class="item-thumb-video-wrapper" aria-label="Video attachment">
+                                    <i class="fa fa-play item-thumb-video-icon" aria-hidden="true"></i>
+                                    <img class="item-thumb-video" [src]="getPreviewImageSrc(attachment)" alt="Video thumbnail"
+                                        (error)="handleThumbnailError($event, attachment)">
+                                </div>
+                            </ng-container>
+                            <ng-template #imageThumb>
+                                <img [src]="attachment.s3path" [alt]="attachment.s3path"
+                                    (error)="handleThumbnailError($event, attachment)">
+                            </ng-template>
+                        </div>
+                    </div>
+                    <div class="item-preview">
+                        <button type="button" class="share-btn" (click)="openShareSheet()" aria-label="Share item">
+                            <i class="fa fa-share-alt" aria-hidden="true"></i>
+                        </button>
+                        <div *ngIf="selectedItemImage"
+                             class="item-preview-inner"
+                             [class.is-video]="isVideoAttachment(selectedItemImage)"
+                             [class.video-ready]="isVideoReady"
+                             (click)="openItemMediaViewer(selectedItemImage)">
+                            <div class="item-media-layer item-media-image">
+                                <ng-container *ngIf="isVideoAttachment(selectedItemImage); else previewableImage">
+                                    <img [src]="getPreviewImageSrc(selectedItemImage)" alt="Video preview" width="100%"
+                                        (error)="handlePreviewImageError($event)">
+                                </ng-container>
+                                <ng-template #previewableImage>
+                                    <p-image [src]="getPreviewImageSrc(selectedItemImage)" alt="Image" [preview]="false" height="auto"
+                                        width="100%"></p-image>
+                                </ng-template>
+                            </div>
+                            <div class="item-media-layer item-media-video" *ngIf="isVideoAttachment(selectedItemImage)">
+                                <video class="item-video"
+                                       [src]="selectedItemImage.s3path"
+                                       [attr.poster]="getVideoPoster(selectedItemImage)"
+                                       autoplay
+                                       playsinline
+                                       webkit-playsinline
+                                       loop
+                                       preload="metadata"
+                                       [muted]="isVideoMuted"
+                                       [attr.muted]="isVideoMuted ? '' : null"
+                                       crossorigin="anonymous"
+                                       (loadedmetadata)="onVideoReady()"
+                                       (loadeddata)="onVideoReady()"
+                                       (canplay)="onVideoReady()"
+                                       (error)="onVideoError()"
+                                       (abort)="onVideoError()"
+                                       (waiting)="onVideoWaiting()"></video>
+                                <div class="item-video-controls" *ngIf="isVideoAttachment(selectedItemImage)">
+                                    <button type="button" class="item-video-mute" (click)="$event.stopPropagation(); toggleVideoMute()">
+                                        {{ isVideoMuted ? 'Unmute' : 'Mute' }}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="(item && item.spItemDto) || (virtualItem && itemAttributes && itemAttributes.spItemDto)"
+                    class="item-info">
+                    <div class="item-title-row">
+                        <div>
+                            <h1 class="item-name">{{ !virtualItem ? (item?.parentItemName || item?.spItemDto?.name) :
+                                (itemAttributes?.parentItemName || itemAttributes?.spItemDto?.name) }}</h1>
+                            <div class="item-subline">
+                                <!-- <span>{{ item?.spItemDto?.shortDesc }}</span> -->
+                                <!-- <span class="dot">•</span> -->
+                                <span *ngIf="getDisplayItemTypeName()">
+                                    {{ getDisplayItemTypeName() }}
+                                </span>
+                                <span class="dot" *ngIf="getDisplayItemTypeName()">•</span>
+                                <span>Product Code: {{ !virtualItem ? (item?.spItemDto?.itemCode || item?.spItemDto?.id)
+                                    : (itemAttributes?.spItemDto?.itemCode || itemAttributes?.spItemDto?.id) }}</span>
+
+                            </div>
+                           <div class="item-tags" *ngIf="getItemTags().length">
+                               <span class="item-tag-chip" *ngFor="let tag of getItemTags()">
+                                   <span class="tag-name">{{ getTagLabel(tag) }}</span>
+                               </span>
+                           </div>
+                        </div>
+                    </div>
+                    <div class="item-price-row" *ngIf="!hidePrices">
+                        <span class="price1">RS.{{ !virtualItem ? item?.price : itemAttributes?.price | number:'1.0-0'
+                            }}</span>
+                        <span class="item-mrp"
+                            *ngIf="((!virtualItem && item?.showMrp && item?.mrp) || (virtualItem && itemAttributes?.showMrp && itemAttributes?.mrp)) && ((!virtualItem ? item?.mrp : itemAttributes?.mrp) > (!virtualItem ? item?.price : itemAttributes?.price))">
+                            MRP RS.{{ !virtualItem ? item?.mrp : itemAttributes?.mrp | number:'1.0-0' }}
+                        </span>
+                        <span class="item-discount"
+                            *ngIf="((!virtualItem && item?.showMrp && item?.mrp) || (virtualItem && itemAttributes?.showMrp && itemAttributes?.mrp)) && ((((!virtualItem ? item?.mrp : itemAttributes?.mrp) - (!virtualItem ? item?.price : itemAttributes?.price)) / (!virtualItem ? item?.mrp : itemAttributes?.mrp)) * 100) > 0">
+                            ({{ (((!virtualItem ? item?.mrp : itemAttributes?.mrp) - (!virtualItem ? item?.price :
+                            itemAttributes?.price)) / (!virtualItem ? item?.mrp : itemAttributes?.mrp)) * 100 |
+                            number:'1.0-0' }}% OFF)
+                        </span>
+                    </div>
+                    <div class="tax-msg">inclusive of all taxes</div>
+
+                    <div class="item-size-panel" *ngIf="item?.itemAttributes?.length">
+                        <!-- <div class="item-size-title">Select Size</div> -->
+                        <div class="item-size-options" *ngFor="let attribute of item.itemAttributes">
+                            <div class="attribute-stl">{{ attribute.attribute }}</div>
+                            <div class="value-container">
+                                <button *ngFor="let value of attribute.values" class="user-button"  type="button"
+                                    [ngClass]="{ 'highlightcolor': selectedValues[attribute.attribute] === value }"
+                                    (mousedown)="preventAttributeButtonFocus($event)"
+                                    (click)="selectValue(attribute.attribute, value, $event)">
+                                    {{ value }}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="item-action-row">
+                        <button class="btn-outline" type="button" (click)="onWishlist($event)">
+                            <img class="actionImge"
+                                [src]="isWishlisted() ? (cdnPath + 'assets/images/wishlist.png') : (cdnPath + 'assets/images/like.png')" />
+                            {{ isWishlisted() ? 'Remove from Wishlist' : 'Add to Wishlist' }}
+                        </button>
+                        <button class="btn-outline btn-green" type="button" (click)="sendEnquiry()">
+                            <i class="fa fa-whatsapp"></i>
+                            Enquiry
+                        </button>
+                    </div>
+
+                    <div class="item-buy-row" *ngIf="!cartDisabled">
+                        <div class="qty_adjuster">
+                            <div class="qty-box" [ngClass]="{'is-disabled': quantity === 1}">
+                                <button type="button" class="qty-btn" (click)="decrementQuantity()"
+                                    [disabled]="quantity === 1">-</button>
+                                <input type="text" class="qty-input" [value]="quantity" readonly>
+                                <button type="button" class="qty-btn" (click)="incrementQuantity()">+</button>
+                            </div>
+                        </div>
+                        <button pButton pRipple type="button" id="btnBuy"
+                            class="btn-cart p-button-primary btn-primary" (click)="byNow()">
+                            Buy now
+                        </button>
+                        <button pButton pRipple type="button" id="btnAddToCart"
+                            class="btn-cart p-button-primary btn-primary" (click)='addToCart()'>
+                            
+                                <img class="actionImge" src="{{cdnPath}}assets/images/myjaldee/carticon.png" />
+                            &nbsp;Add to cart
+                            <!-- RS.{{ !hidePrices ? (item?.price || itemAttributes?.price) : '' }} -->
+                        </button>
+                    </div>
+
+                    <div class="item-delivery" *ngIf="showCheckDeliveryAvailability">
+                        <div class="item-delivery-title">Delivery Options <img class="actionImge" 
+                            src="{{cdnPath}}assets/images/myjaldee/deliveryicon.png" />
+                            &nbsp;</div>
+                        <p class="item-delivery-note">Please enter your pin code to check delivery availability.</p>
+                        <div class="item-delivery-form">
+                            <input type="text" placeholder="Enter pincode" [(ngModel)]="pinCode" name="pinCode"
+                                #pinCodeField="ngModel" required minlength="6" maxlength="8"
+                                (keypress)="allowOnlyNumbers($event)" (input)="limitLength()">
+                            <button type="button" (click)="checkAvailability()"
+                                [disabled]="pinCodeField.invalid">Check</button>
+                        </div>
+                        <div *ngIf="showDeliveryAvailability" class="delivery-available">
+                            {{ deliveryAvailability }}
+                        </div>
+                        <div *ngIf="showDeliveryUnAvailability" class="delivery-unavailable">
+                            {{ deliveryAvailability }}
+                        </div>
+                    </div>
+
+                    <div class="item-details-block" *ngIf="safeHtml">
+                        <div class="block-title">Product Details
+                            <img class="actionImge" src="{{cdnPath}}assets/images/myjaldee/detailsicon.png" />
+                            &nbsp;
+                        </div>
+                        <div class="item-description" [innerHTML]="safeHtml"></div>
+                        <!-- <button class="showmore" type="button" (click)="toggleContent()"> -->
+                        
+                        <!-- </button> -->
+                    </div>
+                    <div class="item-details-block" *ngIf="shortDescHtml">
+                        <div class="block-title">Additional Info</div>
+                        <div class="item-description" [innerHTML]="shortDescHtml"></div>
+                    </div>
+
+                    <div class="item-specs"
+                        *ngIf="(item?.spItemDto?.itemCategory?.categoryName
+                          || getDisplayItemTypeName()
+                          || getDisplayItemGroups().length
+                          || item?.spItemDto?.itemManufacturer?.manufacturerName
+                          || itemAttributes?.spItemDto?.itemCategory?.categoryName
+                          || itemAttributes?.spItemDto?.itemManufacturer?.manufacturerName)">
+                        <div class="block-title">Specifications</div>
+                        <div class="spec-grid">
+                            <div class="spec"
+                                *ngIf="!virtualItem ? item?.spItemDto?.itemCategory?.categoryName : itemAttributes?.spItemDto?.itemCategory?.categoryName">
+                                <div class="spec-label">Category</div>
+                                <div class="spec-value">{{ !virtualItem ? (item?.spItemDto?.itemCategory?.categoryName
+                                    || '-') : (itemAttributes?.spItemDto?.itemCategory?.categoryName || '-') }}</div>
+                            </div>
+                            <div class="spec" *ngIf="getDisplayItemTypeName()">
+                                <div class="spec-label">Type</div>
+                                <div class="spec-value">{{ getDisplayItemTypeName() || '-' }}</div>
+                            </div>
+                            <div class="spec" *ngIf="getDisplayItemGroups().length">
+                                <div class="spec-label">Group</div>
+                                <div class="spec-value">{{ getDisplayItemGroups().join(', ') }}</div>
+                            </div>
+                            <div class="spec"
+                                *ngIf="!virtualItem ? item?.spItemDto?.itemManufacturer?.manufacturerName : itemAttributes?.spItemDto?.itemManufacturer?.manufacturerName">
+                                <div class="spec-label">Manufacturer</div>
+                                <div class="spec-value">{{ !virtualItem ?
+                                    (item?.spItemDto?.itemManufacturer?.manufacturerName || '-') :
+                                    (itemAttributes?.spItemDto?.itemManufacturer?.manufacturerName || '-') }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div *ngIf="badges" class="item-badges">
+                        <p-accordion [activeIndex]="[0]">
+                            <p-accordionTab>
+                                <ng-template pTemplate="header">
+                                    <h4 class="badge-title">Product Credentials</h4>
+                                </ng-template>
+                                <div class="badge-section" *ngIf="badges && badges.length > 0">
+                                    <div *ngFor="let badge of badges">
+                                        <div class="badge"
+                                            *ngIf="(badge.attachments && badge.attachments.length > 0) || badge.name || badge.link">
+                                            <img *ngIf="badge.attachments[0]" class="badge-img"
+                                                [src]="badge?.attachments[0]?.s3path" alt="">
+                                            <img *ngIf="!badge.attachments[0]" class="badge-img"
+                                                src="{{cdnPath}}assets/images/rx-order/medicine.png" alt="">
+                                            <span class="badge-name">{{badge.name}}<i *ngIf="badge.link"
+                                                    class="fa fa-external-link"
+                                                    (click)="actionClicked(badge)"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </p-accordionTab>
+                        </p-accordion>
+                    </div>
+                </div>
+            </div>
+            <div class="item-reviews card" *ngIf="itemRatingCount > 0" id="itemReviewsSection">
+                <div class="item-reviews-header">Ratings & Reviews<i class="fa fa-star-o" aria-hidden="true"></i></div>
+                <div class="item-reviews-layout">
+                    <div class="item-rating-summary">
+                        <div class="item-rating-score" [ngClass]="getRatingColorClass(averageItemRating)">
+                            {{ averageItemRating | number:'1.1-1' }}
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                        </div>
+                        <div class="item-rating-count">
+                            {{ itemRatingCount }} Verified Buyers
+                        </div>
+                    </div>
+                    <div class="item-rating-breakdown">
+                        <div class="item-rating-row" *ngFor="let stat of itemRatingBreakdown">
+                            <div class="item-rating-label"
+                                [ngClass]="{
+                                    'rating-star-1': stat.stars === 1,
+                                    'rating-star-2': stat.stars === 2,
+                                    'rating-star-3': stat.stars === 3
+                                }">{{ stat.stars }} <i class="fa fa-star" aria-hidden="true"></i></div>
+                            <div class="item-rating-track">
+                                <span class="item-rating-fill"
+                                    [ngClass]="{
+                                        'rating-star-1': stat.stars === 1,
+                                        'rating-star-2': stat.stars === 2,
+                                        'rating-star-3': stat.stars === 3
+                                    }"
+                                    [style.width.%]="stat.percentage"></span>
+                            </div>
+                            <div class="item-rating-value">{{ stat.count }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="item-reviews-subheader">What Customers Said <i class="fa fa-star-o" aria-hidden="true"></i></div>
+                <div class="item-review-list">
+                    <div class="item-review-card" *ngFor="let review of visibleItemReviews">
+                        <div class="item-review-topline">
+                            <div class="item-review-stars" [ngClass]="getRatingColorClass(review?.rating)">
+                                <i class="fa" *ngFor="let star of reviewStars"
+                                    [ngClass]="star <= (review?.rating || 0) ? 'fa-star' : 'fa-star-o'" aria-hidden="true"></i>
+                                <span class="item-review-score">{{ review?.rating | number:'1.1-1' }}</span>
+                            </div>
+                        </div>
+                        <div class="item-review-text" *ngIf="review?.comments">{{ review?.comments }}</div>
+                        <div class="item-review-meta">
+                            <span class="item-review-author" *ngIf="review?.providerConsumerName">
+                                <i class="fa fa-user-o" aria-hidden="true"></i>
+                                {{ review?.providerConsumerName }}
+                            </span>
+                            <span class="item-review-date">{{ getReviewDate(review) }}</span>
+                        </div>
+                        <div class="item-review-media" *ngIf="getReviewMedia(review).length">
+                            <ng-container *ngFor="let media of getReviewMedia(review)">
+                                <button *ngIf="!media.isVideo" type="button" class="item-review-image-trigger"
+                                    (click)="openReviewImagePopup(media.url)">
+                                    <img [src]="media.url" alt="Review media">
+                                </button>
+                                <button *ngIf="media.isVideo" type="button" class="item-review-video-trigger"
+                                    (click)="openReviewVideoPopup(media.url)">
+                                    <img *ngIf="getReviewVideoPreviewSrc(media); else reviewVideoPlaceholder"
+                                        [src]="getReviewVideoPreviewSrc(media)"
+                                        alt="Review video preview"
+                                        (load)="onReviewVideoPreviewLoaded(media.url)">
+                                    <ng-template #reviewVideoPlaceholder>
+                                        <span class="item-review-video-placeholder">
+                                            <i class="fa fa-file-video-o" aria-hidden="true"></i>
+                                        </span>
+                                    </ng-template>
+                                    <span class="item-review-video-overlay">
+                                        <i class="fa fa-play" aria-hidden="true"></i>
+                                    </span>
+                                </button>
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+                <button *ngIf="itemReviews.length > 2 && !showAllReviews" type="button" class="item-review-view-all"
+                    (click)="showAllReviews = true">
+                    View all {{ itemReviews.length }} reviews
+                </button>
+                <button *ngIf="itemReviews.length > 2 && showAllReviews" type="button" class="item-review-view-all"
+                    (click)="showAllReviews = false">
+                    View less
+                </button>
+            </div>
+            <div class="col-lg-12 mt-4" *ngIf="!cartDisabled">
+                <div class=" d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2 class="fw-bold add-cart-title">Similar Products</h2>
+                    </div>
+                    <!-- <div class="m-3 m-md-0">
+                        <button pButton pRipple type="button" id="btnViewAll"
+                            class="btn-viewall p-button-primary btn-primary" (click)="viewAll()">View All</button>
+                    </div> -->
+                </div>
+            </div>
+            <div class="my-4" *ngIf="!cartDisabled && items && items.length > 0">
+                <app-items-card [items]="items" [themes]="theme"
+                    (actionPerformed)="cartActionPerformed($event)"></app-items-card>
+            </div>
+        </div>
+    </div>
+</div>
+
+<app-image-video-viewer
+    *ngIf="showItemMediaViewer"
+    [media]="itemViewerMedia"
+    [initialIndex]="itemMediaViewerIndex"
+    (closed)="closeItemMediaViewer()">
+</app-image-video-viewer>
+<div class="review-video-popup-backdrop" *ngIf="showReviewVideoPopup" (click)="closeReviewVideoPopup()"></div>
+<div class="review-video-popup" *ngIf="showReviewVideoPopup" (click)="$event.stopPropagation()">
+    <button type="button" class="review-video-popup-close" (click)="closeReviewVideoPopup()" aria-label="Close video">
+        <i class="fa fa-times" aria-hidden="true"></i>
+    </button>
+    <div class="review-popup-stage">
+        <div class="review-video-popup-loading" *ngIf="reviewVideoLoading">
+            <i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+            <span>Loading video...</span>
+        </div>
+        <video *ngIf="selectedReviewVideoUrl" [src]="selectedReviewVideoUrl" controls autoplay playsinline
+            preload="auto"
+            controlsList="nodownload nofullscreen noplaybackrate"
+            disablePictureInPicture
+            (loadeddata)="onReviewVideoPopupLoaded()"
+            (canplay)="onReviewVideoPopupLoaded()"></video>
+    </div>
+</div>
+
+<div class="review-video-popup-backdrop" *ngIf="showReviewImagePopup" (click)="closeReviewImagePopup()"></div>
+<div class="review-video-popup review-image-popup" *ngIf="showReviewImagePopup" (click)="$event.stopPropagation()">
+    <button type="button" class="review-video-popup-close" (click)="closeReviewImagePopup()" aria-label="Close image">
+        <i class="fa fa-times" aria-hidden="true"></i>
+    </button>
+    <div class="review-popup-stage">
+        <img *ngIf="selectedReviewImageUrl" [src]="selectedReviewImageUrl" alt="Review image preview">
+    </div>
+</div>
+
+<div class="share-sheet-backdrop" *ngIf="isShareSheetOpen" (click)="closeShareSheet()"></div>
+<div class="share-sheet" *ngIf="isShareSheetOpen">
+    <div class="share-sheet-header">
+        <button type="button" class="share-sheet-close" (click)="closeShareSheet()" aria-label="Close share">×</button>
+        <div class="share-sheet-title">Share</div>
+    </div>
+    <div class="share-sheet-item">
+        <img class="share-sheet-thumb"
+            [src]="getPreviewImageSrc(selectedItemImage)" alt="">
+        <div class="share-sheet-meta">
+            <div class="share-sheet-name">{{ getShareItemName() }}</div>
+            <div class="share-sheet-subtitle">{{ getShareItemSubtitle() }}</div>
+        </div>
+    </div>
+    <div class="share-sheet-options">
+        <button type="button" class="share-option" (click)="shareVia('copy')">
+            <span class="share-icon share-icon-link"><i class="fa fa-link" aria-hidden="true"></i></span>
+            <span class="share-label">Copy Link</span>
+        </button>
+        <button type="button" class="share-option" (click)="shareVia('whatsapp')">
+            <span class="share-icon share-icon-whatsapp"><i class="fa fa-whatsapp" aria-hidden="true"></i></span>
+            <span class="share-label">Whatsapp</span>
+        </button>
+        <button type="button" class="share-option" (click)="shareVia('facebook')">
+            <span class="share-icon share-icon-facebook"><i class="fa fa-facebook" aria-hidden="true"></i></span>
+            <span class="share-label">Facebook</span>
+        </button>
+        <button type="button" class="share-option" (click)="shareVia('messenger')">
+            <span class="share-icon share-icon-messenger"><i class="fa fa-comment" aria-hidden="true"></i></span>
+            <span class="share-label">Messenger</span>
+        </button>
+        <button type="button" class="share-option" (click)="shareVia('gmail')">
+            <span class="share-icon share-icon-gmail"><i class="fa fa-envelope" aria-hidden="true"></i></span>
+            <span class="share-label">Gmail</span>
+        </button>
+        <button type="button" class="share-option" (click)="shareVia('sms')">
+            <span class="share-icon share-icon-sms"><i class="fa fa-commenting" aria-hidden="true"></i></span>
+            <span class="share-label">SMS</span>
+        </button>
+        <button type="button" class="share-option" (click)="shareVia('linkedin')">
+            <span class="share-icon share-icon-linkedin"><i class="fa fa-linkedin" aria-hidden="true"></i></span>
+            <span class="share-label">LinkedIn</span>
+        </button>
+        <button type="button" class="share-option" (click)="shareVia('more')">
+            <span class="share-icon share-icon-more"><i class="fa fa-ellipsis-h" aria-hidden="true"></i></span>
+            <span class="share-label">More Apps</span>
+        </button>
+    </div>
+</div>
+
+<div *ngIf="config">
+    <section *ngFor="let section of config.sections" [id]="section.id">
+        <div [ngSwitch]="section.type">
+            <div *ngSwitchCase="'whatsapp'">
+                <a *ngIf="section.multiplePosition && (section.title || section.image || section.link)" class="whatsapp"
+                    target="_blank" [title]="section.title" [href]="section.link">
+                    <img [src]="section.image" alt="">
+                </a>
+            </div>
+        </div>
+    </section>
+</div>

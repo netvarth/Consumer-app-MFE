@@ -1,0 +1,467 @@
+{
+    "template":  "template5",
+    "logo":  "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/logo.png",
+    "coverPicture":  "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/cover.png",
+    "theme":  "mediExpat",
+    "loginstyle":  "new",
+    "headerTitle":  "\u003cp\u003e\u003cstrong\u003e\u003cspan style=\"color:rgb(3,87,147);\"\u003eJaldee Vets QA\u003c/span\u003e\u003c/strong\u003e\u003c/p\u003e",
+    "headerDescription":  "",
+    "branchFilterUser":  false,
+    "branchFilterService":  false,
+    "homepagecover":  "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/homepagecover.png",
+    "welcomePage":  "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/welcomebanner.png",
+    "trustFeatures":  "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/TrustFeatures.png",
+    "ratingcard":  "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/RatingCard.png",
+    "offerBanner":  "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/OfferBanner.png",
+    "heroSection":  {
+                        "badgeText":  "Chotaboss",
+                        "title":  "Healthy Pets Are Happy Pets! Chotaboss Approved Care",
+                        "description":  "Every home with a pet knows one universal truth: the real boss is the one with paws. Connect with certified veterinarians from the comfort of your home.",
+                        "cta":  {
+                                    "label":  "Book An Appointment",
+                                    "link":  "appointment?loc_id=126678\u0026service_id=40281"
+                                },
+                        "figure":  {
+                                       "image":  "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/homepagecover.png",
+                                       "alt":  "Pet parent hugging her dog"
+                                   },
+                        "shortcuts":  [
+                                          {
+                                              "icon":  "fa-map-marker",
+                                              "label":  "Locate"
+                                          },
+                                          {
+                                              "icon":  "fa-phone",
+                                              "label":  "Support"
+                                          },
+                                          {
+                                              "icon":  "fa-share-alt",
+                                              "label":  "Share"
+                                          }
+                                      ]
+                    },
+    "section1":  {
+                     "key":  "home",
+                     "title":  "Home",
+                     "icon":  "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/Home.svg",
+                     "generalDescription":  "",
+                     "appointments":  true,
+                     "appointmentsDescription":  "Services",
+                     "checkins":  true,
+                     "checkinsDescription":  "",
+                     "orders":  true,
+                     "ordersDescription":  "Add orders description here",
+                     "donations":  false,
+                     "donationsDescription":  "Add donations description here",
+                     "departments":  false,
+                     "departmentDescription":  "Add department description here",
+                     "gallery":  false,
+                     "galleryDescription":  "Add gallery description here",
+                     "users":  false,
+                     "usersDescription":  "",
+                     "profile":  true,
+                     "profileType":  "basic",
+                     "quickActions":  [
+                                          {
+                                              "title":  "Online Vet Consultation",
+                                              "image":  "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/consultation.png",
+                                              "description":  "Consult for dogs/cats online with expert vets via chat, voice or video call.",
+                                              "link":  "appointment?loc_id=126678\u0026service_id=40281"
+                                          },
+                                          {
+                                              "title":  "View Prescriptions",
+                                              "image":  "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/prescriptions.png",
+                                              "description":  "Read the e-prescriptions for your pet shared by the veterinarian.",
+                                              "link":  "appointment?loc_id=126678\u0026service_id=40281"
+                                          },
+                                          {
+                                              "title":  "Messages",
+                                              "image":  "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/Chat_with_Expert.png",
+                                              "description":  "Check your inbox for latest updates, booking status and others.",
+                                              "link":  "inbox"
+                                          },
+                                          {
+                                              "title":  "FAQ\u0027s",
+                                              "image":  "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/Faq.png",
+                                              "description":  "Get more insights into Jaldee Vets and read popular queries.",
+                                              "link":  "faq"
+                                          }
+                                      ],
+                     "comingSoon":  {
+                                        "title":  "",
+                                        "description":  "Sneak peek into the next set of pet-care experiences.",
+                                        "cards":  [
+                                                      {
+                                                          "tag":  "Online",
+                                                          "title":  "Pet Store",
+                                                          "description":  "Handpicked treats, toys and grooming must-haves delivered to you.",
+                                                          "image":  "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/petstoreCard.png",
+                                                          "accent":  "#FFE0CC",
+                                                          "link":  "pet-store"
+                                                      },
+                                                      {
+                                                          "tag":  "Online",
+                                                          "title":  "Pet Pharma",
+                                                          "description":  "Specialised medicines and supplements prescribed by vets.",
+                                                          "image":  "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/petassets/petBoardingCard.png",
+                                                          "accent":  "#FFE4F1"
+                                                      },
+                                                      {
+                                                          "tag":  "Booking",
+                                                          "title":  "Pet Grooming",
+                                                          "actionKey":  "grooming",
+                                                          "description":  "Doorstep spa rituals to keep your pet fresh and cheerful.",
+                                                          "image":  "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/groomingCard.png",
+                                                          "accent":  "#FFF3CC"
+                                                      },
+                                                      {
+                                                          "tag":  "On-site",
+                                                          "title":  "Pet Clinic",
+                                                          "description":  "Walk-in experience centres for thorough health checkups.",
+                                                          "image":  "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/petassets/insuranceCard.png",
+                                                          "accent":  "#EFE6FF"
+                                                      }
+                                                  ]
+                                    },
+                     "blogs":  {
+                                   "blogsCaption":  "Blogs",
+                                   "showBlogs":  true,
+                                   "showMoreBlogs":  true,
+                                   "moreBlogsLink":  "",
+                                   "moreBlogsCaption":  "Show More Blogs",
+                                   "filters":  [
+                                                   {
+                                                       "key":  "all",
+                                                       "label":  "All"
+                                                   },
+                                                   {
+                                                       "key":  "new",
+                                                       "label":  "New Blogs"
+                                                   },
+                                                   {
+                                                       "key":  "dogs",
+                                                       "label":  "Dogs"
+                                                   },
+                                                   {
+                                                       "key":  "cats",
+                                                       "label":  "Cats"
+                                                   }
+                                               ],
+                                   "blog":  [
+                                                {
+                                                    "title":  "5 Signs Your Cat Is Stressed",
+                                                    "image":  "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/blogimg1.webp",
+                                                    "description":  "Cats may appear calm and independent, but they’re incredibly sensitive creatures. Even the smallest changes in their environment, diet, or daily routine",
+                                                    "link":  "https://chotaboss.com/5-signs-your-cat-is-stressed/",
+                                                    "date":  "November 19, 2025",
+                                                    "categories":  [
+                                                                       "cats"
+                                                                   ]
+                                                },
+                                                {
+                                                    "title":  "How to Trim Your Dog’s Nails Safely",
+                                                    "image":  "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/blogimg2.webp",
+                                                    "description":  "Trimming your dog’s nails might seem like a small task, but it plays a big role in keeping your furry friend healthy and comfortable.",
+                                                    "link":  "https://chotaboss.com/quick-tip-how-to-trim-your-dogs-nails-safely/",
+                                                    "date":  "November 16, 2025",
+                                                    "categories":  [
+                                                                       "dogs"
+                                                                   ]
+                                                },
+                                                {
+                                                    "title":  "Top 5 Signs Your Cat Needs a Vet Immediately",
+                                                    "image":  "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/blogimg3.webp",
+                                                    "description":  "We know the drama of our feline chotaboss! From the limp in the legs to the crying in despair, they create all the drama to gather attention",
+                                                    "link":  "https://chotaboss.com/top-5-signs-your-cat-needs-a-vet-immediately/",
+                                                    "date":  "November 14, 2025",
+                                                    "categories":  [
+                                                                       "cats"
+                                                                   ]
+                                                },
+                                                {
+                                                    "title":  "Why Annual Vaccinations Are a Must for Your Dog",
+                                                    "image":  "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/blogimg4.webp",
+                                                    "description":  "Your dog’s wagging tail, playful jumps, and endless loyalty bring joy to your everyday life. But behind every healthy, happy dog is a responsible pet parent",
+                                                    "link":  "https://chotaboss.com/why-annual-vaccinations-are-a-must-for-your-dog/",
+                                                    "date":  "November 20, 2025",
+                                                    "categories":  [
+                                                                       "dogs",
+                                                                       "new"
+                                                                   ]
+                                                }
+                                            ]
+                               },
+                     "latestVideos":  {
+                                          "videoCaption":  "Latest Videos",
+                                          "showVideos":  false,
+                                          "showMoreVideo":  false,
+                                          "moreVideosLink":  "",
+                                          "moreVideosCaption":  "Show More Videos",
+                                          "videos":  [
+
+                                                     ]
+                                      },
+                     "latestArticles":  {
+                                            "articleCaption":  "Our Articles in Medias",
+                                            "showArticles":  false,
+                                            "showMoreArticles":  false,
+                                            "moreArticlesLink":  "",
+                                            "moreArticlesCaption":  "Show More Posts",
+                                            "articles":  [
+
+                                                         ]
+                                        }
+                 },
+    "section2":  {
+                     "key":  "aboutus",
+                     "title":  "About Us",
+                     "type":  "action",
+                     "icon":  "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/About+us.svg",
+                     "link":  "about",
+                     "generalDescription":  "",
+                     "appointments":  false,
+                     "appointmentsDescription":  "Add appointments description here",
+                     "checkins":  false,
+                     "checkinsDescription":  "Add checkins description here",
+                     "orders":  false,
+                     "ordersDescription":  "Add orders description here",
+                     "donations":  false,
+                     "donationsDescription":  "Add donations description here",
+                     "departments":  false,
+                     "departmentDescription":  "Add department description here",
+                     "gallery":  false,
+                     "galleryDescription":  "",
+                     "users":  false,
+                     "usersDescription":  "Add users description here",
+                     "profile":  false,
+                     "profileType":  "advanced"
+                 },
+    "section3":  {
+                     "key":  "bookings",
+                     "type":  "action",
+                     "link":  "dashboard",
+                     "title":  "My Bookings",
+                     "icon":  "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/Bookings.svg",
+                     "generalDescription":  "",
+                     "appointments":  false,
+                     "appointmentsDescription":  "Add appointments description here",
+                     "checkins":  false,
+                     "checkinsDescription":  "Add checkins description here",
+                     "orders":  false,
+                     "ordersDescription":  "Add orders description here",
+                     "donations":  false,
+                     "donationsDescription":  "Add donations description here",
+                     "departments":  false,
+                     "departmentDescription":  "Add department description here",
+                     "gallery":  false,
+                     "galleryDescription":  "",
+                     "users":  false,
+                     "usersDescription":  "Add users description here"
+                 },
+    "section4":  {
+                     "title":  "Support",
+                     "key":  "support",
+                     "icon":  "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/Support.svg",
+                     "type":  "action",
+                     "link":  "support",
+                     "generalDescription":  "",
+                     "appointments":  false,
+                     "appointmentsDescription":  "",
+                     "checkins":  false,
+                     "checkinsDescription":  "",
+                     "orders":  false,
+                     "ordersDescription":  "",
+                     "donations":  false,
+                     "donationsDescription":  "",
+                     "departments":  false,
+                     "departmentDescription":  "Add department description here",
+                     "gallery":  false,
+                     "galleryDescription":  "",
+                     "users":  false,
+                     "usersDescription":  "Add users description here"
+                 },
+    "loginRequired":  false,
+    "showEnquiry":  true,
+    "serviceMarketplace": {"enabled":true,"assetBasePath":"/service-marketplace/","currency":{"code":"INR","symbol":"â‚¹","locale":"en-IN"},"routes":{"storeSelection":"service-stores","serviceSelection":"service-store/:storeId"},"selection":{"defaultLocationId":"thrissur","defaultActionKey":"grooming","persistSelectedLocation":true,"persistSelectedAction":true,"useBrowserLocationForNearYou":true},"storeSelectionPage":{"title":"Select Location","backLabel":"Back","nearYouLabel":"Near You","storesEmptyTitle":"No stores found","storesEmptyDescription":"Try another location or service category.","distanceSuffix":"KM","ratingIcon":"fa-star","locationIcon":"fa-map-marker","storeCtaLabel":"View Services","storeCtaIcon":"fa-arrow-right","showActionFilters":true,"showLocationSelector":true,"showTimingOnCard":true,"cardImageFit":"cover","cardImagePosition":"center"},"serviceSelectionPage":{"backLabel":"Back","verifiedTitle":"Verify","verifiedSubtitle":"Certified","notVerifiedTitle":"Not Verified","experienceSuffix":"Years","experienceSubtitle":"Experience","ratingSubtitle":"Rating","timingsLabel":"Timings","locationActionLabel":"Open location","phoneActionLabel":"Call store","bookNowLabel":"Book Now","startsAtLabel":"Starts at","discountIcon":"fa-lock","servicesEmptyTitle":"No services available","servicesEmptyDescription":"Services for this store will be available soon.","serviceImageFit":"cover","serviceImagePosition":"center"},"actionCategories":[{"key":"booking","label":"Booking","icon":"fa-calendar-check","image":"","sortOrder":1,"enabled":true},{"key":"grooming","label":"Grooming","icon":"fa-scissors","image":"https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/groomingCard.png","sortOrder":2,"enabled":true},{"key":"boarding","label":"Boarding","icon":"fa-house","image":"https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/petassets/boardingCard.png","sortOrder":3,"enabled":true},{"key":"training","label":"Training","icon":"fa-graduation-cap","image":"","sortOrder":4,"enabled":true}],"locations":[{"id":"near-you","name":"Near You","image":"","imageAlt":"Use current location","icon":"fa-location-arrow","useCurrentLocation":true,"enabled":true,"sortOrder":0},{"id":"thrissur","name":"Thrissur","image":"https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/service-marketplace/locations/thrissur.jpg","imageAlt":"Thrissur","useCurrentLocation":false,"enabled":true,"sortOrder":1},{"id":"bengaluru","name":"Bengaluru","image":"https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/service-marketplace/locations/bengaluru.jpg","imageAlt":"Bengaluru","useCurrentLocation":false,"enabled":true,"sortOrder":2},{"id":"chennai","name":"Chennai","image":"https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/service-marketplace/locations/chennai.jpg","imageAlt":"Chennai","useCurrentLocation":false,"enabled":true,"sortOrder":3}],"stores":[{"id":"for-our-pets-thrissur","name":"For Our Pets - Pet Grooming Studio \u0026 Academy Thrissur","shortName":"For Our Pets Thrissur","locationId":"thrissur","actionKeys":["booking","grooming","training"],"cardImage":"https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/service-marketplace/stores/for-our-pets/card.png","cardImageAlt":"For Our Pets pet grooming studio and academy","storeLogo":"https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/service-marketplace/stores/for-our-pets/logo.png","storeLogoAlt":"For Our Pets logo","address":"Thrissur, Kerala","verified":true,"experienceYears":5,"rating":4.9,"reviews":0,"distanceKm":2.3,"timing":{"display":"09:30 AM - 06:00 PM","openTime":"09:30","closeTime":"18:00","timezone":"Asia/Kolkata"},"locationLink":"https://www.google.com/maps/search/?api=1\u0026query=For+Our+Pets+Thrissur","phoneNumber":"+91-XXXXXXXXXX","phoneLink":"","storeLink":"service-store/for-our-pets-thrissur","enabled":true,"sortOrder":1,"services":[{"id":"spa-bath","name":"Spa Bath","description":"Complete drying and brushing with a free vet consultation.","price":1099,"priceDisplay":"â‚¹1099","discount":{"enabled":true,"type":"flat","value":100,"label":"â‚¹100 Discount Available"},"serviceImage":"https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/service-marketplace/services/spa-bath.jpg","serviceImageAlt":"Dog receiving a spa bath","serviceLink":"appointment?store_id=for-our-pets-thrissur\u0026service_id=spa-bath","enabled":true,"sortOrder":1},{"id":"spa-bath-hair-cut","name":"Spa Bath \u0026 Hair Cut","description":"Bath with vet-approved products and a full-body haircut.","price":1099,"priceDisplay":"â‚¹1099","discount":{"enabled":true,"type":"flat","value":100,"label":"â‚¹100 Discount Available"},"serviceImage":"https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/service-marketplace/services/spa-bath-hair-cut.jpg","serviceImageAlt":"Dog receiving a haircut","serviceLink":"appointment?store_id=for-our-pets-thrissur\u0026service_id=spa-bath-hair-cut","enabled":true,"sortOrder":2}]},{"id":"pet-focuz-thrissur","name":"Pet Focuz Thrissur","shortName":"Pet Focuz Thrissur","locationId":"thrissur","actionKeys":["booking","grooming"],"cardImage":"https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/service-marketplace/stores/pet-focuz/card.png","cardImageAlt":"Pet Focuz professional pet grooming studio","storeLogo":"https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/service-marketplace/stores/pet-focuz/logo.png","storeLogoAlt":"Pet Focuz logo","address":"Valarkkavu, Nehru Nagar, Kuriachira, Thrissur","verified":true,"experienceYears":5,"rating":4.9,"reviews":0,"distanceKm":2.3,"timing":{"display":"09:30 AM - 06:00 PM","openTime":"09:30","closeTime":"18:00","timezone":"Asia/Kolkata"},"locationLink":"https://www.google.com/maps/search/?api=1\u0026query=Pet+Focuz+Thrissur","phoneNumber":"+91-XXXXXXXXXX","phoneLink":"","storeLink":"service-store/pet-focuz-thrissur","enabled":true,"sortOrder":2,"services":[{"id":"spa-bath","name":"Spa Bath","description":"Complete drying and brushing FREE vet consultation with each bath.","price":1099,"priceDisplay":"â‚¹1099","discount":{"enabled":true,"type":"flat","value":100,"label":"â‚¹100 Discount Available"},"serviceImage":"https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/service-marketplace/services/spa-bath.jpg","serviceImageAlt":"Dog receiving a spa bath","serviceLink":"appointment?store_id=pet-focuz-thrissur\u0026service_id=spa-bath","enabled":true,"sortOrder":1},{"id":"spa-bath-hair-cut","name":"Spa Bath \u0026 Hair Cut","description":"Bath with vet-approved products for your pets and a full-body haircut.","price":1099,"priceDisplay":"â‚¹1099","discount":{"enabled":true,"type":"flat","value":100,"label":"â‚¹100 Discount Available"},"serviceImage":"https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/service-marketplace/services/spa-bath-hair-cut.jpg","serviceImageAlt":"Dog receiving a haircut","serviceLink":"appointment?store_id=pet-focuz-thrissur\u0026service_id=spa-bath-hair-cut","enabled":true,"sortOrder":2}]}]},
+    "petStorePage":  {
+                     "schemaVersion": 1,
+                     "enabled": true,
+                     "route": "pet-store",
+                     "assetBasePath":  "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/pet-store/",
+                     "layout": {
+                       "hideParentHeader": true,
+                       "useParentFooterNavigation": true,
+                       "renderOwnHeader": true,
+                       "mobileFirst": true,
+                       "referenceViewportWidth": 654,
+                       "contentMaxWidth": 654,
+                       "pageBackground": "#FFFFFF",
+                       "shopsSectionBackground": "#F7F7F7"
+                     },
+                     "footerNavigationItem": {
+                       "key": "shop",
+                       "label": "Shop",
+                       "icon": "",
+                       "link": "pet-store",
+                       "enabled": true,
+                       "sortOrder": 3
+                     },
+                     "hero": {
+                       "backgroundImage": "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/pet-store/pet-store-header-background.png",
+                       "backgroundImageAlt": "Orange and peach pet store header background",
+                       "backgroundFit": "cover",
+                       "backgroundPosition": "top center",
+                       "logo": {
+                         "image": "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/pet-store/chotaboss-logo-white.png",
+                         "imageAlt": "Chotaboss",
+                         "link": "",
+                         "enabled": true
+                       },
+                       "deliveryLocation": {
+                         "eyebrow": "Deliver at",
+                         "value": "Home",
+                         "locationIcon": "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/pet-store/icons/location-white.svg",
+                         "dropdownIcon": "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/pet-store/icons/chevron-down-white.svg",
+                         "link": "pet-store/location",
+                         "enabled": true
+                       },
+                       "actions": [
+                         {
+                           "key": "cart", "label": "Cart",
+                           "icon": "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/pet-store/icons/cart-white.svg",
+                           "link": "order/cart", "enabled": true, "sortOrder": 1
+                         },
+                         {
+                           "key": "profile", "label": "Profile",
+                           "icon": "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/pet-store/icons/profile-white.svg",
+                           "link": "profile", "enabled": true, "sortOrder": 2
+                         }
+                       ],
+                       "search": {
+                         "enabled": true,
+                         "placeholder": "Search for “Skin Medicine”",
+                         "icon": "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/pet-store/icons/search.svg",
+                         "ariaLabel": "Search pet store products",
+                         "submitOnEnter": true,
+                         "searchRoute": "pet-store/search",
+                         "queryParameter": "q"
+                       },
+                       "intro": {
+                         "title": "Pet Store",
+                         "subtitle": "Fast Delivery from Your Nearby Pet Store",
+                         "subtitleIcon": "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/pet-store/icons/paw-delivery.svg"
+                       }
+                     },
+                     "categories": {
+                       "enabled": true,
+                       "seeAll": { "label": "See all »", "link": "pet-store/categories" },
+                       "items": [
+                         {
+                           "id": "pharmacy", "name": "Pharmacy",
+                           "cardImage": "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/pet-store/categories/pharmacy-card.png",
+                           "imageAlt": "Pharmacy pet products",
+                           "link": "pet-store/products?category=pharmacy", "enabled": true, "sortOrder": 1
+                         },
+                         {
+                           "id": "accessories", "name": "Accessories",
+                           "cardImage": "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/pet-store/categories/accessories-card.png",
+                           "imageAlt": "Pet accessories",
+                           "link": "pet-store/products?category=accessories", "enabled": true, "sortOrder": 2
+                         },
+                         {
+                           "id": "foods", "name": "Foods",
+                           "cardImage": "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/pet-store/categories/foods-card.png",
+                           "imageAlt": "Pet food products",
+                           "link": "pet-store/products?category=foods", "enabled": true, "sortOrder": 3
+                         }
+                       ]
+                     },
+                     "brands": {
+                       "enabled": true,
+                       "title": "Brands",
+                       "seeAll": { "label": "See all »", "link": "pet-store/brands" },
+                       "items": [
+                         {
+                           "id": "pedigree", "name": "Pedigree",
+                           "logo": "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/pet-store/brands/pedigree.png",
+                           "imageAlt": "Pedigree logo",
+                           "link": "pet-store/products?brand=pedigree", "enabled": true, "sortOrder": 1
+                         },
+                         {
+                           "id": "royal-canin", "name": "Royal Canin",
+                           "logo": "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/pet-store/brands/royal-canin.png",
+                           "imageAlt": "Royal Canin logo",
+                           "link": "pet-store/products?brand=royal-canin", "enabled": true, "sortOrder": 2
+                         },
+                         {
+                           "id": "farmina", "name": "Farmina",
+                           "logo": "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/pet-store/brands/farmina.png",
+                           "imageAlt": "Farmina Pet Foods logo",
+                           "link": "pet-store/products?brand=farmina", "enabled": true, "sortOrder": 3
+                         },
+                         {
+                           "id": "drools", "name": "Drools",
+                           "logo": "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/pet-store/brands/drools.png",
+                           "imageAlt": "Drools logo",
+                           "link": "pet-store/products?brand=drools", "enabled": true, "sortOrder": 4
+                         }
+                       ]
+                     },
+                     "shops": {
+                       "enabled": true,
+                       "title": "Shops",
+                       "seeAll": { "label": "See all »", "link": "pet-store/shops" },
+                       "cardMode": "full-image",
+                       "items": [
+                         {
+                           "id": "cadas-pet-hub", "name": "Cadas Pet Hub",
+                           "cardImage": "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/pet-store/shops/cadas-pet-hub-card.png",
+                           "imageAlt": "Cadas Pet Hub store card",
+                           "link": "pet-store/shop/cadas-pet-hub", "enabled": true, "sortOrder": 1
+                         },
+                         {
+                           "id": "sn-pet-world", "name": "SN PET WORLD",
+                           "cardImage": "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/pet-store/shops/sn-pet-world-card.png",
+                           "imageAlt": "SN PET WORLD store card",
+                           "link": "pet-store/shop/sn-pet-world", "enabled": true, "sortOrder": 2
+                         }
+                       ]
+                     },
+                     "offers": {
+                       "enabled": true,
+                       "displayMode": "carousel",
+                       "showIndicators": true,
+                       "showArrows": false,
+                       "autoPlay": true,
+                       "autoPlayIntervalMs": 5000,
+                       "pauseOnInteraction": true,
+                       "loop": true,
+                       "items": [
+                         {
+                           "id": "christmas-offer", "name": "Christmas offer 25% OFF",
+                           "image": "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/pet-store/offers/christmas-offer.png",
+                           "imageAlt": "Christmas pet food offer with a dog",
+                           "link": "pet-store/products?offer=christmas", "enabled": true, "sortOrder": 1
+                         }
+                       ]
+                     },
+                     "emptyStates": {
+                       "categories": {
+                         "title": "No categories available",
+                         "description": "Pet store categories will be available soon."
+                       },
+                       "brands": {
+                         "title": "No brands available",
+                         "description": "Pet brands will be available soon."
+                       },
+                       "shops": {
+                         "title": "No shops available",
+                         "description": "Nearby pet stores will be available soon."
+                       },
+                       "offers": {
+                         "title": "No offers available",
+                         "description": "New pet store offers will appear here."
+                       }
+                     }
+                 }
+}

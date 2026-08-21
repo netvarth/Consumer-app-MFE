@@ -1,0 +1,187 @@
+.cstmServiceIconService {
+    width: 100% !important;
+}
+
+.cstmServiceIcon {
+    height: 80px;
+    padding: 5px;
+    width: 80px !important;
+    border: 0.825833px solid #D7E7F9;
+    filter: drop-shadow(0px 3.30333px 3.30333px rgba(0, 0, 0, 0.25));
+    border-radius: 50%;
+    box-shadow: 0 4px 8px #0003, 0 6px 20px #00000030;
+}
+
+.service-icon .meet-icon {
+    height: 60px !important;
+    width: 50px !important;
+}
+
+.service-icon {
+    display: block !important;
+    font-size: 1.5rem !important;
+}
+
+.service-icon .meet-icon,
+.service-icon .phon-icon {
+    width: 25px !important;
+}
+
+.service-icon .zoom-icon {
+    width: 30px !important;
+}
+
+.service-icon .wtsapaud-icon {
+    width: 40px !important;
+}
+
+.service-icon .wtsapvid-icon {
+    width: 20px !important;
+}
+
+.meet-icon,
+.service-icon {
+    top: 0 !important;
+    padding-right: 0 !important;
+    margin-right: 5px !important;
+    height: 35px;
+}
+
+.zoom-icon {
+    top: 0 !important;
+    padding-right: 0 !important;
+    margin-right: 5px !important;
+}
+
+.zoom1 {
+    height: 35px;
+}
+
+.service-icon .fa-phone {
+    color: #7a7a7a !important
+}
+
+.serviceIcon {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 5px;
+    height: 3rem !important;
+}
+
+.service-icon {
+    height: 100% !important;
+    top: 0px !important;
+    padding-right: 0px !important;
+    margin-right: 5px !important;
+    text-align: center;
+}
+
+.service-icon .zoom-icon {
+    width: 100% !important;
+    padding: 0px;
+}
+
+.service-icon .meet-icon {
+    height: 60px !important;
+    width: 50px !important;
+}
+.serviceName {
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.87);
+    font-weight: 700;
+    text-align: center !important;
+    height: 70px;
+}
+.priceSection {
+    height: 80px;
+}
+.ammount {
+    display: flex;
+    justify-content: center;
+    margin-top: 5px;
+    gap: 5px;
+}
+.feeTxt, .serviceammount {
+    color: #707a91d6;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+}
+.prepaymentNow{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.prepaymentAc {
+    font-size: 10px;
+    font-weight: 600;
+    text-align: center;
+    background: #fff;
+    color: rgba(112, 122, 145, 0.8392156863);
+    border:1px solid #B6BAC2;
+    border-radius: 25px;
+    // height: 40px;
+    width: 75%;
+    padding: 8px;
+}
+.prepaymentAc span {
+    color: #000;
+}
+.hint {
+    font-size: 10px;
+    font-weight: 600;
+    text-align: center;
+    background: #fff;
+    color: rgba(112, 122, 145, 0.8392156863);
+    padding: 0px;
+}
+.availabiliotytxt, .description {
+    color: #B6BAC2;
+    font-size: 12px;
+}
+
+.dateTimeavailable, .serviceDuration {
+    color: #4C5451;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.estText {
+    color: #B6BAC2;
+    font-size: 12px;
+}
+.empty {
+    border-right: 0.825833px solid #E4E4E4;
+    transform: rotate(90deg);
+}
+.serviceAlign .cstmServiceIconServiceInfo {
+    width: 80px !important;
+    border: 0.825833px solid #D7E7F9;
+    filter: drop-shadow(0px 3.30333px 3.30333px rgba(0, 0, 0, 0.25));
+    border-radius: 50%;
+    box-shadow: 0 4px 8px #0003, 0 6px 20px #00000030;
+    height: 80px !important;
+}
+.line-clamp {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden;
+}
+.serviceFlex {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+.pl-15 {
+    padding-left: 10px;
+  }
+  .info-icon{
+   color: #707a91d6;  
+    font-size: 20px;
+}

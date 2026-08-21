@@ -1,0 +1,30 @@
+<form [ngClass]="this.data.theme">
+  <h1 class="mat-dialog-title" style="font-size: 1.2rem !important;">File Attachments
+    <button #locte mat-dialog-close class="modal_close" tabindex="-1" id="btnClose">
+      <i class="fa fa-window-close" aria-hidden="true"></i>
+    </button>
+  </h1>
+  <div mat-dialog-content>
+    <div class="attachment">
+      <ng-container *ngIf="mediafiles.length >0">
+        <ul *ngFor="let file of mediafiles;let i = index ">
+          <li (click)="showFile(file)">
+            <img style="width:100%;" [src]="file.s3path || file.thumbPath" alt="" /><a href="javascript:void(0);"
+              >{{file.fileName
+              ?file.fileName.split('.')[0]:'image'}}-{{file.type?file.type:'file'}}</a>
+          </li>
+        </ul>
+      </ng-container>
+      <ng-container *ngIf="docfiles.length>0">
+        <ul *ngFor="let file of docfiles;let i = index ">
+          <li>
+            <span><img class="imgIcon mgn-rt-10" [src]="getImage(file.type)" alt="" /><a [href]="file.s3path"
+                target="_blank" download>{{file.fileName ? file.fileName.split('.')[0]:'document'}}-{{file.type ?
+                file.type:'file' }}
+              </a></span>
+          </li>
+        </ul>
+      </ng-container>
+    </div>
+  </div>
+</form>

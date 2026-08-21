@@ -1,0 +1,35 @@
+<div class="user-container">
+    <div class="specificSmallDeveice cstmHeader hedaerService">
+      <div class="selDoc hedaerService hedaerServiceSmall ">{{'Select ' | translate}}{{provider_label |
+        capitalizeFirst}} <span >or Service</span></div>
+    </div>
+    <div class="mt-2 mgn-sm-bt-60">
+      <div class="m-auto mainFlexService" *ngIf="activeUsers.length > 0">
+        <div class="mainFlexService_service" *ngFor="let user of activeUsers"
+          [ngClass]="{ 'selected': user['id'] === selectedUserId }" (click)="userClicked(user)">
+          <app-user-card [user]="user"></app-user-card>
+        </div>
+        <div class="mainFlexService_service" *ngIf="otherServices && otherServices.length>0"
+          [ngClass]="{ 'selected': !selectedUserId }" (click)="userClicked(null)">
+          <div>
+            <div>
+                <div class="service-icon serviceAlign">
+                    <img class="cstmServiceIconServiceInfo"
+                        src="{{cdnPath}}assets/images/meeting_Artboard.png" />
+                </div>
+                <div class="userName">
+                    <div>Other Services</div>
+                </div>
+                <div class="specialization" *ngIf="selectedDepartment">
+                  <div>in {{selectedDepartment.departmentName}} Department</div>
+              </div>
+            </div>
+        </div>
+        </div>
+      </div>
+      <div class="px-2 my-4 m-auto mainFlexService"
+        *ngIf="selectedDeptId && activeUsers.length === 0">
+        No {{provider_label | capitalizeFirst}}'s for this department
+      </div>
+    </div>
+  </div>

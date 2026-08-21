@@ -1,0 +1,347 @@
+.headerBorder {
+  border-bottom: 1.21389px solid #DADCE0 !important;
+  display: flex;
+  gap: 5px;
+  flex-direction: row !important;
+  padding: 15px !important;
+}
+
+.clrChangeHeader {
+  color: #464849 !important;
+  cursor: pointer;
+}
+
+.accountEditText {
+  color: #5F6368;
+  font-size: 13px;
+  margin-top: 5px;
+}
+
+.myAcText {
+  color: rgba(0, 0, 0, 0.87) !important;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.customCard {
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, .05) !important;
+  border-radius: 5px;
+  background: #fff;
+  background-clip: padding-box;
+  border: none !important;
+  width: 100%;
+}
+
+.mainFlex {
+  display: flex;
+  margin-top: 15px;
+  gap: 30px;
+  width: 100%;
+}
+
+.tabText {
+  font-weight: 500;
+  font-size: 14px;
+  color: #5F6368;
+  margin-top: 15px;
+  cursor: pointer;
+  font-family: 'Open Sans';
+  font-style: normal;
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.tabText:hover {
+  color: #0D2348 !important;
+  font-weight: bold;
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+.fullWidthLinks {
+  width: 25%;
+}
+
+.userImg {
+  border: 1px solid #AAACAF;
+  border-radius: 50%;
+  padding: 10px;
+  height: 85px;
+  width: 85px;
+}
+
+.newImgUpload {
+  box-shadow: 0.417685px 2.50611px 8.77138px 1.25305px rgb(30 64 121 / 15%) !important;
+  border-radius: 3.75916px !important;
+  border: 0px solid !important;
+  padding: 6px 12px;
+  background: #0D2348 !important;
+}
+
+.flexClassImg {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+}
+
+.deleteBtn {
+  box-shadow: 0.417685px 2.50611px 8.77138px 1.25305px rgb(30 64 121 / 15%) !important;
+  border-radius: 3.75916px !important;
+  padding: 6px 12px;
+  background: #FFFFFF;
+  border: 1.03704px solid #AAACAF !important;
+  color: #AAACAF;
+}
+
+.btntxt {
+  color: #fff;
+  font-weight: 500 !important;
+  font-size: 15px;
+  font-family: 'Open Sans';
+}
+
+.btntxtClr {
+  color: #AAACAF;
+  font-weight: 500 !important;
+  font-size: 15px;
+  font-family: 'Open Sans';
+}
+
+.forMFieldInput {
+  border: none !important;
+  color: #403B48 !important;
+}
+
+.matFormField {
+  width: 100% !important;
+}
+
+.labeltag {
+  font-size: 15px;
+  color: rgba(58, 53, 65, 0.68);
+}
+
+.formFieldFlex {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.widthCls {
+  width: 100%;
+}
+
+.is-invalid {
+  border: 2px solid #ff6a6a !important;
+}
+
+.dateIcon {
+  height: 30px;
+  background: #AAACAF;
+  object-fit: cover;
+}
+
+.whatsappFlex {
+  display: flex;
+  align-items: center;
+}
+
+.tempmatFormField {
+  width: 15%;
+}
+
+.whatsappFlex {
+  display: flex;
+  gap: 2px;
+}
+
+.telegramFlex {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.telegtamNoText {
+  color: #403B48;
+  font-size: 15px;
+}
+
+.telegramCls {
+  color: #29b6f6;
+  font-size: 25px;
+}
+
+.mailSend {
+  color: #1B1B1B !important;
+}
+
+.mailTo {
+  color: #ff6a6a !important;
+}
+
+.supprtmail {
+  color: #ff6a6a !important;
+}
+
+.fontSize {
+  font-size: 14px;
+}
+
+.activityBtn {
+  box-shadow: 0.417685px 2.50611px 8.77138px 1.25305px rgba(30, 64, 121, 0.15);
+  border-radius: 3.75916px !important;
+  border: none !important;
+  background: #0D2348;
+  padding: 11px;
+  color: #fff;
+  letter-spacing: 3px;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-size: inherit;
+}
+
+.cancelBtn {
+  border-radius: 3.75916px !important;
+  border: none !important;
+  background: #E5E8E8;
+  padding: 9px;
+  color: #A9A9A9;
+  letter-spacing: 3px;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-size: inherit;
+}
+
+.matFormFieldPhNo {
+  width: 41% !important;
+}
+
+.tempmatFormFieldPhNoDial {
+  width: 7.5% !important;
+}
+
+.tabTextCstmClr {
+  color: #0D2348 !important;
+  font-weight: bold;
+}
+
+.formfielderror {
+  margin-top: -10px;
+  margin-bottom: 10px;
+  color: #ff6a6a;
+}
+
+.labeltagCstm {
+  font-size: 15px;
+  color: rgba(58, 53, 65, 0.68);
+  color: #ff6a6a;
+}
+
+.webErrorClass {
+  display: flex;
+  justify-content: space-between;
+}
+
+.formfielderrorTelegram {
+  display: none;
+}
+
+.formfielderrorWhatsapp {
+  display: none;
+}
+
+.matDialog {
+  box-shadow: none !important;
+}
+
+.headerText {
+  font-size: 15px;
+  font-weight: bold;
+  color: #2C2A2A;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+}
+
+@media (max-width: 768px) {
+  .formFieldFlex {
+    flex-wrap: wrap;
+  }
+
+  .fullWidth {
+    width: 100%;
+  }
+
+  .mainFlex {
+    flex-wrap: wrap;
+  }
+
+  .fullWidthLinks {
+    width: 100%;
+  }
+
+  .matFormFieldPhNo {
+    width: 100% !important;
+  }
+
+  .tempmatFormFieldPhNoDial {
+    width: 14.5% !important;
+  }
+
+  .webErrorClass {
+    display: none;
+  }
+
+  .formfielderrorTelegram {
+    display: block;
+  }
+
+  .formfielderrorWhatsapp {
+    display: block;
+  }
+
+  .flexClassImg {
+    justify-content: center !important;
+  }
+
+  .matDialog {
+    justify-content: center !important;
+  }
+}
+
+.hoverCross:hover {
+  color: #ffffff;
+}
+
+.modalCloseTemp {
+  border: none;
+  background: #FFF;
+  outline: none;
+}
+
+.modalCloseTemp:hover {
+  filter: drop-shadow(0px 1.58214px 5.31765px rgba(0, 0, 0, 0.44));
+  border-radius: 5px;
+  background: #0D2348 !important;
+  color: #ffffff !important;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.consumer-add-member {
+  max-height: calc(100vh - 50px);
+}

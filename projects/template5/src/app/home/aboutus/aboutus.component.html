@@ -1,0 +1,70 @@
+<section [ngClass]="theme" class="aboutus">
+    <header class="aboutus__header">
+    <button type="button" class="aboutus__back" (click)="goBack()">
+      <i class="fa fa-arrow-left" aria-hidden="true"></i>
+      <span>{{'Back' | translate}}</span>
+    </button>
+  </header>
+   <main class="aboutus__content">
+    <app-basic-profile-new
+      class="aboutus__profile"
+      (actionPerformed)="profileActionPerformed($event)"
+      [profile]="basicProfile"
+      [selectedLocation]="selectedLocation"
+      [extras]="extras">
+    </app-basic-profile-new>
+
+    <section class="aboutus__card">
+      <h2 class="aboutus__card-title">{{'Our Story' | translate}}</h2>
+      <p class="aboutus__description">{{accountProfile.businessDesc}}</p>
+    </section>
+
+    <section class="aboutus__card">
+      <h2 class="aboutus__card-title">{{'Get In Touch' | translate}}</h2>
+      <div class="aboutus__contact-grid">
+        <ng-container *ngIf="accountProfile.emails && accountProfile.emails.length">
+          <a
+            *ngFor="let email of accountProfile.emails"
+            class="aboutus__contact-item"
+            [href]="'mailto:' + email.instance"
+            target="_blank"
+            rel="noopener">
+            <i class="fa fa-envelope aboutus__contact-icon" aria-hidden="true"></i>
+            <span>{{email.instance}}</span>
+          </a>
+        </ng-container>
+
+        <ng-container *ngIf="accountProfile.phoneNumbers && accountProfile.phoneNumbers.length">
+          <a
+            *ngFor="let phone of accountProfile.phoneNumbers"
+            class="aboutus__contact-item"
+            [href]="'tel:' + phone.instance"
+            target="_blank"
+            rel="noopener">
+            <i class="fa fa-phone aboutus__contact-icon" aria-hidden="true"></i>
+            <span> {{phone.instance}}</span>
+          </a>
+        </ng-container>
+      </div>
+
+      <div class="aboutus__social" *ngIf="accountProfile.socialMedia && accountProfile.socialMedia.length">
+        <span class="aboutus__social-label">{{'Follow Us' | translate}}</span>
+        <div class="aboutus__social-icons">
+          <a
+            *ngFor="let soc of accountProfile.socialMedia"
+            class="aboutus__social-link"
+            rel="noopener"
+            [href]="soc.value"
+            target="_blank">
+            <img
+              *ngIf="getSocialIcon(soc.resource)"
+              [src]="getSocialIcon(soc.resource)"
+              [alt]="soc.resource"
+              class="aboutus__social-icon" />
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+</section>
+

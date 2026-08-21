@@ -1,0 +1,19 @@
+<div class="member-form">
+    <div class="member-form__field"
+        *ngIf="globalsettings && globalsettings.customerSeriesEnum && globalsettings.customerSeriesEnum === 'MANUAL'">
+        <label class="member-form__label">{{customer_label | capitalizeFirst}} Id <span class="member-form__required">*</span></label>
+        <input type="text" [(ngModel)]="jaldeeid" (keyup)="valuechange()" class="member-form__input" id="jid"
+            placeholder="{{customer_label | capitalizeFirst}} Id" autocomplete="off">
+    </div>
+    <div class="member-form__field">
+        <label class="member-form__label">First Name<span class="member-form__required">*</span></label>
+        <input type="text" class="member-form__input" id="first_name" placeholder=""
+            [(ngModel)]="firstname" autocomplete="off" (keyup)="valuechange()" required pattern="[A-Za-z]" />
+    </div>
+    <div class="member-form__field">
+        <label class="member-form__label">Last Name<span class="member-form__required">*</span></label>
+        <input type="text" [(ngModel)]="lastname" (keyup)="valuechange()" (keypress)="isNumeric($event)"
+            class="member-form__input" id="lastname" placeholder="" autocomplete="off" required
+            pattern="[A-Za-z]">
+    </div>
+</div>

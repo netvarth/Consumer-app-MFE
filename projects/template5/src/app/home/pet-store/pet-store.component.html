@@ -1,0 +1,132 @@
+<main class='pet-store-page' *ngIf='config.enabled !== false' [ngStyle]='pageStyles'>
+  <section class='hero' *ngIf='config.layout?.renderOwnHeader !== false' [ngStyle]='heroStyles'>
+    <header class='store-header'>
+      <div class='store-header__row'>
+        <button class='logo-button' type='button' *ngIf='config.hero?.logo?.enabled !== false'
+          [disabled]='!config.hero?.logo?.link' (click)='open(config.hero?.logo?.link)'
+          [attr.aria-label]='config.hero?.logo?.imageAlt'>
+          <img *ngIf='config.hero?.logo?.image' [src]='config.hero?.logo?.image'
+            [alt]='config.hero?.logo?.imageAlt' loading='eager'>
+        </button>
+        <button class='location-button' type='button' *ngIf='config.hero?.deliveryLocation?.enabled !== false'
+          (click)='open(config.hero?.deliveryLocation?.link)'
+          [attr.aria-label]='config.hero?.deliveryLocation?.value'>
+          <img [src]='config.hero?.deliveryLocation?.locationIcon' alt=''>
+          <span><small>{{ config.hero?.deliveryLocation?.eyebrow }}</small>
+            <strong>{{ config.hero?.deliveryLocation?.value }}
+              <img [src]='config.hero?.deliveryLocation?.dropdownIcon' alt=''></strong></span>
+        </button>
+        <div class='header-actions'>
+          <button type='button' *ngFor='let action of actions; trackBy: trackById' (click)='open(action.link)'
+            [attr.aria-label]='action.label'>
+            <img *ngIf='!isImageFailed(action)' [src]='action.icon' alt='' (error)='imageFailed(action)'>
+            <span *ngIf='isImageFailed(action)' class='action-fallback'>{{ action.label.charAt(0) }}</span>
+          </button>
+        </div>
+      </div>
+      <form class='search' *ngIf='config.hero?.search?.enabled !== false' role='search'
+        (submit)='$event.preventDefault(); submitSearch()'>
+        <img [src]='config.hero?.search?.icon' alt=''>
+        <input [(ngModel)]='searchQuery' name='petStoreSearch' type='search'
+          [placeholder]='config.hero?.search?.placeholder'
+          [attr.aria-label]='config.hero?.search?.ariaLabel'
+          (keydown)='onSearchKeydown($event)'>
+      </form>
+    </header>
+    <div class='intro'>
+      <h1>{{ config.hero?.intro?.title }}</h1>
+      <p>
+        <!-- <img
+          *ngIf="config.hero?.intro?.subtitleIcon"
+          [src]="config.hero?.intro?.subtitleIcon"
+          alt=""
+        /> -->
+        <span class='sub-intro'>{{ config.hero?.intro?.subtitle }}</span>
+      </p>    </div>
+    <div class='category-section' *ngIf='sectionEnabled(config.categories)'>
+      <div class='category-row' *ngIf='categories.length; else categoriesEmpty'>
+        <button type='button' *ngFor='let item of categories; trackBy: trackById' (click)='open(item.link)'
+          [attr.aria-label]='item.name' [attr.data-testid]='item.id'>
+          <img *ngIf='!isImageFailed(item)' [src]='item.cardImage' [alt]='item.imageAlt || item.name'
+            loading='lazy' (error)='imageFailed(item)'>
+          <span *ngIf='isImageFailed(item)' class='card-fallback'>{{ item.name }}</span>
+        </button>
+      </div>
+      <ng-template #categoriesEmpty><div class='empty-state'>
+        <strong>{{ config.emptyStates?.categories?.title }}</strong>
+        <span>{{ config.emptyStates?.categories?.description }}</span>
+      </div></ng-template>
+      <button class='category-see-all' type='button' *ngIf='categories.length && config.categories?.seeAll'
+        (click)='open(config.categories?.seeAll?.link)'>{{ config.categories?.seeAll?.label }}</button>
+    </div>
+  </section>
+  <section class='content-section brands' *ngIf='sectionEnabled(config.brands)' aria-labelledby='brands-heading'>
+    <div class='section-heading' *ngIf='brands.length'>
+      <h2 id='brands-heading'>{{ config.brands?.title }}</h2>
+      <button type='button' *ngIf='config.brands?.seeAll' (click)='open(config.brands?.seeAll?.link)'>
+        {{ config.brands?.seeAll?.label }}</button>
+    </div>
+    <div class='brand-row' *ngIf='brands.length; else brandsEmpty'>
+      <button type='button' *ngFor='let item of brands; trackBy: trackById' (click)='open(item.link)'
+        [attr.aria-label]='item.name' [attr.data-testid]='item.id'>
+        <span class='brand-logo'>
+          <img *ngIf='!isImageFailed(item)' [src]='item.logo' [alt]='item.imageAlt || item.name'
+            loading='lazy' (error)='imageFailed(item)'>
+          <span class='image-fallback' *ngIf='isImageFailed(item)'>{{ item.name.charAt(0) }}</span>
+        </span>
+        <strong>{{ item.name }}</strong>
+      </button>
+    </div>
+    <ng-template #brandsEmpty><div class='empty-state'>
+      <strong>{{ config.emptyStates?.brands?.title }}</strong>
+      <span>{{ config.emptyStates?.brands?.description }}</span>
+    </div></ng-template>
+  </section>
+  <section class='content-section shops' *ngIf='sectionEnabled(config.shops)' aria-labelledby='shops-heading'>
+    <div class='section-heading' *ngIf='shops.length'>
+      <h2 id='shops-heading'>{{ config.shops?.title }}</h2>
+      <button type='button' *ngIf='config.shops?.seeAll' (click)='open(config.shops?.seeAll?.link)'>
+        {{ config.shops?.seeAll?.label }}</button>
+    </div>
+    <div class='shop-row' *ngIf='shops.length; else shopsEmpty'>
+      <button type='button' *ngFor='let item of shops; trackBy: trackById' (click)='open(item.link)'
+        [attr.aria-label]='item.name' [attr.data-testid]='item.id'>
+        <img *ngIf='!isImageFailed(item)' [src]='item.cardImage' [alt]='item.imageAlt || item.name'
+          loading='lazy' (error)='imageFailed(item)'>
+        <span class='card-fallback' *ngIf='isImageFailed(item)'>{{ item.name }}</span>
+      </button>
+    </div>
+    <ng-template #shopsEmpty><div class='empty-state'>
+      <strong>{{ config.emptyStates?.shops?.title }}</strong>
+      <span>{{ config.emptyStates?.shops?.description }}</span>
+    </div></ng-template>
+  </section>
+  <section class='offers' *ngIf='config.offers && config.offers.enabled !== false' aria-label='Offers'>
+    <div class='offer-carousel' *ngIf='offers.length; else offersEmpty'
+      (pointerdown)='onPointerDown($event)' (pointerup)='onPointerUp($event)'>
+      <button type='button' class='offer-card' *ngFor='let item of offers; let index = index; trackBy: trackById'
+        [class.active]='index === activeOfferIndex' [attr.aria-hidden]='index !== activeOfferIndex'
+        [attr.tabindex]='index === activeOfferIndex ? 0 : -1' (click)='open(item.link)'
+        [attr.aria-label]='item.name'>
+        <img *ngIf='!isImageFailed(item)' [src]='item.image' [alt]='item.imageAlt || item.name'
+          loading='lazy' (error)='imageFailed(item)'>
+        <span class='card-fallback' *ngIf='isImageFailed(item)'>{{ item.name }}</span>
+      </button>
+      <ng-container *ngIf='config.offers?.showArrows && offers.length > 1'>
+        <button type='button' class='offer-arrow previous' aria-label='Previous offer'
+          (click)='selectOffer(activeOfferIndex - 1)'>&#8249;</button>
+        <button type='button' class='offer-arrow next' aria-label='Next offer'
+          (click)='selectOffer(activeOfferIndex + 1)'>&#8250;</button>
+      </ng-container>
+    </div>
+    <div class='offer-indicators' *ngIf='config.offers?.showIndicators && offers.length > 1'>
+      <button type='button' *ngFor='let item of offers; let index = index; trackBy: trackById'
+        [class.active]='index === activeOfferIndex' (click)='selectOffer(index)'
+        [attr.aria-label]='item.name'></button>
+    </div>
+    <ng-template #offersEmpty><div class='empty-state'>
+      <strong>{{ config.emptyStates?.offers?.title }}</strong>
+      <span>{{ config.emptyStates?.offers?.description }}</span>
+    </div></ng-template>
+  </section>
+</main>

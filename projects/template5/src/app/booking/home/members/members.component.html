@@ -1,0 +1,67 @@
+<div class="member-outer">
+  <div class="member-list mgn-up-10" *ngIf="!multiple && allowSelection">
+    <div class="member-card"
+         role="radio"
+         tabindex="0"
+         [attr.aria-checked]="isChecked(parentCustomer.id)"
+         [class.member-card--selected]="isChecked(parentCustomer.id)"
+         (click)="handleOneMemberSelect(parentCustomer.id, parentCustomer.firstName, parentCustomer.lastName, parentCustomer.email, parentCustomer.title)"
+         (keyup.enter)="handleOneMemberSelect(parentCustomer.id, parentCustomer.firstName, parentCustomer.lastName, parentCustomer.email, parentCustomer.title)">
+      <div class="member-card__radio"></div>
+      <div class="member-card__details">
+        <div class="member-card__name">
+          <span *ngIf="parentCustomer.title" class="member-card__title">{{ parentCustomer.title }}</span>
+          <span class="member-card__name-span">{{ parentCustomer.firstName }} {{ parentCustomer.lastName }}</span>
+        </div>
+        <div class="member-card__contact" *ngIf="getPhoneDisplay(parentCustomer)">
+          <i class="fa fa-phone" aria-hidden="true"></i>
+          <span>{{ getPhoneDisplay(parentCustomer) }}</span>
+        </div>
+        <div class="member-card__contact" *ngIf="getEmailDisplay(parentCustomer)">
+          <i class="fa fa-envelope" aria-hidden="true"></i>
+          <span>{{ getEmailDisplay(parentCustomer) }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="member-card"
+         *ngFor="let memb of familyMembers"
+         role="radio"
+         tabindex="0"
+         [attr.aria-checked]="isChecked(memb.id)"
+         [class.member-card--selected]="isChecked(memb.id)"
+         [class.member-card--disabled]="memb.status === 'INACTIVE'"
+         (click)="memb.status === 'INACTIVE' ? null : handleOneMemberSelect(memb.id, memb.firstName, memb.lastName, memb.email, memb.title)"
+         (keyup.enter)="memb.status === 'INACTIVE' ? null : handleOneMemberSelect(memb.id, memb.firstName, memb.lastName, memb.email, memb.title)">
+      <div class="member-card__radio"></div>
+      <div class="member-card__details">
+        <div class="member-card__name">
+          <span *ngIf="memb.title" class="member-card__title">{{ memb.title }}</span>
+          <span class="member-card__name-span">{{ (memb.firstName + ' ' + memb.lastName) | capitalizeFirst }}</span>
+        </div>
+        <div class="member-card__contact" *ngIf="getPhoneDisplay(memb)">
+          <i class="fa fa-phone" aria-hidden="true"></i>
+          <span>{{ getPhoneDisplay(memb) }}</span>
+        </div>
+        <div class="member-card__contact" *ngIf="getEmailDisplay(memb)">
+          <i class="fa fa-envelope" aria-hidden="true"></i>
+          <span>{{ getEmailDisplay(memb) }}</span>
+        </div>
+        <div class="member-card__status" *ngIf="memb.status === 'INACTIVE'">
+          {{'Inactive' | translate}}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="member-list read-only" *ngIf="!allowSelection">
+    <div class="member-card member-card--selected" *ngFor="let member of selectedMember">
+      <div class="member-card__radio member-card__radio--readonly"></div>
+      <div class="member-card__details">
+        <div class="member-card__name">
+          <span *ngIf="parentCustomer.title" class="member-card__title">{{ parentCustomer.title }}</span>
+         <span class="member-card__name-span"> {{ member.firstName | capitalizeFirst }} {{ member.lastName | capitalizeFirst }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

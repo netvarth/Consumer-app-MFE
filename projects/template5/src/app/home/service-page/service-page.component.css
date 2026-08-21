@@ -1,0 +1,146 @@
+.dropdown button {
+  background: transparent;
+  border: none;
+}
+
+.location-bar {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.header .fa {
+  color: black !important;
+  background-color: white !important;
+  padding: 2.5px;
+  border-radius: 3px;
+
+}
+
+.card-inner-img img {
+  height: 60px !important;
+  width: 60px !important;
+  vertical-align: middle !important;
+  box-shadow: 0 4px 8px rgb(0 0 0 / 20%), 0 6px 20px rgb(0 0 0 / 19%);
+  padding: 5px;
+  border-radius: 50%;
+  float: right;
+}
+
+.phon-icon,
+.zoom-icon {
+  height: 75px !important;
+  width: 75px !important;
+  border-radius: 50%;
+}
+
+.card-inner-img-cont {
+  height: 100%;
+}
+
+.card-outer-cont img {
+  height: 75px !important;
+  width: 75px !important;
+  vertical-align: middle;
+  /* box-shadow: 0 4px 8px rgb(0 0 0 / 20%), 0 6px 20px rgb(0 0 0 / 19%);
+  padding: 5px; */
+  background-color: #fff;
+  ;
+  border-radius: 50%;
+}
+
+.img-responsive {
+  max-width: inherit !important;
+}
+
+.cut-text {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  width: 175px;
+  white-space: nowrap;
+}
+
+.description {
+  font-size: 0.75rem !important;
+}
+
+ul.service-ul li {
+  flex: 1 0 25%;
+  background: url('https://d2199iy1o5ikw9.cloudfront.net/customapp/assets/images/Serviceimg5.jpg') no-repeat left;
+  list-style: none;
+  margin: 0;
+  padding: 15px 15px 15px 60px;
+}
+
+/* @media (max-width: 768px) {
+  ul.service-ul {
+    display: inline-block;
+    width: 100%;
+  }
+} */
+ul {
+  padding-left: 10px;
+}
+
+@media (min-width: 768px) {
+
+  .marginalignmentincards,
+  ul.service-ul {
+    display: flex;
+  }
+}
+
+.my-auto {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.rupee-font {
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+
+.bold {
+  font-weight: 700;
+}
+
+.user-name {
+  font-size: 12px;
+  color: #1e4079;
+}
+@media (max-width: 450px) {
+  .user-name {
+    font-size: 10px !important;
+  }
+}
+h5.service-name {
+  font-weight: 800;
+  font-size: 1rem;
+}
+.service-head-cont h5 {
+  height: 50px;
+}
+
+.service-head-cont h5, .card-inner-img-cont i {
+  display: table-cell;
+  vertical-align: middle;
+  line-height: 1.5;
+}
+.service-head-cont, .card-inner-img-cont {
+  height: 100%;
+  /* display: table; */
+}
+/* .service-head-cont h5, .card-inner-img-cont i {
+  color: #fff;
+  display: table-cell;
+  vertical-align: middle;
+}*/
+
+.card-inner-img-cont i {
+  height: 60px!important;
+  width: 60px!important;
+  box-shadow: 0 4px 8px #0003, 0 6px 20px #00000030;
+  border-radius: 50%;
+  background: #ffff;
+  margin-top: auto!important;
+  margin-bottom: auto!important;
+} 

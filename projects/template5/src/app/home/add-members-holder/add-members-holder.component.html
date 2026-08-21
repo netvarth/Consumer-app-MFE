@@ -1,0 +1,30 @@
+<div class="mat-dialog-title">
+    <div class="headerText" *ngIf="data && data.type && family_member_cap ">{{ data.type | capitalizeFirst }} -
+        {{family_member_cap}}
+        <button #queue mat-dialog-close class=" modalCloseTemp" if="btnClose">
+            <i class="fa fa-window-close hoverCross" aria-hidden="true"></i>
+        </button>
+    </div>
+</div>
+<div class="consumer-add-member p-3 mat-dialog-content">
+    <app-consumer-add-member [consumerData]="consumerData" [calledFrom]="'addmemberholder'" (returnDetails)="handleReturnDetails($event)">
+    </app-consumer-add-member>
+    <div class="flexClassImg">
+        <div>
+            <button *ngIf="cancel_btn_cap" type="button" id="btnClose1" mat-dialog-close [disabled]="disableButton"
+                class="cancelBtn cursor-pointer text-capitalize">{{cancel_btn_cap}}</button>
+        </div>
+        <div *ngIf="data && data.type && data.type == 'add'">
+            <button mat-button (click)="handleSaveMember()" type="submit" [disabled]="disableButton"
+                class="activityBtn cursor-pointer text-capitalize" id="btnSave">
+                <span *ngIf="save_btn_cap ">{{save_btn_cap}}</span>
+            </button>
+        </div>
+        <div *ngIf="data && data.type && data.type == 'edit'">
+            <button mat-button (click)="handleSaveMember()" type="submit" id="btnUpdate" [disabled]="disableButton"
+                class="activityBtn cursor-pointer text-capitalize">
+                <span *ngIf="update_btn_cap">{{update_btn_cap}}</span>
+            </button>
+        </div>
+    </div>
+</div>

@@ -2,7 +2,7 @@ const { withNativeFederation, shareAll } = require('@angular-architects/native-f
 
 module.exports = withNativeFederation({
 
-  name: 'template5',
+  name: 'template6',
 
   exposes: {
     './Home': './projects/template5/src/app/home/home.module.ts'

@@ -1,0 +1,16 @@
+<div class="row m-0 px-2" >
+    <div class="col-6 col-sm-4 pad-3" *ngFor="let quickAction of actionList" [id]="quickAction.targetId"
+        (click)="cardActionPerformed(quickAction)">
+        <div class="card">
+            <div class="img-action">
+                <img class="act-img img-responsive" src="{{quickAction.image}}" alt="">
+            </div>
+            <div>
+                <h3 class="hed"><div class="head-sub" [innerHtml]="quickAction.title"></div></h3>
+            </div>
+            <div>
+                <p class="detai">{{quickAction.description}}</p>
+            </div>
+        </div>
+    </div>
+</div>

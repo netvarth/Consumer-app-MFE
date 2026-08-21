@@ -1,0 +1,33 @@
+<form novalidate class="ynw-common-form">
+    <h1 class="mat-dialog-title">{{rate_your_visit}}
+        <button #queue mat-dialog-close class="modal_close" tabindex="-1" id="btn_close">
+            <i class="fa fa-window-close" aria-hidden="true"></i>
+        </button>
+    </h1>
+    <mat-dialog-content>
+        <div class="ratingdiv">
+            <div class="form-group" *ngIf="load_complete">
+                <label class="col-form-label" for="displayName">{{rate_cap}}</label>
+                <app-rating-star [ratingval]='rate_value' (ratingreturn)="handleratingClick($event)"></app-rating-star>
+            </div>
+            <div class="form-group">
+                <mat-form-field>
+                    <label class="col-form-label" for="displayName">{{message_cap}} </label>
+
+                    <textarea matInput class="form-control" [(ngModel)]="message" id="message"
+                        [ngModelOptions]="{standalone: true}">
+            </textarea>
+                </mat-form-field>
+            </div>
+        </div>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+        <button type="button" mat-dialog-close class="cs-btn bt2" id="btn_cancel" >{{cancel_btn_cap}}</button>
+        <button type="button" mat-button class="cs-btn bt1" id="btn_rate" (click)="setRate()" [disabled]="checkDisablebutton()">
+            {{rate_btn_cap}}
+        </button>
+    </mat-dialog-actions>
+</form>
+<app-field-error-display [displayError]="true" *ngIf="api_error" errorMsg="{{api_error}}"></app-field-error-display>
+<app-form-success-display [displayMsg]="true" *ngIf="api_success" successMsg="{{api_success}}">
+</app-form-success-display>

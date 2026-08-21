@@ -1,0 +1,18 @@
+<div class="p-0" [ngClass]="theme?theme:''">
+    <div class="card-outer-cont card box-rounded">
+        <div class="pointer-cursor name"
+            (click)="cardActionPerformed(item.type, null, null, null, department.departmentId, $event)">
+            <h5 class="line-clamp-ln2 mgn-bt-5" *ngIf="department.departmentName">{{department.departmentName}}</h5>
+        </div>
+        <div class="p-0 card-inner-img-cont">
+            <div class="img-circle" *ngIf="domain == 'religiousPriests'">
+                <img class="img-responsive" *ngIf="department && department.departmentLogo && department.departmentLogo[0]" src="{{department.departmentLogo[0].s3path}}"/>
+                <img class="img-responsive" *ngIf="department && department.departmentLogo && !department.departmentLogo[0]" src="{{cdnPath}}customapp/assets/images/webP/hindu-temple-clipart.webp"/>
+            </div>
+            <div class="img-circle" *ngIf="domain == 'healthCare'">
+                <img class="img-responsive" *ngIf="department && department.departmentLogo && department.departmentLogo[0]" src="{{department.departmentLogo[0].s3path}}"/>
+                <img class="img-responsive" *ngIf="department && department.departmentLogo && !department.departmentLogo[0]" src="{{cdnPath}}customapp/assets/images/webP/health-dept.webp"/>
+            </div>
+        </div>
+    </div>
+</div>

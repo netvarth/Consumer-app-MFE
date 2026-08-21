@@ -1,0 +1,23 @@
+<div *ngIf="smallDevice" class="title">
+    <span><b>{{businessInfo.businessName}}</b></span><br>
+    <!-- <span><a href="{{businessInfo.googleMapUrl}}" target="_blank"><i class="fa fa-map-marker"
+                aria-hidden="true"></i>&nbsp;{{businessInfo.locationName}}</a></span> -->
+    <span><i class="fa fa-map-marker"
+                    aria-hidden="true"></i>&nbsp;{{businessInfo.locationName}}</span>
+</div>
+
+<div  *ngIf="!smallDevice" class="title">
+    <div class="provider-profile-image text-center m-5" *ngIf="businessInfo.logo">
+        <img src="{{businessInfo.logo.url}}" width="120px" height="120px" alt="Provider Profile Image"
+            class="rounded-circle shadow-sm">
+    </div>
+    <div class="provider-details m-5 text-dark text-center">
+        <h3><b>{{businessInfo.businessName}}</b></h3>
+        <h6>
+            <!-- <a href="{{businessInfo.googleMapUrl}}" target="_blank"><i class="fa fa-map-marker"
+                    aria-hidden="true"></i>&nbsp;{{businessInfo.locationName}}</a> -->
+            <span><i class="fa fa-map-marker"
+                    aria-hidden="true"></i>&nbsp;{{businessInfo.locationName}}</span>
+        </h6>
+    </div>
+</div>

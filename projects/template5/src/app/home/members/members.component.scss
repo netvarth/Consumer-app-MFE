@@ -1,0 +1,605 @@
+.headerBorder{
+    border-bottom: 1.21389px solid #DADCE0 !important;
+    display: flex;
+    gap: 5px;
+    flex-direction: row !important;
+    padding: 15px !important;
+}
+.clrChangeHeader{
+    color: #464849 !important;
+    cursor: pointer;
+}
+.accountEditText{
+    color: #5F6368;
+    font-size: 13px;
+    margin-top: 5px;
+}
+.myAcText{
+    color: rgba(0, 0, 0, 0.87) !important;
+    font-size: 18px;
+    font-weight: bold;
+}
+.customCard{
+    padding: 5px;
+    box-shadow: 0 0 10px rgba(0,0,0,.05)!important;
+    border-radius: 5px;
+    background: #fff;
+    background-clip: padding-box;
+    border: none!important;
+    width: 100%;
+}
+.mainFlex{
+    display: flex;
+    margin-top: 15px;
+    gap: 30px;
+    width: 100%;
+}
+.tabText{
+    font-size: 14px;
+    font-weight: 600;
+    color: #878994;
+    margin-top: 15px;
+    cursor: pointer;
+    font-family: 'Open Sans';
+    font-style: normal;
+    padding: 10px;
+    margin-left: 10px;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+.tabText:hover{
+    color:#0D2348 !important;
+    font-weight: bold;
+}
+.tabImgCustom{
+  height: 30px !important;
+    width: 30px !important;
+    border: 1px solid #413F3F !important;
+    background: #413F3F !important;
+    padding: 6px !important;
+    border-radius: 50% !important;
+}
+.fullWidth{
+    width: 100%;
+    padding: 20px;
+    box-shadow: 0 0 10px rgb(0 0 0 / 5%) !important;
+    border-radius: 5px;
+    background: #fff;
+    background-clip: padding-box;
+    border: none !important;
+    width: 100%;
+}
+.fullWidthLinks{
+    width: 25%;
+    background: #EDF1F7;
+
+}
+.userImg{
+    border: 1px solid #AAACAF;
+    border-radius: 50%;
+    padding: 10px;
+    height: 85px;
+    width: 85px;
+}
+.newImgUpload {
+    box-shadow: 0.417685px 2.50611px 8.77138px 1.25305px rgb(30 64 121 / 15%) !important;
+    border-radius: 3.75916px !important;
+    border: 0px solid !important;
+    padding: 6px 12px;
+    background: #0D2348 !important;
+  }
+  .flexClassImg{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+  }
+  .deleteBtn{
+    box-shadow: 0.417685px 2.50611px 8.77138px 1.25305px rgb(30 64 121 / 15%) !important;
+    border-radius: 3.75916px !important;
+    padding: 6px 12px;
+    background: #FFFFFF;
+    border: 1.03704px solid #AAACAF !important;
+    color: #AAACAF;
+  }
+  .btntxt{
+    color: #fff;
+    font-weight: 500 !important;
+    font-size: 15px;
+    font-family: 'Open Sans';
+  }
+  .btntxtClr{
+    color: #AAACAF;
+    font-weight: 500 !important;
+    font-size: 15px;
+    font-family: 'Open Sans';
+  }
+  .forMFieldInput{
+    border: none !important;
+    color: #403B48 !important;
+  }
+  .matFormField{
+    width: 100% !important;
+  }
+  .labeltag{
+    font-size: 15px;
+    color: rgba(58, 53, 65, 0.68);
+  }
+  .widthCls{
+    width: 100%;
+  }
+  .tabTextCstmClr{
+    /* color: #33CCCC;
+    font-weight: bold; */
+    color: #413F3F;
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 700;
+    background: #FFFFFF;
+    padding: 10px;
+    margin-left: 10px;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+  }
+  .customCardMr{
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,.05)!important;
+    border-radius: 5px;
+    background: #fff;
+    background-clip: padding-box;
+    border: none!important;
+    width: 100%;
+  }
+  .nameFlex{
+    display: flex;
+    gap: 5px;
+    padding: 15px;
+  }
+  .tHEAD{
+    background: #FAFAFA;
+    height: 50px;
+  }
+  .tHEAD .tHeadTr{
+    padding: 15px !important;
+    color: #C2C3C8;
+    font-weight: 500!important;
+    font-size: 15px !important;
+  }
+  .padCls{
+    padding: 5px;
+  }
+  .cstmnameText{
+    color: #3D3D3D;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .cstmGenderText{
+    font-size: 13px;
+    font-weight: 500;
+    color: #353638;
+  }
+  .btnClrText{
+    /* color: #45C3D3;
+    font-size: 14px; */
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .profileCls{
+    display: flex;
+    gap: 5px;
+    background:#0D2348;
+    border: 0.818713px solid#0D2348;
+    border-radius: 46.6667px;
+    align-items: baseline;
+    padding: 5px;
+    cursor: pointer;
+    width: 7rem;
+    justify-content: center;
+  }
+  .deleteCls{
+    background: #ff6a6a !important;
+    display: flex;
+    grid-gap: 5px;
+    gap: 5px;
+    border: 0.818713px solid #ff6a6a !important;
+    border-radius: 46.6667px;
+    align-items: baseline;
+    padding: 5px;
+    cursor: pointer;
+    width: 7rem;
+    justify-content: center;
+  }
+  .btnClrTextRemove{
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .custpadCls{
+    padding: 15px;
+  }
+  .table-outer table tbody tr td{
+    border-bottom: 1px solid #E9E9E9 !important;
+    border-top: none !important;
+  }
+  .table-outer table{
+    border: none;
+  }
+  .addFamilyMemberBtn{
+    background: #0D2348;
+    border-radius: 5.0633px;
+    border: none;
+    padding: 12px;
+    color: #fff;
+    cursor: pointer;
+    outline: none;
+  }
+  .btnTextCust{
+    text-align: center;
+    text-transform: none !important;
+    color: #FFFFFF;
+    font-style: normal;
+    font-weight: 500;
+    margin-left: 10px;
+  }
+  
+  .table-outer table tbody tr:nth-of-type(odd){
+    background: #fff !important;
+  }
+
+  /* for small device */
+  .membersCard{
+    background: #FAFAFA !important;
+    border-radius: 5px !important;
+    box-shadow: none !important;
+    margin-bottom: 15px;
+  }
+  .memberInfoHeader{
+    padding: 5px;
+    color: #C2C3C8;
+    font-size: 14px;
+  }
+  .memberName{
+    display: flex;
+    color: #000000;
+    font-size: 15px;
+    font-weight: 600;
+    gap: 10px;
+    padding: 5px;
+  }
+  .memberInfobody{
+    padding: 5px;
+    color: #353638;
+    font-size: 14px;
+    font-weight: 400;
+  }
+  .memberInfo{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-top: 10px;
+  }
+  .customwidth{
+    width: 100%;
+  }
+  .matMenuBtn{
+    background: #FFFFFF !important;
+    overflow: hidden !important;
+    color: #33CCCC !important;
+  }
+  .editIcon{
+    color: #33CCCC !important;
+  }
+  .deleteIcon{
+    color: #EF6359 !important;
+  }
+  .matMenuDeleteBtn{
+    background: #FFFFFF !important;
+    overflow: hidden !important;
+    color: #EF6359 !important;
+  }
+  .relatedLink{
+    background: #FFFFFF;
+    border: 0.892595px solid #45C3D3;
+    border-radius: 2.24715px;
+    padding: 10px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #45C3D3;
+    font-weight: 600;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .tabImgCustomSmall{
+    background: #45C3D3 !important;
+    border: none !important;
+    color: #ffffff !important;
+    text-align: center;
+    padding: 7px !important;
+    font-size: 15px;
+  }
+  .empty{
+    border: 0.7px dashed #E8E8E8;
+    margin-top: 30px;
+    margin-bottom: 30px
+  }
+
+h5 {
+    font-size: 1.25rem;
+    margin-bottom: 10px;
+}
+.content .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid rgba(0,0,0,.125);
+    border-radius: 0.25rem;
+}
+.title-gb {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+.back-btn {
+    font-size: 1.25rem!important;
+}
+.addbt {
+    position: relative;
+    cursor: pointer;
+    color: #00aef2;
+}
+.content.see-pages .outer-card {
+    display: flex;
+    width: 100%!important;
+}
+.content.see-pages .outer-card .card.members-card {
+    width: 75%;
+    margin-left: 5px!important;
+}
+.content.see-pages .outer-card .right-menu {
+    flex-grow: 1;
+    margin-left: 40px;
+}
+.content.see-pages .outer-card .right-menu .right-menu-header {
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+.addbt:before {
+    font-family: custom-ynw!important;
+    content: "\45";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.fa-arrow-left {
+    color: black;
+}
+.table-outer table {
+    border: 1px solid #f2f2f2;
+}
+.content.see-pages .outer-card .card .d-tbl .table {
+    margin-bottom: 0;
+}
+.content.see-pages .outer-card .right-menu ul li {
+    list-style: none;
+    font-size: .875rem;
+    color: #00aef2;
+    margin-bottom: 10px;
+    cursor: pointer;
+    display: table;
+    padding-left: 30px;
+    position: relative;
+}
+.related-links {
+    margin-bottom: 30px!important;
+}
+.table-outer table thead th {
+    font-size: .875rem;
+    font-weight: 600;
+    vertical-align: top;
+    border: none;
+}
+.table-outer table tbody tr td {
+    font-size: .875rem;
+    border-color: #f2f2f2;
+    vertical-align: top;
+    min-height: 45px;
+}
+.table-outer table tbody tr:nth-of-type(odd) {
+    background: rgba(0,0,0,.03);
+}
+.mat-icon-button .mat-icon {
+    line-height: 24px;
+}
+.content.see-pages .outer-card .card .d-tbl .table tbody tr td.mre {
+    text-align: center;
+}
+.content.see-pages .outer-card .right-menu ul {
+    margin: 0;
+    padding: 0;
+}
+@media (min-width: 768px) and (max-width: 991px){
+.d-tbl table, .d-tbl tbody, .d-tbl td, .d-tbl th, .d-tbl thead, .d-tbl tr {
+    display: block;
+    font-size: .875rem;
+}
+}
+@media only screen and (max-width: 767px){
+.table-outer table, .table-outer tbody, .table-outer td, .table-outer th, .table-outer thead, .table-outer tr {
+    display: block;
+    font-size: .875rem;
+}
+}
+@media only screen and (max-width: 767px){
+.table-outer td {
+    border: none;
+    border-bottom: 1px solid #eee;
+    position: relative;
+    white-space: normal;
+    text-align: left;
+    display: flex;
+}
+}
+@media only screen and (max-width: 767px){
+.table-outer thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+}
+}
+@media (min-width: 768px) and (max-width: 991px){
+.d-tbl thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+}
+}
+@media only screen and (max-width: 767px){
+.table-outer td:before {
+    top: 12px;
+    left: 10px;
+    width: 45%;
+    padding-right: 10px;
+    white-space: pre-wrap;
+    text-align: left;
+    font-weight: 600;
+    content: attr(data-title);
+}
+}
+@media (min-width: 768px) and (max-width: 991px){
+.d-tbl td:before {
+    top: 12px;
+    left: 10px;
+    width: 45%;
+    padding-right: 10px;
+    white-space: pre-wrap;
+    text-align: left;
+    font-weight: 600;
+    content: attr(data-title);
+}
+}
+@media (min-width: 768px) and (max-width: 991px){
+.d-tbl td {
+    border: none;
+    border-bottom: 1px solid #eee;
+    position: relative;
+    white-space: normal;
+    text-align: left;
+    display: flex;
+}
+}
+@media (max-width: 992px){
+.content.see-pages .outer-card .card.members-card {
+    width: 60% !important;
+}
+}
+.mbt-mobile-show {
+    display: none;
+}
+@media (max-width: 575px) {
+.content.see-pages .outer-card .card.members-card {
+    width: 100% !important;
+}
+}
+@media only screen and (max-width: 766px){
+.content.see-pages .outer-card .card .d-tbl .table tbody tr td.mre .mbt-mobile-show {
+    display: block;
+    text-align: right;
+}
+}
+.content.see-pages .outer-card .card .d-tbl .table tbody tr td.mre .mbt-mobile-show {
+    width: 100%;
+    justify-content: flex-end;
+}
+@media only screen and (max-width: 767px){
+    .mbt .mat-icon-button {
+        display: none;
+    }
+}
+.content.see-pages .outer-card .card .d-tbl .table tbody tr td.mre .mbt-mobile-show .deletecls, .content.see-pages .outer-card .card .d-tbl .table tbody tr td.mre .mbt-mobile-show .editcls {
+    position: relative;
+    border: none;
+    background: transparent;
+    padding-left: 20px;
+    font-weight: 500;
+    margin-right: 15px;
+    cursor: pointer;
+}
+@media only screen and (max-width: 575px){
+.content.see-pages .outer-card {
+    flex-direction: column;
+}
+}
+@media only screen and (max-width: 575px){
+    h5 {
+        font-size: 17.5px !important;
+    }
+    .table-outer table tbody tr td {
+        font-size: 12.25px !important;
+    }
+}
+.content.see-pages .outer-card .card .d-tbl .table tbody tr td.mre .mbt-mobile-show .deletecls:before {
+    content: "\4b";
+    font-family: custom-ynw!important;
+    position: absolute;
+    left: 0;
+    font-size: .875rem;
+}
+.content.see-pages .outer-card .card .d-tbl .table tbody tr td.mre .mbt-mobile-show .editcls:before {
+    font-family: custom-ynw!important;
+    content: "\78";
+    position: absolute;
+    left: 0;
+    font-size: .875rem;
+}
+.content.see-pages .outer-card .right-menu ul li:before {
+    position: absolute;
+    left: 0;
+    top: 3px;
+}
+.icon-dashboard:before {
+    content: "\77";
+}
+.icon-profile:before {
+    content: "\6c";
+}
+.icon-password:before {
+    content: "\23";
+}
+.icon-mobile:before {
+    content: "\22";
+}
+.no-member {
+    text-align: center;
+}
+.fam-members {
+    display: flex;
+    flex-direction: row-reverse;
+}
+.no-members {
+    text-align: center;
+    margin-top: 85px;
+}
+.customCard {
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .05) !important;
+    border-radius: 5px;
+    background: #fff;
+    background-clip: padding-box;
+    border: none !important;
+    width: 100%;
+  }

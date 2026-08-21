@@ -1,0 +1,18 @@
+<div>
+    <i class="cstmServiceIcon" *ngIf="booking['info'] && booking['info'].service && booking['info'].service.serviceType 
+    && booking['info'].service.serviceType === 'virtualService'" [class]="booking['iconClass']"></i>
+</div>
+<div class="service-icon" *ngIf="booking['info'] && booking['info'].service.servicegallery && booking['info'].service.servicegallery.length > 0 
+&& booking['info'].service.serviceType === 'physicalService'">
+    <img class="cstmServiceIcon" [src]="booking['info'].service.servicegallery[0].thumbUrl" alt=" Service Image">
+</div>
+<div class="service-icon"
+    *ngIf="!booking['info'].servicegallery && booking['info'].service.serviceType && booking['info'].service.serviceType !== 'virtualService' 
+    && booking['info'].service.serviceType === 'physicalService' && booking['domain'] !== 'religiousPriests'">
+    <img class="cstmServiceIcon" src="{{cdnPath}}assets/images/meeting_Artboard.png" alt="Physical Service Image">
+</div>
+<div class="service-icon"
+    *ngIf="!booking['info'].service.servicegallery && booking['info'].service.serviceType && booking['info'].service.serviceType !== 'virtualService' 
+    && booking['info'].service.serviceType === 'physicalService' && booking['domain'] === 'religiousPriests'">
+    <img class="cstmServiceIcon" src="{{cdnPath}}assets/images/hindu-temple-clipart.jpg" alt="Physical Service Image">
+</div>

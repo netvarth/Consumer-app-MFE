@@ -1,0 +1,286 @@
+<section class="container p-0" [ngClass]="theme">
+   <div class="back-section" (click)="goBack()">
+    <i class="fa fa-arrow-left" aria-hidden="true"></i>
+    <span class="back-btn" >Back</span>
+  </div>
+  <div class="content status-page">
+    <div class="card no-padding-small">
+      <div class="copy locd" *ngIf="!apiloading">
+        <div class="text-center mb-4">
+          <img class="logo" *ngIf="booking['account']['logo']" [src]="booking['account']['logo']" width="80"
+            height="80">
+          <h3 *ngIf="booking['account']['name']">{{booking['account']['name']}}</h3>
+          <h4 class="mb-2" *ngIf="!locationVisible && booking['account']['place']">{{booking['account']['place']}}<span
+              class="icon-location"></span></h4>
+        </div>
+        <div class="book-head d-flex mt-4" *ngIf="!hasEncId">
+          <div class="">
+            <mat-form-field>
+              <input matInput placeholder='Enter Confirmation id' class="form-conspanol" [(ngModel)]="encId"
+                autocomplete="off">
+            </mat-form-field>
+          </div>
+          <div class="col-md-2 col-2 col-sm-2 p-0 details-search">
+            <span class="cs-btn bt3 mat-button status-btn" (click)="gespanetails(encId)">Check your status</span>
+          </div>
+        </div>
+        <div class="booking-details-container card" *ngIf="booking['info']">
+          <div class="book-details">{{booking['title'] | translate}}</div>
+          <div class="row justify-content-between p-2">
+            <div class="col-12  mt-2" [ngClass]="{'col-lg-7 col-md-7': !booking['isOrder'], 'col-lg-5 col-md-5': booking['isOrder']}">
+              <div class="card">
+                <div class="d-lg-flex justify-content-between card-main">
+                  <div class="d-flex">
+                    <h3 [ngClass]="booking['statusClass']"><i class="fa fa-circle alert"></i>&nbsp;{{booking['status']}}
+                    </h3>
+                  </div>
+                  <div class="detail">
+                    <span align="right" class="p-heading status-style">{{booking['idCaption']}}</span>
+                    <span width="2%">&nbsp;:&nbsp;</span>
+                    <span class="status-text">{{booking['id']}}</span>
+                  </div>
+                </div>
+                <hr />
+                <div class="booking">
+                  <div class="p-heading status-style">{{booking['bookingForCaption'] | translate}}</div>
+                  <div class="row-style">
+                    <div class="">
+                      <img class="img-style" [src]="booking['genderIcon']" />
+                    </div>
+                    <div class="">
+                      <div class="forwhom status-details status-text" *ngFor="let member of booking.bookingFor">
+                        <span *ngIf="member.title">{{member.title}} &nbsp;</span>
+                        <span *ngIf="member.firstName.length>0 || member.lastName.length>0">{{member.firstName |
+                          capitalizeFirst}} {{member.lastName | capitalizeFirst}}</span>
+                        <span
+                          *ngIf="member.firstName.length==0 && member.lastName.length==0">{{member.memberJaldeeId}}</span>
+                      </div>
+                      <div class="" *ngIf="booking['tokenNumber']">
+                        <span class="status-details status-styles p-heading">{{'Token No :' | translate}}</span>
+                        <span>&nbsp;:&nbsp;</span>
+                        <span class="status-text">{{booking['tokenNumber']}}</span>
+                      </div>
+                      <div *ngIf="booking.phoneNumber && booking['info'].countryCode">
+                        <span class="status-details status-styles p-heading">Phone </span>
+                        <span>&nbsp;:&nbsp;</span>
+                        <span class="status-text">{{booking['info'].countryCode}}{{booking.phoneNumber}}</span>
+                      </div>
+                      <div *ngIf="booking['whatsApp']">
+                        <span class="status-details status-styles p-heading">WhatsApp </span>
+                        <span>&nbsp;:&nbsp;</span>
+                        <span class="status-text">{{booking['whatsApp']}}</span>
+                      </div>
+                      <div *ngIf="booking?.bookingFor?.[0]?.email">
+                        <span class="status-details status-styles p-heading">Email </span>
+                        <span>&nbsp;:&nbsp;</span>
+                        <span class="status-text">{{booking?.bookingFor?.[0]?.email}}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <hr />
+                <div *ngIf="booking['service']" class="mt-2">
+                  <span class="status-styles p-heading">Service</span>
+                  <div class="status-text d-flex align-center">
+                    <span class="service-icon" *ngIf="booking['service'].serviceType == 'virtualService'">
+                      <i *ngIf="booking['service'].serviceType == 'virtualService' && booking['service'].virtualCallingModes[0].callingMode =='GoogleMeet'"
+                        class="fa meet-icon know-status-i"></i>
+                      <i *ngIf="booking['service'].serviceType == 'virtualService' && booking['service'].virtualCallingModes[0].callingMode =='Zoom'"
+                        class="fa zoom-icon know-status-i"></i>
+                      <i *ngIf="booking['service'].serviceType == 'virtualService' && booking['service'].virtualCallingModes[0].callingMode =='VideoCall'"
+                        class="fa jvideo-icon jvideo-icon-s jvideo-icon-mgm5 know-status-i"></i>
+                      <i *ngIf="booking['service'].serviceType == 'virtualService' && booking['service'].virtualCallingModes[0].callingMode =='WhatsApp' && booking['service'].virtualServiceType =='audioService'"
+                        class="fa wtsapaud-icon know-status-i"></i>
+                      <i *ngIf="booking['service'].serviceType == 'virtualService' && booking['service'].virtualCallingModes[0].callingMode =='WhatsApp' && booking['service'].virtualServiceType =='videoService'"
+                        class="fa wtsapvid-icon know-status-i"></i>
+                      <i *ngIf="booking['service'].serviceType == 'virtualService' && booking['service'].virtualCallingModes[0].callingMode =='Phone'"
+                        class="fa phon-icon know-status-i"></i>
+                    </span>
+                    {{booking['service']?.name}}
+                  </div>
+                </div>
+                <div class="mt-2" *ngIf="!booking['isOrder']">
+                  <span class="status-styles p-heading">{{'Date & Time' | translate}}</span>
+                  <div class="status-text"> {{booking['bookingDate'] | date: newDateFormat}},
+                    {{booking['bookingTime']}}</div>
+                </div>
+                <div class="mt-2" *ngIf="booking['personsAhead'] && booking['personsAhead']>=0">
+                  <span class="status-styles p-heading">{{'Persons Ahead' | translate}}</span>
+                  <div class="status-text">{{booking['personsAhead']}}</div>
+                </div>
+                <div class="mt-2" *ngIf="booking['waitTime']">
+                  <span class="status-styles p-heading">{{'Est. wait Time' | translate}}</span>
+                  <div class="status-text">{{booking['waitTime']}}</div>
+                </div>
+                <div class="mt-2" *ngIf="booking['info'].serviceTime">
+                  <span class="status-styles p-heading">Service starts at </span>
+                  <div class="status-text">{{booking['info'].serviceTime}}</div>
+                </div>
+                <div class="mt-2" *ngIf="booking['info'].amountPaid > 0">
+                  <span class="status-styles p-heading">Amount paid</span>
+                  <span class="status-text"><span class="rupee-font">{{booking['info'].amountPaid | currency:'&#8377;'}}
+                    </span> </span>
+                </div>
+
+                <div *ngIf="booking['info'].homeDeliveryAddress">
+                  <span class="status-styles">Home Delivery Address </span>
+                  <span>&nbsp;:&nbsp;</span>
+                  <span class="status-text">
+                    <span><br>
+                      {{booking['info'].homeDeliveryAddress.firstName }}
+                      &nbsp;{{booking['info'].homeDeliveryAddress.lastName}}
+                    </span><br>
+                    <span>
+                      {{booking['info'].homeDeliveryAddress.address }}
+                    </span><br>
+                    <span *ngIf="booking['info'].homeDeliveryAddress.city || booking['info'].homeDeliveryAddress.postalCode">
+                      {{booking['info'].homeDeliveryAddress.city }} ,
+                      {{booking['info'].homeDeliveryAddress.postalCode}}
+                    </span><br *ngIf="booking['info'].homeDeliveryAddress.city || booking['info'].homeDeliveryAddress.postalCode">
+                    <span>
+                      {{booking['info'].homeDeliveryAddress.landMark }}
+                    </span><br *ngIf="booking['info'].homeDeliveryAddress.landMark">
+                    <span>
+                      {{booking['info'].homeDeliveryAddress.countryCode }}
+                      {{booking['info'].homeDeliveryAddress.phoneNumber}}
+                    </span>
+                  </span>
+                </div>
+
+                <div *ngIf="booking['isOrder']">
+                  <span class="status-styles" *ngIf="booking['info'].storePickup">Store pickup Time</span>
+                  <span class="status-styles" *ngIf="booking['info'].homeDelivery">Delivery Date & Time</span>
+                  <div class="status-text"> {{booking['info'].orderDate | date: newDateFormat }}
+                    <ng-container
+                      *ngIf="booking['info'].timeSlot && booking['info'].timeSlot.sTime && booking['info'].timeSlot.eTime">,
+                      {{booking['info'].timeSlot.sTime}} -
+                      {{booking['info'].timeSlot.eTime}} </ng-container>
+                  </div>
+                </div>
+                <div
+                  *ngIf="booking['isOrder'] && ((booking['info'].bill && booking['info'].bill.amountPaid > 0) || booking['info'].advanceAmountPaid > 0)">
+                  <span class="status-styles">Amount paid</span>
+                  <span>&nbsp;:&nbsp;</span>
+                  <span class="rupee-font status-text"><span class="rupee-font">
+                    </span> {{((booking['info'].bill) ? (booking['info'].bill.amountPaid | currency:'&#8377;') :
+                    (booking['info'].advanceAmountPaid | currency:'&#8377;'))}}</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 mt-2" [ngClass]="{'col-lg-5 col-md-5': !booking['isOrder'], 'col-lg-7 col-md-7': booking['isOrder']}">
+              <div class="card no-padding-small" *ngIf="booking['isOrder']">
+                <div *ngIf="booking['info'].store && booking['info'].store.name">
+                  <h3 class="p-2 fw-bold">{{booking['info'].store.name}}</h3>
+                </div>
+                <div class="my-4 order-status-grid"
+                  *ngIf="booking['info'].itemDtoList && booking['info'].itemDtoList.length > 0">
+                  <p-table [value]="booking['info'].itemDtoList">
+                    <ng-template pTemplate="header">
+                      <tr>
+                        <th class="fw-bold ">Item</th>
+                        <th class="fw-bold">Qty</th>
+                        <th class="fw-bold">Price(₹)</th>
+                        <th class="fw-bold">Net Total(₹)</th>
+                        <th class="fw-bold">GST(₹)</th>
+                        <th class="fw-bold">Total Amt(₹)</th>
+                      </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-item>
+                      <tr>
+                        <td class="name-width"><span *ngIf="item.spItem && item.spItem.name">{{item.spItem.name}}</span></td>                                  
+                        <td class="text-end">{{item.orderQuantity}}</td>
+                        <td class="text-end">{{item.itemAmount | number:'1.2-2'}}</td>
+                        <td class="text-end">{{item.netTotal | number:'1.2-2'}}</td>
+                        <td *ngIf="item.taxAmount" class="text-end">{{item.taxAmount | number:'1.2-2'}}</td>
+                        <td *ngIf="!item.taxAmount" class="text-end">-</td>
+                        <td class="text-end">{{item.netRate | number:'1.2-2'}}</td>
+                      </tr>
+                    </ng-template>
+                  </p-table>
+                  <div class="row amount-section">
+                    <div class="row justify-content-end mb-1">
+                      <div class="col-8 col-md-4 p-0 text-end"> Subtotal </div>
+                      <div class="col-4 col-md-3 p-0 text-end fw-bold">₹{{booking['info'].netTotal | number:'1.2-2'}}</div>
+                    </div>
+                    <div *ngIf="booking['info'].taxTotal && booking['info'].taxTotal > 0" class="row justify-content-end mb-1">
+                      <div class="col-8 col-md-4 p-0 text-end"> GST</div>
+                      <div class="col-4 col-md-3 p-0 text-end fw-bold">₹{{booking['info'].taxTotal | number:'1.2-2'}}</div>
+                    </div>
+                    <div *ngIf="booking['info'].netTotalWithTax && booking['info'].taxTotal && booking['info'].taxTotal > 0" class="row justify-content-end mb-1">
+                      <div class="col-8 col-md-4 p-0 text-end"> Net Total With GST </div>
+                      <div class="col-4 col-md-3 p-0 text-end fw-bold">₹{{booking['info'].netTotalWithTax | number:'1.2-2'}}</div>
+                    </div>
+                    <div *ngIf="booking['info'].discounts && booking['info'].discounts.length >0"  class="row justify-content-end mb-1">
+                      <div  *ngFor="let discount of booking['info'].discounts" class="row justify-content-end">
+                        <div class="col-8 col-md-4 p-0 text-end">{{discount.name}}</div>
+                        <div class="col-4 col-md-3 p-0 text-end fw-bold">(-)₹{{discount.discountValue | number:'1.2-2'}}</div>
+                      </div>
+                    </div>
+                    <div *ngIf="booking['info'].deliveryCharges >0" class="row justify-content-end mb-1">
+                      <div class="col-8 col-md-4 p-0 text-end"> Delivery Charge </div>
+                      <div class="col-4 col-md-3 p-0 text-end fw-bold">₹{{booking['info'].deliveryCharges | number:'1.2-2'}}</div>
+                    </div>
+                    <div *ngIf="booking['info'].providerCoupons && booking['info'].providerCoupons.length >0"  class="row justify-content-end mb-1">
+                      <div  *ngFor="let coupon of booking['info'].providerCoupons" class="row justify-content-end">
+                        <div class="col-8 col-md-4 p-0 text-end"> {{coupon.couponCode}}(coupon) </div>
+                        <div class="col-4 col-md-3 p-0 text-end fw-bold">(-)₹{{coupon.discount | number:'1.2-2'}}</div>
+                      </div>
+                    </div>
+                    <div *ngIf="booking['info'].roundedValue != 0" class="row justify-content-end mb-1">
+                      <div class="col-8 col-md-4 p-0 text-end"> Rounded Value </div>
+                      <div class="col-4 col-md-3 p-0 text-end fw-bold">{{ booking['info'].roundedValue > 0 ? '₹+' : '₹' }}{{ booking['info'].roundedValue | number: '1.2-2' }}</div>
+                    </div>
+                    <div class="row justify-content-end mb-1">
+                      <div class="col-8 col-md-4 p-0 text-end"> Net Total </div>
+                      <div class="col-4 col-md-3 p-0 text-end fw-bold">₹{{booking['info'].netRate | number:'1.2-2'}}</div>
+                    </div>
+                    <div *ngIf="booking['info'].processingFee > 0" class="row justify-content-end mb-1">
+                      <div class="col-8 col-md-4 p-0 text-end"> Processing Fee </div>
+                      <div class="col-4 col-md-3 p-0 text-end fw-bold">₹{{booking['info'].processingFee | number:'1.2-2'}}</div>
+                    </div>
+                    <div class="row justify-content-end mb-1">
+                      <div class="col-8 col-md-4 p-0 text-end"> Amount Paid </div>
+                      <!-- <div *ngIf="booking['info'].amountPaid && booking['info'].amountPaid > 0  && !booking['info'].amountPaidWithProcessingFee" class="col-4 col-md-3 p-0 text-end fw-bold">₹{{booking['info'].amountPaid | number:'1.2-2'}}</div> -->
+                      <div class="col-4 col-md-3 p-0 text-end fw-bold">₹{{booking['info'].amountPaidWithProcessingFee | number:'1.2-2'}}</div>
+                    </div>
+                    <div class="row justify-content-end mb-1">
+                      <div class="col-8 col-md-4 p-0 text-end"> Amount Due </div>
+                      <div class="col-4 col-md-3 p-0 text-end fw-bold">₹{{booking['info'].amountDue | number:'1.2-2'}}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="!booking['isOrder'] && !locationVisible" class="card">
+                <div class="p-heading status-style mt-2"> Provider Details</div>
+                <hr>
+                <div class="d-flex align-items-center mb-3">
+                  <img class="img-style" src="{{cdnPath}}assets/images/hospital.png">
+                  <div class="status-text ms-2">
+                    {{booking['mapSectionTitle']}}
+                  </div>
+                </div>
+                <div class="d-flex justify-content-center" *ngIf="booking['mapUrl']">
+                  <iframe [src]="getUrl(booking['mapUrl'])" class="map-style" style="border:0;" allowfullscreen=""
+                    loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+                <div *ngIf="!booking['mapUrl']">
+                  <img class="map-style" src="{{cdnPath}}assets/images/Group.svg">
+                </div>
+                <div *ngIf="booking['mapUrl']" class="d-flex justify-content-center">
+                  <a mat-button class="btn-style" [href]="booking['mapUrl']" target="_blank"
+                    matTooltip="Click to navigate">Get Direction</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="notes" *ngIf="booking.service && booking.service.postInfoEnabled && booking.service.postInfoTitle">
+          <div class="preinfo-title">{{booking.service.postInfoTitle}} </div>
+          <div [innerHTML]="booking.service.postInfoText">
+          </div>
+        </div>
+      </div>
+      <app-common-innerloading-spinner *ngIf="apiloading"></app-common-innerloading-spinner>
+    </div>
+  </div>
+</section>

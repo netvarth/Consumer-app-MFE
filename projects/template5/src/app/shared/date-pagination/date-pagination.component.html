@@ -1,0 +1,19 @@
+<div class="customWidthCalendar">
+  <div [ngClass]="{ customWidthCalendartemp: width }" class="customWidthCalendar">
+    <div>
+      <div #calendarContainer>
+        <mat-card class="demo-inline-calendar-card">
+          <mat-calendar #bookingCalendar 
+            [dateClass]="dateClass()" 
+            [minDate]="minDate" 
+            [maxDate]="maxDate" 
+            [startAt]="selected_date" 
+            ngDefaultControl 
+            [(selected)]="selected_date"
+            (selectedChange)="date_value_changed($event)">
+          </mat-calendar>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+</div>

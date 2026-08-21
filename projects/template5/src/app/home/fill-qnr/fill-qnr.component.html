@@ -1,0 +1,19 @@
+<div class="card fill-questionaire">
+    <div class="row">
+        <div class="col-12 no-padding-small">
+            <div class="mb-2 quest-head p-2 ms-2">
+                Please provide us with a little more information to complete your order
+            </div>
+        </div>
+        <div class="col-12 p-0" *ngIf="questionnaireList">
+            <app-questionnaire [questionnaireList]="questionnaireList" [questionAnswers]="questionAnswers" [source]="'condumerOrder'"
+                (returnAnswers)="getQuestionAnswers($event)"></app-questionnaire>
+            <div class="ps-4 py-4 actiondiv">
+                <button type="button" id="btnBack" class="cs-btn bt2 backbtn overlap" (click)="goBack()">Cancel</button>&nbsp;
+                <button id="btnValidateQNR" class="cs-btn btn btn-primary font-weight-bold confirmBtn overlap" [disabled]="btnDisabled" [class.disabled]="btnDisabled"
+                (click)="validateQnr()" mat-button>Confirm</button>
+            </div>
+        </div>
+    </div>
+    
+</div>
