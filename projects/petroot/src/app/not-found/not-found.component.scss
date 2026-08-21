@@ -1,0 +1,135 @@
+$topnav-background-color: #222;
+:host {
+    display: block;
+}
+.welcome-page {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: auto;
+    background: $topnav-background-color;
+    text-align: center;
+    color: #fff;
+    padding: 10em;
+    .col-lg-8{
+        padding :0;
+    }
+    .rounded-btn{
+        -webkit-border-radius: 50px;
+                border-radius: 50px;
+        color: rgba(255,255,255,0.8);
+        background: $topnav-background-color;
+        border: 2px solid rgba(255,255,255,0.8);
+        font-size: 18px;
+        line-height: 40px;
+        padding: 0 25px;
+    }
+    .rounded-btn:hover,.rounded-btn:focus,.rounded-btn:active,.rounded-btn:visited{
+        color: rgba(255,255,255,1);
+        border: 2px solid rgba(255,255,255,1);
+        outline: none;
+    }
+
+    h1 {
+        font-weight: 300;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        font-size: 36px;
+    }
+}
+.flex-row-fluid {
+    flex: 1 auto;
+    -ms-flex: 1 0 0px;
+    min-width: 0;
+}
+.bgi-position-center {
+    background-position: center;
+}
+.bgi-size-cover {
+    background-size: cover;
+}
+h1{
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    line-height: 1.2;
+}
+.text-transparent {
+    color: transparent;
+}
+element.style {
+    line-height: 1.4;
+    font-family: serif;
+    width: 6rem !important;
+    color: black !important;
+    border-color: black !important;
+}
+.font-weight-boldest {
+    font-weight: 700;
+}
+.font-size-h1 {
+    font-size: 2rem!important;
+}
+.text-dark-75 {
+    color: #3f4254!important;
+}
+p {
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+.line-height-md {
+    line-height: 1.25;
+}
+@media (min-width: 768px)
+{
+.px-md-30 {
+    padding-left: 7.5rem!important;
+    padding-right: 7.5rem!important;
+}
+}
+.text-stroke {
+    -webkit-text-stroke-width: 0.35rem;
+    -webkit-text-stroke-color: #ffffff;
+}
+button {
+    border-radius: 0;
+    text-transform: none;
+    font-size: inherit;
+}
+@media (max-width: 766px)
+{
+.px-10 {
+    padding-left: 2.5rem!important;
+    padding-right: 2.5rem!important;
+}
+.py-10 {
+    padding-bottom: 2.5rem!important;
+    padding-top: 2.5rem!important;
+}
+}
+@media (min-width: 768px){
+.justify-content-md-center {
+    justify-content: center!important;
+}
+}
+@media (min-width: 768px){
+.px-md-30 {
+    padding-left: 7.5rem!important;
+    padding-right: 7.5rem!important;
+}
+}
+h1, .bt3
+{
+    font-family: Figtree,sans-serif!important;
+}
+.bt3:hover {
+    background: #00aef2;
+}
+.bt3 {
+    height: auto;
+    background: transparent;
+    border: 1px solid #00aef2;
+    padding: 5px 15px;
+    font-weight: 600;
+}

@@ -1,0 +1,45 @@
+.upload-doc {
+    border: 2px dashed #999;
+    text-align: center;
+    padding: 20px;
+    cursor: pointer;
+    transition: all .3s;
+  }
+  
+  .upload-doc label {
+    font-size: 1rem;
+    color: #222223;
+    padding: 0;
+    margin-bottom: 10px;
+  }
+  
+  .upload-doc .select-wrapper {
+    margin: 0 auto;
+    background: transparent;
+    position: relative;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+  }
+  
+  .upload-doc .select-wrapper:before {
+    font-family: custom-ynw !important;
+    content: "\4d";
+    position: absolute;
+    display: flex;
+    width: 30px;
+    height: 30px;
+    align-items: center;
+    font-size: 1.875rem;
+    cursor: pointer;
+  }
+  
+  .upload-doc .select-wrapper #image_src {
+    display: none;
+  }
+  
+  @media only screen and (max-width: 575px) {
+    .upload-doc label {
+      font-size: 14px !important;
+    }
+  }

@@ -1,0 +1,19 @@
+.form-control {
+  margin-bottom: 0px !important;
+  height: 35px !important;
+  padding: 6px 12px !important;
+  font-size: 14px !important;
+  color: $input-text-color !important;
+  background-image: none !important;
+  border-radius: 5.73504px !important;
+  box-shadow: inset 0 1px 1px rgb(0 0 0 / 8%) !important;
+  transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s !important;
+}
+
+.form-control:focus {
+  color: $input-text-focus !important;
+  background-color: $input-text-background-focus !important;
+  border-color: $input-text-border-focus !important;
+  outline: 0 !important;
+  box-shadow: 0 0 0 0 $input-text-background-focus !important;
+}
