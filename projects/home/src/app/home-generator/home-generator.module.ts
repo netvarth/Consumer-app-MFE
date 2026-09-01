@@ -1,11 +1,22 @@
-import { inject,  NgModule } from '@angular/core';
+import { ENVIRONMENT_INITIALIZER, NgModule, Provider } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { loadRemoteModule } from '@angular-architects/native-federation';
 import { CarouselModule } from 'ngx-owl-carousel-o';
-import { EnvironmentService, I8nModule, setupInjectionContextForLoadChildren, SharedAccountGuard } from 'jconsumer-shared';
+import { EnvironmentService, I8nModule } from 'jconsumer-shared';
+import { CrossTenantGuard } from '../cross-tenant/cross-tenant.guard';
 
 const templateId = localStorage.getItem('_tid');
+let environmentService: EnvironmentService;
+
+const environmentInitializerProvider: Provider = {
+  provide: ENVIRONMENT_INITIALIZER,
+  multi: true,
+  deps: [EnvironmentService],
+  useFactory: (service: EnvironmentService) => () => {
+    environmentService = service;
+  }
+};
 
 const getVersionedRemoteEntry = (entry: string): string => {
   if (typeof localStorage === 'undefined') {
@@ -31,20 +42,23 @@ const routes: Routes = [];
 console.log("Template ID in Home Generator Module", templateId);
 
 routes.push(
-  setupInjectionContextForLoadChildren({
+  {
     path: '',
-    canLoad: [SharedAccountGuard],
-    loadChildren: async () => {
-      const environmentService = inject(EnvironmentService);
-      const remoteUrl = environmentService.getEnvironment(templateId) + '/remoteEntry.json';
-      //  remoteEntry: getVersionedRemoteEntry(remoteUrl),
-      return loadRemoteModule({
-        // remoteEntry: getVersionedRemoteEntry(remoteUrl),
-        remoteEntry: remoteUrl,
-        exposedModule: './Home'
-      }).then(m => m.HomeModule);
-    }
-  })
+    providers: [environmentInitializerProvider],
+    children: [{
+      path: '',
+      canLoad: [CrossTenantGuard],
+      loadChildren: async () => {
+        const remoteUrl = environmentService.getEnvironment(templateId) + '/remoteEntry.json';
+        //  remoteEntry: getVersionedRemoteEntry(remoteUrl),
+        return loadRemoteModule({
+          remoteEntry: getVersionedRemoteEntry(remoteUrl),
+          // remoteEntry: remoteUrl,
+          exposedModule: './Home'
+        }).then(m => m.HomeModule);
+      }
+    }]
+  }
 )
 
 

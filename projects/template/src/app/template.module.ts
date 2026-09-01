@@ -1,10 +1,20 @@
 import { loadRemoteModule } from '@angular-architects/native-federation';
 import { CommonModule } from '@angular/common';
-import { inject, NgModule } from '@angular/core';
+import { ENVIRONMENT_INITIALIZER, NgModule, Provider } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { TemplateGuard } from './template.guard';
-import { EnvironmentService, setupInjectionContextForLoadChildren } from 'jconsumer-shared';
+import { EnvironmentService } from 'jconsumer-shared';
 let remoteEntry = '';
+let environmentService: EnvironmentService;
+
+const environmentInitializerProvider: Provider = {
+  provide: ENVIRONMENT_INITIALIZER,
+  multi: true,
+  deps: [EnvironmentService],
+  useFactory: (service: EnvironmentService) => () => {
+    environmentService = service;
+  }
+};
 
 const getVersionedRemoteEntry = (entry: string): string => {
   if (typeof localStorage === 'undefined') {
@@ -27,28 +37,31 @@ const getVersionedRemoteEntry = (entry: string): string => {
 };
 
 const routes: Routes = [
-  setupInjectionContextForLoadChildren({
-    runGuardsAndResolvers: 'always',
-    canLoad: [TemplateGuard],
+  {
     path: '',
-    loadChildren: async () => {
-      const environmentService = inject(EnvironmentService);
-      const templateId = localStorage.getItem('_tid');
-      remoteEntry = environmentService.getEnvironment('HOME') + '/remoteEntry.json';
-      
-      console.log("Template ID:", templateId);
-      // 
-      return loadRemoteModule({
-        // remoteEntry: getVersionedRemoteEntry(remoteEntry),
-        remoteEntry: remoteEntry,
-        exposedModule: './DynamicHome'
-      }).then(m => m.HomeGeneratorModule)
-        .catch(err => {
-          console.error('Error loading Home module:', err);
-          // Handle error accordingly (e.g., navigate to an error page)
-        })
-    }
-  })
+    providers: [environmentInitializerProvider],
+    children: [{
+      runGuardsAndResolvers: 'always',
+      canLoad: [TemplateGuard],
+      path: '',
+      loadChildren: async () => {
+        const templateId = localStorage.getItem('_tid');
+        remoteEntry = environmentService.getEnvironment('HOME') + '/remoteEntry.json';
+
+        console.log("Template ID:", templateId);
+        //
+        return loadRemoteModule({
+          remoteEntry: getVersionedRemoteEntry(remoteEntry),
+          // remoteEntry: remoteEntry,
+          exposedModule: './DynamicHome'
+        }).then(m => m.HomeGeneratorModule)
+          .catch(err => {
+            console.error('Error loading Home module:', err);
+            // Handle error accordingly (e.g., navigate to an error page)
+          })
+      }
+    }]
+  }
 ];
 
 @NgModule({

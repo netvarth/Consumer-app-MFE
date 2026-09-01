@@ -3,6 +3,11 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SharedService } from 'jconsumer-shared';
 import {
+  CrossTenantJourneyService,
+  DocumentNavigationService,
+  validatedProviderLink
+} from '@consumer/cross-tenant';
+import {
   MarketplaceAction,
   MarketplaceLocation,
   MarketplaceStore,
@@ -40,7 +45,9 @@ export class StoreSelectionComponent implements OnInit {
     private readonly sharedService: SharedService,
     private readonly router: Router,
     private readonly route: ActivatedRoute,
-    private readonly location: Location
+    private readonly location: Location,
+    private readonly journey: CrossTenantJourneyService,
+    private readonly documentNavigation: DocumentNavigationService
   ) {}
 
   ngOnInit(): void {
@@ -93,11 +100,21 @@ export class StoreSelectionComponent implements OnInit {
 
   openStore(store: MarketplaceStore): void {
     if (!this.config) return;
-    const configuredLink = store.storeLink?.trim();
-    if (configuredLink && /^https?:\/\//i.test(configuredLink)) {
-      window.location.assign(configuredLink);
+
+    const hubCustomId = this.currentCustomId();
+    const providerLink = validatedProviderLink(store.providerlink);
+    if (providerLink) {
+      this.journey.start(hubCustomId, this.currentHubUrl(), providerLink);
+      this.documentNavigation.assign(providerLink);
       return;
     }
+
+    const configuredLink = store.storeLink?.trim();
+    if (configuredLink && /^https?:\/\//i.test(configuredLink)) {
+      this.documentNavigation.assign(configuredLink);
+      return;
+    }
+
     const link = configuredLink || this.config.routes.serviceSelection.replace(':storeId', encodeURIComponent(store.id));
     void this.router.navigateByUrl(this.routeUrl(link));
   }
@@ -127,6 +144,20 @@ export class StoreSelectionComponent implements OnInit {
     if (persisted && validValues.includes(persisted)) return persisted;
     if (configured && validValues.includes(configured)) return configured;
     return validValues[0] || '';
+  }
+
+  private currentCustomId(): string {
+    try {
+      return String(this.sharedService.getCustomID?.() || this.sharedService.getRouteID?.() || '')
+        .trim()
+        .toLowerCase();
+    } catch {
+      return String(this.sharedService.getRouteID?.() || '').trim().toLowerCase();
+    }
+  }
+
+  private currentHubUrl(): string {
+    return `${window.location.pathname}${window.location.search}${window.location.hash}`;
   }
 
   private routeUrl(link: string): string {

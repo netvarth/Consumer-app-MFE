@@ -4,14 +4,16 @@ import {
   HttpInterceptor,
   HttpHandler,
   HttpRequest,
-  HttpErrorResponse
+  HttpErrorResponse,
+  HttpResponse
 } from '@angular/common/http';
 import { Observable, BehaviorSubject, throwError, EMPTY, from } from 'rxjs';
-import { catchError, switchMap, filter, take, timeout, first } from 'rxjs/operators';
+import { catchError, switchMap, filter, take, timeout, first, tap } from 'rxjs/operators';
 import { Router, NavigationEnd } from '@angular/router';
 import { AuthService, LocalStorageService, SharedService } from 'jconsumer-shared';
 import { projectConstants } from '../environment';
 import { AccountService } from './account.service';
+import { CrossTenantLogoutService, PlatformTokenStore } from '@consumer/cross-tenant';
 
 interface MaintenanceStatus {
   maintenanceMode: boolean;
@@ -33,26 +35,36 @@ export class ExtendHttpInterceptor implements HttpInterceptor {
     private router: Router,
     private accountService: AccountService,
     private sharedService: SharedService,
-    private authService: AuthService
+    private authService: AuthService,
+    private platformTokenStore: PlatformTokenStore,
+    private crossTenantLogout: CrossTenantLogoutService
   ) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    const isNormalLogin = this.isExactConsumerLogin(request, 'POST');
+    const isLogout = this.isExactConsumerLogin(request, 'DELETE');
+
     // If request URL starts with http (external), don't modify
     if (request.url.startsWith('http')) {
-      return next.handle(request);
+      if (isLogout) {
+        request = request.clone({
+          headers: request.headers.delete('Authorization').delete('AuthToken')
+        });
+      }
+      return this.observeAuthenticationResponse(next.handle(request), isNormalLogin, isLogout);
     }
 
     const isRefreshCall = request.url.includes('consumer/oauth/token/refresh');
-    request = this.updateHeader(request, isRefreshCall);
+    request = this.updateHeader(request, isRefreshCall, isLogout);
 
-    return next.handle(request).pipe(
+    return this.observeAuthenticationResponse(next.handle(request), isNormalLogin, isLogout).pipe(
       catchError((error: HttpErrorResponse) => {
         if (this._isSessionExpiredError(error)) {
           // Handle token refresh flow
           return this._handleSessionExpired().pipe(
             switchMap(() => {
               // Retry original request with updated token
-              const retryReq = this.updateHeader(request, false);
+              const retryReq = this.updateHeader(request, false, isLogout);
               return next.handle(retryReq);
             })
           );
@@ -71,7 +83,7 @@ export class ExtendHttpInterceptor implements HttpInterceptor {
     );
   }
 
-  private updateHeader(request: HttpRequest<any>, isRefreshCall: boolean): HttpRequest<any> {
+  private updateHeader(request: HttpRequest<any>, isRefreshCall: boolean, skipAuthorization = false): HttpRequest<any> {
     let headers = request.headers
       .set('Accept', 'application/json')
       .set('Cache-Control', 'no-cache, no-store, must-revalidate, post-check=0, pre-check=0')
@@ -90,7 +102,9 @@ export class ExtendHttpInterceptor implements HttpInterceptor {
       params = params.append('location', this.lStorageService.getitemfromLocalStorage('c-location'));
     }
 
-    if (this.lStorageService.getitemfromLocalStorage('logout')) {
+    if (skipAuthorization) {
+      headers = headers.delete('Authorization').delete('AuthToken');
+    } else if (this.lStorageService.getitemfromLocalStorage('logout')) {
       this.lStorageService.removeitemfromLocalStorage('c_authorizationToken');
       const appId = this.lStorageService.getitemfromLocalStorage('appId');
       const installId = this.lStorageService.getitemfromLocalStorage('installId');
@@ -116,7 +130,7 @@ export class ExtendHttpInterceptor implements HttpInterceptor {
     }
 
     const googleToken = this.lStorageService.getitemfromLocalStorage('googleToken');
-    if (googleToken) {
+    if (!skipAuthorization && googleToken) {
       headers = headers.set('authToken', googleToken);
     }
     // ✅ Guard against double-prefixing full URLs
@@ -130,6 +144,30 @@ export class ExtendHttpInterceptor implements HttpInterceptor {
       responseType: 'json',
       withCredentials: true,
     });
+  }
+
+  private observeAuthenticationResponse(
+    response$: Observable<HttpEvent<any>>,
+    isNormalLogin: boolean,
+    isLogout: boolean
+  ): Observable<HttpEvent<any>> {
+    if (!isNormalLogin && !isLogout) return response$;
+    return response$.pipe(
+      tap((event) => {
+        if (!(event instanceof HttpResponse)) return;
+        if (isNormalLogin) {
+          const token = event.body?.platform_token;
+          if (typeof token === 'string' && token.trim()) this.platformTokenStore.save(token);
+        }
+        if (isLogout) this.crossTenantLogout.clearPersonState();
+      })
+    );
+  }
+
+  private isExactConsumerLogin(request: HttpRequest<any>, method: 'POST' | 'DELETE'): boolean {
+    if (request.method.toUpperCase() !== method) return false;
+    const urlWithoutQuery = request.url.split('?')[0].replace(/\/+$/, '');
+    return /(?:^|\/)consumer\/login$/.test(urlWithoutQuery);
   }
 
   private _isSessionExpiredError(error: HttpErrorResponse): boolean {

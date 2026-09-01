@@ -93,6 +93,8 @@ export interface MarketplaceStore {
   enabled: boolean;
   sortOrder?: number;
   services?: MarketplaceService[];
+  /** Canonical provider custom-application URL. */
+  providerlink?: string;
 }
 
 export interface StoreSelectionPageConfig {
