@@ -123,18 +123,38 @@ export class CrossTenantSsoService {
       ? this.parseStorageValue(sessionStorage.getItem('accountid'))
       : 0;
     const key = String(groupKey ?? 0);
-    let group: Record<string, unknown> = {};
-    try { group = JSON.parse(localStorage.getItem(key) || '{}') || {}; } catch { group = {}; }
+    const group = this.readStoredObject(key);
     group['jld_scon'] = response;
-    localStorage.setItem(key, JSON.stringify(group));
+    this.writeSharedStorageObject(key, group);
 
-    let credentials: Record<string, unknown> = {};
-    try { credentials = JSON.parse(localStorage.getItem('ynw-credentials') || '{}') || {}; } catch { credentials = {}; }
+    const credentials = this.readStoredObject('ynw-credentials');
     credentials['accountId'] = accountId;
     ['countryCode', 'coountryCode', 'loginId', 'phoneNumber', 'primaryMobileNo'].forEach((field) => {
       if (response[field] !== undefined && response[field] !== null) credentials[field] = response[field];
     });
-    localStorage.setItem('ynw-credentials', JSON.stringify(credentials));
+    this.writeSharedStorageObject('ynw-credentials', credentials);
+  }
+
+  /**
+   * LocalStorageService stores shared objects as a JSON string inside its own
+   * JSON encoding. Accept both that format and the older single-encoded values.
+   */
+  private readStoredObject(key: string): Record<string, unknown> {
+    let value: unknown = localStorage.getItem(key);
+    try {
+      for (let attempt = 0; attempt < 2 && typeof value === 'string'; attempt++) {
+        value = JSON.parse(value);
+      }
+    } catch {
+      return {};
+    }
+    return value && typeof value === 'object' && !Array.isArray(value)
+      ? value as Record<string, unknown>
+      : {};
+  }
+
+  private writeSharedStorageObject(key: string, value: Record<string, unknown>): void {
+    localStorage.setItem(key, JSON.stringify(JSON.stringify(value)));
   }
 
   private requestOptions(platformToken: string): { headers: HttpHeaders; withCredentials: true } {

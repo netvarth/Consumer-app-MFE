@@ -63,10 +63,10 @@ describe('AccountStateCoordinator', () => {
   it('never snapshots active authentication or provider-consumer state', () => {
     localStorage.setItem('capp:activeAccountId:v1', 'A');
     localStorage.setItem('c_authorizationToken', JSON.stringify('session-A'));
-    localStorage.setItem('0', JSON.stringify({ jld_scon: { id: 1 }, anotherValue: true }));
+    localStorage.setItem('0', JSON.stringify(JSON.stringify({ jld_scon: { id: 1 }, anotherValue: true })));
     coordinator.transitionTo('B');
     expect(localStorage.getItem('c_authorizationToken')).toBeNull();
-    expect(JSON.parse(localStorage.getItem('0')!)).toEqual({ anotherValue: true });
+    expect(JSON.parse(JSON.parse(localStorage.getItem('0')!))).toEqual({ anotherValue: true });
     expect(localStorage.getItem('capp:tenant-state:v1:A')).not.toContain('session-A');
     expect(localStorage.getItem('capp:tenant-state:v1:A')).not.toContain('jld_scon');
   });

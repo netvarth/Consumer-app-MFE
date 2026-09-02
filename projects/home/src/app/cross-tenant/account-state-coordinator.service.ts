@@ -89,10 +89,11 @@ export class AccountStateCoordinator {
     const raw = localStorage.getItem(key);
     if (!raw) return;
     try {
-      const group = JSON.parse(raw);
+      let group: unknown = JSON.parse(raw);
+      if (typeof group === 'string') group = JSON.parse(group);
       if (group && typeof group === 'object') {
-        delete group.jld_scon;
-        localStorage.setItem(key, JSON.stringify(group));
+        delete (group as Record<string, unknown>)['jld_scon'];
+        localStorage.setItem(key, JSON.stringify(JSON.stringify(group)));
       }
     } catch {
       localStorage.removeItem(key);

@@ -93,10 +93,47 @@ describe('CrossTenantSsoService', () => {
     expect(accountState.setActiveAccount).toHaveBeenCalledWith('11');
     expect(JSON.parse(localStorage.getItem('c_authorizationToken')!)).toBe('CHOTABOSS_SESSION');
     expect(JSON.parse(localStorage.getItem('refreshToken')!)).toBe('CHOTABOSS_REFRESH');
-    expect(JSON.parse(localStorage.getItem('ynw-credentials')!)).toEqual(jasmine.objectContaining({
+    expect(JSON.parse(JSON.parse(localStorage.getItem('ynw-credentials')!))).toEqual(jasmine.objectContaining({
       accountId: '11',
       phoneNumber: '9999999999'
     }));
-    expect(JSON.parse(localStorage.getItem('0')!).jld_scon.token).toBe('CHOTABOSS_SESSION');
+    expect(JSON.parse(JSON.parse(localStorage.getItem('0')!)).jld_scon.token).toBe('CHOTABOSS_SESSION');
+  });
+
+  it('installs a switched session over the shared library double-encoded storage format', async () => {
+    journey.get.and.returnValue({
+      enabled: true,
+      hubCustomId: 'chotaboss',
+      returnTo: '/capp/chotaboss',
+      startedAt: Date.now(),
+      lastProviderUrl: 'https://provider.example/capp/provider'
+    });
+    localStorage.setItem('ynw-credentials', JSON.stringify(JSON.stringify({
+      accountId: '10',
+      loginId: '9999999999'
+    })));
+    localStorage.setItem('0', JSON.stringify(JSON.stringify({
+      jld_scon: { token: 'OLD_SESSION', providerConsumer: 10 }
+    })));
+
+    const result = service.prepareForTargetAccount('22', 'order-account');
+    http.expectOne('https://api.example/v1/rest/consumer/login/switch').flush({
+      token: 'ORDER_SESSION',
+      refreshToken: 'ORDER_REFRESH',
+      status: 'signed_in',
+      providerConsumer: 22
+    });
+    await result;
+
+    expect(JSON.parse(localStorage.getItem('c_authorizationToken')!)).toBe('ORDER_SESSION');
+    expect(JSON.parse(JSON.parse(localStorage.getItem('ynw-credentials')!))).toEqual(jasmine.objectContaining({
+      accountId: '22',
+      loginId: '9999999999'
+    }));
+    expect(JSON.parse(JSON.parse(localStorage.getItem('0')!)).jld_scon).toEqual(jasmine.objectContaining({
+      token: 'ORDER_SESSION',
+      providerConsumer: 22
+    }));
+    expect(accountState.clearActiveAuthentication).toHaveBeenCalledTimes(1);
   });
 });
