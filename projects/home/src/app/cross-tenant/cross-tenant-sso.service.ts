@@ -30,12 +30,12 @@ export class CrossTenantSsoService {
     this.http = new HttpClient(backend);
   }
 
-  prepareForTargetAccount(accountId: number | string, customId: string): Promise<void> {
+  prepareForTargetAccount(accountId: number | string, _customId: string): Promise<void> {
     const target = String(accountId).trim();
     const existing = this.inFlight.get(target);
     if (existing) return existing;
 
-    const operation = this.prepare(target, String(customId || '').trim().toLowerCase())
+    const operation = this.prepare(target)
       .finally(() => this.inFlight.delete(target));
     this.inFlight.set(target, operation);
     return operation;
@@ -70,17 +70,11 @@ export class CrossTenantSsoService {
     }
   }
 
-  private async prepare(target: string, customId: string): Promise<void> {
+  private async prepare(target: string): Promise<void> {
     const marker = this.journey.get();
     if (!marker) return;
 
     this.accountState.transitionTo(target);
-    if (customId === marker.hubCustomId) {
-      this.accountState.clearActiveAuthentication();
-      this.accountState.setActiveAccount(target);
-      return;
-    }
-
     this.accountState.clearActiveAuthentication();
     if (!this.platformTokens.get()) {
       this.accountState.setActiveAccount(target);

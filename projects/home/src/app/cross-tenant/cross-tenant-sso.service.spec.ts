@@ -10,12 +10,21 @@ describe('CrossTenantSsoService', () => {
   let service: CrossTenantSsoService;
   let http: HttpTestingController;
   let currentToken: string | null;
+  let journey: jasmine.SpyObj<CrossTenantJourneyService>;
+  let accountState: jasmine.SpyObj<AccountStateCoordinator>;
   const platformTokens = jasmine.createSpyObj<PlatformTokenStore>('PlatformTokenStore', ['get', 'save', 'update', 'clear']);
 
   beforeEach(() => {
     currentToken = 'P1';
+    localStorage.clear();
+    sessionStorage.clear();
     platformTokens.get.and.callFake(() => currentToken);
     platformTokens.update.and.callFake((token: string) => currentToken = token);
+    journey = jasmine.createSpyObj<CrossTenantJourneyService>('journey', ['get', 'clear']);
+    accountState = jasmine.createSpyObj<AccountStateCoordinator>(
+      'accountState',
+      ['transitionTo', 'setActiveAccount', 'clearActiveAuthentication']
+    );
     TestBed.configureTestingModule({
       providers: [
         provideHttpClient(),
@@ -23,8 +32,8 @@ describe('CrossTenantSsoService', () => {
         CrossTenantSsoService,
         { provide: SharedService, useValue: { getAPIEndPoint: () => 'https://api.example/v1/rest/' } },
         { provide: PlatformTokenStore, useValue: platformTokens },
-        { provide: CrossTenantJourneyService, useValue: jasmine.createSpyObj('journey', ['get', 'clear']) },
-        { provide: AccountStateCoordinator, useValue: jasmine.createSpyObj('accountState', ['transitionTo', 'setActiveAccount', 'clearActiveAuthentication']) }
+        { provide: CrossTenantJourneyService, useValue: journey },
+        { provide: AccountStateCoordinator, useValue: accountState }
       ]
     });
     service = TestBed.inject(CrossTenantSsoService);
@@ -56,5 +65,38 @@ describe('CrossTenantSsoService', () => {
     retry.flush({ token: 'T22', status: 'provisioned' });
     expect((await result).status).toBe('provisioned');
     expect(platformTokens.update).toHaveBeenCalledWith('P2');
+  });
+
+  it('switches and installs the target session when returning to the Chotaboss hub', async () => {
+    journey.get.and.returnValue({
+      enabled: true,
+      hubCustomId: 'chotaboss',
+      returnTo: '/capp/chotaboss',
+      startedAt: Date.now(),
+      lastProviderUrl: 'https://provider.example/capp/provider'
+    });
+
+    const result = service.prepareForTargetAccount('11', 'chotaboss');
+    const request = http.expectOne('https://api.example/v1/rest/consumer/login/switch');
+    expect(request.request.body).toEqual({ accountId: '11' });
+    request.flush({
+      token: 'CHOTABOSS_SESSION',
+      refreshToken: 'CHOTABOSS_REFRESH',
+      status: 'signed_in',
+      id: 101,
+      phoneNumber: '9999999999'
+    });
+    await result;
+
+    expect(accountState.transitionTo).toHaveBeenCalledWith('11');
+    expect(accountState.clearActiveAuthentication).toHaveBeenCalled();
+    expect(accountState.setActiveAccount).toHaveBeenCalledWith('11');
+    expect(JSON.parse(localStorage.getItem('c_authorizationToken')!)).toBe('CHOTABOSS_SESSION');
+    expect(JSON.parse(localStorage.getItem('refreshToken')!)).toBe('CHOTABOSS_REFRESH');
+    expect(JSON.parse(localStorage.getItem('ynw-credentials')!)).toEqual(jasmine.objectContaining({
+      accountId: '11',
+      phoneNumber: '9999999999'
+    }));
+    expect(JSON.parse(localStorage.getItem('0')!).jld_scon.token).toBe('CHOTABOSS_SESSION');
   });
 });
