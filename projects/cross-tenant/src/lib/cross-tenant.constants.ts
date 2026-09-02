@@ -4,16 +4,15 @@ export const ACTIVE_ACCOUNT_KEY = 'capp:activeAccountId:v1';
 export const TENANT_STATE_PREFIX = 'capp:tenant-state:v1:';
 export const TENANT_STATE_REGISTRY_KEY = 'capp:tenant-state-registry:v1';
 
-export const RETAINED_ACCOUNT_KEYS = [
+export const RETAINED_ACCOUNT_KEYS = [] as const;
+
+export const TRANSIENT_ACCOUNT_KEYS = [
   'cartData',
   'deliveryType',
   'cartNote',
   'isSessionCart',
   'activeLocation',
-  'c-location'
-] as const;
-
-export const TRANSIENT_ACCOUNT_KEYS = [
+  'c-location',
   'storeEncId',
   'storeId',
   'active_catalog',

@@ -2,7 +2,7 @@ import { HttpBackend, HttpClient, HttpErrorResponse, HttpHeaders } from '@angula
 import { Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { timeout } from 'rxjs/operators';
-import { SharedService } from 'jconsumer-shared';
+import { AccountService, ConsumerService, SharedService } from 'jconsumer-shared';
 import { CrossTenantJourneyService, PlatformTokenStore } from '@consumer/cross-tenant';
 import { AccountStateCoordinator } from './account-state-coordinator.service';
 
@@ -25,7 +25,9 @@ export class CrossTenantSsoService {
     private readonly sharedService: SharedService,
     private readonly platformTokens: PlatformTokenStore,
     private readonly journey: CrossTenantJourneyService,
-    private readonly accountState: AccountStateCoordinator
+    private readonly accountState: AccountStateCoordinator,
+    private readonly accountService: AccountService,
+    private readonly consumerService: ConsumerService
   ) {
     this.http = new HttpClient(backend);
   }
@@ -74,6 +76,7 @@ export class CrossTenantSsoService {
     const marker = this.journey.get();
     if (!marker) return;
 
+    this.clearRuntimeAccountState();
     this.accountState.transitionTo(target);
     this.accountState.clearActiveAuthentication();
     if (!this.platformTokens.get()) {
@@ -155,6 +158,14 @@ export class CrossTenantSsoService {
 
   private writeSharedStorageObject(key: string, value: Record<string, unknown>): void {
     localStorage.setItem(key, JSON.stringify(JSON.stringify(value)));
+  }
+
+  private clearRuntimeAccountState(): void {
+    this.accountService.setActiveStore(null);
+    this.accountService.setStores([]);
+    this.accountService.setActiveLocation(null);
+    this.accountService.setAccountLocations([]);
+    this.consumerService.setOrderDetails(null);
   }
 
   private requestOptions(platformToken: string): { headers: HttpHeaders; withCredentials: true } {

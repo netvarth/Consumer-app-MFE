@@ -1,7 +1,7 @@
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { SharedService } from 'jconsumer-shared';
+import { AccountService, ConsumerService, SharedService } from 'jconsumer-shared';
 import { CrossTenantJourneyService, PlatformTokenStore } from '@consumer/cross-tenant';
 import { AccountStateCoordinator } from './account-state-coordinator.service';
 import { CrossTenantSsoService } from './cross-tenant-sso.service';
@@ -12,6 +12,8 @@ describe('CrossTenantSsoService', () => {
   let currentToken: string | null;
   let journey: jasmine.SpyObj<CrossTenantJourneyService>;
   let accountState: jasmine.SpyObj<AccountStateCoordinator>;
+  let sharedAccountService: jasmine.SpyObj<AccountService>;
+  let consumerService: jasmine.SpyObj<ConsumerService>;
   const platformTokens = jasmine.createSpyObj<PlatformTokenStore>('PlatformTokenStore', ['get', 'save', 'update', 'clear']);
 
   beforeEach(() => {
@@ -25,6 +27,11 @@ describe('CrossTenantSsoService', () => {
       'accountState',
       ['transitionTo', 'setActiveAccount', 'clearActiveAuthentication']
     );
+    sharedAccountService = jasmine.createSpyObj<AccountService>(
+      'sharedAccountService',
+      ['setActiveStore', 'setStores', 'setActiveLocation', 'setAccountLocations']
+    );
+    consumerService = jasmine.createSpyObj<ConsumerService>('consumerService', ['setOrderDetails']);
     TestBed.configureTestingModule({
       providers: [
         provideHttpClient(),
@@ -33,7 +40,9 @@ describe('CrossTenantSsoService', () => {
         { provide: SharedService, useValue: { getAPIEndPoint: () => 'https://api.example/v1/rest/' } },
         { provide: PlatformTokenStore, useValue: platformTokens },
         { provide: CrossTenantJourneyService, useValue: journey },
-        { provide: AccountStateCoordinator, useValue: accountState }
+        { provide: AccountStateCoordinator, useValue: accountState },
+        { provide: AccountService, useValue: sharedAccountService },
+        { provide: ConsumerService, useValue: consumerService }
       ]
     });
     service = TestBed.inject(CrossTenantSsoService);
@@ -89,6 +98,11 @@ describe('CrossTenantSsoService', () => {
     await result;
 
     expect(accountState.transitionTo).toHaveBeenCalledWith('11');
+    expect(sharedAccountService.setActiveStore).toHaveBeenCalledWith(null);
+    expect(sharedAccountService.setStores).toHaveBeenCalledWith([]);
+    expect(sharedAccountService.setActiveLocation).toHaveBeenCalledWith(null);
+    expect(sharedAccountService.setAccountLocations).toHaveBeenCalledWith([]);
+    expect(consumerService.setOrderDetails).toHaveBeenCalledWith(null);
     expect(accountState.clearActiveAuthentication).toHaveBeenCalled();
     expect(accountState.setActiveAccount).toHaveBeenCalledWith('11');
     expect(JSON.parse(localStorage.getItem('c_authorizationToken')!)).toBe('CHOTABOSS_SESSION');

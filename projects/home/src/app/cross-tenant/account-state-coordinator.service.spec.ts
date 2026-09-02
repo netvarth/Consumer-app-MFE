@@ -9,9 +9,11 @@ describe('AccountStateCoordinator', () => {
     coordinator = new AccountStateCoordinator();
   });
 
-  it('isolates retained cart state and clears store/catalog selections across A -> B -> A', () => {
+  it('clears cart, location, store, and catalog state across A -> B -> A', () => {
     coordinator.setActiveAccount('A');
     localStorage.setItem('cartData', JSON.stringify({ provider: 'A' }));
+    localStorage.setItem('activeLocation', JSON.stringify(10));
+    localStorage.setItem('c-location', JSON.stringify(11));
     localStorage.setItem('storeEncId', JSON.stringify('store-A'));
     localStorage.setItem('storeId', JSON.stringify(101));
     localStorage.setItem('active_catalog', JSON.stringify({ encId: 'catalog-A' }));
@@ -20,18 +22,24 @@ describe('AccountStateCoordinator', () => {
     coordinator.transitionTo('B');
     coordinator.setActiveAccount('B');
     expect(localStorage.getItem('cartData')).toBeNull();
+    expect(localStorage.getItem('activeLocation')).toBeNull();
+    expect(localStorage.getItem('c-location')).toBeNull();
     expect(localStorage.getItem('storeEncId')).toBeNull();
     expect(localStorage.getItem('storeId')).toBeNull();
     expect(localStorage.getItem('active_catalog')).toBeNull();
     expect(localStorage.getItem('chosenDateTime')).toBeNull();
     localStorage.setItem('cartData', JSON.stringify({ provider: 'B' }));
+    localStorage.setItem('activeLocation', JSON.stringify(20));
+    localStorage.setItem('c-location', JSON.stringify(21));
     localStorage.setItem('storeEncId', JSON.stringify('store-B'));
     localStorage.setItem('storeId', JSON.stringify(202));
     localStorage.setItem('active_catalog', JSON.stringify({ encId: 'catalog-B' }));
 
     coordinator.transitionTo('A');
     coordinator.setActiveAccount('A');
-    expect(JSON.parse(localStorage.getItem('cartData')!)).toEqual({ provider: 'A' });
+    expect(localStorage.getItem('cartData')).toBeNull();
+    expect(localStorage.getItem('activeLocation')).toBeNull();
+    expect(localStorage.getItem('c-location')).toBeNull();
     expect(localStorage.getItem('storeEncId')).toBeNull();
     expect(localStorage.getItem('storeId')).toBeNull();
     expect(localStorage.getItem('active_catalog')).toBeNull();
