@@ -6,17 +6,17 @@ export const TENANT_STATE_REGISTRY_KEY = 'capp:tenant-state-registry:v1';
 
 export const RETAINED_ACCOUNT_KEYS = [
   'cartData',
-  'storeEncId',
-  'storeId',
   'deliveryType',
   'cartNote',
   'isSessionCart',
   'activeLocation',
-  'c-location',
-  'active_catalog'
+  'c-location'
 ] as const;
 
 export const TRANSIENT_ACCOUNT_KEYS = [
+  'storeEncId',
+  'storeId',
+  'active_catalog',
   'target',
   'itemTarget',
   'pendingWishlistItem',
