@@ -11,6 +11,11 @@ describe('validatedProviderLink', () => {
     expect(validatedProviderLink(value, 'http://localhost:4200')).toBe(value);
   });
 
+  it('accepts a canonical provider URL without legacy installation parameters', () => {
+    const value = 'https://scale.jaldee.com/capp/sugarandspice';
+    expect(validatedProviderLink(value, 'http://localhost:4200')).toBe(value);
+  });
+
   it('rejects external, insecure, and malformed provider URLs', () => {
     expect(validatedProviderLink(
       'https://example.com/capp/provider?inst_id=34&app_id=76',
@@ -21,8 +26,13 @@ describe('validatedProviderLink', () => {
       'https://scale.jaldee.com'
     )).toBeNull();
     expect(validatedProviderLink(
-      'https://scale.jaldee.com/capp/provider',
+      'https://scale.jaldee.com/capp/provider/unsupported-path',
       'https://scale.jaldee.com'
     )).toBeNull();
+  });
+
+  it('rejects credentials and fragments in provider URLs', () => {
+    expect(validatedProviderLink('https://user:pass@scale.jaldee.com/capp/provider')).toBeNull();
+    expect(validatedProviderLink('https://scale.jaldee.com/capp/provider#token')).toBeNull();
   });
 });

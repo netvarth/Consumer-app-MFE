@@ -67,18 +67,27 @@ export class CrossTenantSsoService {
       this.platformTokens.update(refreshed);
       return refreshed;
     } catch (error) {
-      this.platformTokens.clear();
+      // Only a definitive credential rejection invalidates the native copy.
+      // Offline, timeout, throttling, and server errors remain retryable.
+      if (error instanceof HttpErrorResponse && error.status === 401) {
+        this.platformTokens.clear();
+      }
       throw error;
     }
   }
 
   private async prepare(target: string): Promise<void> {
     const marker = this.journey.get();
-    if (!marker) return;
+    if (!marker) {
+      if (this.accountState.getActiveAccount() === target) return;
+      if (!this.platformTokens.get()) {
+        // Record the account during anonymous boot. A later navigation can
+        // then detect that the authenticated platform session changed apps.
+        this.accountState.setActiveAccount(target);
+        return;
+      }
+    }
 
-    this.clearRuntimeAccountState();
-    this.accountState.transitionTo(target);
-    this.accountState.clearActiveAuthentication();
     if (!this.platformTokens.get()) {
       this.accountState.setActiveAccount(target);
       return;
@@ -86,16 +95,21 @@ export class CrossTenantSsoService {
 
     try {
       const response = await this.switchAccount(target);
+      // Commit local state only after the target session exists. A failed
+      // request therefore leaves the source account usable.
+      this.clearRuntimeAccountState();
+      this.accountState.transitionTo(target);
       this.installSession(response, target);
+      this.accountState.setActiveAccount(target);
+      this.journey.clear();
     } catch (error) {
-      this.accountState.clearActiveAuthentication();
+      const status = error instanceof HttpErrorResponse ? error.status : 'n/a';
+      const reason = error instanceof Error ? error.message : String(error);
+      console.warn(`[CrossTenantSso] Account switch failed target=${target} status=${status} reason=${reason}`);
       if (error instanceof HttpErrorResponse && error.status === 401 && this.shouldClearPlatformToken(error)) {
         this.platformTokens.clear();
       }
       if (error instanceof HttpErrorResponse && (error.status === 401 || error.status === 422)) this.journey.clear();
-      if (error instanceof HttpErrorResponse && error.status === 498) this.platformTokens.clear();
-    } finally {
-      this.accountState.setActiveAccount(target);
     }
   }
 
@@ -120,6 +134,8 @@ export class CrossTenantSsoService {
     localStorage.setItem('c_authorizationToken', JSON.stringify(response.token));
     if (typeof response.refreshToken === 'string' && response.refreshToken.trim()) {
       localStorage.setItem('refreshToken', JSON.stringify(response.refreshToken));
+    } else {
+      localStorage.removeItem('refreshToken');
     }
 
     const groupKey = sessionStorage.getItem('tabId')

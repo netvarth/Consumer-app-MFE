@@ -11,13 +11,13 @@ describe('ExtendHttpInterceptor cross-tenant integration', () => {
     removeitemfromLocalStorage: (key: string) => values.delete(key)
   };
   const platformTokens = jasmine.createSpyObj<PlatformTokenStore>('PlatformTokenStore', ['save']);
-  const logout = jasmine.createSpyObj<CrossTenantLogoutService>('CrossTenantLogoutService', ['clearPersonState']);
+  const logout = jasmine.createSpyObj<CrossTenantLogoutService>('CrossTenantLogoutService', ['clearProviderState']);
   let interceptor: ExtendHttpInterceptor;
 
   beforeEach(() => {
     values.clear();
     platformTokens.save.calls.reset();
-    logout.clearPersonState.calls.reset();
+    logout.clearProviderState.calls.reset();
     interceptor = new ExtendHttpInterceptor(
       storage as any,
       jasmine.createSpyObj('router', ['navigate']),
@@ -46,8 +46,19 @@ describe('ExtendHttpInterceptor cross-tenant integration', () => {
     expect(platformTokens.save).not.toHaveBeenCalled();
   });
 
-  it('keeps normal Authorization but sends DELETE consumer/login bare', async () => {
+  it('captures the camel-case platformToken login response variant', async () => {
+    const handler = { handle: () => of(new HttpResponse({ body: { platformToken: 'P2' } })) } as HttpHandler;
+    await firstValueFrom(interceptor.intercept(
+      new HttpRequest('POST', 'consumer/login', { loginId: '1' }),
+      handler
+    ));
+    expect(platformTokens.save).toHaveBeenCalledWith('P2');
+  });
+
+  it('keeps session Authorization normally but sends logout without credentials', async () => {
     values.set('c_authorizationToken', 'SESSION');
+    values.set('appId', 'APP');
+    values.set('installId', 'INSTALL');
     values.set('googleToken', 'GOOGLE');
     let captured: HttpRequest<any> | undefined;
     const handler = {
@@ -66,6 +77,8 @@ describe('ExtendHttpInterceptor cross-tenant integration', () => {
     ));
     expect(captured!.headers.has('Authorization')).toBeFalse();
     expect(captured!.headers.has('AuthToken')).toBeFalse();
-    expect(logout.clearPersonState).toHaveBeenCalled();
+    expect(captured!.headers.has('SameSite')).toBeFalse();
+    expect(logout.clearProviderState).toHaveBeenCalled();
   });
+
 });

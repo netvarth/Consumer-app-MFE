@@ -402,7 +402,7 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
                 loginId: loginId,
                 accountId: this.accountId
               }
-              this.authService.login(credentials).then((response) => {
+              this.authService.consumerLogin(credentials).then((response) => {
                 console.log("Login Response:", response);
                 // const reqFrom = this.lStorageService.getitemfromLocalStorage('reqFrom');
                 _this.lStorageService.removeitemfromLocalStorage('c_authorizationToken');
@@ -416,10 +416,17 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
                 if (error.status === 401 && error.error === 'Session Already Exist') {
                   const activeUser = _this.lStorageService.getitemfromLocalStorage('jld_scon');
                   if (!activeUser) {
+                    // doLogout clears local storage, including the short-lived
+                    // token returned by OTP verification. Preserve it so the
+                    // retry can authenticate the consumer/login request.
+                    const otpAuthorizationToken = _this.lStorageService.getitemfromLocalStorage('c_authorizationToken');
                     _this.authService.doLogout().then(
                       () => {
                         _this.lStorageService.removeitemfromLocalStorage('logout');
-                        _this.authService.login(credentials).then(
+                        if (otpAuthorizationToken) {
+                          _this.lStorageService.setitemonLocalStorage('c_authorizationToken', otpAuthorizationToken);
+                        }
+                        _this.authService.consumerLogin(credentials).then(
                           () => {
                             _this.ngZone.run(
                               () => {

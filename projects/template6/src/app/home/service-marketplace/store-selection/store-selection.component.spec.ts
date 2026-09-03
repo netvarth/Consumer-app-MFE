@@ -34,6 +34,8 @@ describe('StoreSelectionComponent', () => {
   };
 
   beforeEach(async () => {
+    localStorage.removeItem('appId');
+    localStorage.removeItem('installId');
     router.navigate.calls.reset();
     router.navigateByUrl.calls.reset();
     journey.start.calls.reset();
@@ -84,11 +86,23 @@ describe('StoreSelectionComponent', () => {
   });
 
   it('starts a cross-tenant journey and document-navigates for a valid providerlink', () => {
-    const providerUrl = 'https://scale.jaldee.com/capp/sugarandspice?inst_id=34&app_id=76';
+    localStorage.setItem('appId', JSON.stringify('56'));
+    localStorage.setItem('installId', JSON.stringify('34'));
+    const providerUrl = 'https://scale.jaldee.com/capp/sugarandspice';
     component.openStore({ ...config.stores![0], providerlink: providerUrl });
     expect(journey.start).toHaveBeenCalledWith('chotaboss', jasmine.any(String), providerUrl);
     expect(documentNavigation.assign).toHaveBeenCalledWith(providerUrl);
     expect(router.navigateByUrl).not.toHaveBeenCalled();
+    expect(JSON.parse(localStorage.getItem('appId')!)).toBe('56');
+    expect(JSON.parse(localStorage.getItem('installId')!)).toBe('34');
+  });
+
+  it('leaves target installation parameters on the destination URL', () => {
+    const providerUrl = 'https://scale.jaldee.com/capp/sugarandspice?inst_id=34&app_id=76';
+    component.openStore({ ...config.stores![0], providerlink: providerUrl });
+    expect(documentNavigation.assign).toHaveBeenCalledWith(providerUrl);
+    expect(localStorage.getItem('appId')).toBeNull();
+    expect(localStorage.getItem('installId')).toBeNull();
   });
 
   it('falls back to service selection when providerlink is missing or invalid', () => {

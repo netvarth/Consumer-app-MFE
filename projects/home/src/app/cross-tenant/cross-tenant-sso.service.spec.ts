@@ -25,8 +25,9 @@ describe('CrossTenantSsoService', () => {
     journey = jasmine.createSpyObj<CrossTenantJourneyService>('journey', ['get', 'clear']);
     accountState = jasmine.createSpyObj<AccountStateCoordinator>(
       'accountState',
-      ['transitionTo', 'setActiveAccount', 'clearActiveAuthentication']
+      ['transitionTo', 'setActiveAccount', 'getActiveAccount', 'clearActiveAuthentication']
     );
+    accountState.getActiveAccount.and.returnValue(null);
     sharedAccountService = jasmine.createSpyObj<AccountService>(
       'sharedAccountService',
       ['setActiveStore', 'setStores', 'setActiveLocation', 'setAccountLocations']
@@ -103,8 +104,9 @@ describe('CrossTenantSsoService', () => {
     expect(sharedAccountService.setActiveLocation).toHaveBeenCalledWith(null);
     expect(sharedAccountService.setAccountLocations).toHaveBeenCalledWith([]);
     expect(consumerService.setOrderDetails).toHaveBeenCalledWith(null);
-    expect(accountState.clearActiveAuthentication).toHaveBeenCalled();
+    expect(accountState.clearActiveAuthentication).not.toHaveBeenCalled();
     expect(accountState.setActiveAccount).toHaveBeenCalledWith('11');
+    expect(journey.clear).toHaveBeenCalled();
     expect(JSON.parse(localStorage.getItem('c_authorizationToken')!)).toBe('CHOTABOSS_SESSION');
     expect(JSON.parse(localStorage.getItem('refreshToken')!)).toBe('CHOTABOSS_REFRESH');
     expect(JSON.parse(JSON.parse(localStorage.getItem('ynw-credentials')!))).toEqual(jasmine.objectContaining({
@@ -112,6 +114,46 @@ describe('CrossTenantSsoService', () => {
       phoneNumber: '9999999999'
     }));
     expect(JSON.parse(JSON.parse(localStorage.getItem('0')!)).jld_scon.token).toBe('CHOTABOSS_SESSION');
+  });
+
+  it('switches when the account changes even if the marketplace journey marker is missing', async () => {
+    journey.get.and.returnValue(null);
+    accountState.getActiveAccount.and.returnValue('11');
+
+    const result = service.prepareForTargetAccount('22', 'order-account');
+    const request = http.expectOne('https://api.example/v1/rest/consumer/login/switch');
+    expect(request.request.body).toEqual({ accountId: '22' });
+    request.flush({ token: 'ORDER_SESSION', status: 'signed_in' });
+    await result;
+
+    expect(accountState.transitionTo).toHaveBeenCalledWith('22');
+    expect(accountState.setActiveAccount).toHaveBeenCalledWith('22');
+  });
+
+  it('records the anonymous boot account without attempting a switch', async () => {
+    currentToken = null;
+    journey.get.and.returnValue(null);
+    accountState.getActiveAccount.and.returnValue(null);
+
+    await service.prepareForTargetAccount('11', 'chotaboss');
+
+    http.expectNone('https://api.example/v1/rest/consumer/login/switch');
+    expect(accountState.setActiveAccount).toHaveBeenCalledWith('11');
+  });
+
+  it('does not mark the target active when its switch fails', async () => {
+    journey.get.and.returnValue(null);
+    accountState.getActiveAccount.and.returnValue('11');
+
+    const result = service.prepareForTargetAccount('22', 'order-account');
+    http.expectOne('https://api.example/v1/rest/consumer/login/switch')
+      .flush('Invalid switch', { status: 422, statusText: 'Unprocessable Entity' });
+    await result;
+
+    expect(accountState.setActiveAccount).not.toHaveBeenCalledWith('22');
+    expect(accountState.transitionTo).not.toHaveBeenCalled();
+    expect(accountState.clearActiveAuthentication).not.toHaveBeenCalled();
+    expect(journey.clear).toHaveBeenCalled();
   });
 
   it('installs a switched session over the shared library double-encoded storage format', async () => {
@@ -148,6 +190,7 @@ describe('CrossTenantSsoService', () => {
       token: 'ORDER_SESSION',
       providerConsumer: 22
     }));
-    expect(accountState.clearActiveAuthentication).toHaveBeenCalledTimes(1);
+    expect(accountState.clearActiveAuthentication).not.toHaveBeenCalled();
   });
+
 });

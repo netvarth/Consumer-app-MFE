@@ -7,13 +7,17 @@ export function validatedProviderLink(value: unknown, currentOrigin?: string): s
     const origin = currentOrigin || window.location.origin;
     const url = new URL(raw, origin);
     if (url.protocol !== 'http:' && url.protocol !== 'https:') return null;
-    const isCurrentOrigin = url.origin === origin;
+    const isLocalDevelopment = url.origin === origin && /^https?:$/.test(url.protocol);
     const isJaldeeApplication = url.protocol === 'https:'
       && (url.hostname === 'jaldee.com' || url.hostname.endsWith('.jaldee.com'));
-    if (!isCurrentOrigin && !isJaldeeApplication) return null;
-    if (!/^\/capp\/[^/]+\/?$/.test(url.pathname)) return null;
-    if (!url.searchParams.get('inst_id') || !url.searchParams.get('app_id')) return null;
-    return /^https?:\/\//i.test(raw) ? raw : url.href;
+    if (!isLocalDevelopment && !isJaldeeApplication) return null;
+    if (url.username || url.password || url.hash) return null;
+    // The custom application id in /capp/:customId is sufficient for the root
+    // application to resolve the provider account. Older generated links also
+    // include inst_id/app_id, but requiring those parameters makes canonical
+    // provider links silently fall back to the marketplace service page.
+    if (!/^\/capp\/[a-z0-9_-]+\/?$/i.test(url.pathname)) return null;
+    return url.href;
   } catch {
     return null;
   }

@@ -1,6 +1,23 @@
 import { CrossTenantLogoutService, PlatformTokenStore } from '@consumer/cross-tenant';
 
 describe('CrossTenantLogoutService', () => {
+  it('clears only provider state on an ordinary tenant logout', () => {
+    localStorage.clear();
+    sessionStorage.clear();
+    const platformTokens = jasmine.createSpyObj<PlatformTokenStore>('PlatformTokenStore', ['clear']);
+    const service = new CrossTenantLogoutService(platformTokens);
+    localStorage.setItem('capp:activeAccountId:v1', '22');
+    localStorage.setItem('c_authorizationToken', 'T22');
+    localStorage.setItem('ynw-credentials', '{}');
+
+    service.clearProviderState();
+
+    expect(platformTokens.clear).not.toHaveBeenCalled();
+    expect(localStorage.getItem('capp:activeAccountId:v1')).toBe('22');
+    expect(localStorage.getItem('c_authorizationToken')).toBeNull();
+    expect(localStorage.getItem('ynw-credentials')).toBeNull();
+  });
+
   it('clears person/account state while preserving global device values', () => {
     localStorage.clear();
     sessionStorage.clear();

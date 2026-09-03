@@ -18,7 +18,7 @@ declare global {
 @Injectable({ providedIn: 'root' })
 export class PlatformTokenStore {
   get(): string | null {
-    const bridge = this.bridgeFor('getPlatformToken');
+    const bridge = this.nativeBridge();
     if (bridge?.getPlatformToken) {
       const token = bridge.getPlatformToken();
       return this.validToken(token) ? token.trim() : null;
@@ -29,28 +29,37 @@ export class PlatformTokenStore {
 
   save(token: string): void {
     if (!this.validToken(token)) return;
-    const bridge = this.bridgeFor('storePlatformToken');
+    const bridge = this.nativeBridge();
     if (bridge?.storePlatformToken) bridge.storePlatformToken(token);
     else this.storage()?.setItem(PLATFORM_TOKEN_KEY, token);
   }
 
   update(token: string): void {
     if (!this.validToken(token)) return;
-    const bridge = this.bridgeFor('updatePlatformToken');
+    const bridge = this.nativeBridge();
     if (bridge?.updatePlatformToken) bridge.updatePlatformToken(token);
     else this.storage()?.setItem(PLATFORM_TOKEN_KEY, token);
   }
 
   clear(): void {
-    const bridge = this.bridgeFor('clearPlatformToken');
+    const bridge = this.nativeBridge();
     if (bridge?.clearPlatformToken) bridge.clearPlatformToken();
     else this.storage()?.removeItem(PLATFORM_TOKEN_KEY);
   }
 
-  private bridgeFor(method: keyof AndroidPlatformTokenBridge): AndroidPlatformTokenBridge | null {
+  /**
+   * Select one complete backend for every operation. A partial native object
+   * must not split reads and writes between Android and Web Storage.
+   */
+  private nativeBridge(): Required<AndroidPlatformTokenBridge> | null {
     if (typeof window === 'undefined') return null;
     const candidates = [window.AndroidBridge, window.Android];
-    return candidates.find((bridge) => typeof bridge?.[method] === 'function') || null;
+    return candidates.find((bridge): bridge is Required<AndroidPlatformTokenBridge> =>
+      typeof bridge?.getPlatformToken === 'function'
+      && typeof bridge.storePlatformToken === 'function'
+      && typeof bridge.updatePlatformToken === 'function'
+      && typeof bridge.clearPlatformToken === 'function'
+    ) || null;
   }
 
   private storage(): Storage | null {

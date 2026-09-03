@@ -45,7 +45,9 @@ describe('PlatformTokenStore', () => {
   it('uses the older Android object when it has the required methods', () => {
     window.Android = {
       storePlatformToken: jasmine.createSpy('store'),
-      getPlatformToken: jasmine.createSpy('get').and.returnValue('old-shell')
+      updatePlatformToken: jasmine.createSpy('update'),
+      getPlatformToken: jasmine.createSpy('get').and.returnValue('old-shell'),
+      clearPlatformToken: jasmine.createSpy('clear')
     };
     expect(store.get()).toBe('old-shell');
     store.save('P');
@@ -56,5 +58,14 @@ describe('PlatformTokenStore', () => {
     window.AndroidBridge = {};
     store.save('browser');
     expect(store.get()).toBe('browser');
+  });
+
+  it('uses one browser backend when the native bridge is partial', () => {
+    window.AndroidBridge = {
+      getPlatformToken: jasmine.createSpy('get').and.returnValue('stale-native')
+    };
+    store.save('browser');
+    expect(store.get()).toBe('browser');
+    expect(window.AndroidBridge.getPlatformToken).not.toHaveBeenCalled();
   });
 });

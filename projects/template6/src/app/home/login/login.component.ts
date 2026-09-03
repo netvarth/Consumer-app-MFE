@@ -482,7 +482,7 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewChecked {
               loginId: loginId,
               accountId: this.sharedService.getAccountID()
             }
-            this.authService.login(credentials).then((response) => {
+            this.authService.consumerLogin(credentials).then((response) => {
               console.log("Login Response:", response);
               this.btnClicked = false;
               _this.lStorageService.removeitemfromLocalStorage('c_authorizationToken');
@@ -499,7 +499,7 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewChecked {
                   _this.authService.doLogout().then(
                     () => {
                       this.lStorageService.setitemonLocalStorage('c_authorizationToken', authToken);
-                      _this.authService.login(credentials).then(
+                      _this.authService.consumerLogin(credentials).then(
                         () => {
                           _this.lStorageService.removeitemfromLocalStorage('c_authorizationToken');
                           _this.performAction();

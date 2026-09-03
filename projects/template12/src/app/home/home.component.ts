@@ -2,6 +2,7 @@ import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, Renderer
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { AccountService, AuthService, ConsumerService, GroupStorageService, LocalStorageService, OrderService, SharedService, SubscriptionService, ThemeService } from 'jconsumer-shared';
 import { Subscription } from 'rxjs';
+import { TRANSIENT_ACCOUNT_KEYS } from '@consumer/cross-tenant';
 
 @Component({
   selector: 'app-home',
@@ -61,8 +62,8 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     this.activatedRoute.queryParams.subscribe(qparams => {
       if (qparams && qparams['cl_dt']) {
         console.log(qparams['cl_dt']);
-        if ((qparams['cl_dt'] == "true" || qparams['cl_dt'] == true) && !this.lStorageService.getitemfromLocalStorage('cleared')) {
-          this.clearStorage();
+        if (qparams['cl_dt'] == "true" || qparams['cl_dt'] == true) {
+          this.clearTenantDraftState();
         }
       }
       if (qparams && qparams['callback']) {
@@ -397,8 +398,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       clearTimeout(this.welcomePopupTimer);
     }
   }
-  clearStorage() {
-    this.lStorageService.clearAll();
-    this.lStorageService.setitemonLocalStorage('cleared', true);
+  private clearTenantDraftState(): void {
+    TRANSIENT_ACCOUNT_KEYS.forEach((key) => this.lStorageService.removeitemfromLocalStorage(key));
   }
 }

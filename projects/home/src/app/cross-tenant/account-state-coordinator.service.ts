@@ -41,6 +41,11 @@ export class AccountStateCoordinator {
     this.touchRegistry(value);
   }
 
+  getActiveAccount(): string | null {
+    if (typeof localStorage === 'undefined') return null;
+    return this.validAccountId(localStorage.getItem(ACTIVE_ACCOUNT_KEY));
+  }
+
   clearActiveAuthentication(): void {
     if (typeof localStorage === 'undefined') return;
     ACTIVE_AUTH_KEYS.forEach((key) => localStorage.removeItem(key));

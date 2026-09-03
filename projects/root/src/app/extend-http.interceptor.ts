@@ -5,10 +5,11 @@ import {
   HttpHandler,
   HttpRequest,
   HttpErrorResponse,
-  HttpResponse
+  HttpResponse,
+  HttpEventType
 } from '@angular/common/http';
 import { Observable, BehaviorSubject, throwError, EMPTY, from } from 'rxjs';
-import { catchError, switchMap, filter, take, timeout, first, tap } from 'rxjs/operators';
+import { catchError, switchMap, filter, take, timeout, first, tap, map } from 'rxjs/operators';
 import { Router, NavigationEnd } from '@angular/router';
 import { AuthService, LocalStorageService, SharedService } from 'jconsumer-shared';
 import { projectConstants } from '../environment';
@@ -59,7 +60,7 @@ export class ExtendHttpInterceptor implements HttpInterceptor {
 
     return this.observeAuthenticationResponse(next.handle(request), isNormalLogin, isLogout).pipe(
       catchError((error: HttpErrorResponse) => {
-        if (this._isSessionExpiredError(error)) {
+        if (this._isSessionExpiredError(error) && !isRefreshCall && !isNormalLogin && !isLogout) {
           // Handle token refresh flow
           return this._handleSessionExpired().pipe(
             switchMap(() => {
@@ -88,7 +89,6 @@ export class ExtendHttpInterceptor implements HttpInterceptor {
       .set('Accept', 'application/json')
       .set('Cache-Control', 'no-cache, no-store, must-revalidate, post-check=0, pre-check=0')
       .set('Pragma', 'no-cache')
-      .set('SameSite', 'None')
       .set('Expires', '0')
       .set('BOOKING_REQ_FROM', 'CUSTOM_APP');
 
@@ -102,7 +102,7 @@ export class ExtendHttpInterceptor implements HttpInterceptor {
       params = params.append('location', this.lStorageService.getitemfromLocalStorage('c-location'));
     }
 
-    if (skipAuthorization) {
+    if (skipAuthorization || isRefreshCall) {
       headers = headers.delete('Authorization').delete('AuthToken');
     } else if (this.lStorageService.getitemfromLocalStorage('logout')) {
       this.lStorageService.removeitemfromLocalStorage('c_authorizationToken');
@@ -111,10 +111,6 @@ export class ExtendHttpInterceptor implements HttpInterceptor {
       if (appId && installId) {
         headers = headers.set('Authorization', `${appId}-${installId}`);
       }
-    } else if (isRefreshCall) {
-      // Use refresh token for refresh calls
-      const refreshToken = this.lStorageService.getitemfromLocalStorage('refreshToken') || '';
-      headers = headers.set('Authorization', refreshToken);
     } else {
       // Use auth token for normal calls
       const authToken = this.lStorageService.getitemfromLocalStorage('c_authorizationToken');
@@ -130,7 +126,7 @@ export class ExtendHttpInterceptor implements HttpInterceptor {
     }
 
     const googleToken = this.lStorageService.getitemfromLocalStorage('googleToken');
-    if (!skipAuthorization && googleToken) {
+    if (!skipAuthorization && !isRefreshCall && googleToken) {
       headers = headers.set('authToken', googleToken);
     }
     // ✅ Guard against double-prefixing full URLs
@@ -154,12 +150,17 @@ export class ExtendHttpInterceptor implements HttpInterceptor {
     if (!isNormalLogin && !isLogout) return response$;
     return response$.pipe(
       tap((event) => {
-        if (!(event instanceof HttpResponse)) return;
+        // Native-federation remotes can load a separate Angular class copy,
+        // so instanceof HttpResponse is not reliable across the boundary.
+        if (event.type !== HttpEventType.Response) return;
+        const response = event as HttpResponse<any>;
         if (isNormalLogin) {
-          const token = event.body?.platform_token;
-          if (typeof token === 'string' && token.trim()) this.platformTokenStore.save(token);
+          const token = response.body?.platform_token ?? response.body?.platformToken;
+          if (typeof token === 'string' && token.trim()) {
+            this.platformTokenStore.save(token);
+          }
         }
-        if (isLogout) this.crossTenantLogout.clearPersonState();
+        if (isLogout) this.crossTenantLogout.clearProviderState();
       })
     );
   }
@@ -193,7 +194,14 @@ export class ExtendHttpInterceptor implements HttpInterceptor {
 
       return from(this.authService.refreshToken()).pipe(
         timeout(10000),
-        switchMap(response => this.authService.refresh(response)),
+        map((response: any) => {
+          const token = response?.token;
+          if (typeof token !== 'string' || !token.trim()) {
+            throw new Error('Session refresh returned no token');
+          }
+          this.lStorageService.setitemonLocalStorage('c_authorizationToken', token);
+          return token;
+        }),
         catchError(err => {
           this._handleRefreshFailure();
           return throwError(() => err);

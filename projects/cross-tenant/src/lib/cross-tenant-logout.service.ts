@@ -13,9 +13,23 @@ import { PlatformTokenStore } from './platform-token.store';
 export class CrossTenantLogoutService {
   constructor(private readonly platformTokens: PlatformTokenStore) {}
 
+  /** Clear only the currently active provider session. */
+  clearProviderState(): void {
+    if (typeof sessionStorage !== 'undefined') sessionStorage.removeItem(CROSS_TENANT_SESSION_KEY);
+    if (typeof localStorage === 'undefined') return;
+
+    [
+      'ynw-credentials',
+      ...ACTIVE_AUTH_KEYS,
+      ...TRANSIENT_ACCOUNT_KEYS
+    ].forEach((key) => localStorage.removeItem(key));
+    this.removeProviderConsumerFromGroup();
+  }
+
+  /** Full product sign-out: remove every product tenant and native identity. */
   clearPersonState(): void {
     this.platformTokens.clear();
-    if (typeof sessionStorage !== 'undefined') sessionStorage.removeItem(CROSS_TENANT_SESSION_KEY);
+    this.clearProviderState();
     if (typeof localStorage === 'undefined') return;
 
     const keysToRemove: string[] = [];
@@ -26,12 +40,8 @@ export class CrossTenantLogoutService {
     keysToRemove.forEach((key) => localStorage.removeItem(key));
     [
       ACTIVE_ACCOUNT_KEY,
-      TENANT_STATE_REGISTRY_KEY,
-      'ynw-credentials',
-      ...ACTIVE_AUTH_KEYS,
-      ...TRANSIENT_ACCOUNT_KEYS
+      TENANT_STATE_REGISTRY_KEY
     ].forEach((key) => localStorage.removeItem(key));
-    this.removeProviderConsumerFromGroup();
   }
 
   private removeProviderConsumerFromGroup(): void {
@@ -42,10 +52,13 @@ export class CrossTenantLogoutService {
     const raw = localStorage.getItem(String(groupKey ?? 0));
     if (!raw) return;
     try {
-      const group = JSON.parse(raw);
+      let group: unknown = JSON.parse(raw);
+      if (typeof group === 'string') group = JSON.parse(group);
       if (group && typeof group === 'object') {
-        delete group.jld_scon;
-        localStorage.setItem(String(groupKey ?? 0), JSON.stringify(group));
+        delete (group as Record<string, unknown>)['jld_scon'];
+        // Match GroupStorageService's compatibility encoding until its source
+        // package can be upgraded independently.
+        localStorage.setItem(String(groupKey ?? 0), JSON.stringify(JSON.stringify(group)));
       }
     } catch {
       localStorage.removeItem(String(groupKey ?? 0));

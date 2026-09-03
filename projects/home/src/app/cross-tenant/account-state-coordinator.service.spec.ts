@@ -11,6 +11,7 @@ describe('AccountStateCoordinator', () => {
 
   it('clears cart, location, store, and catalog state across A -> B -> A', () => {
     coordinator.setActiveAccount('A');
+    expect(coordinator.getActiveAccount()).toBe('A');
     localStorage.setItem('cartData', JSON.stringify({ provider: 'A' }));
     localStorage.setItem('activeLocation', JSON.stringify(10));
     localStorage.setItem('c-location', JSON.stringify(11));
