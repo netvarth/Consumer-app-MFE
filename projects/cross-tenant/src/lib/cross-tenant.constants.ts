@@ -4,10 +4,13 @@ export const ACTIVE_ACCOUNT_KEY = 'capp:activeAccountId:v1';
 export const TENANT_STATE_PREFIX = 'capp:tenant-state:v1:';
 export const TENANT_STATE_REGISTRY_KEY = 'capp:tenant-state-registry:v1';
 
-export const RETAINED_ACCOUNT_KEYS = [] as const;
+// These values are exposed through their legacy top-level keys while an
+// account is active, but are snapshotted per account during a tenant switch.
+export const RETAINED_ACCOUNT_KEYS = [
+  'cartData'
+] as const;
 
 export const TRANSIENT_ACCOUNT_KEYS = [
-  'cartData',
   'deliveryType',
   'cartNote',
   'isSessionCart',

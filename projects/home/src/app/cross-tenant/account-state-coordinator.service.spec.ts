@@ -9,7 +9,7 @@ describe('AccountStateCoordinator', () => {
     coordinator = new AccountStateCoordinator();
   });
 
-  it('clears cart, location, store, and catalog state across A -> B -> A', () => {
+  it('keeps a separate cart per account while clearing other transient state across A -> B -> A', () => {
     coordinator.setActiveAccount('A');
     expect(coordinator.getActiveAccount()).toBe('A');
     localStorage.setItem('cartData', JSON.stringify({ provider: 'A' }));
@@ -38,13 +38,29 @@ describe('AccountStateCoordinator', () => {
 
     coordinator.transitionTo('A');
     coordinator.setActiveAccount('A');
-    expect(localStorage.getItem('cartData')).toBeNull();
+    expect(JSON.parse(localStorage.getItem('cartData')!)).toEqual({ provider: 'A' });
     expect(localStorage.getItem('activeLocation')).toBeNull();
     expect(localStorage.getItem('c-location')).toBeNull();
     expect(localStorage.getItem('storeEncId')).toBeNull();
     expect(localStorage.getItem('storeId')).toBeNull();
     expect(localStorage.getItem('active_catalog')).toBeNull();
     expect(localStorage.getItem('chosenDateTime')).toBeNull();
+
+    coordinator.transitionTo('B');
+    coordinator.setActiveAccount('B');
+    expect(JSON.parse(localStorage.getItem('cartData')!)).toEqual({ provider: 'B' });
+  });
+
+  it('does not expose the source cart when the target account has no saved cart', () => {
+    coordinator.setActiveAccount('A');
+    localStorage.setItem('cartData', JSON.stringify({ provider: 'A' }));
+
+    coordinator.transitionTo('B');
+    coordinator.setActiveAccount('B');
+
+    expect(localStorage.getItem('cartData')).toBeNull();
+    expect(JSON.parse(localStorage.getItem('capp:tenant-state:v1:A')!).values.cartData)
+      .toBe(JSON.stringify({ provider: 'A' }));
   });
 
   it('does not restore store/catalog selections from legacy tenant snapshots', () => {

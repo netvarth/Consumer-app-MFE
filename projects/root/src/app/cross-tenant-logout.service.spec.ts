@@ -9,6 +9,7 @@ describe('CrossTenantLogoutService', () => {
     localStorage.setItem('capp:activeAccountId:v1', '22');
     localStorage.setItem('c_authorizationToken', 'T22');
     localStorage.setItem('ynw-credentials', '{}');
+    localStorage.setItem('cartData', JSON.stringify({ provider: '22' }));
 
     service.clearProviderState();
 
@@ -16,6 +17,7 @@ describe('CrossTenantLogoutService', () => {
     expect(localStorage.getItem('capp:activeAccountId:v1')).toBe('22');
     expect(localStorage.getItem('c_authorizationToken')).toBeNull();
     expect(localStorage.getItem('ynw-credentials')).toBeNull();
+    expect(localStorage.getItem('cartData')).toBeNull();
   });
 
   it('clears person/account state while preserving global device values', () => {

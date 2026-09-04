@@ -102,8 +102,22 @@ export class ExtendHttpInterceptor implements HttpInterceptor {
       params = params.append('location', this.lStorageService.getitemfromLocalStorage('c-location'));
     }
 
-    if (skipAuthorization || isRefreshCall) {
+    if (skipAuthorization) {
+      const sessionToken = this.lStorageService.getitemfromLocalStorage('c_authorizationToken');
       headers = headers.delete('Authorization').delete('AuthToken');
+      this.lStorageService.removeitemfromLocalStorage('c_authorizationToken');
+      const appId = this.lStorageService.getitemfromLocalStorage('appId');
+      const installId = this.lStorageService.getitemfromLocalStorage('installId');
+      if (appId && installId) {
+        headers = headers.set('Authorization', `${appId}-${installId}`);
+      } else if (sessionToken) {
+        headers = headers.set('Authorization', sessionToken);
+      }
+    } else if (isRefreshCall) {
+      headers = headers.delete('AuthToken');
+      const refreshToken = this.lStorageService.getitemfromLocalStorage('refreshToken');
+      if (refreshToken) headers = headers.set('Authorization', refreshToken);
+      else headers = headers.delete('Authorization');
     } else if (this.lStorageService.getitemfromLocalStorage('logout')) {
       this.lStorageService.removeitemfromLocalStorage('c_authorizationToken');
       const appId = this.lStorageService.getitemfromLocalStorage('appId');

@@ -130,6 +130,29 @@ describe('CrossTenantSsoService', () => {
     expect(accountState.setActiveAccount).toHaveBeenCalledWith('22');
   });
 
+  it('retries an anonymous target when a platform identity is still available', async () => {
+    journey.get.and.returnValue(null);
+    accountState.getActiveAccount.and.returnValue('22');
+
+    const result = service.prepareForTargetAccount('22', 'order-account');
+    http.expectOne('https://api.example/v1/rest/consumer/login/switch')
+      .flush({ token: 'ORDER_SESSION', status: 'signed_in' });
+    await result;
+
+    expect(accountState.transitionTo).toHaveBeenCalledWith('22');
+    expect(accountState.setActiveAccount).toHaveBeenCalledWith('22');
+  });
+
+  it('does not repeat a switch for an already active account session', async () => {
+    journey.get.and.returnValue(null);
+    accountState.getActiveAccount.and.returnValue('22');
+    localStorage.setItem('c_authorizationToken', JSON.stringify('ORDER_SESSION'));
+
+    await service.prepareForTargetAccount('22', 'order-account');
+
+    http.expectNone('https://api.example/v1/rest/consumer/login/switch');
+  });
+
   it('records the anonymous boot account without attempting a switch', async () => {
     currentToken = null;
     journey.get.and.returnValue(null);
@@ -138,10 +161,28 @@ describe('CrossTenantSsoService', () => {
     await service.prepareForTargetAccount('11', 'chotaboss');
 
     http.expectNone('https://api.example/v1/rest/consumer/login/switch');
+    expect(accountState.transitionTo).not.toHaveBeenCalled();
     expect(accountState.setActiveAccount).toHaveBeenCalledWith('11');
   });
 
-  it('does not mark the target active when its switch fails', async () => {
+  it('isolates account state when an anonymous user moves to another account', async () => {
+    currentToken = null;
+    journey.get.and.returnValue(null);
+    accountState.getActiveAccount.and.returnValue('11');
+
+    await service.prepareForTargetAccount('22', 'order-account');
+
+    http.expectNone('https://api.example/v1/rest/consumer/login/switch');
+    expect(accountState.transitionTo).toHaveBeenCalledWith('22');
+    expect(sharedAccountService.setActiveStore).toHaveBeenCalledWith(null);
+    expect(sharedAccountService.setStores).toHaveBeenCalledWith([]);
+    expect(sharedAccountService.setActiveLocation).toHaveBeenCalledWith(null);
+    expect(sharedAccountService.setAccountLocations).toHaveBeenCalledWith([]);
+    expect(consumerService.setOrderDetails).toHaveBeenCalledWith(null);
+    expect(accountState.setActiveAccount).toHaveBeenCalledWith('22');
+  });
+
+  it('falls back to an isolated anonymous target when its switch fails', async () => {
     journey.get.and.returnValue(null);
     accountState.getActiveAccount.and.returnValue('11');
 
@@ -150,8 +191,10 @@ describe('CrossTenantSsoService', () => {
       .flush('Invalid switch', { status: 422, statusText: 'Unprocessable Entity' });
     await result;
 
-    expect(accountState.setActiveAccount).not.toHaveBeenCalledWith('22');
-    expect(accountState.transitionTo).not.toHaveBeenCalled();
+    expect(accountState.setActiveAccount).toHaveBeenCalledWith('22');
+    expect(accountState.transitionTo).toHaveBeenCalledWith('22');
+    expect(sharedAccountService.setActiveStore).toHaveBeenCalledWith(null);
+    expect(consumerService.setOrderDetails).toHaveBeenCalledWith(null);
     expect(accountState.clearActiveAuthentication).not.toHaveBeenCalled();
     expect(journey.clear).toHaveBeenCalled();
   });

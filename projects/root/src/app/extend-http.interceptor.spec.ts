@@ -55,7 +55,7 @@ describe('ExtendHttpInterceptor cross-tenant integration', () => {
     expect(platformTokens.save).toHaveBeenCalledWith('P2');
   });
 
-  it('keeps session Authorization normally but sends logout without credentials', async () => {
+  it('keeps session Authorization normally and uses device identity for logout', async () => {
     values.set('c_authorizationToken', 'SESSION');
     values.set('appId', 'APP');
     values.set('installId', 'INSTALL');
@@ -75,10 +75,44 @@ describe('ExtendHttpInterceptor cross-tenant integration', () => {
       new HttpRequest('DELETE', 'consumer/login', null, { headers: captured!.headers }),
       handler
     ));
-    expect(captured!.headers.has('Authorization')).toBeFalse();
+    expect(captured!.headers.get('Authorization')).toBe('APP-INSTALL');
     expect(captured!.headers.has('AuthToken')).toBeFalse();
     expect(captured!.headers.has('SameSite')).toBeFalse();
     expect(logout.clearProviderState).toHaveBeenCalled();
+  });
+
+  it('uses the current session for logout when no device identity exists', async () => {
+    values.set('c_authorizationToken', 'SESSION');
+    let captured: HttpRequest<any> | undefined;
+    const handler = {
+      handle: (request: HttpRequest<any>) => {
+        captured = request;
+        return of(new HttpResponse({ body: true }));
+      }
+    } as HttpHandler;
+
+    await firstValueFrom(interceptor.intercept(new HttpRequest('DELETE', 'consumer/login'), handler));
+    expect(captured!.headers.get('Authorization')).toBe('SESSION');
+    expect(values.has('c_authorizationToken')).toBeFalse();
+  });
+
+  it('uses the refresh token only for a session refresh request', async () => {
+    values.set('c_authorizationToken', 'SESSION');
+    values.set('refreshToken', 'REFRESH');
+    let captured: HttpRequest<any> | undefined;
+    const handler = {
+      handle: (request: HttpRequest<any>) => {
+        captured = request;
+        return of(new HttpResponse({ body: { token: 'NEW_SESSION' } }));
+      }
+    } as HttpHandler;
+
+    await firstValueFrom(interceptor.intercept(
+      new HttpRequest('POST', 'consumer/oauth/token/refresh', null),
+      handler
+    ));
+    expect(captured!.headers.get('Authorization')).toBe('REFRESH');
+    expect(captured!.headers.has('AuthToken')).toBeFalse();
   });
 
 });

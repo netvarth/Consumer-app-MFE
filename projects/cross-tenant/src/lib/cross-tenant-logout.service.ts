@@ -3,6 +3,7 @@ import {
   ACTIVE_ACCOUNT_KEY,
   ACTIVE_AUTH_KEYS,
   CROSS_TENANT_SESSION_KEY,
+  RETAINED_ACCOUNT_KEYS,
   TENANT_STATE_PREFIX,
   TENANT_STATE_REGISTRY_KEY,
   TRANSIENT_ACCOUNT_KEYS
@@ -21,6 +22,7 @@ export class CrossTenantLogoutService {
     [
       'ynw-credentials',
       ...ACTIVE_AUTH_KEYS,
+      ...RETAINED_ACCOUNT_KEYS,
       ...TRANSIENT_ACCOUNT_KEYS
     ].forEach((key) => localStorage.removeItem(key));
     this.removeProviderConsumerFromGroup();

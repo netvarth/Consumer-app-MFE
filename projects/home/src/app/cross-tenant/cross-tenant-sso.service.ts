@@ -78,18 +78,21 @@ export class CrossTenantSsoService {
 
   private async prepare(target: string): Promise<void> {
     const marker = this.journey.get();
+    const platformToken = this.platformTokens.get();
     if (!marker) {
-      if (this.accountState.getActiveAccount() === target) return;
-      if (!this.platformTokens.get()) {
-        // Record the account during anonymous boot. A later navigation can
-        // then detect that the authenticated platform session changed apps.
-        this.accountState.setActiveAccount(target);
+      // A previous failed switch deliberately records the target as anonymous.
+      // If the platform identity is still available, reload/navigation must be
+      // allowed to retry instead of getting stuck behind the account marker.
+      if (this.accountState.getActiveAccount() === target
+        && (this.hasActiveSession() || !platformToken)) return;
+      if (!platformToken) {
+        this.activateAnonymousAccount(target);
         return;
       }
     }
 
-    if (!this.platformTokens.get()) {
-      this.accountState.setActiveAccount(target);
+    if (!platformToken) {
+      this.activateAnonymousAccount(target);
       return;
     }
 
@@ -110,7 +113,26 @@ export class CrossTenantSsoService {
         this.platformTokens.clear();
       }
       if (error instanceof HttpErrorResponse && (error.status === 401 || error.status === 422)) this.journey.clear();
+      // Navigation has already moved to the target application. Keeping the
+      // source account's session here creates a false logged-in state and
+      // sends its token to target-account endpoints (the observed 422).
+      this.clearRuntimeAccountState();
+      this.accountState.transitionTo(target);
+      this.accountState.setActiveAccount(target);
     }
+  }
+
+  private activateAnonymousAccount(target: string): void {
+    // On the first boot there is no owner recorded for existing legacy cart
+    // data, so keep it with the account being opened. Once an owner exists,
+    // always transition through the coordinator to prevent account-local
+    // cart and transient state from leaking into the next account.
+    const activeAccount = this.accountState.getActiveAccount();
+    if (activeAccount && activeAccount !== target) {
+      this.clearRuntimeAccountState();
+      this.accountState.transitionTo(target);
+    }
+    this.accountState.setActiveAccount(target);
   }
 
   private async requestSwitch(accountId: number | string): Promise<CrossTenantSwitchResponse> {
@@ -121,13 +143,19 @@ export class CrossTenantSsoService {
       { accountId },
       this.requestOptions(token)
     ).pipe(timeout(10000)));
-    if (!response || typeof response.token !== 'string' || !response.token.trim()) {
+    const sessionToken = this.normalizeSessionToken(response?.token);
+    if (!response || !sessionToken) {
       throw new Error('Account switch returned no session token');
     }
     if (response.status !== 'signed_in' && response.status !== 'provisioned') {
       throw new Error('Account switch returned an unsupported status');
     }
-    return response;
+    const refreshToken = this.normalizeSessionToken(response.refreshToken);
+    return {
+      ...response,
+      token: sessionToken,
+      ...(refreshToken ? { refreshToken } : {})
+    };
   }
 
   private installSession(response: CrossTenantSwitchResponse, accountId: string): void {
@@ -204,10 +232,33 @@ export class CrossTenantSsoService {
     try { return JSON.parse(value); } catch { return value; }
   }
 
+  private hasActiveSession(): boolean {
+    if (typeof localStorage === 'undefined') return false;
+    return this.normalizeSessionToken(
+      this.parseStorageValue(localStorage.getItem('c_authorizationToken'))
+    ) !== null;
+  }
+
   private shouldClearPlatformToken(error: HttpErrorResponse): boolean {
     const detail = typeof error.error === 'string'
       ? error.error
       : String(error.error?.message || error.error?.code || '');
     return !/NOT_REGISTERED_CUSTOMER|INACTIVE/i.test(detail);
+  }
+
+  private normalizeSessionToken(token: unknown): string | null {
+    if (typeof token !== 'string') return null;
+    let value = token.trim();
+    if (value.startsWith('"') && value.endsWith('"')) {
+      try {
+        const parsed = JSON.parse(value);
+        if (typeof parsed !== 'string') return null;
+        value = parsed.trim();
+      } catch {
+        return null;
+      }
+    }
+    if (!value || /^(?:null|undefined|\[object Object\])$/i.test(value)) return null;
+    return /[\u0000-\u001f\u007f]/.test(value) ? null : value;
   }
 }

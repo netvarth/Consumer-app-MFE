@@ -60,12 +60,31 @@ describe('PlatformTokenStore', () => {
     expect(store.get()).toBe('browser');
   });
 
-  it('uses one browser backend when the native bridge is partial', () => {
+  it('supports an older partial native bridge and mirrors the browser fallback', () => {
+    let nativeValue: string | null = null;
     window.AndroidBridge = {
-      getPlatformToken: jasmine.createSpy('get').and.returnValue('stale-native')
+      getPlatformToken: jasmine.createSpy('get').and.callFake(() => nativeValue),
+      storePlatformToken: jasmine.createSpy('store').and.callFake((value) => nativeValue = value)
     };
     store.save('browser');
     expect(store.get()).toBe('browser');
-    expect(window.AndroidBridge.getPlatformToken).not.toHaveBeenCalled();
+    expect(window.AndroidBridge.storePlatformToken).toHaveBeenCalledWith('browser');
+    expect(localStorage.getItem('platform_token')).toBe('browser');
+  });
+
+  it('canonicalizes legacy quoted and prefixed native token values', () => {
+    window.AndroidBridge = {
+      getPlatformToken: jasmine.createSpy('get').and.returnValue('"platformToken-P1"')
+    };
+    expect(store.get()).toBe('P1');
+    expect(localStorage.getItem('platform_token')).toBe('P1');
+  });
+
+  it('falls back to web storage when a native getter returns a sentinel', () => {
+    localStorage.setItem('platform_token', 'P1');
+    window.AndroidBridge = {
+      getPlatformToken: jasmine.createSpy('get').and.returnValue('undefined')
+    };
+    expect(store.get()).toBe('P1');
   });
 });

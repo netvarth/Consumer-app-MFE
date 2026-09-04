@@ -18,55 +18,82 @@ declare global {
 @Injectable({ providedIn: 'root' })
 export class PlatformTokenStore {
   get(): string | null {
-    const bridge = this.nativeBridge();
-    if (bridge?.getPlatformToken) {
-      const token = bridge.getPlatformToken();
-      return this.validToken(token) ? token.trim() : null;
+    for (const bridge of this.nativeBridges()) {
+      if (typeof bridge.getPlatformToken !== 'function') continue;
+      try {
+        const token = this.normalize(bridge.getPlatformToken());
+        if (token) {
+          this.storage()?.setItem(PLATFORM_TOKEN_KEY, token);
+          return token;
+        }
+      } catch {
+        // A broken/older native bridge must not hide a usable web fallback.
+      }
     }
-    const token = this.storage()?.getItem(PLATFORM_TOKEN_KEY);
-    return this.validToken(token) ? token!.trim() : null;
+    return this.normalize(this.storage()?.getItem(PLATFORM_TOKEN_KEY));
   }
 
   save(token: string): void {
-    if (!this.validToken(token)) return;
-    const bridge = this.nativeBridge();
-    if (bridge?.storePlatformToken) bridge.storePlatformToken(token);
-    else this.storage()?.setItem(PLATFORM_TOKEN_KEY, token);
+    const value = this.normalize(token);
+    if (!value) return;
+    this.storage()?.setItem(PLATFORM_TOKEN_KEY, value);
+    for (const bridge of this.nativeBridges()) {
+      try {
+        if (typeof bridge.storePlatformToken === 'function') bridge.storePlatformToken(value);
+        else if (typeof bridge.updatePlatformToken === 'function') bridge.updatePlatformToken(value);
+      } catch {
+        // localStorage remains a valid fallback for this WebView.
+      }
+    }
   }
 
   update(token: string): void {
-    if (!this.validToken(token)) return;
-    const bridge = this.nativeBridge();
-    if (bridge?.updatePlatformToken) bridge.updatePlatformToken(token);
-    else this.storage()?.setItem(PLATFORM_TOKEN_KEY, token);
+    const value = this.normalize(token);
+    if (!value) return;
+    this.storage()?.setItem(PLATFORM_TOKEN_KEY, value);
+    for (const bridge of this.nativeBridges()) {
+      try {
+        if (typeof bridge.updatePlatformToken === 'function') bridge.updatePlatformToken(value);
+        else if (typeof bridge.storePlatformToken === 'function') bridge.storePlatformToken(value);
+      } catch {
+        // localStorage remains a valid fallback for this WebView.
+      }
+    }
   }
 
   clear(): void {
-    const bridge = this.nativeBridge();
-    if (bridge?.clearPlatformToken) bridge.clearPlatformToken();
-    else this.storage()?.removeItem(PLATFORM_TOKEN_KEY);
+    this.storage()?.removeItem(PLATFORM_TOKEN_KEY);
+    for (const bridge of this.nativeBridges()) {
+      try { bridge.clearPlatformToken?.(); } catch { /* best-effort native cleanup */ }
+    }
   }
 
-  /**
-   * Select one complete backend for every operation. A partial native object
-   * must not split reads and writes between Android and Web Storage.
-   */
-  private nativeBridge(): Required<AndroidPlatformTokenBridge> | null {
-    if (typeof window === 'undefined') return null;
-    const candidates = [window.AndroidBridge, window.Android];
-    return candidates.find((bridge): bridge is Required<AndroidPlatformTokenBridge> =>
-      typeof bridge?.getPlatformToken === 'function'
-      && typeof bridge.storePlatformToken === 'function'
-      && typeof bridge.updatePlatformToken === 'function'
-      && typeof bridge.clearPlatformToken === 'function'
-    ) || null;
+  private nativeBridges(): AndroidPlatformTokenBridge[] {
+    if (typeof window === 'undefined') return [];
+    return Array.from(new Set([window.AndroidBridge, window.Android].filter(
+      (bridge): bridge is AndroidPlatformTokenBridge => !!bridge
+    )));
   }
 
   private storage(): Storage | null {
     return typeof localStorage === 'undefined' ? null : localStorage;
   }
 
-  private validToken(token: unknown): token is string {
-    return typeof token === 'string' && token.trim().length > 0;
+  /** Keep one raw platform-token representation across legacy native bridges. */
+  private normalize(token: unknown): string | null {
+    if (typeof token !== 'string') return null;
+    let value = token.trim();
+    for (let attempt = 0; attempt < 2 && value.startsWith('"') && value.endsWith('"'); attempt += 1) {
+      try {
+        const parsed = JSON.parse(value);
+        if (typeof parsed !== 'string') return null;
+        value = parsed.trim();
+      } catch {
+        return null;
+      }
+    }
+    value = value.replace(/^(?:platformToken-)+/i, '').trim();
+    if (!value || /^(?:null|undefined|\[object Object\])$/i.test(value)) return null;
+    return /[\u0000-\u001f\u007f]/.test(value) ? null : value;
   }
 }
