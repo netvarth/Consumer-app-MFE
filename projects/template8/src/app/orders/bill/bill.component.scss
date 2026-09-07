@@ -276,3 +276,9 @@
   .rounded-circle {
     border-radius: 50% !important;
   }
+.head-unit {
+  flex-basis: 12%;
+  min-width: 0;
+  padding-inline: 4px;
+  overflow-wrap: anywhere;
+}

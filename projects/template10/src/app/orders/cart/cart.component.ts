@@ -571,4 +571,67 @@ export class CartComponent implements OnInit {
   getAttributeValues(attributes: any): string[] {
     return Object.values(attributes);
   }
+
+  getItemUnitName(item: any): string {
+    return item?.itemUnit?.unitName
+      || item?.catalogItem?.itemUnit?.unitName
+      || item?.catalogItem?.itemUnitName
+      || '';
+  }
+
+  private getItemAttributeConfig(item: any): any[] {
+    return item?.itemAttributes
+      || item?.spItem?.itemAttributes
+      || item?.spItemDto?.itemAttributes
+      || item?.catalogItem?.itemAttributes
+      || item?.catalogItem?.spItemDto?.itemAttributes
+      || [];
+  }
+
+  private getItemUnitItems(item: any): any[] {
+    return item?.unitItems
+      || item?.catalogItem?.unitItems
+      || item?.spItem?.unitItems
+      || item?.spItemDto?.unitItems
+      || item?.catalogItem?.spItemDto?.unitItems
+      || [];
+  }
+
+  private shouldHideStandaloneUnit(item: any): boolean {
+    const selectedCount = item?.selectedAttributes ? Object.keys(item.selectedAttributes).length : 0;
+    const attributes = this.getItemAttributeConfig(item);
+    const unitItems = this.getItemUnitItems(item);
+    return selectedCount === 0 && (!Array.isArray(attributes) || attributes.length === 0) && unitItems.length <= 1;
+  }
+
+  hasItemAttributes(item: any): boolean {
+    const selectedCount = item?.selectedAttributes ? Object.keys(item.selectedAttributes).length : 0;
+    const unitName = this.getItemUnitName(item);
+    const attributes = this.getItemAttributeConfig(item);
+    if (this.shouldHideStandaloneUnit(item)) {
+      return false;
+    }
+    return !!unitName || selectedCount > 0 || (Array.isArray(attributes) && attributes.length > 0);
+  }
+
+  getDisplayAttributes(item: any): string[] {
+    const selected = this.getAttributeValues(item?.selectedAttributes || {});
+    const unitName = this.getItemUnitName(item);
+    if (selected.length > 0) {
+      if (unitName && !selected.includes(unitName)) {
+        selected.push(unitName);
+      }
+      return selected;
+    }
+    const attributes = this.getItemAttributeConfig(item);
+    const displayValues = attributes
+      .map((attr) => attr?.values?.[0])
+      .filter((value) => value);
+
+    if (unitName && !displayValues.includes(unitName) && !this.shouldHideStandaloneUnit(item)) {
+      displayValues.push(unitName);
+    }
+
+    return displayValues;
+  }
 }

@@ -52,8 +52,8 @@ routes.push(
         const remoteUrl = environmentService.getEnvironment(templateId) + '/remoteEntry.json';
         //  remoteEntry: getVersionedRemoteEntry(remoteUrl),
         return loadRemoteModule({
-          remoteEntry: getVersionedRemoteEntry(remoteUrl),
-          // remoteEntry: remoteUrl,
+          // remoteEntry: getVersionedRemoteEntry(remoteUrl),
+          remoteEntry: remoteUrl,
           exposedModule: './Home'
         }).then(m => m.HomeModule);
       }

@@ -80,6 +80,9 @@ export class ItemComponent implements OnInit, OnDestroy {
   cdnPath: string = '';
   selectedValues: { [key: string]: string } = {};
   itemAttributes: any;
+  selectedUnitItem: any;
+  currentDisplayItem: any;
+  displayItem: any;
   virtualItem = false;
   virtualItemOutOfStock = false;
   thumbnailAttachments: any[] = [];
@@ -362,14 +365,13 @@ export class ItemComponent implements OnInit, OnDestroy {
   }
 
   getDisplayItemTypeName(): string {
-    const virtualType =
-      this.itemAttributes?.spItemDto?.itemType?.typeName
-      || this.getItemTypeName(this.itemAttributes?.spItemDto?.itemType?.id);
-    if (virtualType) {
-      return virtualType;
+    const currentType =
+      this.currentDisplayItem?.spItemDto?.itemType?.typeName
+      || this.getItemTypeName(this.currentDisplayItem?.spItemDto?.itemType?.id);
+    if (currentType) {
+      return currentType;
     }
-    return this.item?.spItemDto?.itemType?.typeName
-      || this.getItemTypeName(this.item?.spItemDto?.itemType?.id);
+    return '';
   }
 
   getDisplayItemGroups(): string[] {
@@ -426,6 +428,14 @@ export class ItemComponent implements OnInit, OnDestroy {
     const loadToken = ++this.itemLoadToken;
     const loadStart = Date.now();
     this.loading = true;
+    this.selectedValues = {};
+    this.itemAttributes = null;
+    this.selectedUnitItem = null;
+    this.currentDisplayItem = null;
+    this.displayItem = null;
+    this.virtualItem = false;
+    this.virtualItemOutOfStock = false;
+    this.quantity = 1;
     let sub = this.orderService.getSoCatalogItemById(this.accountId, itemID).subscribe((itemData: any) => {
       if (itemData) {
         this.item = itemData;
@@ -456,10 +466,12 @@ export class ItemComponent implements OnInit, OnDestroy {
         if (itemData && itemData.spItemDto && itemData.spItemDto.badges && itemData.spItemDto.badges.length > 0) {
           this.badges = itemData.spItemDto.badges;
         }
+        this.initializeSelectedUnitItem();
+        this.setCurrentDisplayItem(this.selectedUnitItem || itemData);
         if (this.item && this.item.itemAttributes && this.item.itemAttributes.length > 0) {
           this.initializeSelectedValues();
         } else {
-          if (itemData && itemData.homeDelivery && this.itemDeliveryType != 'STORE_PICKUP') {
+          if (this.currentDisplayItem && this.currentDisplayItem.homeDelivery && this.itemDeliveryType != 'STORE_PICKUP') {
             this.itemDeliveryType = 'HOME_DELIVERY'
           } else {
             this.itemDeliveryType = 'STORE_PICKUP'
@@ -699,26 +711,27 @@ export class ItemComponent implements OnInit, OnDestroy {
   }
 
   private getCurrentCatalogEncId(): string | undefined {
-    return this.virtualItem ? this.itemAttributes?.encId : this.item?.encId;
+    return this.currentDisplayItem?.encId || this.item?.encId;
   }
 
   private getCurrentSpItemEncId(): string | undefined {
-    return this.virtualItem
-      ? (this.itemAttributes?.spItem?.encId || this.itemAttributes?.encId)
-      : (this.item?.spItem?.encId || this.item?.encId);
+    return this.currentDisplayItem?.spItem?.encId || this.currentDisplayItem?.encId || this.item?.spItem?.encId || this.item?.encId;
   }
 
   private getCurrentSpItemCode(): string | undefined {
-    return this.virtualItem
-      ? (this.itemAttributes?.spItem?.spCode || this.itemAttributes?.spItemDto?.spCode || this.itemAttributes?.spCode)
-      : (this.item?.spItem?.spCode || this.item?.spItemDto?.spCode || this.item?.spCode);
+    return this.currentDisplayItem?.spItem?.spCode
+      || this.currentDisplayItem?.spItemDto?.spCode
+      || this.currentDisplayItem?.spCode
+      || this.item?.spItem?.spCode
+      || this.item?.spItemDto?.spCode
+      || this.item?.spCode;
   }
 
   private resolveWishlistDeliveryType(): 'HOME_DELIVERY' | 'STORE_PICKUP' {
     const homeDelivery =
-      this.itemAttributes?.homeDelivery ??
-      this.itemAttributes?.spItemDto?.homeDelivery ??
-      this.itemAttributes?.spItem?.homeDelivery ??
+      this.currentDisplayItem?.homeDelivery ??
+      this.currentDisplayItem?.spItemDto?.homeDelivery ??
+      this.currentDisplayItem?.spItem?.homeDelivery ??
       this.item?.homeDelivery ??
       this.item?.spItemDto?.homeDelivery ??
       this.item?.spItem?.homeDelivery;
@@ -950,11 +963,16 @@ export class ItemComponent implements OnInit, OnDestroy {
         ? (window.scrollY || document.documentElement.scrollTop || 0)
         : 0;
     this.loading = true;
-    let item = this.item
-    if (this.virtualItem == true) {
-      item = this.itemAttributes;
-    } else {
-      item = this.item;
+    if (this.item?.itemAttributes?.length && !this.itemAttributes) {
+      this.loading = false;
+      this.toastService.showError("Please select item attributes");
+      return;
+    }
+    let item = this.currentDisplayItem || this.item;
+    if (this.isOutOfStockStatus(item?.stockStatus)) {
+      this.loading = false;
+      this.toastService.showError("Selected item option is out of stock");
+      return;
     }
     const isVirtual =
       this.item?.itemNature === 'VIRTUAL_ITEM' ||
@@ -962,17 +980,18 @@ export class ItemComponent implements OnInit, OnDestroy {
       (Array.isArray(this.item?.itemAttributes) && this.item.itemAttributes.length > 0);
     if (isVirtual) {
       this.virtualItem = true;
-      if (!this.itemAttributes || !this.itemAttributes.encId) {
+      const selectedVariant = this.selectedUnitItem || this.itemAttributes;
+      if (!selectedVariant?.encId) {
         this.finishAddToCartLoading(preservedScrollY);
         this.toastService.showError('Please select item attributes');
         return;
       }
-      if (this.itemAttributes?.stockStatus === 'OUT_OF_STOCK') {
+      if (this.isOutOfStockStatus(selectedVariant?.stockStatus)) {
         this.finishAddToCartLoading(preservedScrollY);
         this.toastService.showError('Selected attribute is out of stock');
         return;
       }
-      item = this.itemAttributes;
+      item = selectedVariant;
     }
     if (!this.itemDeliveryType) {
       if (item && item.homeDelivery && this.itemDeliveryType != 'STORE_PICKUP') {
@@ -1284,7 +1303,7 @@ export class ItemComponent implements OnInit, OnDestroy {
       this.toastService.showError('Store information is unavailable. Please refresh and try again.');
       return Promise.resolve(false);
     }
-    const item = this.virtualItem ? this.itemAttributes : this.item;
+    const item = this.currentDisplayItem || this.item;
     const deliveryType = this.itemDeliveryType === 'HOME_DELIVERY' ? 'HOME_DELIVERY' : 'STORE_PICKUP';
     const cartInfo = {
       store: {
@@ -1543,9 +1562,9 @@ export class ItemComponent implements OnInit, OnDestroy {
         if (attribute.values && attribute.values.length > 0) {
           this.virtualItem = true;
           this.selectedValues[attribute.attribute] = attribute.values[0]; // Select first value
-          this.getAttributeItems(this.item);
         }
       });
+      this.getAttributeItems(this.item);
     }
   }
   preventAttributeButtonFocus(event: MouseEvent): void {
@@ -1570,30 +1589,38 @@ export class ItemComponent implements OnInit, OnDestroy {
     let spItemCode = itemData.spItem.spCode;
     let sub1 = this.itemService.getAttributeItemsById(spItemCode, this.selectedValues).subscribe((itemData: any) => {
       if (itemData && Array.isArray(itemData)) {
-        const validItems = itemData.filter(item => item.stockStatus !== 'OUT_OF_STOCK');
+        const selectedItem = this.findMatchingAttributeItem(itemData);
+        const validItems = itemData.filter(item => !this.isOutOfStockStatus(item?.stockStatus));
         const pricedItems = itemData.filter(item => (item.price || 0) > 0);
         const preferredItem =
+          selectedItem ||
           (validItems.length ? validItems[0] : null) ||
           (pricedItems.length ? pricedItems[0] : null) ||
           itemData[0];
         if (preferredItem) {
           this.virtualItem = true;
           this.itemAttributes = preferredItem;
-          this.virtualItemOutOfStock = preferredItem.stockStatus === 'OUT_OF_STOCK';
-          this.setVirtualItemDetails(this.itemAttributes);
+          this.initializeSelectedUnitItem();
+          const selectedVariant = this.selectedUnitItem || this.itemAttributes;
+          this.virtualItemOutOfStock = this.isOutOfStockStatus(selectedVariant.stockStatus);
+          this.setVirtualItemDetails(selectedVariant);
         } else {
           console.warn('No items found for selected attributes');
           // Keep the original item if no attributes found
           this.virtualItem = false;
           this.virtualItemOutOfStock = false;
-          this.updateThumbnailAttachments();
+          this.itemAttributes = null;
+          this.selectedUnitItem = null;
+          this.setCurrentDisplayItem(this.item);
         }
       }
     }, (error: any) => {
       console.error('Error fetching attribute items:', error);
       this.virtualItem = false;
       this.virtualItemOutOfStock = false;
-      this.updateThumbnailAttachments();
+      this.itemAttributes = null;
+      this.selectedUnitItem = null;
+      this.setCurrentDisplayItem(this.item);
       this.loading = false;
     });
     this.subscriptions.add(sub1);
@@ -1604,6 +1631,7 @@ export class ItemComponent implements OnInit, OnDestroy {
       this.loading = false;
       return;
     }
+    this.setCurrentDisplayItem(itemData);
     
     if (itemData && itemData.homeDelivery && this.itemDeliveryType != 'STORE_PICKUP') {
       this.itemDeliveryType = 'HOME_DELIVERY'
@@ -1659,8 +1687,8 @@ export class ItemComponent implements OnInit, OnDestroy {
   }
 
   private updateThumbnailAttachments(): void {
-    const virtualAttachments = this.itemAttributes?.spItemDto?.attachments;
-    if (this.virtualItem && Array.isArray(virtualAttachments) && virtualAttachments.length) {
+    const virtualAttachments = this.currentDisplayItem?.spItemDto?.attachments;
+    if (Array.isArray(virtualAttachments) && virtualAttachments.length) {
       this.thumbnailAttachments = virtualAttachments;
       return;
     }
@@ -1975,16 +2003,20 @@ export class ItemComponent implements OnInit, OnDestroy {
   }
 
   getShareItemName(): string {
-    return !this.virtualItem
-      ? (this.item?.parentItemName || this.item?.spItemDto?.name || 'Product')
-      : (this.itemAttributes?.parentItemName || this.itemAttributes?.spItemDto?.name || 'Product');
+    return this.currentDisplayItem?.parentItemName
+      || this.currentDisplayItem?.spItemDto?.name
+      || this.item?.parentItemName
+      || this.item?.spItemDto?.name
+      || 'Product';
   }
 
   getShareItemSubtitle(): string {
-        const itemName = this.getShareItemName();
-    const desc = !this.virtualItem
-      ? (this.item?.spItemDto?.shortDesc || this.item?.spItem?.description || '')
-      : (this.itemAttributes?.spItemDto?.shortDesc || this.itemAttributes?.spItem?.description || '');
+    const itemName = this.getShareItemName();
+    const desc = this.currentDisplayItem?.spItemDto?.shortDesc
+      || this.currentDisplayItem?.spItem?.description
+      || this.item?.spItemDto?.shortDesc
+      || this.item?.spItem?.description
+      || '';
     return desc || `Take a look at this ${itemName} on ${this.sharedService.getRouteID()}`;
   }
 
@@ -2367,5 +2399,141 @@ export class ItemComponent implements OnInit, OnDestroy {
       return '';
     }
     return tag.tagName || tag.name || tag.label || '';
+  }
+
+  hasUnitItems(): boolean {
+    return this.getUnitItems().length > 0;
+  }
+
+  shouldShowUnitSelector(): boolean {
+    const unitItems = this.getUnitItems();
+    return unitItems.length > 0 && (unitItems.length > 1 || !!this.item?.itemAttributes?.length);
+  }
+
+  getUnitLabel(unitItem: any): string {
+    return unitItem?.itemUnit?.unitName || unitItem?.sellingUnitCode || unitItem?.itemUnit?.unitCode || 'Unit';
+  }
+
+  selectUnitItem(unitItem: any): void {
+    if (!unitItem) {
+      return;
+    }
+    this.selectedUnitItem = unitItem;
+    this.quantity = 1;
+    this.virtualItemOutOfStock = this.isOutOfStockStatus(unitItem.stockStatus);
+    this.setCurrentDisplayItem(unitItem);
+  }
+
+  private initializeSelectedUnitItem(): void {
+    const unitItems = this.getUnitItems();
+    if (!unitItems.length) {
+      this.selectedUnitItem = null;
+      return;
+    }
+    const inStockUnits = unitItems.filter((unitItem: any) => !this.isOutOfStockStatus(unitItem?.stockStatus));
+    const previouslySelectedUnit = this.selectedUnitItem;
+    this.selectedUnitItem =
+      unitItems.find((unitItem: any) => this.isSameUnit(unitItem, previouslySelectedUnit))
+      || unitItems.find((unitItem: any) => unitItem?.itemUnit?.isDefault)
+      || unitItems.find((unitItem: any) => unitItem?.itemUnit?.baseUnit)
+      || inStockUnits[0]
+      || unitItems[0];
+  }
+
+  getUnitItems(): any[] {
+    const variantUnits = this.itemAttributes?.unitItems;
+    const unitItems = Array.isArray(variantUnits) && variantUnits.length
+      ? variantUnits
+      : (Array.isArray(this.item?.unitItems) ? this.item.unitItems : []);
+    const selectedKeys = Object.keys(this.selectedValues || {});
+    if (!selectedKeys.length) {
+      return unitItems;
+    }
+
+    const matchingUnits = unitItems.filter((unitItem: any) => {
+      const selectedAttributes = unitItem?.selectedAttributes
+        || unitItem?.spItemDto?.selectedAttributes
+        || unitItem?.spItem?.selectedAttributes
+        || {};
+      return selectedKeys.every((key) => selectedAttributes[key] === this.selectedValues[key]);
+    });
+
+    // Older catalog responses omit selectedAttributes on their unit records.
+    return matchingUnits.length ? matchingUnits : unitItems;
+  }
+
+  private isSameUnit(unitItem: any, selectedUnitItem: any): boolean {
+    if (!unitItem || !selectedUnitItem) {
+      return false;
+    }
+    const unitId = unitItem?.itemUnit?.id || unitItem?.itemUnit?.unitCode || unitItem?.sellingUnitCode;
+    const selectedUnitId = selectedUnitItem?.itemUnit?.id
+      || selectedUnitItem?.itemUnit?.unitCode
+      || selectedUnitItem?.sellingUnitCode;
+    return !!unitId && unitId === selectedUnitId;
+  }
+
+  private isOutOfStockStatus(status: any): boolean {
+    if (!status || typeof status !== 'string') {
+      return false;
+    }
+    return status.replace(/\s+/g, '').replace(/-/g, '_').toUpperCase() === 'OUT_OF_STOCK';
+  }
+
+  shouldShowOutOfStock(item: any): boolean {
+    if (!item) {
+      return false;
+    }
+    const showWhenOutOfStock =
+      item?.showWhenOutOfStock ??
+      item?.spItemDto?.showWhenOutOfStock ??
+      item?.spItem?.showWhenOutOfStock ??
+      item?.catalogItem?.showWhenOutOfStock;
+    return !!showWhenOutOfStock && this.isOutOfStockStatus(item?.stockStatus ?? item?.spItemDto?.stockStatus);
+  }
+
+  isCurrentItemOutOfStock(): boolean {
+    if (this.virtualItem) {
+      return this.isOutOfStockStatus(this.currentDisplayItem?.stockStatus)
+        || this.virtualItemOutOfStock;
+    }
+    if (this.hasUnitItems()) {
+      return this.isOutOfStockStatus(this.currentDisplayItem?.stockStatus);
+    }
+    return this.shouldShowOutOfStock(this.currentDisplayItem || this.item);
+  }
+
+  private findMatchingAttributeItem(items: any[]): any {
+    if (!Array.isArray(items) || !items.length) {
+      return null;
+    }
+    const selectedKeys = Object.keys(this.selectedValues || {});
+    if (!selectedKeys.length) {
+      return null;
+    }
+    return items.find((item) => {
+      const selectedAttributes = item?.selectedAttributes || {};
+      return selectedKeys.every((key) => selectedAttributes[key] === this.selectedValues[key]);
+    }) || null;
+  }
+
+  private setCurrentDisplayItem(itemData: any): void {
+    this.currentDisplayItem = itemData || this.item;
+    this.displayItem = this.currentDisplayItem;
+    if (this.currentDisplayItem?.homeDelivery && this.itemDeliveryType != 'STORE_PICKUP') {
+      this.itemDeliveryType = 'HOME_DELIVERY';
+    } else {
+      this.itemDeliveryType = 'STORE_PICKUP';
+    }
+    if (this.currentDisplayItem?.spItemDto?.id) {
+      this.itemId = this.currentDisplayItem.spItemDto.id;
+    }
+    if (this.currentDisplayItem?.spItem?.encId) {
+      this.itemEncId = this.currentDisplayItem.spItem.encId;
+    }
+    if (this.currentDisplayItem?.spItemDto?.itemCategory?.id) {
+      this.spItemCategoryId = this.currentDisplayItem.spItemDto.itemCategory.id;
+    }
+    this.updateThumbnailAttachments();
   }
 }

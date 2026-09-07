@@ -676,4 +676,13 @@ export class DetailsComponent implements OnInit, OnDestroy{
     return this.selectedItemReview?.uid ? 'Update Review' : 'Submit';
   }
 
+
+  getItemUnitName(item: any): string {
+    return item?.itemUnit?.unitName
+      || item?.itemUnit?.unitCode
+      || item?.catalogItem?.itemUnit?.unitName
+      || item?.catalogItem?.itemUnit?.unitCode
+      || item?.catalogItem?.itemUnitName
+      || '';
+  }
 }

@@ -133,7 +133,7 @@
                                     {{item.spItem.name}}
                                 </div>
                                 <div *ngIf="item.dueQuantity" class="price"><span
-                                        class="quantity">Qty:{{item.dueQuantity}}</span></div>
+                                        class="quantity">Qty:{{item.dueQuantity}}</span><span *ngIf="getItemUnitName(item)" class="quantity ms-1">{{ getItemUnitName(item) }}</span></div>
                             </div>
                         </div>
                         <div>

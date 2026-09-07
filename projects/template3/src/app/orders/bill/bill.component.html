@@ -152,6 +152,7 @@
                                                                             <div class="c-row one bill-table-head itemlist">
                                                                                 <div class="head-name">Item</div>
                                                                                 <div class="head-quantity">Qty</div>
+                                                                                <div class="head-unit">Unit</div>
                                                                                 <div class="head-rate">Price(₹)</div>
                                                                                 <div class="head-rate">Net Total(₹)</div>
                                                                                 <div class="head-rate">GST(₹)</div>
@@ -176,6 +177,7 @@
                                                                                 </div>
                                                                                 <div class="head-quantity">
                                                                                     {{item.quantity}}</div>
+                                                                                <div class="head-unit">{{ getInvoiceItemUnitName(item) || '-' }}</div>
                                                                                 <div class="head-rate"
                                                                                     >
                                                                                     {{item.price | number: '1.2-2' }}
