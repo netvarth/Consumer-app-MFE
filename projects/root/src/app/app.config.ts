@@ -6,7 +6,8 @@ import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@a
 import { ExtendHttpInterceptor } from './extend-http.interceptor';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { GlobalErrorHandler } from './error-handler.component';
-import { LocalStorageService, ServiceMeta } from 'jconsumer-shared';
+import { AuthService, LocalStorageService, ServiceMeta } from 'jconsumer-shared';
+import { ConsumerAuthService } from './consumer-auth.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -14,6 +15,7 @@ export const appConfig: ApplicationConfig = {
     provideAnimations(),
     provideNativeDateAdapter(),
     provideHttpClient(withInterceptorsFromDi()), // Include interceptors
+    { provide: AuthService, useClass: ConsumerAuthService },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: ExtendHttpInterceptor,

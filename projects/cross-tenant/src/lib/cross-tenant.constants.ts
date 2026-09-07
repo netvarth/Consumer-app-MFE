@@ -42,6 +42,8 @@ export const TRANSIENT_ACCOUNT_KEYS = [
 ] as const;
 
 export const ACTIVE_AUTH_KEYS = [
+  'ynw-credentials',
+  'jld_scon',
   'c_authorizationToken',
   'refreshToken',
   'authorization',

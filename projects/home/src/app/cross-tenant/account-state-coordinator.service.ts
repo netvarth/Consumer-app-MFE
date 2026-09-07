@@ -87,7 +87,7 @@ export class AccountStateCoordinator {
 
   private removeProviderConsumerFromGroup(): void {
     if (typeof sessionStorage === 'undefined') return;
-    const groupKey = sessionStorage.getItem('tabId')
+    const groupKey = this.parseStorageValue(sessionStorage.getItem('tabId'))
       ? this.parseStorageValue(sessionStorage.getItem('accountid'))
       : 0;
     const key = String(groupKey ?? 0);

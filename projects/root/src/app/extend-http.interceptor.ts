@@ -8,13 +8,12 @@ import {
   HttpResponse,
   HttpEventType
 } from '@angular/common/http';
-import { Observable, BehaviorSubject, throwError, EMPTY, from } from 'rxjs';
-import { catchError, switchMap, filter, take, timeout, first, tap, map } from 'rxjs/operators';
-import { Router, NavigationEnd } from '@angular/router';
+import { Observable, BehaviorSubject, throwError, EMPTY, defer } from 'rxjs';
+import { catchError, switchMap, timeout, tap, map, finalize, shareReplay } from 'rxjs/operators';
+import { Router } from '@angular/router';
 import { AuthService, LocalStorageService, SharedService } from 'jconsumer-shared';
-import { projectConstants } from '../environment';
 import { AccountService } from './account.service';
-import { CrossTenantLogoutService, PlatformTokenStore } from '@consumer/cross-tenant';
+import { ACTIVE_ACCOUNT_KEY, CrossTenantLogoutService, PlatformTokenStore } from '@consumer/cross-tenant';
 
 interface MaintenanceStatus {
   maintenanceMode: boolean;
@@ -25,8 +24,7 @@ interface MaintenanceStatus {
 @Injectable()
 export class ExtendHttpInterceptor implements HttpInterceptor {
 
-  private _refreshSubject = new BehaviorSubject<string | null>(null);
-  private _isRefreshing = false;
+  private sessionRefresh: { context: string; result: Observable<string> } | null = null;
 
   private _maintenanceSubject = new BehaviorSubject<MaintenanceStatus | null>(null);
   private _maintenanceInProgress = false;
@@ -45,24 +43,23 @@ export class ExtendHttpInterceptor implements HttpInterceptor {
     const isNormalLogin = this.isExactConsumerLogin(request, 'POST');
     const isLogout = this.isExactConsumerLogin(request, 'DELETE');
 
-    // If request URL starts with http (external), don't modify
-    if (request.url.startsWith('http')) {
-      if (isLogout) {
-        request = request.clone({
-          headers: request.headers.delete('Authorization').delete('AuthToken')
-        });
-      }
-      return this.observeAuthenticationResponse(next.handle(request), isNormalLogin, isLogout);
+    // Absolute URLs for this API need the same auth/refresh handling as relative
+    // URLs. CDN and third-party requests must never receive our credentials.
+    if (/^https?:\/\//i.test(request.url)
+      && !request.url.startsWith(this.sharedService.getAPIEndPoint().replace(/\/+$/, '') + '/')) {
+      return next.handle(request);
     }
 
     const isRefreshCall = request.url.includes('consumer/oauth/token/refresh');
+    const context = this.sessionContext();
     request = this.updateHeader(request, isRefreshCall, isLogout);
 
     return this.observeAuthenticationResponse(next.handle(request), isNormalLogin, isLogout).pipe(
       catchError((error: HttpErrorResponse) => {
         if (this._isSessionExpiredError(error) && !isRefreshCall && !isNormalLogin && !isLogout) {
+          if (context !== this.sessionContext()) return throwError(() => error);
           // Handle token refresh flow
-          return this._handleSessionExpired().pipe(
+          return this._handleSessionExpired(context).pipe(
             switchMap(() => {
               // Retry original request with updated token
               const retryReq = this.updateHeader(request, false, isLogout);
@@ -99,13 +96,12 @@ export class ExtendHttpInterceptor implements HttpInterceptor {
 
     let params = request.params;
     if (this.lStorageService.getitemfromLocalStorage('c-location') && request.method !== 'GET') {
-      params = params.append('location', this.lStorageService.getitemfromLocalStorage('c-location'));
+      params = params.set('location', this.lStorageService.getitemfromLocalStorage('c-location'));
     }
 
     if (skipAuthorization) {
       const sessionToken = this.lStorageService.getitemfromLocalStorage('c_authorizationToken');
       headers = headers.delete('Authorization').delete('AuthToken');
-      this.lStorageService.removeitemfromLocalStorage('c_authorizationToken');
       const appId = this.lStorageService.getitemfromLocalStorage('appId');
       const installId = this.lStorageService.getitemfromLocalStorage('installId');
       if (appId && installId) {
@@ -118,14 +114,8 @@ export class ExtendHttpInterceptor implements HttpInterceptor {
       const refreshToken = this.lStorageService.getitemfromLocalStorage('refreshToken');
       if (refreshToken) headers = headers.set('Authorization', refreshToken);
       else headers = headers.delete('Authorization');
-    } else if (this.lStorageService.getitemfromLocalStorage('logout')) {
-      this.lStorageService.removeitemfromLocalStorage('c_authorizationToken');
-      const appId = this.lStorageService.getitemfromLocalStorage('appId');
-      const installId = this.lStorageService.getitemfromLocalStorage('installId');
-      if (appId && installId) {
-        headers = headers.set('Authorization', `${appId}-${installId}`);
-      }
     } else {
+      headers = headers.delete('Authorization').delete('AuthToken');
       // Use auth token for normal calls
       const authToken = this.lStorageService.getitemfromLocalStorage('c_authorizationToken');
       if (authToken) {
@@ -140,7 +130,8 @@ export class ExtendHttpInterceptor implements HttpInterceptor {
     }
 
     const googleToken = this.lStorageService.getitemfromLocalStorage('googleToken');
-    if (!skipAuthorization && !isRefreshCall && googleToken) {
+    if (!skipAuthorization && !isRefreshCall && googleToken
+      && /(?:consumer\/login|consumer)$/.test(request.url.split('?')[0])) {
       headers = headers.set('authToken', googleToken);
     }
     // ✅ Guard against double-prefixing full URLs
@@ -169,6 +160,8 @@ export class ExtendHttpInterceptor implements HttpInterceptor {
         if (event.type !== HttpEventType.Response) return;
         const response = event as HttpResponse<any>;
         if (isNormalLogin) {
+          this.lStorageService.removeitemfromLocalStorage('logout');
+          this.lStorageService.removeitemfromLocalStorage('googleToken');
           const token = response.body?.platform_token ?? response.body?.platformToken;
           if (typeof token === 'string' && token.trim()) {
             this.platformTokenStore.save(token);
@@ -194,63 +187,46 @@ export class ExtendHttpInterceptor implements HttpInterceptor {
   }
 
 
-  private _handleSessionExpired(): Observable<string | null> {
-    if (!this._isRefreshing) {
-      this._isRefreshing = true;
-      this._refreshSubject.next(null); // reset
-
-      const ynwUser = this.sharedService.getJson(this.lStorageService.getitemfromLocalStorage('ynw-credentials'));
-      if (!ynwUser) {
-        this._isRefreshing = false;
-        this._handleRefreshFailure();
-        return EMPTY;
-      }
-
-      return from(this.authService.refreshToken()).pipe(
+  private _handleSessionExpired(context: string): Observable<string> {
+    if (this.sessionRefresh?.context === context) return this.sessionRefresh.result;
+    // Use the observable API. The library's Promise wrapper writes refreshToken
+    // before callers can reject a response belonging to a previous account.
+    const result = defer(() => this.authService.refreshLogin()).pipe(
         timeout(10000),
         map((response: any) => {
+          if (context !== this.sessionContext()) throw new Error('Session changed during refresh');
           const token = response?.token;
           if (typeof token !== 'string' || !token.trim()) {
             throw new Error('Session refresh returned no token');
           }
           this.lStorageService.setitemonLocalStorage('c_authorizationToken', token);
+          this.lStorageService.setitemonLocalStorage('refreshToken', response.refreshToken || token);
           return token;
         }),
         catchError(err => {
-          this._handleRefreshFailure();
+          if (context === this.sessionContext() && (err.status === 401 || err.status === 419)) {
+            this.crossTenantLogout.clearProviderAuthentication();
+            this.authService.sendMessage({ ttype: 'refresh', action: false });
+          }
           return throwError(() => err);
         }),
-        switchMap((token: string) => {
-          this._isRefreshing = false;
-          this._refreshSubject.next(token);
-          return this._refreshSubject.pipe(
-            filter(t => t !== null),
-            take(1)
-          );
-        })
-      );
-    } else {
-      // Wait for ongoing refresh to complete and get token from subject
-      return this._refreshSubject.pipe(
-        filter(token => token !== null),
-        take(1)
-      );
-    }
+        finalize(() => {
+          if (this.sessionRefresh?.result === result) this.sessionRefresh = null;
+        }),
+        // Both success and failure reach every waiting request; nobody remains
+        // subscribed to a null-only subject after a failed refresh.
+        shareReplay({ bufferSize: 1, refCount: true })
+    );
+    this.sessionRefresh = { context, result };
+    return result;
   }
 
-  private _handleRefreshFailure() {
-    this._refreshSubject.next(null);
-    this._isRefreshing = false;
-
-    this.authService.doLogout().then(() => {
-      this.router.navigate([this.sharedService.getRouteID()]);
-
-      this.router.events.pipe(
-        first(event => event instanceof NavigationEnd)
-      ).subscribe(() => {
-        window.location.reload();
-      });
-    });
+  private sessionContext(): string {
+    return JSON.stringify([
+      typeof localStorage === 'undefined' ? null : localStorage.getItem(ACTIVE_ACCOUNT_KEY),
+      this.lStorageService.getitemfromLocalStorage('c_authorizationToken'),
+      this.lStorageService.getitemfromLocalStorage('ynw-credentials')
+    ]);
   }
 
   private _handleMaintenance(): Observable<MaintenanceStatus | null> {

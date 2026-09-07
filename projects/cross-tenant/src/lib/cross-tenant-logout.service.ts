@@ -14,18 +14,24 @@ import { PlatformTokenStore } from './platform-token.store';
 export class CrossTenantLogoutService {
   constructor(private readonly platformTokens: PlatformTokenStore) {}
 
+  clearProviderAuthentication(): void {
+    if (typeof localStorage === 'undefined') return;
+    ACTIVE_AUTH_KEYS.forEach((key) => localStorage.removeItem(key));
+    this.removeProviderConsumerFromGroup();
+  }
+
   /** Clear only the currently active provider session. */
   clearProviderState(): void {
     if (typeof sessionStorage !== 'undefined') sessionStorage.removeItem(CROSS_TENANT_SESSION_KEY);
     if (typeof localStorage === 'undefined') return;
 
+    this.clearProviderAuthentication();
     [
-      'ynw-credentials',
-      ...ACTIVE_AUTH_KEYS,
       ...RETAINED_ACCOUNT_KEYS,
       ...TRANSIENT_ACCOUNT_KEYS
     ].forEach((key) => localStorage.removeItem(key));
-    this.removeProviderConsumerFromGroup();
+    const activeAccount = localStorage.getItem(ACTIVE_ACCOUNT_KEY);
+    if (activeAccount) localStorage.removeItem(`${TENANT_STATE_PREFIX}${activeAccount}`);
   }
 
   /** Full product sign-out: remove every product tenant and native identity. */
@@ -48,7 +54,7 @@ export class CrossTenantLogoutService {
 
   private removeProviderConsumerFromGroup(): void {
     if (typeof sessionStorage === 'undefined') return;
-    const groupKey = sessionStorage.getItem('tabId')
+    const groupKey = this.parseStoredValue(sessionStorage.getItem('tabId'))
       ? this.parseStoredValue(sessionStorage.getItem('accountid'))
       : 0;
     const raw = localStorage.getItem(String(groupKey ?? 0));

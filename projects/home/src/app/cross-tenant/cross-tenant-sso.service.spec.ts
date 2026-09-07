@@ -1,239 +1,244 @@
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
-import { TestBed } from '@angular/core/testing';
-import { AccountService, ConsumerService, SharedService } from 'jconsumer-shared';
-import { CrossTenantJourneyService, PlatformTokenStore } from '@consumer/cross-tenant';
+import { fakeAsync, flushMicrotasks, TestBed } from '@angular/core/testing';
+import { AccountService, ConsumerService, GroupStorageService, LocalStorageService, SharedService } from 'jconsumer-shared';
+import { PlatformTokenStore } from '@consumer/cross-tenant';
 import { AccountStateCoordinator } from './account-state-coordinator.service';
 import { CrossTenantSsoService } from './cross-tenant-sso.service';
 
 describe('CrossTenantSsoService', () => {
+  const api = 'https://api.example/v1/rest/';
   let service: CrossTenantSsoService;
   let http: HttpTestingController;
-  let currentToken: string | null;
-  let journey: jasmine.SpyObj<CrossTenantJourneyService>;
-  let accountState: jasmine.SpyObj<AccountStateCoordinator>;
-  let sharedAccountService: jasmine.SpyObj<AccountService>;
-  let consumerService: jasmine.SpyObj<ConsumerService>;
-  const platformTokens = jasmine.createSpyObj<PlatformTokenStore>('PlatformTokenStore', ['get', 'save', 'update', 'clear']);
+  let state: AccountStateCoordinator;
+  let platform: PlatformTokenStore;
+  let groups: GroupStorageService;
+  let storage: LocalStorageService;
 
   beforeEach(() => {
-    currentToken = 'P1';
     localStorage.clear();
     sessionStorage.clear();
-    platformTokens.get.and.callFake(() => currentToken);
-    platformTokens.update.and.callFake((token: string) => currentToken = token);
-    journey = jasmine.createSpyObj<CrossTenantJourneyService>('journey', ['get', 'clear']);
-    accountState = jasmine.createSpyObj<AccountStateCoordinator>(
-      'accountState',
-      ['transitionTo', 'setActiveAccount', 'getActiveAccount', 'clearActiveAuthentication']
-    );
-    accountState.getActiveAccount.and.returnValue(null);
-    sharedAccountService = jasmine.createSpyObj<AccountService>(
-      'sharedAccountService',
-      ['setActiveStore', 'setStores', 'setActiveLocation', 'setAccountLocations']
-    );
-    consumerService = jasmine.createSpyObj<ConsumerService>('consumerService', ['setOrderDetails']);
-    TestBed.configureTestingModule({
-      providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        CrossTenantSsoService,
-        { provide: SharedService, useValue: { getAPIEndPoint: () => 'https://api.example/v1/rest/' } },
-        { provide: PlatformTokenStore, useValue: platformTokens },
-        { provide: CrossTenantJourneyService, useValue: journey },
-        { provide: AccountStateCoordinator, useValue: accountState },
-        { provide: AccountService, useValue: sharedAccountService },
-        { provide: ConsumerService, useValue: consumerService }
-      ]
-    });
+    TestBed.configureTestingModule({ providers: [
+      provideHttpClient(), provideHttpClientTesting(),
+      { provide: SharedService, useValue: { getAPIEndPoint: () => api } },
+      { provide: AccountService, useValue: jasmine.createSpyObj('AccountService',
+        ['setActiveStore', 'setStores', 'setActiveLocation', 'setAccountLocations']) },
+      { provide: ConsumerService, useValue: jasmine.createSpyObj('ConsumerService', ['setOrderDetails']) }
+    ] });
     service = TestBed.inject(CrossTenantSsoService);
     http = TestBed.inject(HttpTestingController);
+    state = TestBed.inject(AccountStateCoordinator);
+    platform = TestBed.inject(PlatformTokenStore);
+    groups = TestBed.inject(GroupStorageService);
+    storage = TestBed.inject(LocalStorageService);
+    platform.save('P1');
   });
+  afterEach(() => { http.verify(); localStorage.clear(); sessionStorage.clear(); });
 
-  afterEach(() => http.verify());
+  function seedSession(accountId: string, token: string | null = 'OLD_SESSION'): void {
+    state.setActiveAccount(accountId);
+    storage.setitemonLocalStorage('ynw-credentials', JSON.stringify({ accountId, loginId: 'old-login' }));
+    groups.setitemToGroupStorage('jld_scon', { id: 100, providerConsumer: 101, firstName: 'Source' });
+    if (token) storage.setitemonLocalStorage('c_authorizationToken', token);
+  }
+  function flushSwitch(): void {
+    http.expectOne(api + 'consumer/login/switch').flush({
+      token: 'TARGET_SESSION', refreshToken: 'TARGET_REFRESH', status: 'signed_in', id: 200
+    });
+    flushMicrotasks();
+    const profile = http.expectOne(api + 'spconsumer');
+    expect(profile.request.headers.get('Authorization')).toBe('TARGET_SESSION');
+    expect(profile.request.headers.has('AuthToken')).toBeFalse();
+    profile.flush({ id: 201, firstName: 'Target', lastName: 'Customer' });
+    flushMicrotasks();
+  }
 
-  it('sends AuthToken only and preserves the accountId-only switch body', async () => {
-    const result = service.switchAccount(22);
-    const request = http.expectOne('https://api.example/v1/rest/consumer/login/switch');
-    expect(request.request.method).toBe('POST');
+  it('sends only platform AuthToken and accountId to switch', fakeAsync(() => {
+    service.switchAccount(22);
+    const request = http.expectOne(api + 'consumer/login/switch');
     expect(request.request.body).toEqual({ accountId: 22 });
     expect(request.request.headers.get('AuthToken')).toBe('platformToken-P1');
     expect(request.request.headers.has('Authorization')).toBeFalse();
-    request.flush({ token: 'T22', status: 'signed_in' });
-    expect((await result).token).toBe('T22');
-  });
+    request.flush({ token: 'TARGET', status: 'signed_in' });
+    flushMicrotasks();
+  }));
 
-  it('refreshes a 498 platform token and retries switch exactly once', async () => {
-    const result = service.switchAccount('22');
-    http.expectOne('https://api.example/v1/rest/consumer/login/switch').flush(null, { status: 498, statusText: 'Expired' });
-    const refresh = http.expectOne('https://api.example/v1/rest/consumer/oauth/platformtoken/refresh');
+  it('installs a complete customer only after the target profile is available', fakeAsync(() => {
+    seedSession('11');
+    let ready = false;
+    service.prepareForTargetAccount('22', 'provider').then(() => ready = true);
+    http.expectOne(api + 'consumer/login/switch').flush({ token: 'TARGET', status: 'provisioned', id: 200 });
+    flushMicrotasks();
+    expect(ready).toBeFalse();
+    expect(state.getActiveAccount()).toBe('11');
+    http.expectOne(api + 'spconsumer').flush({ id: 201, firstName: 'Target', lastName: 'Customer' });
+    flushMicrotasks();
+    expect(ready).toBeTrue();
+    expect(state.getActiveAccount()).toBe('22');
+    expect(groups.getitemFromGroupStorage('jld_scon')).toEqual(jasmine.objectContaining({
+      id: 200, providerConsumer: 201, userName: 'Target Customer', token: 'TARGET'
+    }));
+    const credentials = JSON.parse(storage.getitemfromLocalStorage('ynw-credentials'));
+    expect(credentials.accountId).toBe('22');
+    expect(credentials.loginId).toBeUndefined();
+  }));
+
+  it('isolates carts through A -> B -> A with the real shared storage services', fakeAsync(() => {
+    seedSession('11');
+    storage.setitemonLocalStorage('cartData', { owner: '11' });
+    storage.setitemonLocalStorage('storeEncId', 'STORE_11');
+    service.prepareForTargetAccount('22', 'provider');
+    flushSwitch();
+    expect(storage.getitemfromLocalStorage('cartData')).toBeNull();
+    expect(storage.getitemfromLocalStorage('storeEncId')).toBeNull();
+    storage.setitemonLocalStorage('cartData', { owner: '22' });
+    service.prepareForTargetAccount('11', 'hub');
+    flushSwitch();
+    expect(storage.getitemfromLocalStorage('cartData')).toEqual({ owner: '11' });
+    expect(platform.get()).toBe('P1');
+  }));
+
+  it('clears credentials, user and token on a failed switch', fakeAsync(() => {
+    seedSession('11');
+    service.prepareForTargetAccount('22', 'provider');
+    http.expectOne(api + 'consumer/login/switch').flush('Invalid switch', { status: 422, statusText: 'Rejected' });
+    flushMicrotasks();
+    expect(state.getActiveAccount()).toBe('22');
+    expect(storage.getitemfromLocalStorage('ynw-credentials')).toBeNull();
+    expect(groups.getitemFromGroupStorage('jld_scon')).toBeUndefined();
+    expect(storage.getitemfromLocalStorage('c_authorizationToken')).toBeNull();
+    expect(platform.get()).toBe('P1');
+  }));
+
+  it('clears failed recovery even when the target is already active', fakeAsync(() => {
+    seedSession('22');
+    service.prepareForTargetAccount('22', 'provider');
+    http.expectOne(api + 'spconsumer').flush(null, { status: 419, statusText: 'Expired' });
+    flushMicrotasks();
+    http.expectOne(api + 'consumer/login/switch').flush(null, { status: 422, statusText: 'Rejected' });
+    flushMicrotasks();
+    expect(storage.getitemfromLocalStorage('ynw-credentials')).toBeNull();
+    expect(storage.getitemfromLocalStorage('c_authorizationToken')).toBeNull();
+    expect(groups.getitemFromGroupStorage('jld_scon')).toBeUndefined();
+  }));
+
+  it('preserves platform identity on a target-specific 401', fakeAsync(() => {
+    seedSession('11');
+    service.prepareForTargetAccount('22', 'provider');
+    http.expectOne(api + 'consumer/login/switch').flush('NOT_REGISTERED_CUSTOMER', { status: 401, statusText: 'Unauthorized' });
+    flushMicrotasks();
+    expect(platform.get()).toBe('P1');
+  }));
+
+  it('never installs an incomplete session when profile retrieval fails', fakeAsync(() => {
+    seedSession('11');
+    service.prepareForTargetAccount('22', 'provider');
+    http.expectOne(api + 'consumer/login/switch').flush({ token: 'TARGET', status: 'signed_in' });
+    flushMicrotasks();
+    http.expectOne(api + 'spconsumer').flush(null, { status: 422, statusText: 'Rejected' });
+    flushMicrotasks();
+    expect(storage.getitemfromLocalStorage('ynw-credentials')).toBeNull();
+    expect(groups.getitemFromGroupStorage('jld_scon')).toBeUndefined();
+    expect(platform.get()).toBe('P1');
+  }));
+
+  it('validates a normal cookie session without a platform token', fakeAsync(() => {
+    platform.clear();
+    seedSession('22', null);
+    service.prepareForTargetAccount('22', 'provider');
+    const request = http.expectOne(api + 'spconsumer');
+    expect(request.request.withCredentials).toBeTrue();
+    expect(request.request.headers.has('Authorization')).toBeFalse();
+    request.flush({ id: 101, firstName: 'Current' });
+    flushMicrotasks();
+    http.expectNone(api + 'consumer/login/switch');
+    expect(groups.getitemFromGroupStorage('jld_scon').firstName).toBe('Current');
+  }));
+
+  it('validates legacy login ownership before recording the first active account', fakeAsync(() => {
+    seedSession('22', null);
+    platform.clear();
+    localStorage.removeItem('capp:activeAccountId:v1');
+    service.prepareForTargetAccount('22', 'provider');
+    http.expectOne(api + 'spconsumer').flush({ id: 101, firstName: 'Current' });
+    flushMicrotasks();
+    expect(state.getActiveAccount()).toBe('22');
+  }));
+
+  it('repairs credentials-only phantom login while retaining the anonymous cart', fakeAsync(() => {
+    platform.clear();
+    state.setActiveAccount('22');
+    storage.setitemonLocalStorage('ynw-credentials', JSON.stringify({ accountId: '22' }));
+    storage.setitemonLocalStorage('cartData', { owner: '22' });
+    service.prepareForTargetAccount('22', 'provider');
+    flushMicrotasks();
+    expect(storage.getitemfromLocalStorage('ynw-credentials')).toBeNull();
+    expect(storage.getitemfromLocalStorage('cartData')).toEqual({ owner: '22' });
+  }));
+
+  it('deduplicates preparations for one target', fakeAsync(() => {
+    const first = service.prepareForTargetAccount('22', 'provider');
+    expect(service.prepareForTargetAccount('22', 'provider')).toBe(first);
+    flushSwitch();
+  }));
+
+  it('refreshes an expired platform token and retries once', fakeAsync(() => {
+    service.prepareForTargetAccount('22', 'provider');
+    http.expectOne(api + 'consumer/login/switch').flush(null, { status: 498, statusText: 'Expired' });
+    flushMicrotasks();
+    const refresh = http.expectOne(api + 'consumer/oauth/platformtoken/refresh');
     expect(refresh.request.headers.get('AuthToken')).toBe('platformToken-P1');
     expect(refresh.request.headers.has('Authorization')).toBeFalse();
     refresh.flush({ platform_token: 'P2' });
-    const retry = http.expectOne('https://api.example/v1/rest/consumer/login/switch');
-    expect(retry.request.headers.get('AuthToken')).toBe('platformToken-P2');
-    retry.flush({ token: 'T22', status: 'provisioned' });
-    expect((await result).status).toBe('provisioned');
-    expect(platformTokens.update).toHaveBeenCalledWith('P2');
-  });
+    flushMicrotasks();
+    flushSwitch();
+    expect(platform.get()).toBe('P2');
+  }));
 
-  it('switches and installs the target session when returning to the Chotaboss hub', async () => {
-    journey.get.and.returnValue({
-      enabled: true,
-      hubCustomId: 'chotaboss',
-      returnTo: '/capp/chotaboss',
-      startedAt: Date.now(),
-      lastProviderUrl: 'https://provider.example/capp/provider'
-    });
+  it('shares platform refresh and accepts its camel-case response', fakeAsync(() => {
+    expect(service.refreshPlatformToken()).toBe(service.refreshPlatformToken());
+    http.expectOne(api + 'consumer/oauth/platformtoken/refresh').flush({ platformToken: 'P2' });
+    flushMicrotasks();
+    expect(platform.get()).toBe('P2');
+  }));
 
-    const result = service.prepareForTargetAccount('11', 'chotaboss');
-    const request = http.expectOne('https://api.example/v1/rest/consumer/login/switch');
-    expect(request.request.body).toEqual({ accountId: '11' });
-    request.flush({
-      token: 'CHOTABOSS_SESSION',
-      refreshToken: 'CHOTABOSS_REFRESH',
-      status: 'signed_in',
-      id: 101,
-      phoneNumber: '9999999999'
-    });
-    await result;
+  it('recognizes expired-token errors from a different federation class copy', fakeAsync(() => {
+    const switchRequest = spyOn<any>(service, 'requestSwitch').and.returnValues(
+      Promise.reject({ status: 498 }),
+      Promise.resolve({ token: 'TARGET', status: 'signed_in' })
+    );
+    let result: any;
+    service.switchAccount('22').then(value => result = value);
+    flushMicrotasks();
+    http.expectOne(api + 'consumer/oauth/platformtoken/refresh').flush({ platform_token: 'P2' });
+    flushMicrotasks();
+    expect(switchRequest).toHaveBeenCalledTimes(2);
+    expect(result.token).toBe('TARGET');
+  }));
 
-    expect(accountState.transitionTo).toHaveBeenCalledWith('11');
-    expect(sharedAccountService.setActiveStore).toHaveBeenCalledWith(null);
-    expect(sharedAccountService.setStores).toHaveBeenCalledWith([]);
-    expect(sharedAccountService.setActiveLocation).toHaveBeenCalledWith(null);
-    expect(sharedAccountService.setAccountLocations).toHaveBeenCalledWith([]);
-    expect(consumerService.setOrderDetails).toHaveBeenCalledWith(null);
-    expect(accountState.clearActiveAuthentication).not.toHaveBeenCalled();
-    expect(accountState.setActiveAccount).toHaveBeenCalledWith('11');
-    expect(journey.clear).toHaveBeenCalled();
-    expect(JSON.parse(localStorage.getItem('c_authorizationToken')!)).toBe('CHOTABOSS_SESSION');
-    expect(JSON.parse(localStorage.getItem('refreshToken')!)).toBe('CHOTABOSS_REFRESH');
-    expect(JSON.parse(JSON.parse(localStorage.getItem('ynw-credentials')!))).toEqual(jasmine.objectContaining({
-      accountId: '11',
-      phoneNumber: '9999999999'
-    }));
-    expect(JSON.parse(JSON.parse(localStorage.getItem('0')!)).jld_scon.token).toBe('CHOTABOSS_SESSION');
-  });
+  it('clears a definitively rejected platform credential', fakeAsync(() => {
+    service.refreshPlatformToken().catch(() => undefined);
+    http.expectOne(api + 'consumer/oauth/platformtoken/refresh').flush(null, { status: 401, statusText: 'Unauthorized' });
+    flushMicrotasks();
+    expect(platform.get()).toBeNull();
+  }));
 
-  it('switches when the account changes even if the marketplace journey marker is missing', async () => {
-    journey.get.and.returnValue(null);
-    accountState.getActiveAccount.and.returnValue('11');
+  it('does not clear a new login when an older platform refresh is rejected', fakeAsync(() => {
+    service.refreshPlatformToken().catch(() => undefined);
+    platform.save('NEW_LOGIN');
+    http.expectOne(api + 'consumer/oauth/platformtoken/refresh').flush(null, { status: 401, statusText: 'Unauthorized' });
+    flushMicrotasks();
+    expect(platform.get()).toBe('NEW_LOGIN');
+  }));
 
-    const result = service.prepareForTargetAccount('22', 'order-account');
-    const request = http.expectOne('https://api.example/v1/rest/consumer/login/switch');
-    expect(request.request.body).toEqual({ accountId: '22' });
-    request.flush({ token: 'ORDER_SESSION', status: 'signed_in' });
-    await result;
-
-    expect(accountState.transitionTo).toHaveBeenCalledWith('22');
-    expect(accountState.setActiveAccount).toHaveBeenCalledWith('22');
-  });
-
-  it('retries an anonymous target when a platform identity is still available', async () => {
-    journey.get.and.returnValue(null);
-    accountState.getActiveAccount.and.returnValue('22');
-
-    const result = service.prepareForTargetAccount('22', 'order-account');
-    http.expectOne('https://api.example/v1/rest/consumer/login/switch')
-      .flush({ token: 'ORDER_SESSION', status: 'signed_in' });
-    await result;
-
-    expect(accountState.transitionTo).toHaveBeenCalledWith('22');
-    expect(accountState.setActiveAccount).toHaveBeenCalledWith('22');
-  });
-
-  it('does not repeat a switch for an already active account session', async () => {
-    journey.get.and.returnValue(null);
-    accountState.getActiveAccount.and.returnValue('22');
-    localStorage.setItem('c_authorizationToken', JSON.stringify('ORDER_SESSION'));
-
-    await service.prepareForTargetAccount('22', 'order-account');
-
-    http.expectNone('https://api.example/v1/rest/consumer/login/switch');
-  });
-
-  it('records the anonymous boot account without attempting a switch', async () => {
-    currentToken = null;
-    journey.get.and.returnValue(null);
-    accountState.getActiveAccount.and.returnValue(null);
-
-    await service.prepareForTargetAccount('11', 'chotaboss');
-
-    http.expectNone('https://api.example/v1/rest/consumer/login/switch');
-    expect(accountState.transitionTo).not.toHaveBeenCalled();
-    expect(accountState.setActiveAccount).toHaveBeenCalledWith('11');
-  });
-
-  it('isolates account state when an anonymous user moves to another account', async () => {
-    currentToken = null;
-    journey.get.and.returnValue(null);
-    accountState.getActiveAccount.and.returnValue('11');
-
-    await service.prepareForTargetAccount('22', 'order-account');
-
-    http.expectNone('https://api.example/v1/rest/consumer/login/switch');
-    expect(accountState.transitionTo).toHaveBeenCalledWith('22');
-    expect(sharedAccountService.setActiveStore).toHaveBeenCalledWith(null);
-    expect(sharedAccountService.setStores).toHaveBeenCalledWith([]);
-    expect(sharedAccountService.setActiveLocation).toHaveBeenCalledWith(null);
-    expect(sharedAccountService.setAccountLocations).toHaveBeenCalledWith([]);
-    expect(consumerService.setOrderDetails).toHaveBeenCalledWith(null);
-    expect(accountState.setActiveAccount).toHaveBeenCalledWith('22');
-  });
-
-  it('falls back to an isolated anonymous target when its switch fails', async () => {
-    journey.get.and.returnValue(null);
-    accountState.getActiveAccount.and.returnValue('11');
-
-    const result = service.prepareForTargetAccount('22', 'order-account');
-    http.expectOne('https://api.example/v1/rest/consumer/login/switch')
-      .flush('Invalid switch', { status: 422, statusText: 'Unprocessable Entity' });
-    await result;
-
-    expect(accountState.setActiveAccount).toHaveBeenCalledWith('22');
-    expect(accountState.transitionTo).toHaveBeenCalledWith('22');
-    expect(sharedAccountService.setActiveStore).toHaveBeenCalledWith(null);
-    expect(consumerService.setOrderDetails).toHaveBeenCalledWith(null);
-    expect(accountState.clearActiveAuthentication).not.toHaveBeenCalled();
-    expect(journey.clear).toHaveBeenCalled();
-  });
-
-  it('installs a switched session over the shared library double-encoded storage format', async () => {
-    journey.get.and.returnValue({
-      enabled: true,
-      hubCustomId: 'chotaboss',
-      returnTo: '/capp/chotaboss',
-      startedAt: Date.now(),
-      lastProviderUrl: 'https://provider.example/capp/provider'
-    });
-    localStorage.setItem('ynw-credentials', JSON.stringify(JSON.stringify({
-      accountId: '10',
-      loginId: '9999999999'
-    })));
-    localStorage.setItem('0', JSON.stringify(JSON.stringify({
-      jld_scon: { token: 'OLD_SESSION', providerConsumer: 10 }
-    })));
-
-    const result = service.prepareForTargetAccount('22', 'order-account');
-    http.expectOne('https://api.example/v1/rest/consumer/login/switch').flush({
-      token: 'ORDER_SESSION',
-      refreshToken: 'ORDER_REFRESH',
-      status: 'signed_in',
-      providerConsumer: 22
-    });
-    await result;
-
-    expect(JSON.parse(localStorage.getItem('c_authorizationToken')!)).toBe('ORDER_SESSION');
-    expect(JSON.parse(JSON.parse(localStorage.getItem('ynw-credentials')!))).toEqual(jasmine.objectContaining({
-      accountId: '22',
-      loginId: '9999999999'
-    }));
-    expect(JSON.parse(JSON.parse(localStorage.getItem('0')!)).jld_scon).toEqual(jasmine.objectContaining({
-      token: 'ORDER_SESSION',
-      providerConsumer: 22
-    }));
-    expect(accountState.clearActiveAuthentication).not.toHaveBeenCalled();
-  });
-
+  it('keeps platform refresh retryable after an outage', fakeAsync(() => {
+    service.refreshPlatformToken().catch(() => undefined);
+    http.expectOne(api + 'consumer/oauth/platformtoken/refresh').flush(null, { status: 503, statusText: 'Unavailable' });
+    flushMicrotasks();
+    expect(platform.get()).toBe('P1');
+    service.refreshPlatformToken();
+    http.expectOne(api + 'consumer/oauth/platformtoken/refresh').flush({ platform_token: 'P2' });
+    flushMicrotasks();
+    expect(platform.get()).toBe('P2');
+  }));
 });
