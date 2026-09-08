@@ -1,17 +1,28 @@
-import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, Renderer2, ViewChild } from '@angular/core';
+import { Component, DoCheck, ElementRef, HostListener, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { AccountService, AuthService, ConsumerService, GroupStorageService, LocalStorageService, OrderService, SharedService, SubscriptionService, ThemeService } from 'jconsumer-shared';
 import { Subscription } from 'rxjs';
 import { TRANSIENT_ACCOUNT_KEYS } from '@consumer/cross-tenant';
+import { TemplateHomeState } from './template-home/template-home-state.service';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrl: './home.component.scss'
+  styleUrl: './home.component.scss',
+  providers: [TemplateHomeState]
 })
-export class HomeComponent implements AfterViewInit, OnDestroy {
+export class HomeComponent implements OnInit, DoCheck, OnDestroy {
 
   @ViewChild('header') headerElement!: ElementRef;
+  private footerObserver?: ResizeObserver;
+  @ViewChild('footerNav') set footerNav(element: ElementRef<HTMLElement> | undefined) {
+    this.footerObserver?.disconnect();
+    if (!element || typeof ResizeObserver === 'undefined') return;
+    this.footerObserver = new ResizeObserver(() => {
+      this.renderer.setStyle(this.hostElement.nativeElement, '--sub-app-footer-height', `${element.nativeElement.getBoundingClientRect().height}px`);
+    });
+    this.footerObserver.observe(element.nativeElement);
+  }
   theme: string = '';
   loading: boolean = false;
   accountId: any;
@@ -57,7 +68,9 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     private authService: AuthService,
     private consumerService: ConsumerService,
     private activatedRoute: ActivatedRoute,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private hostElement: ElementRef<HTMLElement>,
+    public homeState: TemplateHomeState
   ) {
     this.onResize();
     this.loadFontAwesome();
@@ -109,7 +122,8 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       clearTimeout(this.welcomePopupTimer);
     }
     this.subscriptions.unsubscribe();
-    this.cartFooterSubscription.unsubscribe();
+    this.cartFooterSubscription?.unsubscribe();
+    this.footerObserver?.disconnect();
   }
 
   @HostListener('window:resize', ['$event'])
@@ -138,32 +152,71 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  ngAfterViewInit() {
+  ngDoCheck(): void {
+    if (this.homeState.sync()) {
+      this.templateJson = this.sharedService.getTemplateJSON();
+      this.config = this.templateJson || {};
+      this.footerItems = this.homeState.config.status === 'legacy' ? this.buildFooterItems(this.templateJson) : [];
+      this.isImmersiveRoute = this.isFullWidthRoute(this.router.url);
+      const account = this.sharedService.getAccountInfo();
+      if (account && this.homeState.routeId && this.accountId !== this.sharedService.getAccountID()) {
+        const changedTenant = this.accountId != null;
+        this.accountId = this.sharedService.getAccountID();
+        this.accountConfig = this.sharedService.getAccountConfig();
+        this.locations = this.sharedService.getJson(account['location']) || [];
+        this.accountService.setActiveLocation(this.locations[0] || null);
+        this.header = true;
+        this.hideFooter = false;
+        if (changedTenant) {
+          this.accountService.setStores([]);
+          this.accountService.setActiveStore(null);
+          this.lStorageService.removeitemfromLocalStorage('storeEncId');
+          this.cartCount = 0;
+        }
+        this.loginRequired = (this.accountConfig?.loginRequired ?? this.config.loginRequired) === true;
+        const accountId = this.accountId;
+        this.authService.goThroughLogin().then(status => {
+          if (this.accountId !== accountId) return;
+          if (!this.loginRequired || status) { this.loginRequired = false; this.finishLoading(); }
+          else this.setLoginProperties();
+        });
+      }
+    }
+  }
+
+  ngOnInit() {
     let account = this.sharedService.getAccountInfo();
-    this.accountId = this.sharedService.getAccountID();
+    this.accountId = account ? this.sharedService.getAccountID() : null;
     this.accountConfig = this.sharedService.getAccountConfig();
     console.log("Account ID :", this.accountId);
-    this.locations = this.sharedService.getJson(account['location']);
+    this.locations = account ? this.sharedService.getJson(account['location']) || [] : [];
     console.log("Locations:", this.locations);
-    this.accountService.setActiveLocation(this.locations[0]);
-    this.config = this.sharedService.getTemplateJSON();
+    if (this.locations.length && !this.accountService.getActiveLocation()) this.accountService.setActiveLocation(this.locations[0]);
+    this.config = this.sharedService.getTemplateJSON() || {};
+    this.loginRequired = (this.accountConfig?.loginRequired ?? this.config.loginRequired) === true;
     if (this.config.theme) {
       this.theme = this.config.theme;
       let themeURL = this.sharedService.getCDNPath() + `customapp/assets/scss/themes/`;
       this.themeService.loadTheme(themeURL, this.theme);
     }
+    const initialAccountId = this.accountId;
     if (this.accountConfig) {
       if (this.accountConfig['theme']) {
         this.theme = this.accountConfig['theme'];
       }
       this.authService.goThroughLogin().then((status: any) => {
+        if (this.accountId !== initialAccountId) return;
         if (this.accountConfig['loginRequired'] && !status) {
           this.loginRequired = true;
           this.setLoginProperties();
         } else {
           this.loginRequired = false;
+          this.finishLoading();
         }
       })
+    } else {
+      this.loginRequired = this.config.loginRequired === true;
+      if (!this.loginRequired) this.finishLoading();
     }
 
     this.cartFooterSubscription = this.subscriptionService.getMessage().subscribe((message) => {
@@ -174,7 +227,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
           this.initHeader(message.value ? "refresh" : null);
           // Re-evaluate auth state when other modules broadcast refresh (e.g., login route)
           this.authService.goThroughLogin().then((status: any) => {
-            if (this.accountConfig['loginRequired'] && !status) {
+            if (this.accountConfig?.['loginRequired'] && !status) {
               this.loginRequired = true;
               this.setLoginProperties();
             } else {
@@ -212,7 +265,8 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
 
     const alreadyLoggedIn = this.checkLogin && this.checkLogin();
     this.templateJson = this.sharedService.getTemplateJSON();
-    this.footerItems = this.buildFooterItems(this.templateJson);
+    this.homeState.sync();
+    this.footerItems = this.homeState.config.status === 'legacy' ? this.buildFooterItems(this.templateJson) : [];
     console.log("this.templateJson", this.templateJson)
     const welcomePopupState = this.lStorageService.getitemfromLocalStorage(this.welcomePopupStorageKey) || {};
     const hasSeenWelcomePopup = welcomePopupState && welcomePopupState[this.accountId];
@@ -232,6 +286,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       this.router.events.subscribe((event) => {
         if (event instanceof NavigationEnd) {
           this.isImmersiveRoute = this.isFullWidthRoute(event.urlAfterRedirects);
+          if (this.homeState.isSubApp && this.homeState.isRoot) { this.header = true; this.hideFooter = false; }
           this.scrollToTop();
         }
       })
@@ -240,6 +295,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   }
 
   private isFullWidthRoute(url: string): boolean {
+    if (this.homeState.isSubApp) return false;
     const path = url.split('?')[0];
     const petStoreRoute = this.templateJson?.petStorePage?.route || 'pet-store';
     const hidePetStoreHeader = this.templateJson?.petStorePage?.layout?.hideParentHeader !== false;
@@ -248,6 +304,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   }
 
   get showParentFooter(): boolean {
+    if (this.homeState.isSubApp) return !this.hideFooter && this.homeState.config.footer.length > 0;
     if (this.hideFooter || !this.footerItems.length) return false;
     const petStoreRoute = this.templateJson?.petStorePage?.route || 'pet-store';
     if (this.router.url.split('?')[0].includes(`/${petStoreRoute}`)) {
@@ -324,10 +381,13 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
 
 
   finishLoading() {
+    if (this.accountId == null) return;
+    const accountId = this.accountId;
     if (this.accountService.getStores().length == 0) {
       this.getStores();
     }
     this.orderService.getRequireOTPForAddingToCart('SALES_ORDER', this.accountId).subscribe((data: any) => {
+      if (this.accountId !== accountId) return;
       if (data) {
         this.isSessionCart = data.requireOTPForAddingToCart;
         this.lStorageService.setitemonLocalStorage('isSessionCart', this.isSessionCart)
@@ -342,12 +402,14 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
 
 
   getStores() {
+    const accountId = this.accountId;
     this.loading = true;
     let filter = {};
     filter['accountId-eq'] = this.accountId;
     filter['onlineOrder-eq'] = true;
     filter['status-eq'] = 'Active';
     this.orderService.getStores(filter).subscribe((stores: any) => {
+      if (this.accountId !== accountId) return;
       if (stores && stores.length > 0) {
         this.accountService.setStores(stores);
         this.accountService.setActiveStore(stores[0].encId);

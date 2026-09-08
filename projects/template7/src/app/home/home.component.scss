@@ -129,7 +129,8 @@
   box-shadow: 0 -3px 14px #0f172a0a;
 }
 
-.parent-footer-nav button {
+.parent-footer-nav button,
+.parent-footer-nav a {
   max-width: 132px;
   min-width: 0;
   flex: 1 1 0;
@@ -144,6 +145,7 @@
   background: transparent;
   font-size: clamp(9px, 2.5vw, 12px);
   cursor: pointer;
+  text-decoration: none;
 }
 
 .parent-footer-nav img,
@@ -154,9 +156,19 @@
   font-size: 22px;
 }
 
-.parent-footer-nav button.active-nav { color: #f4510b; }
+.parent-footer-nav button.active-nav, .parent-footer-nav a.active-nav { color: #f4510b; }
 .parent-footer-nav button.active-nav img { filter: sepia(1) saturate(8) hue-rotate(340deg); }
-.parent-footer-nav button:focus-visible { outline: 3px solid #185adb; outline-offset: -2px; }
+.parent-footer-nav button:focus-visible, .parent-footer-nav a:focus-visible { outline: 3px solid #185adb; outline-offset: -2px; }
+.parent-footer-nav a[aria-disabled] { cursor: default; }
+
+.sub-app-shell { height: auto; min-height: 100vh; }
+.sub-app-shell .panel-body { padding-bottom: 0 !important; }
+.sub-app-footer-visible .panel-body { padding-bottom: var(--sub-app-footer-height, calc(82px + env(safe-area-inset-bottom, 0px))) !important; }
+.sub-app-shell .parent-footer-nav { padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)); }
+.sub-app-shell .parent-footer-nav a { font-size: clamp(12px, 3vw, 20px); gap: 7px; padding: 7px 2px; }
+.sub-app-shell .parent-footer-nav i { font-size: clamp(24px, 4.8vw, 33px); width: 1.1em; height: 1.1em; }
+.sub-app-home .header-container { position: sticky; height: auto; }
+.sub-app-home .panel-body { margin-top: 0; min-height: 0; }
 /* welcome popup overlay */
 .welcome-overlay {
   position: fixed;

@@ -7,12 +7,17 @@
         <img [src]="welcomeImageUrl" alt="Welcome" class="welcome-overlay__image" />
       </div>
     </div>
-<section id="busPageId" class="content bus-page no-padding loginpg" [ngClass]="theme">
+<section id="busPageId" class="content bus-page no-padding loginpg" [ngClass]="theme"
+    [class.sub-app-shell]="homeState.isSubApp" [class.sub-app-home]="homeState.isSubApp && homeState.isRoot"
+    [class.sub-app-footer-visible]="homeState.isSubApp && showParentFooter">
     <div class="bus-page-header" *ngIf="!loginRequired">
         <div class="panel panel-default">
 
-            <div class="header-container" *ngIf="header && !isImmersiveRoute">
-                <app-header [locations]="locations" *ngIf="locations && locations.length > 0"></app-header>
+            <div #header class="header-container" *ngIf="header && !isImmersiveRoute">
+              <ng-container *ngFor="let accountKey of [accountId]">
+                <app-header [locations]="locations" [templateConfig]="config" [homeRoot]="homeState.isSubApp && homeState.isRoot"
+                  *ngIf="locations && locations.length > 0 && homeState.config.status !== 'loading'"></app-header>
+              </ng-container>
             </div>
             <div class="panel-body no-padding" *ngIf="locations" [class.header-visible]="!header"
                 [class.immersive-route]="isImmersiveRoute">
@@ -21,13 +26,30 @@
                 </div>
             </div>
         </div>
-      <nav class='parent-footer-nav' *ngIf='showParentFooter' aria-label='Primary navigation'>
+      <nav #footerNav class='parent-footer-nav' *ngIf='showParentFooter' aria-label='Primary navigation'>
+        <ng-container *ngIf="homeState.isSubApp; else legacyFooter">
+          <ng-container *ngFor="let item of homeState.config.footer; trackBy: homeState.trackFooter">
+            <a *ngIf="!item.link?.url; else parentLink" [routerLink]="homeState.tree(item.link)"
+              [class.active-nav]="homeState.activeFooterKey() === item.key"
+              [attr.aria-current]="homeState.activeFooterKey() === item.key ? 'page' : null"
+              [attr.aria-disabled]="item.link ? null : true" [attr.tabindex]="item.link ? null : -1">
+              <i class="fa" [ngClass]="item.icon" aria-hidden="true"></i><span>{{ item.label }}</span>
+            </a>
+            <ng-template #parentLink>
+              <a [href]="item.link.url" (click)="homeState.followExternal($event, item.link)">
+                <i class="fa" [ngClass]="item.icon" aria-hidden="true"></i><span>{{ item.label }}</span>
+              </a>
+            </ng-template>
+          </ng-container>
+        </ng-container>
+        <ng-template #legacyFooter>
         <button type='button' *ngFor='let item of footerItems' [class.active-nav]='isFooterItemActive(item)'
           (click)='navigateFooter(item)'>
           <img *ngIf='item.icon' [src]='item.icon' [alt]='item.title || item.label' loading='lazy'>
           <i *ngIf='!item.icon' class='fa' [ngClass]='item.fallbackIcon'></i>
           <span>{{ item.title || item.label }}</span>
         </button>
+        </ng-template>
       </nav>
     </div>
 

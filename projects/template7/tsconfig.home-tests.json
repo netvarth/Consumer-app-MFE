@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.spec.json",
+  "compilerOptions": {
+    "paths": {
+      "@consumer/cross-tenant": ["projects/cross-tenant/src/public-api.ts"],
+      "@angular-architects/native-federation": ["node_modules/@softarc/native-federation-runtime"]
+    }
+  },
+  "include": ["src/app/home/template-home/**/*.spec.ts"]
+}

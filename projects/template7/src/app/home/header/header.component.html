@@ -1,4 +1,4 @@
-<header *ngIf="header && config" class="fashion-header-wrap">
+<header *ngIf="header && config" class="fashion-header-wrap" [class.sub-app-header]="config.homePage?.context === 'subApp'" [class.sub-app-root-header]="homeRoot">
   <!-- <div class="top-strip">
     <div class="strip-text">{{ config?.header?.announcement || 'UPTO 80% OFF' }}</div>
     <div class="strip-icons">
@@ -15,7 +15,7 @@
 
     <div class="brand" (click)="gotoActiveHome()">
       <img *ngIf="logo" [src]="logo" alt="Logo" />
-      <span>{{ headerTitle || 'Kanishta' }}</span>
+      <span *ngIf="config.homePage?.context !== 'subApp' || !logo">{{ headerTitle || 'Kanishta' }}</span>
     </div>
 
     <div class="actions">

@@ -1,0 +1,86 @@
+<main class="template-home" [style.max-width.px]="config.layout.contentMaxWidth" [style.background-color]="config.layout.pageBackground">
+  <p *ngIf="config.status === 'loading'" class="home-status" role="status">Loading…</p>
+  <section *ngIf="config.status === 'unavailable'" class="home-status" role="status">
+    <h1>Homepage unavailable</h1>
+    <p>Please try again later.</p>
+  </section>
+
+  <ng-container *ngIf="config.status === 'ready'">
+    <section *ngIf="config.hero as hero" class="home-hero" [class.service-hero]="config.type === 'service'">
+      <img *ngIf="hero.image.src && !failedImages.has('hero'); else heroFallback" class="hero-artwork"
+        [src]="hero.image.src" [alt]="hero.image.alt" [attr.width]="hero.image.width" [attr.height]="hero.image.height"
+        loading="eager" fetchpriority="high" (error)="imageFailed('hero')">
+      <ng-template #heroFallback>
+        <div class="hero-fallback image-fallback" [style.aspect-ratio]="hero.image.width + ' / ' + hero.image.height" role="img" [attr.aria-label]="hero.image.alt || 'Banner image unavailable'">
+          <i class="fa fa-picture-o" aria-hidden="true"></i><span>{{ hero.image.alt || 'Banner image unavailable' }}</span>
+        </div>
+      </ng-template>
+      <form *ngIf="hero.search as search" class="hero-search" role="search" (ngSubmit)="submitSearch()"
+        [style.left.%]="search.position.leftPercent" [style.top.%]="search.position.topPercent"
+        [style.width.%]="search.position.widthPercent" [style.height.%]="search.position.heightPercent">
+        <button type="submit" [attr.aria-label]="search.ariaLabel" [disabled]="!search.link">
+          <svg viewBox="0 0 28 28" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.8"/><path d="m18 18 7 7M21 2v6M18 5h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+        <input type="search" name="query" [(ngModel)]="searchText" [placeholder]="search.placeholder"
+          [attr.aria-label]="search.ariaLabel" [disabled]="!search.link" autocomplete="off">
+      </form>
+      <ng-container *ngIf="hero.action as action">
+        <a *ngIf="action.link && hero.image.src && !failedImages.has('hero')" class="hero-action" [routerLink]="homeState.tree(action.link)"
+          [attr.aria-label]="action.ariaLabel" [style.left.%]="action.position.leftPercent" [style.top.%]="action.position.topPercent"
+          [style.width.%]="action.position.widthPercent" [style.height.%]="action.position.heightPercent"></a>
+        <a *ngIf="action.link && (!hero.image.src || failedImages.has('hero'))" class="fallback-action" [routerLink]="homeState.tree(action.link)">{{ action.ariaLabel }}</a>
+      </ng-container>
+    </section>
+
+    <section *ngIf="config.categories as categories" class="store-section categories" aria-labelledby="categories-title">
+      <h2 *ngIf="categories.title" id="categories-title">{{ categories.title }}</h2>
+      <div class="category-list">
+        <a *ngFor="let card of categories.items; trackBy: trackCard" class="category" [routerLink]="homeState.tree(card.link)"
+          [attr.aria-disabled]="card.link ? null : true" [attr.tabindex]="card.link ? null : -1">
+          <div class="category-image">
+            <ng-container *ngTemplateOutlet="cardImage; context: { card: card, prefix: 'category-' }"></ng-container>
+          </div>
+          <span>{{ card.label }}</span>
+        </a>
+      </div>
+    </section>
+
+    <section *ngIf="config.bestSellers as products" class="store-section best-sellers" aria-labelledby="products-title">
+      <h2 *ngIf="products.title" id="products-title">{{ products.title }}</h2>
+      <div class="product-grid">
+        <a *ngFor="let card of products.items; trackBy: trackCard" class="product-card" [routerLink]="homeState.tree(card.link)"
+          [attr.aria-disabled]="card.link ? null : true" [attr.tabindex]="card.link ? null : -1">
+          <div class="product-image"><ng-container *ngTemplateOutlet="cardImage; context: { card: card, prefix: 'product-' }"></ng-container></div>
+          <div class="product-copy"><h3>{{ card.label }}</h3><p class="product-price" *ngIf="card.price">{{ card.price }}</p></div>
+        </a>
+      </div>
+    </section>
+
+    <section *ngIf="config.services as services" class="services-section" aria-labelledby="services-title">
+      <img *ngIf="services.coverImage?.src && !failedImages.has('cover')" class="services-cover" [src]="services.coverImage.src" alt="" loading="lazy" (error)="imageFailed('cover')">
+      <h2 *ngIf="services.showTitle && services.title" id="services-title">{{ services.title }}</h2>
+      <div class="service-grid" [class.wide-cards]="services.columnsMobile === 1" [style.--mobile-columns]="services.columnsMobile"
+        [style.--desktop-columns]="services.columnsDesktop" [style.--image-ratio]="services.cardImageAspectRatio">
+        <a *ngFor="let card of services.items; trackBy: trackCard" class="service-card" [routerLink]="homeState.tree(card.link)"
+          [attr.aria-disabled]="card.link ? null : true" [attr.tabindex]="card.link ? null : -1">
+          <div class="service-image"><ng-container *ngTemplateOutlet="cardImage; context: { card: card, prefix: 'service-' }"></ng-container>
+            <span *ngIf="card.actionLabel" class="service-action">{{ card.actionLabel }}<span aria-hidden="true">→</span></span>
+          </div>
+          <div class="service-copy">
+            <span *ngIf="card.tag" class="service-tag"><i class="fa fa-paw" aria-hidden="true"></i>{{ card.tag }}</span>
+            <h3>{{ card.label }}</h3><p *ngIf="card.description">{{ card.description }}</p>
+            <span *ngIf="card.provider" class="service-provider"><i class="fa fa-building" aria-hidden="true"></i>{{ card.provider }}</span>
+          </div>
+        </a>
+      </div>
+    </section>
+  </ng-container>
+</main>
+
+<ng-template #cardImage let-card="card" let-prefix="prefix">
+  <img *ngIf="card.image.src && !failedImages.has(prefix + card.key); else missingImage" [src]="card.image.src"
+    [alt]="card.image.alt || card.label" [style.object-fit]="card.image.fit" loading="lazy" decoding="async" (error)="imageFailed(prefix + card.key)">
+  <ng-template #missingImage><span class="image-fallback" role="img" [attr.aria-label]="(card.image.alt || card.label) + ': image unavailable'">
+    <i class="fa fa-picture-o" aria-hidden="true"></i><span>Image unavailable</span>
+  </span></ng-template>
+</ng-template>

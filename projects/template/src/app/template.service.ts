@@ -46,7 +46,8 @@ export class TemplateService {
     return new Promise(function(resolve){
       if (_this.sharedService.getTemplateJSON()) {
         _this.sharedService.setTemplateID(_this.sharedService.getTemplateJSON().template);
-        _this.titleService.setTitle(_this.sharedService.getTemplateJSON().header.title);
+        const title = _this.sharedService.getTemplateJSON().header?.title;
+        if (typeof title === 'string' && title.trim()) _this.titleService.setTitle(title);
         if(_this.sharedService.getTemplateJSON().logo) {
           _this.setIcon(_this.sharedService.getTemplateJSON().logo);
         }

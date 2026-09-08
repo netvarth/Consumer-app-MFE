@@ -1,4 +1,4 @@
-import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { NavigationEnd, NavigationExtras, Router } from '@angular/router';
 import { AccountService, AuthService, GroupStorageService, LocalStorageService, Messages, OrderService, SharedService, SubscriptionService } from 'jconsumer-shared';
@@ -39,7 +39,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
   showLocation;
   hideBookings: boolean;
   header: boolean = true;
-  locations;
+  @Input() locations;
+  @Input() homeRoot = false;
+  @Input() set templateConfig(value: any) {
+    this.config = value;
+    if (value?.homePage?.context === 'subApp' && value.logo) this.logo = value.logo;
+  }
   headerName: any;
   isCartVisible: boolean;
   private subscriptions: Subscription = new Subscription();
@@ -195,6 +200,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     } else {
       this.logo = accountProfile.logo?.url;
     }
+    if (this.config?.homePage?.context === 'subApp' && this.config.logo) this.logo = this.config.logo;
     this.initSubscriptions();
     const wishlistSub = this.wishlistService.changes$.subscribe((ids: Set<string>) => {
       this.wishlistCount = ids.size;

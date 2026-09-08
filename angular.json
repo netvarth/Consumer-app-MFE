@@ -58,6 +58,11 @@
 								"glob": "**/*",
 								"input": "projects/root/src/assets",
 								"output": "assets"
+							},
+							{
+								"glob": "**/*",
+								"input": "projects/template7/public/assets",
+								"output": "assets"
 							}
 						],
 						"styles": [
@@ -87,6 +92,11 @@
 							{
 								"glob": "**/*",
 								"input": "projects/root/src/assets",
+								"output": "assets"
+							},
+							{
+								"glob": "**/*",
+								"input": "projects/template7/public/assets",
 								"output": "assets"
 							}
 						],

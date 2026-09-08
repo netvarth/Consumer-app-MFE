@@ -1,14 +1,4 @@
 {
-  "template": "template7",
-  "logo": "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/153661/logo.png",
-  "theme": "mediExpat",
-  "loginstyle": "new",
-  "headerTitle": "<p><strong><span style=\"color:rgb(3,87,147);\">Jaldee Vets QA</span></strong></p>",
-  "headerDescription": "",
-  "branchFilterUser": false,
-  "branchFilterService": false,
-  "loginRequired": false,
-  "showEnquiry": false,
   "homePage": {
     "schemaVersion": 1,
     "enabled": true,

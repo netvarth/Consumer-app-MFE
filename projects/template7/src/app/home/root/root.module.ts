@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { RootComponent } from './root.component';
+import { HomeEntryComponent } from './home-entry.component';
+import { TemplateHomeModule } from '../template-home/template-home.module';
 import { DateFormatPipeModule, ErrrorMessageModule, I8nModule, JGalleryModule, SafeHtmlModule, ToastService } from 'jconsumer-shared';
 import { AddInboxMessagesModule } from '../../shared/add-inbox-messages/add-inbox-messages.module';
 import { BasicProfileNewModule } from '../../shared/profile/basic-profile-new/basic-profile-new.module';
@@ -24,13 +26,14 @@ import { AttachmentPopupModule } from '../../shared/attachment-popup/attachment-
 import { GalleryModule } from '../../shared/gallery/gallery.module';
 import { WLCardModule } from '../../shared/wl-card/wl-card.module';
 const routes: Routes = [
-  { path: '', component: RootComponent }
+  { path: '', component: HomeEntryComponent }
 ]
 
 @NgModule({
-  declarations: [RootComponent],
+  declarations: [RootComponent, HomeEntryComponent],
   imports: [
     CommonModule,
+    TemplateHomeModule,
     I8nModule,
     SafeHtmlModule,
     CardModule,
