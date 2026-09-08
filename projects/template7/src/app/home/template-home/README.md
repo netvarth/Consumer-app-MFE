@@ -4,8 +4,8 @@ The tenant root renders `homePage` when `context` is `subApp`. `homePage.type` s
 
 ## Configuration and activation
 
-- Complete workspace configuration: `projects/template7/template_CA.json`.
-- Equivalent home/navigation fragment: `projects/template7/homepage.config.json`.
+- The current service tenant configuration is `C:\File Transfer\sugarandspice\service\template_CA.json`. Make service JSON changes there.
+- The JSON files under `projects/template7/` are reference examples, not the tenant configuration loaded by the app. Do not synchronize or edit them as part of tenant configuration changes.
 - The host still loads the tenant's existing `<configPath>/<uniqueID>/template_CA.json` through `TemplateService`. Upload the complete configuration to that existing tenant location to activate it remotely. No template URL, tenant ID or content is hardcoded into the renderer. Local edits do not publish this JSON.
 - `template7` is registered in the root environment files and the existing federation configuration exposes `./Home` under that name. Existing user changes to federation and environment settings were retained.
 - Store and service artwork use the supplied S3 URLs. Each service card is a complete image export, including its text and button artwork, displayed in a single column at its natural aspect ratio. The older `services.layout` grid fields are ignored so existing tenant JSON also uses this corrected layout.
@@ -30,11 +30,30 @@ Store and service image base: `https://jaldeeuiscale.s3.ap-south-1.amazonaws.com
 | Consultation card key | `service-consultation.png` | `__CONSULTATION_SERVICE_ID__` |
 | Grooming card key | `service-grooming.png` | `__GROOMING_SERVICE_ID__` |
 | Boarding card key | `service-boarding.png` | `__BOARDING_SERVICE_ID__` |
-| Parent Home | Resolved from the existing validated cross-tenant journey for the current provider, when present | Otherwise supply `__PARENT_APP_HOME_URL__` |
+| Parent Home | `https://scale.jaldee.com/capp/chotaboss` | Configured explicitly from the supplied footer |
 
 The S3 URLs were validated locally and installed as supplied; their HTTP availability and contents have not been verified. No replacement CDN locations were invented. The original standalone store artwork remains available at `projects/template7/public/assets/template-home/store-hero.png`, copied byte-for-byte from `Frame 1171278126.png`; the active configuration uses S3 instead. Missing images show an accessible fallback. Root and remote asset configurations also support local `assets/` URLs under the host base href.
 
-Shop resolves to the sub-app root. Bookings, About Us and Support use the existing `bookings`, `about` and `support` routes. Placeholder and malformed targets render without an href. Catalog detail and checkout continue to use existing server-backed logic and authoritative prices.
+Footer labels, icons, destinations, visibility and order come from `navigation.footer.items`. Placeholder and malformed targets render without an href. Catalog detail and checkout continue to use existing server-backed logic and authoritative prices.
+
+Set `homePage.layout.activeFooterKey` to the key of the tab to highlight on the homepage: `services` for the service configuration or `shop` for the store configuration. The corresponding item links to `{"route": []}`. If the active key is omitted, disabled or invalid, the enabled root link supplies the default. Keys and labels are not inferred from the page type.
+
+For a store, replace the Bookings entry in `navigation.footer.items` with:
+
+```json
+{
+  "key": "items",
+  "label": "Items",
+  "icon": "fa-th",
+  "enabled": true,
+  "sortOrder": 2,
+  "link": { "route": ["items"], "queryParams": {} }
+}
+```
+
+This navigates to `/capp/<tenant>/items`; use `"items"` without a leading slash in the route array. The store homepage highlights Shop, while the items list, category filters and product details highlight the configured Items tab. A service tenant can retain Bookings with `link.route: ["bookings"]`. Route selection follows each item's destination, so changing a key or label does not break highlighting. Child pages inherit their matching tab; booking workflows select the entry linked to `bookings`. Service details select the configured homepage tab.
+
+Home uses `link: { "url": "https://scale.jaldee.com/capp/chotaboss" }` and existing same-tab document navigation. URLs must include the scheme and must not be placed inside `route`, which is reserved for tenant-relative path segments.
 
 ## Rendering behavior
 

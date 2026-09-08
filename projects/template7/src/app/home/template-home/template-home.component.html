@@ -1,4 +1,4 @@
-<main class="template-home" [style.max-width.px]="config.layout.contentMaxWidth" [style.background-color]="config.layout.pageBackground">
+<main class="template-home" [style.background-color]="config.layout.pageBackground">
   <p *ngIf="config.status === 'loading'" class="home-status" role="status">Loading…</p>
   <section *ngIf="config.status === 'unavailable'" class="home-status" role="status">
     <h1>Homepage unavailable</h1>

@@ -64,19 +64,31 @@ export class TemplateHomeState {
   }
 
   activeFooterKey(): string {
+    if (!this.currentTenant()) return '';
     const items = this.config.footer;
-    if (this.isRoot) return items.find(item => item.key === this.config.layout.activeFooterKey)?.key || '';
+    const homeKey = this.config.layout.activeFooterKey;
+    if (this.isRoot) return homeKey;
     const path = this.path(this.router.url);
-    const exact = items.find(item => {
+    const prefix = `/${this.routeId}/`;
+    if (!path.startsWith(prefix)) return '';
+    // Match configured destinations, including their child pages, regardless of tab keys.
+    const matching = items.filter(item => {
+      if (!item.link?.route?.length) return false;
       const tree = this.tree(item.link);
-      return tree && this.path(this.router.serializeUrl(tree)) === path;
-    });
-    if (exact) return exact.key;
-    const relative = path.startsWith(`/${this.routeId}/`) ? path.slice(this.routeId.length + 2) : '';
-    const first = relative.split('/')[0];
-    const key = ['booking', 'appointment', 'checkin', 'dashboard'].includes(first) ? 'bookings'
-      : ['items', 'item', 'categories', 'service', 'order', 'orders'].includes(first) ? this.config.layout.activeFooterKey : '';
-    return items.find(item => item.key === key)?.key || '';
+      if (!tree) return false;
+      const target = this.path(this.router.serializeUrl(tree));
+      return path === target || path.startsWith(`${target}/`);
+    }).sort((a, b) => b.link.route.length - a.link.route.length);
+    if (matching.length) return matching[0].key;
+    const first = path.slice(prefix.length).split('/')[0];
+    // Detail/workflow routes belong to their configured list destination.
+    const listRoutes: Record<string, string> = {
+      booking: 'bookings', appointment: 'bookings', checkin: 'bookings', dashboard: 'bookings',
+      item: 'items', categories: 'items', order: 'orders'
+    };
+    const listItem = items.find(item => item.link?.route?.length === 1 && item.link.route[0] === listRoutes[first]);
+    if (listItem) return listItem.key;
+    return ['items', 'item', 'categories', 'service', 'order', 'orders'].includes(first) ? homeKey : '';
   }
 
   trackFooter(_index: number, item: HomeFooterItem): string { return item.key; }

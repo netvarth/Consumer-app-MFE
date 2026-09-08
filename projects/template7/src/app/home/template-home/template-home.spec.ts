@@ -148,6 +148,41 @@ describe('Template 7 sub-app configuration', () => {
     input.homePage.service.services.cards = null;
     expect(normalizeTemplateHome(input).services).toBeNull();
   });
+
+  it('uses the enabled root footer item after Shop is renamed to Services', () => {
+    const input = fixtureConfig();
+    const rootItem = input.navigation.footer.items.find(item => item.key === 'shop');
+    rootItem.key = 'services';
+    rootItem.label = 'Services';
+    const normalized = normalizeTemplateHome(input);
+    expect(normalized.layout.activeFooterKey).toBe('services');
+    expect(input.homePage.layout.activeFooterKey).toBe('shop');
+    rootItem.enabled = false;
+    expect(normalizeTemplateHome(input).layout.activeFooterKey).not.toBe('services');
+  });
+
+  it('accepts the explicit Chotaboss Home URL while rejecting a hostname inside route', () => {
+    const input = fixtureConfig();
+    const home = input.navigation.footer.items.find(item => item.key === 'home');
+    home.link = { route: ['scale.jaldee.com/capp/chotaboss'], queryParams: {} };
+    expect(normalizeTemplateHome(input).footer[0].link).toBeNull();
+    home.link = { url: 'https://scale.jaldee.com/capp/chotaboss' };
+    expect(normalizeTemplateHome(input).footer[0].link).toEqual(home.link);
+  });
+
+  it('uses configured homepage keys and infers any enabled root key when omitted', () => {
+    const input = fixtureConfig();
+    const root = input.navigation.footer.items.find(item => item.key === 'shop');
+    root.key = 'catalogue';
+    delete input.homePage.layout.activeFooterKey;
+    expect(normalizeTemplateHome(input).layout.activeFooterKey).toBe('catalogue');
+    input.homePage.layout.activeFooterKey = 'bookings';
+    expect(normalizeTemplateHome(input).layout.activeFooterKey).toBe('bookings');
+    input.navigation.footer.items.find(item => item.key === 'bookings').link = { route: ['unknown'] };
+    expect(normalizeTemplateHome(input).layout.activeFooterKey).toBe('catalogue');
+    root.enabled = false;
+    expect(normalizeTemplateHome(input).layout.activeFooterKey).toBe('');
+  });
 });
 
 describe('Template 7 renderer and tenant navigation', () => {
@@ -233,6 +268,60 @@ describe('Template 7 renderer and tenant navigation', () => {
     expect(state.config.footer).toEqual([]);
   });
 
+  it('highlights Services for the renamed root and its service details', () => {
+    raw.navigation.footer.items.find(item => item.key === 'shop').key = 'services';
+    state.sync();
+    const url = spyOnProperty(router, 'url', 'get').and.returnValue('/test-tenant');
+    expect(state.activeFooterKey()).toBe('services');
+    url.and.returnValue('/test-tenant/service/34');
+    expect(state.activeFooterKey()).toBe('services');
+    url.and.returnValue('/test-tenant/appointment?loc_id=12&service_id=34');
+    expect(state.activeFooterKey()).toBe('bookings');
+    url.and.returnValue('/test-tenant/about');
+    expect(state.activeFooterKey()).toBe('aboutus');
+  });
+
+  it('supports a JSON-configured Items tab replacing Bookings while Shop remains the homepage selection', () => {
+    const tab = raw.navigation.footer.items.find(item => item.key === 'bookings');
+    Object.assign(tab, { key: 'inventory', label: 'Items', link: { route: ['items'] } });
+    state.sync();
+    const url = spyOnProperty(router, 'url', 'get').and.returnValue('/test-tenant/?source=home#top');
+    expect(state.activeFooterKey()).toBe('shop');
+    expect(router.serializeUrl(state.tree(state.config.footer.find(item => item.key === 'inventory').link))).toBe('/test-tenant/items');
+    for (const path of ['items', 'items?categoryId=123', 'item/abc=+123', 'categories']) {
+      url.and.returnValue(`/test-tenant/${path}`);
+      expect(state.activeFooterKey()).withContext(path).toBe('inventory');
+    }
+    url.and.returnValue('/test-tenant/appointment?loc_id=12&service_id=34');
+    expect(state.activeFooterKey()).toBe('');
+    url.and.returnValue('/other-tenant/items');
+    expect(state.activeFooterKey()).toBe('');
+    tab.enabled = false; state.sync();
+    url.and.returnValue('/test-tenant/items');
+    expect(state.activeFooterKey()).toBe('shop');
+  });
+
+  it('selects booking tabs by their configured destinations even after renaming their keys', () => {
+    raw.navigation.footer.items.find(item => item.key === 'bookings').key = 'my-visits';
+    state.sync();
+    const url = spyOnProperty(router, 'url', 'get').and.returnValue('/test-tenant/bookings');
+    for (const path of ['bookings', 'bookings/history', 'booking/details', 'appointment?loc_id=12&service_id=34', 'checkin', 'dashboard']) {
+      url.and.returnValue(`/test-tenant/${path}`);
+      expect(state.activeFooterKey()).withContext(path).toBe('my-visits');
+    }
+    url.and.returnValue('/test-tenant/bookings-other');
+    expect(state.activeFooterKey()).toBe('');
+  });
+
+  it('opens the configured parent URL with document navigation in the same tab', () => {
+    raw.navigation.footer.items.find(item => item.key === 'home').link = { url: 'https://scale.jaldee.com/capp/chotaboss' };
+    state.sync();
+    const event = new MouseEvent('click', { button: 0, cancelable: true });
+    state.followExternal(event, state.config.footer[0].link);
+    expect(event.defaultPrevented).toBeTrue();
+    expect(TestBed.inject(DocumentNavigationService).assign).toHaveBeenCalledOnceWith('https://scale.jaldee.com/capp/chotaboss');
+  });
+
   it('keeps placeholders noninteractive and recovers image failures after reload', () => {
     raw.homePage.store.categories.items[0].link.queryParams.categoryId = '__CATEGORY_ID__';
     state.sync(); component.componentRef.setInput('config', state.config); component.detectChanges();
@@ -299,13 +388,31 @@ describe('Template 7 existing shell with minimal sub-app config', () => {
         { provide: DocumentNavigationService, useValue: {} }
       ]
     }).compileComponents();
-    spyOnProperty(TestBed.inject(Router), 'url', 'get').and.returnValue('/test-tenant');
+    const url = spyOnProperty(TestBed.inject(Router), 'url', 'get').and.returnValue('/test-tenant');
     const shell = TestBed.createComponent(HomeComponent);
     shell.detectChanges(); await shell.whenStable(); shell.detectChanges();
     expect(shell.nativeElement.querySelectorAll('.parent-footer-nav a').length).toBe(5);
     expect(shell.nativeElement.querySelectorAll('.active-nav').length).toBe(1);
     expect(shell.nativeElement.querySelector('.active-nav').textContent).toContain('Shop');
     expect(shell.nativeElement.querySelector('.active-nav').getAttribute('href')).toBe('/test-tenant');
+    const rootTab = raw.navigation.footer.items.find(item => item.key === 'shop');
+    Object.assign(rootTab, { key: 'services', label: 'Services' });
+    raw.homePage.type = 'service';
+    raw.homePage.layout.activeFooterKey = 'services';
+    shell.detectChanges();
+    expect(shell.nativeElement.querySelectorAll('.active-nav').length).toBe(1);
+    expect(shell.nativeElement.querySelector('.active-nav').textContent).toContain('Services');
+    expect(shell.nativeElement.querySelector('.active-nav').getAttribute('aria-current')).toBe('page');
+    Object.assign(rootTab, { key: 'shop', label: 'Shop' });
+    raw.homePage.type = 'store';
+    raw.homePage.layout.activeFooterKey = 'shop';
+    Object.assign(raw.navigation.footer.items.find(item => item.key === 'bookings'),
+      { key: 'items', label: 'Items', link: { route: ['items'] } });
+    url.and.returnValue('/test-tenant/items?categoryId=123');
+    shell.detectChanges();
+    expect(shell.nativeElement.querySelectorAll('.active-nav').length).toBe(1);
+    expect(shell.nativeElement.querySelector('.active-nav').textContent).toContain('Items');
+    expect(shell.nativeElement.querySelector('.active-nav').getAttribute('href')).toBe('/test-tenant/items');
     raw.navigation.footer.enabled = false; shell.detectChanges();
     expect(shell.nativeElement.querySelector('nav')).toBeNull();
     expect(shell.nativeElement.querySelector('.sub-app-footer-visible')).toBeNull();

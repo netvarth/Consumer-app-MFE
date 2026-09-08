@@ -102,7 +102,7 @@ export function normalizeTemplateHome(template: unknown, hidePrice = false, pare
   const diagnostics: string[] = [];
   const config: TemplateHomeConfig = {
     status: 'loading', type: home['type'] === 'service' ? 'service' : 'store',
-    layout: { contentMaxWidth: 654, pageBackground: '#FFFFFF', activeFooterKey: 'shop' },
+    layout: { contentMaxWidth: 654, pageBackground: '#FFFFFF', activeFooterKey: '' },
     hero: null, categories: null, bestSellers: null, services: null, footer: [], diagnostics
   };
   if (!Object.keys(data).length) return config;
@@ -115,7 +115,7 @@ export function normalizeTemplateHome(template: unknown, hidePrice = false, pare
   config.layout = {
     contentMaxWidth: bounded(layout['contentMaxWidth'], 654, 320, 1200),
     pageBackground: /^#[a-f\d]{6}$/i.test(label(layout['pageBackground'])) ? layout['pageBackground'] : '#FFFFFF',
-    activeFooterKey: label(layout['activeFooterKey']) || 'shop'
+    activeFooterKey: label(layout['activeFooterKey'])
   };
   const footer = object(object(data['navigation'])['footer']);
   if (enabled(footer)) config.footer = sorted(footer['items'], diagnostics).map(item => ({
@@ -123,6 +123,14 @@ export function normalizeTemplateHome(template: unknown, hidePrice = false, pare
     icon: /^fa-[a-z-]+$/.test(label(item['icon'])) ? item['icon'] : 'fa-circle-o',
     link: normalizeHomeLink(item['link'], 'footer', diagnostics, label(item['key']), parentUrl)
   }));
+  if (!config.footer.some(item => item.key === config.layout.activeFooterKey && item.link?.route)) {
+    // Infer the home selection from JSON when the explicit key is absent or invalid.
+    const rootItem = config.footer.find(item => item.link?.route?.length === 0);
+    if (config.layout.activeFooterKey) {
+      diagnostics.push(`activeFooterKey "${config.layout.activeFooterKey}" has no enabled internal link${rootItem ? `; using root item "${rootItem.key}"` : ''}`);
+    }
+    config.layout.activeFooterKey = rootItem?.key || '';
+  }
   if (home['context'] !== 'subApp' || home['schemaVersion'] !== 1 || !['store', 'service'].includes(home['type'])
     || typeof home['enabled'] !== 'boolean') {
     config.status = 'unavailable'; diagnostics.push('Expected homePage context subApp, schemaVersion 1, type store/service and boolean enabled');

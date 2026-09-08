@@ -97,6 +97,7 @@
 .cart-btn {
   position: relative;
 }
+
 .wishlist-btn {
   position: relative;
 }
@@ -116,6 +117,7 @@
   padding: 0 2px;
   font-weight: 700;
 }
+
 .wishlist-count {
   right: -5px;
   top: -4px;
@@ -133,15 +135,45 @@
 .header-loc.active {
   font-weight: 700;
 }
-.actionImge{
+
+.actionImge {
   width: 21px;
   height: 21px;
 }
 
-.sub-app-header .main-header { display: flex; justify-content: space-between; }
-.sub-app-header .brand img { width: 58px; height: 44px; border-radius: 8px; }
-.sub-app-root-header { background: #ff5b16; }
-.sub-app-root-header .main-header { height: clamp(56px, 13vw, 85px); max-width: 654px; margin: auto; padding: 0 2.3%; }
-.sub-app-root-header .brand img { width: clamp(58px, 13vw, 85px); height: clamp(44px, 9vw, 59px); }
-.sub-app-root-header .icon-btn { width: clamp(32px, 7vw, 46px); height: 44px; font-size: clamp(20px, 4.5vw, 30px); }
-.sub-app-root-header .actions { gap: clamp(4px, 1.2vw, 8px); }
+.sub-app-header .main-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.sub-app-header .brand img {
+  width: 58px;
+  height: 44px;
+  border-radius: 8px;
+}
+
+.sub-app-root-header {
+  background: #ff5b16;
+}
+
+.sub-app-root-header .main-header {
+  height: clamp(56px, 13vw, 85px);
+  max-width: 654px;
+  margin: auto;
+  padding: 0 2.3%;
+}
+
+.sub-app-root-header .brand img {
+  width: clamp(58px, 13vw, 85px);
+  height: clamp(44px, 9vw, 59px);
+}
+
+.sub-app-root-header .icon-btn {
+  width: clamp(32px, 7vw, 46px);
+  height: 44px;
+  font-size: clamp(20px, 4.5vw, 30px);
+}
+
+.sub-app-root-header .actions {
+  gap: clamp(4px, 1.2vw, 8px);
+}

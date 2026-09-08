@@ -12,11 +12,11 @@
   "homePage": {
     "schemaVersion": 1,
     "enabled": true,
-    "type": "store",
+    "type": "service",
     "layout": {
       "contentMaxWidth": 654,
       "pageBackground": "#FFFFFF",
-      "activeFooterKey": "shop"
+      "activeFooterKey": "services"
     },
     "store": {
       "enabled": true,
@@ -271,6 +271,11 @@
           "height": 610
         },
         "coverContainsTitle": false,
+        "layout": {
+          "columnsMobile": 2,
+          "columnsDesktop": 3,
+          "cardImageAspectRatio": "4 / 3"
+        },
         "cards": [
           {
             "key": "consultation",
@@ -362,9 +367,9 @@
           }
         },
         {
-          "key": "shop",
-          "label": "Shop",
-          "icon": "fa-shopping-bag",
+          "key": "services",
+          "label": "Services",
+          "icon": "fa-th",
           "enabled": true,
           "sortOrder": 3,
           "link": {
