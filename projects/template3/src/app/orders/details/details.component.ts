@@ -232,4 +232,13 @@ export class DetailsComponent implements OnInit{
     return Object.keys(obj).length === 0;
   }
 
+
+  getItemUnitName(item: any): string {
+    return item?.itemUnit?.unitName
+      || item?.itemUnit?.unitCode
+      || item?.catalogItem?.itemUnit?.unitName
+      || item?.catalogItem?.itemUnit?.unitCode
+      || item?.catalogItem?.itemUnitName
+      || '';
+  }
 }

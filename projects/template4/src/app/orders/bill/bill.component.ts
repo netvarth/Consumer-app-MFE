@@ -1004,4 +1004,15 @@ export class BillComponent implements OnInit, OnDestroy {
     getAmountInDecimalPoints(amount) {
         return parseFloat(amount).toFixed(2);
     }
+
+    getInvoiceItemUnitName(item: any): string {
+        return item?.orderItemDetails?.itemUnit?.unitName
+            || item?.orderItemDetails?.itemUnit?.unitCode
+            || item?.orderItemDetails?.catalogItem?.itemUnit?.unitName
+            || item?.orderItemDetails?.catalogItem?.itemUnit?.unitCode
+            || item?.orderItemDetails?.catalogItem?.itemUnitName
+            || item?.itemUnit?.unitName
+            || item?.itemUnit?.unitCode
+            || '';
+    }
 }

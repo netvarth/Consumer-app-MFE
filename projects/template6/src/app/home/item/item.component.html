@@ -113,21 +113,32 @@
                         </div>
                     </div>
                     <div class="item-price-row" *ngIf="!hidePrices">
-                        <span class="price1">RS.{{ !virtualItem ? item?.price : itemAttributes?.price | number:'1.0-0'
+                        <span class="price1"
+                            *ngIf="displayItem?.price !== null && displayItem?.price !== undefined && displayItem?.price !== ''">RS.{{
+                            displayItem?.price | number:'1.0-0'
                             }}</span>
                         <span class="item-mrp"
-                            *ngIf="((!virtualItem && item?.showMrp && item?.mrp) || (virtualItem && itemAttributes?.showMrp && itemAttributes?.mrp)) && ((!virtualItem ? item?.mrp : itemAttributes?.mrp) > (!virtualItem ? item?.price : itemAttributes?.price))">
-                            MRP RS.{{ !virtualItem ? item?.mrp : itemAttributes?.mrp | number:'1.0-0' }}
+                            *ngIf="displayItem?.showMrp && displayItem?.mrp && displayItem?.mrp > displayItem?.price">
+                            MRP RS.{{ displayItem?.mrp | number:'1.0-0' }}
                         </span>
                         <span class="item-discount"
-                            *ngIf="((!virtualItem && item?.showMrp && item?.mrp) || (virtualItem && itemAttributes?.showMrp && itemAttributes?.mrp)) && ((((!virtualItem ? item?.mrp : itemAttributes?.mrp) - (!virtualItem ? item?.price : itemAttributes?.price)) / (!virtualItem ? item?.mrp : itemAttributes?.mrp)) * 100) > 0">
-                            ({{ (((!virtualItem ? item?.mrp : itemAttributes?.mrp) - (!virtualItem ? item?.price :
-                            itemAttributes?.price)) / (!virtualItem ? item?.mrp : itemAttributes?.mrp)) * 100 |
+                            *ngIf="displayItem?.showMrp && displayItem?.mrp && displayItem?.mrp > displayItem?.price">
+                            ({{ ((displayItem?.mrp - displayItem?.price) / displayItem?.mrp) * 100 |
                             number:'1.0-0' }}% OFF)
                         </span>
                     </div>
-                    <div class="tax-msg">inclusive of all taxes</div>
-
+                    <div class="tax-msg"
+                        *ngIf="displayItem?.price !== null && displayItem?.price !== undefined && displayItem?.price !== ''">
+                        inclusive of all taxes</div>
+                    <div class="item-size-panel selling-unit-selector" *ngIf="shouldShowUnitSelector()">
+                        <div class="value-container">
+                            <button type="button" *ngFor="let unitItem of getUnitItems()" class="btn mb-2 user-button"
+                                [ngClass]="{ 'highlightcolor': selectedUnitItem?.encId === unitItem?.encId }"
+                                [attr.aria-pressed]="selectedUnitItem?.encId === unitItem?.encId"
+                                (click)="selectUnitItem(unitItem)">{{ getUnitLabel(unitItem) }}</button>
+                        </div>
+                    </div>
+                    <div class="text-danger" *ngIf="isCurrentItemOutOfStock()">Out of stock</div>
                     <div class="item-size-panel" *ngIf="item?.itemAttributes?.length">
                         <!-- <div class="item-size-title">Select Size</div> -->
                         <div class="item-size-options" *ngFor="let attribute of item.itemAttributes">
@@ -165,15 +176,15 @@
                             </div>
                         </div>
                         <button pButton pRipple type="button" id="btnBuy"
-                            class="btn-cart p-button-primary btn-primary" (click)="byNow()">
+                            class="btn-cart p-button-primary btn-primary" [disabled]="isCurrentItemOutOfStock()" (click)="byNow()">
                             Buy now
                         </button>
                         <button pButton pRipple type="button" id="btnAddToCart"
-                            class="btn-cart p-button-primary btn-primary" (click)='addToCart()'>
+                            class="btn-cart p-button-primary btn-primary" [disabled]="isCurrentItemOutOfStock()" (click)='addToCart()'>
                             
                                 <img class="actionImge" src="{{cdnPath}}assets/images/myjaldee/carticon.png" />
                             &nbsp;Add to cart
-                            <!-- RS.{{ !hidePrices ? (item?.price || itemAttributes?.price) : '' }} -->
+                            <!-- RS.{{ !hidePrices ? (displayItem?.price || displayItem?.price) : '' }} -->
                         </button>
                     </div>
 

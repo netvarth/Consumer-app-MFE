@@ -176,7 +176,7 @@
               </td>
               <td>
                 <div class="inputnumber">
-                  {{ item.quantity }}
+                  {{ item.quantity }} <span *ngIf="getItemUnitName(item)"> - {{ getItemUnitName(item) }}</span>
                 </div>
               </td>
               <td class="text-end">
@@ -270,7 +270,7 @@
                     {{ item.spItem?.name }}
                   </div>
                   <div class="product-subtitle"  *ngIf="item?.quantity">
-                    {{ item?.quantity }} {{ item?.quantity === 1 ? 'item' : 'items' }}
+                    {{ item?.quantity }} {{ item?.quantity === 1 ? 'item' : 'items' }} <span *ngIf="getItemUnitName(item)"> - {{ getItemUnitName(item) }}</span>
                   </div>
                   <div class="product-subtitle"  *ngIf="item.spItem?.itemCategory?.categoryName">
                     {{ item.spItem?.itemCategory?.categoryName }}

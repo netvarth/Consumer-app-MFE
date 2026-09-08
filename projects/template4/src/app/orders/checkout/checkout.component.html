@@ -118,7 +118,7 @@
                                 </td>
                                 <td>
                                     <div class="inputnumber">
-                                        {{item.quantity }}
+                                        {{item.quantity }} <span *ngIf="getItemUnitName(item)"> - {{ getItemUnitName(item) }}</span>
                                     </div>
                                 </td>
                                 <td class="text-end">

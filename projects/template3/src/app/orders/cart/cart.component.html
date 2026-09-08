@@ -64,8 +64,8 @@
                                                     </div>
                                                 </div>
                                                 <div>
-                                                    <ul *ngIf="item && item.selectedAttributes" class="attribute-row">
-                                                        <li *ngFor="let value of getAttributeValues(item.selectedAttributes)"
+                                                    <ul *ngIf="hasItemAttributes(item)" class="attribute-row">
+                                                        <li *ngFor="let value of getDisplayAttributes(item)"
                                                             class="attribute-box">
                                                             {{ value }}
                                                         </li>
@@ -251,8 +251,8 @@
                                                     </div>
                                                 </div>
                                                 <div>
-                                                    <ul *ngIf="item && item.selectedAttributes" class="attribute-row">
-                                                        <li *ngFor="let value of getAttributeValues(item.selectedAttributes)"
+                                                    <ul *ngIf="hasItemAttributes(item)" class="attribute-row">
+                                                        <li *ngFor="let value of getDisplayAttributes(item)"
                                                             class="attribute-box">
                                                             {{ value }}
                                                         </li>
