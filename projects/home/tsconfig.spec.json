@@ -4,6 +4,10 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "../../out-tsc/spec",
+    "paths": {
+      "@consumer/cross-tenant": ["projects/cross-tenant/src/public-api.ts"],
+      "@angular-architects/native-federation": ["node_modules/@softarc/native-federation-runtime"]
+    },
     "types": [
       "jasmine"
     ]

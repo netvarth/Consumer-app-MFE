@@ -4,6 +4,12 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "../../out-tsc/spec",
+    "paths": {
+      "@consumer/cross-tenant": ["projects/cross-tenant/src/public-api.ts"],
+      // The federation package declares CommonJS but its entry re-exports ESM.
+      // Karma/Webpack can consume the exact same runtime through its ESM entry.
+      "@angular-architects/native-federation": ["node_modules/@softarc/native-federation-runtime"]
+    },
     "types": [
       "jasmine"
     ]
