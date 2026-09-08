@@ -59,18 +59,21 @@
     <section *ngIf="config.services as services" class="services-section" aria-labelledby="services-title">
       <img *ngIf="services.coverImage?.src && !failedImages.has('cover')" class="services-cover" [src]="services.coverImage.src" alt="" loading="lazy" (error)="imageFailed('cover')">
       <h2 *ngIf="services.showTitle && services.title" id="services-title">{{ services.title }}</h2>
-      <div class="service-grid" [class.wide-cards]="services.columnsMobile === 1" [style.--mobile-columns]="services.columnsMobile"
-        [style.--desktop-columns]="services.columnsDesktop" [style.--image-ratio]="services.cardImageAspectRatio">
+      <div class="service-grid">
         <a *ngFor="let card of services.items; trackBy: trackCard" class="service-card" [routerLink]="homeState.tree(card.link)"
           [attr.aria-disabled]="card.link ? null : true" [attr.tabindex]="card.link ? null : -1">
-          <div class="service-image"><ng-container *ngTemplateOutlet="cardImage; context: { card: card, prefix: 'service-' }"></ng-container>
-            <span *ngIf="card.actionLabel" class="service-action">{{ card.actionLabel }}<span aria-hidden="true">→</span></span>
-          </div>
-          <div class="service-copy">
-            <span *ngIf="card.tag" class="service-tag"><i class="fa fa-paw" aria-hidden="true"></i>{{ card.tag }}</span>
-            <h3>{{ card.label }}</h3><p *ngIf="card.description">{{ card.description }}</p>
-            <span *ngIf="card.provider" class="service-provider"><i class="fa fa-building" aria-hidden="true"></i>{{ card.provider }}</span>
-          </div>
+          <img *ngIf="card.image.src && !failedImages.has('service-' + card.key); else serviceCardFallback"
+            class="service-card-artwork" [src]="card.image.src" [alt]="card.image.alt || card.label"
+            [attr.width]="card.image.width" [attr.height]="card.image.height"
+            loading="lazy" decoding="async" (error)="imageFailed('service-' + card.key)">
+          <ng-template #serviceCardFallback>
+            <span class="service-card-fallback image-fallback" role="img"
+              [style.aspect-ratio]="card.image.width + ' / ' + card.image.height"
+              [attr.aria-label]="(card.image.alt || card.label) + ': image unavailable'">
+              <i class="fa fa-picture-o" aria-hidden="true"></i>
+              <span>{{ card.label || card.image.alt || 'Service' }} — image unavailable</span>
+            </span>
+          </ng-template>
         </a>
       </div>
     </section>

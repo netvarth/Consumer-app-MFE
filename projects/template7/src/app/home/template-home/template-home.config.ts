@@ -157,9 +157,11 @@ export function normalizeTemplateHome(template: unknown, hidePrice = false, pare
         ? new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount) : '';
       return {
         key: label(item['key']), label: label(item[purpose === 'category' ? 'label' : purpose === 'product' ? 'name' : 'title']),
-        description: label(item['description']), price, image: image(item['image']),
-        link: normalizeHomeLink(item['link'], purpose, diagnostics, label(item['key'])),
-        tag: label(item['tag']), provider: label(item['provider']), actionLabel: label(item['actionLabel'])
+        description: label(item['description']), price,
+        // Complete service-card artwork uses its natural ratio once loaded. These
+        // dimensions reserve a wide placeholder when the export omits dimensions.
+        image: image(item['image'], purpose === 'service' ? 528 : 1, purpose === 'service' ? 250 : 1),
+        link: normalizeHomeLink(item['link'], purpose, diagnostics, label(item['key']))
       };
     });
     return items.length ? { title: label(value['title']), items } : null;
@@ -170,13 +172,9 @@ export function normalizeTemplateHome(template: unknown, hidePrice = false, pare
   } else {
     const services = object(mode['services']);
     const normalized = section(services, 'service');
-    const serviceLayout = object(services['layout']);
     if (normalized) config.services = {
       ...normalized, showTitle: services['showTitle'] !== false && services['coverContainsTitle'] !== true,
-      coverImage: services['coverImage'] ? image(services['coverImage'], 644, 610) : null,
-      columnsMobile: [1, 2].includes(serviceLayout['columnsMobile']) ? serviceLayout['columnsMobile'] : 2,
-      columnsDesktop: [1, 2, 3].includes(serviceLayout['columnsDesktop']) ? serviceLayout['columnsDesktop'] : 3,
-      cardImageAspectRatio: ['1 / 1', '4 / 3', '3 / 2'].includes(serviceLayout['cardImageAspectRatio']) ? serviceLayout['cardImageAspectRatio'] : '4 / 3'
+      coverImage: services['coverImage'] ? image(services['coverImage'], 644, 610) : null
     };
   }
   return config;

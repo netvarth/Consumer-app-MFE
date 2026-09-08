@@ -8,11 +8,11 @@ The tenant root renders `homePage` when `context` is `subApp`. `homePage.type` s
 - Equivalent home/navigation fragment: `projects/template7/homepage.config.json`.
 - The host still loads the tenant's existing `<configPath>/<uniqueID>/template_CA.json` through `TemplateService`. Upload the complete configuration to that existing tenant location to activate it remotely. No template URL, tenant ID or content is hardcoded into the renderer. Local edits do not publish this JSON.
 - `template7` is registered in the root environment files and the existing federation configuration exposes `./Home` under that name. Existing user changes to federation and environment settings were retained.
-- The updated store configuration uses the nine S3 URLs supplied on September 8, 2026. The service configuration retains the user's requested wide Training cards. Its `columnsMobile` and `columnsDesktop` are both `1`; `2`/`3` select the optional image-above-text grid.
+- Store and service artwork use the supplied S3 URLs. Each service card is a complete image export, including its text and button artwork, displayed in a single column at its natural aspect ratio. The older `services.layout` grid fields are ignored so existing tenant JSON also uses this corrected layout.
 
 ## Asset and destination mapping
 
-Store image base: `https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/154855/home_assets/`.
+Store and service image base: `https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/154855/home_assets/`.
 
 | Placement | Supplied S3 object | Destination still needed |
 | --- | --- | --- |
@@ -25,9 +25,11 @@ Store image base: `https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/154855/home
 | Value placement 2 | `product2.png` | `__VALUE_PACK_ENCID__` |
 | Trial placement 3 | `product3.png` | `__TRIAL_PACK_ENCID__` |
 | Value placement 4 | `product4.png` | `__VALUE_PACK_ENCID__` |
-| Service hero | `/assets/template-home/service-hero.png` (not supplied) | `__LOCATION_ID__`, `__SERVICE_ID__` |
-| Service background | `/assets/template-home/service-list-cover.png` (not supplied) | — |
-| Two Training placements | `/assets/template-home/service-training.png` (not supplied) | `__TRAINING_SERVICE_ID__` |
+| Service hero | `service-hero.png` | `__LOCATION_ID__`, `__SERVICE_ID__` |
+| Service background | `service-cover.png` | — |
+| Consultation card key | `service-consultation.png` | `__CONSULTATION_SERVICE_ID__` |
+| Grooming card key | `service-grooming.png` | `__GROOMING_SERVICE_ID__` |
+| Boarding card key | `service-boarding.png` | `__BOARDING_SERVICE_ID__` |
 | Parent Home | Resolved from the existing validated cross-tenant journey for the current provider, when present | Otherwise supply `__PARENT_APP_HOME_URL__` |
 
 The S3 URLs were validated locally and installed as supplied; their HTTP availability and contents have not been verified. No replacement CDN locations were invented. The original standalone store artwork remains available at `projects/template7/public/assets/template-home/store-hero.png`, copied byte-for-byte from `Frame 1171278126.png`; the active configuration uses S3 instead. Missing images show an accessible fallback. Root and remote asset configurations also support local `assets/` URLs under the host base href.
@@ -40,6 +42,7 @@ Shop resolves to the sub-app root. Bookings, About Us and Support use the existi
 - Keys identify placements; sort order is stable and does not modify shared JSON. Separate placements of the same SKU remain separate.
 - Prices use INR with exactly two decimals. Zero is valid; malformed or negative prices are omitted. Tenant `hidePrice` takes precedence.
 - Hero images preserve their complete proportions. Search and appointment hotspots use bounded percentage coordinates. Disabling a hotspot cannot remove a button painted into the artwork.
+- A service card's entire image links to its configured destination. No separate card title, description, provider, tag or button is rendered over or beside the artwork. Image alt text comes from JSON. Optional image width/height reserve space before loading; missing dimensions use a 528:250 fallback box. Loaded artwork keeps its natural proportions without cropping.
 - Image fit defaults to `contain`; backgrounds default to white; maximum content width defaults to 654px. Only constrained colors, dimensions, ratios, URLs and route parameters are accepted. No configurable HTML/CSS is executed.
 - Config changes clear component search/error state. Tenant transitions with a stale template wait for new data; links verify the current tenant. Footer items use their own config and never depend on legacy sections.
 - The existing header and footer are reused. Footer clearance follows the measured footer height, including safe-area padding once.
@@ -61,4 +64,4 @@ The dedicated test tsconfig points the federation facade at its actual ESM runti
 
 `node scripts/preview-template7-home.mjs` serves the built, integrated HomeModule at `http://127.0.0.1:9047/capp/preview` with mocked account/auth services. `?type=service` selects the service fixture for local review. This is a QA fixture, not a separate implementation or a live tenant. It does not validate backend availability or booking IDs.
 
-An initial 653px content-layout inspection was performed before the S3 update. Final screenshots at all requested widths and a pixel-perfect comparison were not completed. Service artwork, real destination IDs and the parent destination for direct-entry sessions remain release prerequisites.
+An initial 653px content-layout inspection was performed before the S3 update. Final screenshots at all requested widths and a pixel-perfect comparison were not completed. Verify the supplied service image contents, real destination IDs and the parent destination for direct-entry sessions before release. The complete-image service-card correction uses local compiler, Sass and configuration checks only; it has not been browser-verified.

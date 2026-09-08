@@ -12,7 +12,6 @@
   ],
   "include": [
     "src/**/*.d.ts",
-    "src/**/*.ts",
-    "..\\cross-tenant\\src\\public-api.ts"
+    "src/**/*.ts"
   ]
 }

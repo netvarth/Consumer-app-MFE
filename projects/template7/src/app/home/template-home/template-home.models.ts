@@ -27,9 +27,6 @@ export interface HomeCard {
   image: HomeImage;
   link: HomeLink | null;
   price: string;
-  tag: string;
-  provider: string;
-  actionLabel: string;
 }
 
 export interface HomeSection {
@@ -55,9 +52,6 @@ export interface HomeHero {
 export interface HomeServices extends HomeSection {
   showTitle: boolean;
   coverImage: HomeImage | null;
-  columnsMobile: number;
-  columnsDesktop: number;
-  cardImageAspectRatio: string;
 }
 
 export interface HomeFooterItem {

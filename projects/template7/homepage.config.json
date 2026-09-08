@@ -223,7 +223,7 @@
       "hero": {
         "enabled": true,
         "image": {
-          "src": "/assets/template-home/service-hero.png",
+          "src": "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/154855/home_assets/service-hero.png",
           "alt": "Choose Your Service And Book Your Appointment. Choose your preferred time, and enjoy a seamless experience from booking to completion.",
           "fit": "contain",
           "width": 644,
@@ -254,59 +254,67 @@
         "title": "Services",
         "showTitle": true,
         "coverImage": {
-          "src": "/assets/template-home/service-list-cover.png",
+          "src": "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/154855/home_assets/service-cover.png",
           "alt": "",
           "fit": "contain",
           "width": 644,
           "height": 610
         },
         "coverContainsTitle": false,
-        "layout": {
-          "columnsMobile": 1,
-          "columnsDesktop": 1,
-          "cardImageAspectRatio": "4 / 3"
-        },
         "cards": [
           {
-            "key": "training-1",
+            "key": "consultation",
             "enabled": true,
             "sortOrder": 1,
-            "title": "Pet Training",
-            "description": "Build confidence, and better behavior through expert pet training.",
-            "tag": "Training",
-            "provider": "Abhishek's Dog Training",
-            "actionLabel": "Book Now",
+            "title": "Online Vet Consultation",
+            "description": "",
             "image": {
-              "src": "/assets/template-home/service-training.png",
-              "alt": "Pet training",
-              "fit": "cover"
+              "src": "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/154855/home_assets/service-consultation.png",
+              "alt": "Online Vet Consultation",
+              "fit": "contain"
             },
             "link": {
               "route": [
                 "service",
-                "__TRAINING_SERVICE_ID__"
+                "__CONSULTATION_SERVICE_ID__"
               ],
               "queryParams": {}
             }
           },
           {
-            "key": "training-2",
+            "key": "grooming",
             "enabled": true,
             "sortOrder": 2,
-            "title": "Pet Training",
-            "description": "Build confidence, and better behavior through expert pet training.",
-            "tag": "Training",
-            "provider": "Abhishek's Dog Training",
-            "actionLabel": "Book Now",
+            "title": "Pet Grooming",
+            "description": "",
             "image": {
-              "src": "/assets/template-home/service-training.png",
-              "alt": "Pet training",
-              "fit": "cover"
+              "src": "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/154855/home_assets/service-grooming.png",
+              "alt": "Pet Grooming",
+              "fit": "contain"
             },
             "link": {
               "route": [
                 "service",
-                "__TRAINING_SERVICE_ID__"
+                "__GROOMING_SERVICE_ID__"
+              ],
+              "queryParams": {}
+            }
+          },
+          {
+            "key": "boarding",
+            "enabled": true,
+            "sortOrder": 3,
+            "title": "Pet Boarding",
+            "description": "",
+            "image": {
+              "src": "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/154855/home_assets/service-boarding.png",
+              "alt": "Pet Boarding",
+              "fit": "contain"
+            },
+            "link": {
+              "route": [
+                "service",
+                "__BOARDING_SERVICE_ID__"
               ],
               "queryParams": {}
             }
