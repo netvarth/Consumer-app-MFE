@@ -1,13 +1,4 @@
-<header *ngIf="header && config" class="fashion-header-wrap">
-  <!-- <div class="top-strip">
-    <div class="strip-text">{{ config?.header?.announcement || 'UPTO 80% OFF' }}</div>
-    <div class="strip-icons">
-      <i class="fa fa-truck" aria-hidden="true"></i>
-      <i class="fa fa-gift" aria-hidden="true"></i>
-      <i class="fa fa-tags" aria-hidden="true"></i>
-    </div>
-  </div> -->
-
+<header *ngIf="header && config" class="chotaboss-header-wrap">
   <div class="main-header">
     <button class="menu-btn" [matMenuTriggerFor]="mainMenu" aria-label="Open menu" *ngIf="config?.header?.menu?.length > 0">
       <i class="fa fa-bars"></i>
@@ -15,11 +6,11 @@
 
     <div class="brand" (click)="gotoActiveHome()">
       <img *ngIf="logo" [src]="logo" alt="Logo" />
-      <span>{{ headerTitle || 'Kanishta' }}</span>
+      <span *ngIf="!logo">{{ headerTitle }}</span>
     </div>
 
     <div class="actions">
-      <button type="button" class="icon-btn wishlist-btn" (click)="redirectto('wishlist')" aria-label="Wishlist">
+      <button type="button" class="icon-btn wishlist-btn" *ngIf="isWishlistVisible" (click)="redirectto('wishlist')" aria-label="Wishlist">
         <i class="fa fa-heart-o"></i>
         <span *ngIf="wishlistCount > 0" class="cart-count wishlist-count">{{ wishlistCount }}</span>
       </button>
@@ -36,11 +27,14 @@
         <img class="actionImge" src="{{cdnPath}}assets/images/myjaldee/shopping-cart.png" />
         <span *ngIf="cartCount > 0" class="cart-count">{{ cartCount }}</span>
       </button>
-      <button type="button" class="icon-btn" *ngIf="isLoggedIn" [matMenuTriggerFor]="profileMenu" aria-label="Profile">
-        <i class="fa fa-user-o"></i>
+      <button type="button" class="icon-btn inbox-btn" *ngIf="isLoggedIn" (click)="inboxiconClick()" aria-label="Inbox">
+        <i data-icon="H" aria-hidden="true"></i>
       </button>
-       <button type="button" class="icon-btn" *ngIf="!isLoggedIn" (click)="dashboardClicked()" aria-label="My account">
-        <i class="fa fa-user-o"></i>
+      <button type="button" class="icon-btn profile-btn" *ngIf="isLoggedIn" [matMenuTriggerFor]="profileMenu" aria-label="Profile">
+        <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+      </button>
+      <button type="button" class="bookings-btn" *ngIf="!isLoggedIn" (click)="dashboardClicked()">
+        My Bookings
       </button>
     </div>
   </div>
@@ -81,14 +75,6 @@
   </mat-menu>
 
   <mat-menu #profileMenu="matMenu">
-    <button mat-menu-item (click)="redirectto('orders')" id="btnDashboard">
-      <i class="fa fa-desktop me-2" aria-hidden="true"></i>
-      <span>{{ dashboard_cap | translate }}</span>
-    </button>
-    <button mat-menu-item (click)="redirectto('inbox')" id="btnInbox">
-      <i class="fa fa-inbox me-2" aria-hidden="true"></i>
-      <span>Inbox</span>
-    </button>
     <button mat-menu-item (click)="redirectto('profile')" id="btnProfile">
       <i class="fa fa-address-card-o me-2" aria-hidden="true"></i>
       <span>{{ user_profile | translate }}</span>

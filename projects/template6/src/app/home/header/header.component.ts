@@ -41,7 +41,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   header: boolean = true;
   locations;
   headerName: any;
-  isCartVisible: boolean;
+  isCartVisible: boolean = false;
+  isWishlistVisible: boolean = false;
   private subscriptions: Subscription = new Subscription();
   selectedLocation: any;
   activeMenuItem = '';
@@ -169,9 +170,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.config = this.sharedService.getTemplateJSON();
     const showCartConfig = this.config?.header?.showCart;
-    this.isCartVisible = showCartConfig === undefined || showCartConfig === null
-      ? true
-      : !(showCartConfig === false || showCartConfig === 'false');
+    const showWishlistConfig = this.config?.header?.showWishlist;
+    this.isCartVisible = showCartConfig === true || showCartConfig === 'true';
+    this.isWishlistVisible = showWishlistConfig === true || showWishlistConfig === 'true';
     this.headerName = this.config.header?.name ? this.config.header.name : 'header1';
     if (this.config && this.config['theme']) {
       this.theme = this.config['theme'];

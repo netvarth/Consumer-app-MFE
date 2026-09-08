@@ -419,11 +419,13 @@
 /* ---------- Coming soon ---------- */
 .coming-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(115px,1fr));
+  // Shrink below 115px when needed to keep at least three columns on phones.
+  grid-template-columns:repeat(auto-fill,minmax(min(115px, calc((100% - 24px) / 3)),1fr));
   gap:12px;
 }
 
 .coming-card{
+  min-width:0;
   background:#fff;
   --accent:#FFE0CC;
   border-radius:10px;

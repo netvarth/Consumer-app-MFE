@@ -5,7 +5,7 @@
   font-family: 'Instrument Sans', sans-serif;
 }
 
-.fashion-header-wrap {
+.chotaboss-header-wrap {
   position: sticky;
   top: 0;
   z-index: 80;
@@ -13,39 +13,13 @@
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
 }
 
-.top-strip {
-  height: 18px;
-  background: #7b4a25;
-  color: #fff7eb;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 8px;
-}
-
-.strip-text {
-  font-size: 8px;
-  line-height: 8px;
-  font-weight: 600;
-  letter-spacing: 0.6px;
-  text-transform: uppercase;
-}
-
-.strip-icons {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 9px;
-}
-
 .main-header {
   height: 56px;
-  display: grid;
-  grid-template-columns: 36px 1fr auto;
+  display: flex;
+  gap: 4px;
   align-items: center;
-  padding: 0 10px;
-  border-bottom: 1px solid #FF5C1A;
-  background: #FF5C1A;
+  padding: 0 4px;
+  background: #FD7029;
 }
 
 .menu-btn,
@@ -60,20 +34,24 @@
   justify-content: center;
   color: #181818;
   font-size: 18px;
+  flex-shrink: 0;
+  cursor: pointer;
 }
 
 .brand {
   display: inline-flex;
   align-items: center;
+  flex: 1;
   min-width: 0;
   gap: 10px;
   cursor: pointer;
 }
 
 .brand img {
-  width: 85px;
-  height: 58px;
-  border-radius: 34%;
+  width: auto;
+  height: auto;
+  max-width: min(150px, 100%);
+  max-height: 50px;
   object-fit: contain;
 }
 
@@ -92,6 +70,38 @@
   align-items: center;
   gap: 4px;
   justify-content: flex-end;
+  flex-shrink: 0;
+  margin: 0 8px;
+}
+
+.bookings-btn {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: #181818;
+  font: inherit;
+  font-size: 14px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.inbox-btn {
+  width: 35px;
+  height: 35px;
+  margin-right: 11px;
+  border-radius: 50%;
+  background: #f2f2f2;
+  color: #666;
+  font-size: 20px;
+}
+
+.profile-btn,
+.location .icon-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #fff;
+  color: #222223;
 }
 
 .cart-btn {
