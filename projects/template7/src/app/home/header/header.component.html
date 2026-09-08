@@ -1,0 +1,101 @@
+<header *ngIf="header && config" class="fashion-header-wrap">
+  <!-- <div class="top-strip">
+    <div class="strip-text">{{ config?.header?.announcement || 'UPTO 80% OFF' }}</div>
+    <div class="strip-icons">
+      <i class="fa fa-truck" aria-hidden="true"></i>
+      <i class="fa fa-gift" aria-hidden="true"></i>
+      <i class="fa fa-tags" aria-hidden="true"></i>
+    </div>
+  </div> -->
+
+  <div class="main-header">
+    <button class="menu-btn" [matMenuTriggerFor]="mainMenu" aria-label="Open menu" *ngIf="config?.header?.menu?.length > 0">
+      <i class="fa fa-bars"></i>
+    </button>
+
+    <div class="brand" (click)="gotoActiveHome()">
+      <img *ngIf="logo" [src]="logo" alt="Logo" />
+      <span>{{ headerTitle || 'Kanishta' }}</span>
+    </div>
+
+    <div class="actions">
+      <button type="button" class="icon-btn wishlist-btn" (click)="redirectto('wishlist')" aria-label="Wishlist">
+        <i class="fa fa-heart-o"></i>
+        <span *ngIf="wishlistCount > 0" class="cart-count wishlist-count">{{ wishlistCount }}</span>
+      </button>
+
+      <span class="location" *ngIf="!hideLocationGlobal && showLocation && locations?.length > 1">
+        <button class="icon-btn" [matMenuTriggerFor]="locationMenu" aria-label="Select location">
+          <i class="fa fa-map-marker"></i>
+        </button>
+      </span>
+
+
+      <button type="button" class="icon-btn cart-btn" (click)="goToCart()" *ngIf="isCartVisible" aria-label="Cart">
+        <!-- <i class="fa fa-shopping-cart"></i> -->
+        <img class="actionImge" src="{{cdnPath}}assets/images/myjaldee/shopping-cart.png" />
+        <span *ngIf="cartCount > 0" class="cart-count">{{ cartCount }}</span>
+      </button>
+      <button type="button" class="icon-btn" *ngIf="isLoggedIn" [matMenuTriggerFor]="profileMenu" aria-label="Profile">
+        <i class="fa fa-user-o"></i>
+      </button>
+       <button type="button" class="icon-btn" *ngIf="!isLoggedIn" (click)="dashboardClicked()" aria-label="My account">
+        <i class="fa fa-user-o"></i>
+      </button>
+    </div>
+  </div>
+
+  <mat-menu #mainMenu="matMenu" class="full-screen-menu">
+    <ng-container *ngFor="let menuItem of config?.header?.menu; let i = index">
+      <button
+        mat-menu-item
+        [matMenuTriggerFor]="subMenu"
+        *ngIf="menuItem.submenu?.length; else singleMenuItem"
+        [class.active]="activeMenuItem === menuItem.link || isSubmenuActive(menuItem)"
+        [attr.aria-label]="menuItem.title ? menuItem.title : 'Menu item ' + (i + 1)">
+        {{ menuItem.title }}
+      </button>
+
+      <mat-menu #subMenu="matMenu">
+        <button mat-menu-item *ngFor="let subItem of menuItem.submenu" (click)="menuClicked(subItem)"
+          [class.active]="activeMenuItem === subItem.link" [attr.aria-label]="subItem.title">
+          {{ subItem.title }}
+        </button>
+      </mat-menu>
+
+      <ng-template #singleMenuItem>
+        <button mat-menu-item (click)="handleMenuItemClick(menuItem)"
+          [class.active]="activeMenuItem === menuItem.link"
+          [attr.aria-label]="menuItem.title ? menuItem.title : 'Menu item ' + (i + 1)">
+          {{ menuItem.title }}
+        </button>
+      </ng-template>
+    </ng-container>
+  </mat-menu>
+
+  <mat-menu #locationMenu="matMenu">
+    <button class="header-loc" mat-menu-item *ngFor="let loc of locations"
+      [ngClass]="{'active': selectedLocation?.id === loc.id}" (click)="changeLocation(loc)">
+      <span>{{ loc.place }}</span>
+    </button>
+  </mat-menu>
+
+  <mat-menu #profileMenu="matMenu">
+    <button mat-menu-item (click)="redirectto('orders')" id="btnDashboard">
+      <i class="fa fa-desktop me-2" aria-hidden="true"></i>
+      <span>{{ dashboard_cap | translate }}</span>
+    </button>
+    <button mat-menu-item (click)="redirectto('inbox')" id="btnInbox">
+      <i class="fa fa-inbox me-2" aria-hidden="true"></i>
+      <span>Inbox</span>
+    </button>
+    <button mat-menu-item (click)="redirectto('profile')" id="btnProfile">
+      <i class="fa fa-address-card-o me-2" aria-hidden="true"></i>
+      <span>{{ user_profile | translate }}</span>
+    </button>
+    <button mat-menu-item (click)="doLogout()" id="btnLogout">
+      <i class="fa fa-sign-out me-2" aria-hidden="true"></i>
+      <span>{{ logout_cap | translate }}</span>
+    </button>
+  </mat-menu>
+</header>

@@ -1,0 +1,39 @@
+.pay-rad {
+  // width: 26.5%;
+  // height: 100px;
+  // float: left;
+  display: flex;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  margin: 5px;
+  font-size: 10px;
+}
+
+.pay-icons {
+  height: 40px;
+  object-fit: cover !important;
+  margin-top: 5px;
+  margin-right: 15px;
+}
+
+.font-weight-normal {
+  font-weight: normal !important;
+}
+
+@media (max-width: 768px) {
+  .font-weight-normal {
+    font-weight: normal !important;
+    font-size: 13px !important;
+  }
+
+}
+
+.modes-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.modes-label {
+  font-size: 14px;
+  color: #606060;
+}

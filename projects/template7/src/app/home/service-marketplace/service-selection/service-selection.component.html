@@ -1,0 +1,77 @@
+<main class="marketplace-page" *ngIf="config && store; else missingStore">
+  <header class="page-header">
+    <button type="button" (click)="goBack()" [attr.aria-label]="config.serviceSelectionPage?.backLabel">
+      <i class="fa fa-angle-left" aria-hidden="true"></i>
+    </button>
+    <h1>{{ store.shortName || store.name }}</h1>
+    <span aria-hidden="true"></span>
+  </header>
+
+  <section class="store-summary">
+    <div class="store-logo">
+      <img *ngIf="store.storeLogo && !logoFailed" [src]="imageUrl(store.storeLogo)" [alt]="store.storeLogoAlt || store.name"
+        decoding="async" (error)="logoFailed = true">
+      <i *ngIf="!store.storeLogo || logoFailed" class="fa fa-paw" aria-hidden="true"></i>
+    </div>
+    <div class="store-summary__copy">
+      <h2>{{ store.name }}</h2>
+      <p *ngIf="distance()" class="distance"><i class="fa" [ngClass]="config.storeSelectionPage?.locationIcon || 'fa-map-marker'"></i>{{ distance() }}</p>
+      <p *ngIf="store.address" class="address">{{ store.address }}</p>
+    </div>
+  </section>
+
+  <section class="store-meta" aria-label="Store information">
+    <div>
+      <i class="fa fa-check-circle-o" aria-hidden="true"></i>
+      <p><strong>{{ store.verified ? config.serviceSelectionPage?.verifiedTitle : config.serviceSelectionPage?.notVerifiedTitle }}</strong>
+        <span *ngIf="store.verified">{{ config.serviceSelectionPage?.verifiedSubtitle }}</span></p>
+    </div>
+    <div *ngIf="store.experienceYears !== undefined && store.experienceYears !== null">
+      <i class="fa fa-briefcase" aria-hidden="true"></i>
+      <p><strong>{{ store.experienceYears }} {{ config.serviceSelectionPage?.experienceSuffix }}</strong>
+        <span>{{ config.serviceSelectionPage?.experienceSubtitle }}</span></p>
+    </div>
+    <div *ngIf="store.rating !== undefined && store.rating !== null">
+      <i class="fa fa-star" aria-hidden="true"></i>
+      <p><strong>{{ store.rating }}</strong><span>{{ config.serviceSelectionPage?.ratingSubtitle }}</span></p>
+    </div>
+  </section>
+
+  <section *ngIf="store.timing?.display || store.locationLink || phoneLink" class="contact-row">
+    <p *ngIf="store.timing?.display"><i class="fa fa-clock-o" aria-hidden="true"></i>
+      <strong>{{ config.serviceSelectionPage?.timingsLabel }}: {{ store.timing?.display }}</strong></p>
+    <span class="contact-actions">
+      <button *ngIf="store.locationLink" type="button" (click)="openLocation()" [attr.aria-label]="config.serviceSelectionPage?.locationActionLabel">
+        <i class="fa fa-map-marker" aria-hidden="true"></i>
+      </button>
+      <a *ngIf="phoneLink" [href]="phoneLink" [attr.aria-label]="config.serviceSelectionPage?.phoneActionLabel">
+        <i class="fa fa-phone" aria-hidden="true"></i>
+      </a>
+    </span>
+  </section>
+
+  <section class="services" aria-live="polite">
+    <app-marketplace-service-card *ngFor="let service of services; trackBy: trackById"
+      [service]="service" [page]="config.serviceSelectionPage || {}" [imageUrl]="imageUrl(service.serviceImage)"
+      [price]="price(service)" [discountLabel]="discountLabel(service)" (book)="book($event)">
+    </app-marketplace-service-card>
+    <div *ngIf="!services.length" class="empty-state">
+      <i class="fa fa-paw" aria-hidden="true"></i>
+      <h2>{{ config.serviceSelectionPage?.servicesEmptyTitle }}</h2>
+      <p>{{ config.serviceSelectionPage?.servicesEmptyDescription }}</p>
+    </div>
+  </section>
+</main>
+
+<ng-template #missingStore>
+  <main class="marketplace-page missing-store" *ngIf="notFound">
+    <button type="button" (click)="openStoreSelection()" [attr.aria-label]="config?.storeSelectionPage?.backLabel">
+      <i class="fa fa-angle-left" aria-hidden="true"></i>
+    </button>
+    <div class="empty-state">
+      <i class="fa fa-paw" aria-hidden="true"></i>
+      <h2>{{ config?.storeSelectionPage?.storesEmptyTitle }}</h2>
+      <p>{{ config?.storeSelectionPage?.storesEmptyDescription }}</p>
+    </div>
+  </main>
+</ng-template>

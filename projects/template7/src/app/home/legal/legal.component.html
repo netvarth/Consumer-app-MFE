@@ -1,0 +1,14 @@
+<section class="legal-page" [ngClass]="theme">
+  <div class="legal-container">
+    <button type="button" class="legal-back" (click)="goBack()">
+      <i class="fa fa-arrow-left" aria-hidden="true"></i>
+      Back
+    </button>
+
+    <!-- <h1>{{ isPrivacy ? 'Privacy Policy' : 'Terms and Conditions' }}</h1> -->
+
+    <app-termscondition *ngIf="!isPrivacy"></app-termscondition>
+    <app-privacy *ngIf="isPrivacy"></app-privacy>
+  </div>
+</section>
+

@@ -1,0 +1,139 @@
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap');
+
+:host {
+  display: block;
+  font-family: 'Instrument Sans', sans-serif;
+}
+
+.fashion-header-wrap {
+  position: sticky;
+  top: 0;
+  z-index: 80;
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.top-strip {
+  height: 18px;
+  background: #7b4a25;
+  color: #fff7eb;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8px;
+}
+
+.strip-text {
+  font-size: 8px;
+  line-height: 8px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+
+.strip-icons {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 9px;
+}
+
+.main-header {
+  height: 56px;
+  display: grid;
+  grid-template-columns: 36px 1fr auto;
+  align-items: center;
+  padding: 0 10px;
+  border-bottom: 1px solid #FF5C1A;
+  background: #FF5C1A;
+}
+
+.menu-btn,
+.icon-btn {
+  width: 32px;
+  height: 32px;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #181818;
+  font-size: 18px;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.brand img {
+  width: 85px;
+  height: 58px;
+  border-radius: 34%;
+  object-fit: contain;
+}
+
+.brand span {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+  color: #222;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  justify-content: flex-end;
+}
+
+.cart-btn {
+  position: relative;
+}
+.wishlist-btn {
+  position: relative;
+}
+
+.cart-count {
+  position: absolute;
+  right: -5px;
+  top: -4px;
+  min-width: 14px;
+  height: 14px;
+  border-radius: 9px;
+  background: #8f5b2f;
+  color: #fff;
+  font-size: 9px;
+  line-height: 14px;
+  text-align: center;
+  padding: 0 2px;
+  font-weight: 700;
+}
+.wishlist-count {
+  right: -5px;
+  top: -4px;
+}
+
+::ng-deep .full-screen-menu {
+  max-width: 100vw !important;
+  width: 100vw !important;
+}
+
+::ng-deep .mat-mdc-menu-panel .active {
+  font-weight: 700;
+}
+
+.header-loc.active {
+  font-weight: 700;
+}
+.actionImge{
+  width: 21px;
+  height: 21px;
+}

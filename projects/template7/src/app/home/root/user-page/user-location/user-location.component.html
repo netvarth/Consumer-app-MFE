@@ -1,0 +1,15 @@
+<form [ngClass]="this.data.theme">
+    <h1 class="mat-dialog-title"> Select location <button mat-dialog-close class="modal_close"><i
+                class="fa fa-window-close" aria-hidden="true"></i></button></h1>
+    <mat-dialog-content>
+        <div *ngFor="let loc of data.selectedLocation">
+            <div class="card user-locations" (click)="changeLocation(loc)">
+                <div>
+                    <span class="place mgn-rt-10">{{loc.place}}</span>
+                    <span>{{loc.address}}</span>
+                </div>
+                <span class="nexticon">></span>
+            </div>
+        </div>
+    </mat-dialog-content>
+</form>

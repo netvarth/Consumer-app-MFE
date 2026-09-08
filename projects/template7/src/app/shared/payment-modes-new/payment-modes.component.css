@@ -1,0 +1,88 @@
+.payment-modes-section {
+  width: 100%;
+  --payment-accent: var(--button-color, #c86a34);
+  --payment-accent-soft: color-mix(in srgb, var(--payment-accent) 12%, #ffffff);
+  --payment-accent-border: color-mix(in srgb, var(--payment-accent) 35%, #e5e7eb);
+}
+
+.payment-modes-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.payment-mode-row {
+  width: 100%;
+}
+
+.payment-mode-cards {
+  width: 100%;
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #ededed;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+}
+
+.payment-mode-cards.mat-radio-checked {
+  border-color: var(--payment-accent);
+  background: color-mix(in srgb, var(--payment-accent) 18%, #ffffff);
+}
+
+.payment-mode-inner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.payment-icon-wrapper {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.payment-icon {
+  max-width: 24px;
+  max-height: 24px;
+}
+
+.payment-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-family: 'Figtree', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    sans-serif;
+}
+
+.payment-title {
+  font-size: 14px;
+    font-weight: 700;
+    color: #1f2933;
+}
+
+.payment-subtitle {
+  font-size: 12px;
+  font-weight: 400;
+  color: #6b7280;
+}
+
+@media (max-width: 768px) {
+  .payment-mode-cards {
+    padding: 10px 14px;
+  }
+
+  .payment-title {
+    font-size: 13px;
+  }
+
+  .payment-subtitle {
+    font-size: 11px;
+  }
+}

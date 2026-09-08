@@ -1,0 +1,26 @@
+.fontmodel, ::ng-deep .privacy-data .fontmodel{
+  line-height: 30px !important;
+  text-align: justify;
+} 
+
+h4, ::ng-deep .privacy-data h4 {
+  font-weight: 700 !important;
+  text-decoration: underline !important;
+  text-underline-position: under !important;
+  text-transform: uppercase !important;
+  font-size: 18px !important;;
+}
+
+::ng-deep .privacy-data button i, button i {
+  color: #522E5A !important;
+}
+::ng-deep .privacy-data h6, h6 {
+  font-weight: 700 !important;
+  text-decoration: underline !important;
+  text-underline-position: under !important;
+  text-transform: uppercase !important;
+  font-size: 15px !important;
+}
+p {
+  text-align: justify !important;
+}

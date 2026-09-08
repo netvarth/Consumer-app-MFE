@@ -1,0 +1,7 @@
+<ng-container *ngFor="let sp of services">
+<div class="bus-item-N"  *ngIf="sp['item']['serviceAvailability']">
+    <app-card [theme]="" [item]="sp" [terminology]='terminologiesjson' [loc]="selectedLocation"
+        (actionPerformed)="cardClicked($event)" [config]="config" [cardName]="cardName">
+    </app-card>
+</div>
+</ng-container>

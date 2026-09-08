@@ -1,0 +1,155 @@
+<section class="consumer-dashhome container mt-1" [ngClass]="theme">
+  <div class="content consumer-dash mb-2" *ngIf="api_loading">
+    <app-common-innerloading-spinner>
+    </app-common-innerloading-spinner>
+  </div>
+  <!-- Login Section -->
+  <div class="my-1 login-form_custom" *ngIf="!api_loading && !loggedIn">
+    <div class="card card-custom no-margin hgt-adjust">
+      <div class="card-body p-0">
+        <app-authentication (actionPerformed)="actionPerformed($event)" [accountId]="accountId"></app-authentication>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dashboard Begins-->
+  <div class="p_consumer_dashboard" id="dashboard" *ngIf="!api_loading && loggedIn">
+    <div class="p_consumer_dashboard_container">
+      <div class="p_consumer_dashboard_cont_first">
+        <div class="text-center">
+          <div>
+            <div>
+              <img class="greetingImg" src="{{cdnPath}}assets/images/myjaldee/hi.gif" />
+            </div>
+            <!---user details start--->
+            <div *ngIf="usr_details">
+              <div class="greetingTxt">{{greetingText}}</div>
+              <div class="userName text-capitalize" *ngIf="usr_details && usr_details.userName">
+                {{usr_details.userName}}
+              </div>
+            </div>
+            <div class="p_consumer_dashboard_btn_cont mt-3">
+              <button #btnHome type="button" id="btnHome" class="btn_home" mat-button (click)="gotoDetails()">
+                <span>
+                  <i class="fa fa-home"></i>
+                  <!-- <mat-icon>home</mat-icon> -->
+                </span>
+                <span>{{'Home' | translate}}</span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p_consumer_dashboard_cont_second">
+        <div *ngIf="todayBookings && todayBookings.length && todayBookings.length !==0">
+          <div class="mt-4 mb-2">
+          </div>
+          <div class="" (click)="actionPerformedUpcoming()">
+            <div class="customCard-2 mt-2">
+              <div class="d-flex gap-2">
+                <div>
+                  <i class="fa fa-calendar-o iconCstm" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <ng-container *ngIf="todayBookings && todayBookings[0] && todayBookings[0].apptStatus">
+                    <div
+                      *ngIf="todayBookings && todayBookings[0] && todayBookings[0].appmtDate ||todayBookings && todayBookings[0] && todayBookings[0].appmtTime">
+                      <div class="dateInfo">{{todayBookings[0].appmtDate| date:newDateFormat}},
+                        {{getSingleTime(todayBookings[0].appmtTime)}}
+                      </div>
+                    </div>
+                    <div class="serviceIconInfo mt-1">
+                      <div class="serviceName text-capitalize"
+                        *ngIf="todayBookings && todayBookings[0] && todayBookings[0].service && todayBookings[0].service.name">
+                        {{todayBookings[0].service.name}}
+                      </div>
+                    </div>
+                  </ng-container>
+                  <!-- Checkins -->
+                  <ng-container *ngIf="todayBookings && todayBookings[0] && todayBookings[0].waitlistStatus">
+                    <div
+                      *ngIf="todayBookings && todayBookings[0] && todayBookings[0].date ||todayBookings && todayBookings[0] && todayBookings[0].appmtTime">
+                      <span class="dateInfo">{{todayBookings[0].date| date:newDateFormat}}
+                        {{todayBookings[0].appmtTime}}
+                      </span>
+                      <span class="singleTime ms-1"
+                        *ngIf="todayBookings && todayBookings[0] && todayBookings[0].queue && (todayBookings[0].queue.queueStartTime || todayBookings[0].queue.queueEndTime)">
+                        {{todayBookings[0].queue.queueStartTime}} - {{todayBookings[0].queue.queueEndTime}}
+                      </span>
+                    </div>
+                    <div class="serviceIconInfo mt-1">
+                      <div class="serviceName text-capitalize"
+                        *ngIf="todayBookings && todayBookings[0] && todayBookings[0].service && todayBookings[0].service.name">
+                        {{todayBookings[0].service.name}}
+                      </div>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+              <div>
+                <i class="fa fa-chevron-right"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="p_consumer_dashboard_cont_second_row mt-4">
+          <div (click)="actionPerformTo('My Bookings')" class="dashboard_card">
+            <div>
+              <img src="{{cdnPath}}assets/images/myjaldee/calendar.gif" />
+            </div>
+            <div class="d-flex justify-content-between">
+              <div class="title mb-2">{{'My Bookings' | translate}}</div>
+              <div>
+                <i class="fa fa-chevron-right arrowclr"></i>
+              </div>
+            </div>
+          </div>
+          <div (click)="actionPerformTo('My Orders')" class="dashboard_card">
+            <div>
+              <img src="{{cdnPath}}assets/images/myjaldee/shopping-cart.gif" />
+            </div>
+            <div class="d-flex justify-content-between pb-2">
+              <div class="title">{{'My Orders' | translate}}</div>
+              <div>
+                <i class="fa fa-chevron-right"></i>
+              </div>
+            </div>
+          </div>
+          <div (click)="actionPerformTo('My Payments')" class="dashboard_card">
+            <div>
+              <img src="{{cdnPath}}assets/images/myjaldee/credit-card.gif" />
+            </div>
+            <div class="d-flex justify-content-between pb-2">
+              <div class="title">{{'My Payments' | translate}}</div>
+              <div>
+                <i class="fa fa-chevron-right"></i>
+              </div>
+            </div>
+          </div>
+          <div (click)="actionPerformTo('My Documents')" class="dashboard_card">
+            <div>
+              <img src="{{cdnPath}}assets/images/myjaldee/mayan-calendar.gif" />
+            </div>
+            <div class="d-flex justify-content-between">
+              <div class="title mb-2">{{'My Documents' | translate}}</div>
+              <div>
+                <i class="fa fa-chevron-right arrowclr"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr class="cstmHR" />
+    <div class="p_consumer_dashboard_qa">
+      <div class="title">{{'Quick Actions' | translate}}</div>
+      <div class="mailFlex">
+        <div class="flexCls" (click)="redirectto('profile')">
+          <div class="icon-1">
+            <i class="fa fa-cog"></i>
+          </div>
+          <div class="btnCstmTxt">{{'My Account' | translate}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

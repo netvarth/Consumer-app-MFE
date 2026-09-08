@@ -1,0 +1,90 @@
+.Enroll-btn {
+    width: 100%;
+    margin-top: 1%;
+    border: 1px solid #1e4079;
+    background-color: #1e4079;
+    color: #fff;
+    font-weight: 600;
+    display: inline-block;
+    margin-bottom: 0;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    touch-action: manipulation;
+    cursor: pointer;
+    padding: 6px 0;
+    font-size: 12px;
+    line-height: 1.42857143;
+    border-radius: 10px;
+}
+.img-responsive {
+    height: 80px!important;
+    width: 80px!important;
+    vertical-align: middle;
+    box-shadow: 0 4px 8px #0003, 0 6px 20px #00000030;
+    padding: 5px;
+    border-radius: 50%;
+}
+h5 {
+    font-size: 1rem !important;
+}
+p{
+    font-size: 0.75rem !important;
+}
+.service {
+    height: 100px;
+}
+.line-clamp-ln3 {
+    display: -webkit-box!important;
+    -webkit-line-clamp: 3!important;
+    -webkit-box-orient: vertical!important;
+    overflow: hidden;
+}
+.rejected {
+    color: #ff6a6a !important;
+    font-size: 12px !important;
+    padding: 0px 15px 0px 15px !important;
+    font-weight: 600 !important;
+}
+.submit {
+    color: #00cc96 !important;
+    font-size: 12px !important;
+    padding: 0px 15px 0px 15px !important;
+    font-weight: 600 !important;
+}
+
+.bus-item-N {
+    border-radius: 10px !important;
+    width: 32.6%;
+    float: left !important;
+    margin-bottom: 20px !important;
+    margin-right: 8px !important;
+    padding: 7px;
+    -webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19) !important;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19) !important;
+  }
+  
+  @media(max-width: 1200px) {
+    .bus-item-N {
+      width: 49.15%;
+    }
+  }
+  
+  @media(max-width: 991px) {
+    .bus-item-N {
+      width: 48.89%;
+      float: left !important;
+    }
+  }
+  
+  @media(max-width: 767px) {
+    .bus-item-N {
+      width: 47.8%;
+    }
+  }
+  
+  @media(max-width: 700px) {
+    .bus-item-N {
+      width: 100%;
+    }
+  }

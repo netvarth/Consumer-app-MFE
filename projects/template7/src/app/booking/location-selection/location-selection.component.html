@@ -1,0 +1,11 @@
+<div>
+    <div class="cstmHeader">{{"Selected Location" | translate}}</div>
+    <div class="mt-2">
+        <div class="m-auto mainFlexService  mgn-sm-bt-60">
+            <div class="mainFlexService_service" *ngFor="let location of locations" (click)="locationClicked(location)"
+                [ngClass]="{ 'selected': location['id'] === selectedLocation.id}">
+                <app-location-card [item]="location" ></app-location-card>
+            </div>          
+        </div>
+    </div>
+</div>

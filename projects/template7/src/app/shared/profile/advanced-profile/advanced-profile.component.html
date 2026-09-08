@@ -1,0 +1,52 @@
+<section class="bg-advanced-profile" [ngClass]="templateJson?.theme">
+    <div class="card">
+        <div
+            class="row m-0 p-0 d-flex justify-content-between align-items-center pointer-cursor card-outer-cont">
+            <div class="col-md-7 col-7 col-sm-7 col-lg-7 p-0">
+                <div class="col-12 p-0">
+                    <h4 class=" line-clamp-ln2 my-1 head-text">{{accountProfile.businessName}}</h4>
+                </div>
+            </div>
+            <div class="col-md-5 col-5 col-sm-5 col-lg-5 p-0 card-inner-img-cont">
+                <div class="img-circle">
+                    <img class="img-responsive" [src]="templateJson.coverPicture" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-4">
+            <div class="pro-pic-img p-2">
+                <img alt=" Image" src="{{bLogo}}" id="profile-image1" class=" img-circle img-responsive img-thumbnail">
+            </div>
+        </div>
+        <div class="col-8">
+            <h4 class=" line-clamp-ln2 my-1 ">{{accountProfile.businessName}}</h4>
+            <p class="location" *ngIf="location" [matTooltip]="location.label | capitalizeFirst">{{location}}</p>
+        </div>
+    </div>
+    <div class="question-header">About
+        <div class="mt-2">
+            <p class="about">{{businessDesc}}</p>
+        </div>
+    </div>
+    <div class="question-header ms-4 mt-4">
+        <p class="smalltext" *ngIf="phoneNo" [matTooltip]="phoneNo.label | capitalizeFirst">
+            <a *ngIf="phoneNo" href="tel:{{phoneNo.instance}}" target="_blank">
+                <i class="fa fa-phone"></i> {{accountProfile.countryCode}} {{phoneNo.instance}}
+            </a>
+        </p>
+        <p class="smalltext" *ngIf="emailId" [matTooltip]="emailId.label | capitalizeFirst">
+            <a class="cut-text" href="mailto:{{emailId.instance}}" target="_blank" *ngIf="emailId">
+                <i class="fa fa-envelope-o"></i> {{emailId.instance}}
+            </a>
+        </p>
+    </div>
+    <div class="question-header ms-4 mt-4">Specialties
+        <div class="details ">
+            <div class="pop-box-cont " *ngFor="let speci of specialities">
+                {{speci}}
+            </div>
+        </div>
+    </div>
+</section>

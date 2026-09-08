@@ -1,0 +1,8 @@
+textarea.form-control {
+    height: auto !important;
+}
+.form-control {
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    border-color: #d2d6de !important;
+}

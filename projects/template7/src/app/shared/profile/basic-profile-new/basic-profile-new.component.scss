@@ -1,0 +1,93 @@
+.profile-banner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 32px 24px 36px;
+  background: linear-gradient(135deg, #ff6900 0%, #f54900 100%);
+  border-radius: 24px;
+  color: #ffffff;
+  position: relative;
+}
+.profile-img {
+    width: 100%;
+    height: 205px;
+    border-radius: 15px;
+}
+
+.profile-banner::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url('data:image/svg+xml,%3Csvg width="280" height="280" viewBox="0 0 280 280" fill="none" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M25.3 138.6c12.6-6.7 17.9-22.4 11.9-36-6-13.6-21.5-19.2-34.1-12.5C-9.6 97.4-14.9 113.1-8.9 126.7c6 13.6 21.5 19.2 34.2 12z" fill="%23ffffff" opacity="0.08"/%3E%3C/svg%3E');
+  background-repeat: no-repeat;
+  background-position: right bottom;
+  opacity: 0.6;
+}
+
+.profile-badge {
+  width: 72px;
+  height: 72px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  position: relative;
+  z-index: 1;
+}
+
+.profile-badge img {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+}
+
+.profile-heading {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.profile-title {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.profile-subtitle {
+  font-size: 14px;
+  font-weight: 500;
+  margin: 0;
+  opacity: 0.9;
+}
+
+.profile-pill {
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.2);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+@media (min-width: 480px) {
+  .profile-banner {
+    padding: 40px 32px 48px;
+    border-radius: 28px;
+  }
+
+  .profile-title {
+    font-size: 28px;
+  }
+
+  .profile-subtitle {
+    font-size: 15px;
+  }
+}

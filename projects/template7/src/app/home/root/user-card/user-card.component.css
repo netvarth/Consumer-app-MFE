@@ -1,0 +1,30 @@
+
+.action-item {
+    padding: 0 5px 0 0px !important;
+    text-align: center;
+  }
+  .action-item-label h3{
+    font-size: 0.75rem !important;
+    font-weight: 600;
+    padding: 0 5px;
+  }
+  .action-item-label h3 .small {
+    font-size: 0.70rem !important;
+    font-weight: 600;
+    padding-top: 5px;
+  }
+  .action-item-label {
+    display: flex;
+    align-items: center;
+    height: 40px !important;
+  }
+  
+  .action-item img {
+    max-height: 150px;
+    width: 100%;
+  }
+  
+  .action-item .card {
+    border: 0.5px solid #C1DAF0 !important;
+    border-radius: 15px;
+  }

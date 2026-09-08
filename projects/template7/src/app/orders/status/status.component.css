@@ -1,0 +1,192 @@
+.p-heading {
+  color: #8f8f91 !important;
+  font-weight: 600;
+}
+
+.logo {
+  border-radius: 50% !important;
+  margin-top: 15px;
+}
+
+.icon-location:before {
+  content: "\6a";
+}
+
+.book-details {
+  box-shadow: 0 4px 6px -6px #222;
+  font-weight: 600;
+  font-size: 1.1rem;
+  text-align: center;
+  padding: 20px;
+}
+
+.green {
+  color: green;
+  background: #d6ece7;
+  padding: 10px;
+  border-radius: 1rem;
+}
+
+.cancelled {
+  color: red;
+  background: #fde2e2;
+  padding: 10px;
+  border-radius: 1rem;
+}
+
+.detail {
+  margin-top: 10px !important;
+}
+
+@keyframes alertAnimation {
+  0% {
+    transform: scale(0.8);
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(0.8);
+  }
+}
+
+.alert {
+  padding: 0 !important;
+  margin-bottom: 0 !important;
+  animation: alertAnimation 1s ease-in-out infinite;
+}
+
+.status-style {
+  font-size: 16px !important;
+  margin-bottom: 10px !important;
+}
+
+.status-text {
+  font-weight: 600;
+  font-size: 14px !important;
+}
+
+.row-style {
+  display: flex;
+  margin-top: 10px !important;
+}
+
+.status-details {
+  padding-left: 10px !important;
+}
+
+.status-styles {
+  font-size: 14px !important;
+}
+
+.img-style {
+  width: 50px !important;
+  height: 50px !important;
+  border-radius: 50%;
+}
+
+.btn-style {
+  width: 300px !important;
+  background-color: #30009c !important;
+  text-transform: none !important;
+}
+
+.loc-style {
+  font-size: 14px !important;
+  margin-left: 10px !important;
+}
+
+.status-texts {
+  color: #2095FD;
+}
+
+.status-card {
+  font-weight: bold;
+}
+
+.map-style {
+  width: 300px;
+  height: 200px;
+  border-radius: 1%;
+}
+
+@media (max-width:575px) {
+  .status-card {
+    margin-top: 5px !important;
+  }
+
+  .map-style {
+    height: 250px !important;
+  }
+
+  .card-main {
+    display: block !important;
+  }
+}
+
+.status-btn {
+  padding: 0px 10px;
+  font-size: .6rem;
+}
+
+.details-search {
+  margin-top: 25px;
+  font-size: 1.5rem;
+}
+
+.book-head {
+  padding: 20px 10px;
+  margin: auto;
+  width: 50%;
+  display: flex;
+}
+
+@media only screen and (max-width: 640px) {
+  .book-head {
+    width: 100%;
+    padding-top: 75px;
+  }
+}
+
+.notes {
+  border: 1px solid;
+  padding: 10px;
+  width: 70%;
+  margin: auto;
+  align-items: center;
+  margin-top: 10px;
+  max-height: 250px;
+  overflow: auto;
+}
+
+.preinfo-title {
+  margin-bottom: 10px;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+@media (max-width: 500px) {
+  .notes {
+    width: auto !important;
+    margin-right: 10px;
+    margin-left: 10px;
+  }
+}
+
+::ng-deep .order-status-grid .p-datatable .p-datatable-tbody>tr>td,
+::ng-deep .order-status-grid .p-datatable .p-datatable-thead>tr>th {
+  font-size: 14px !important;
+  padding: 10px !important;
+  font-family: Figtree, sans-serif;
+}
+
+.name-width {
+  min-width: 170px !important;
+}
+
+.amount-section {
+  font-size: 14px !important;
+  padding-top: 15px;
+}

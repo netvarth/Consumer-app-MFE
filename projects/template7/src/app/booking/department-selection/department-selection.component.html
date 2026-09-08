@@ -1,0 +1,11 @@
+<div class="department-container">
+    <div class="cstmHeader">{{"Select department" | translate}}</div>
+    <div class="mt-2">
+        <div class="m-auto mainFlexService  mgn-sm-bt-60">
+            <div class="mainFlexService_service" *ngFor="let item of departments" (click)="deparmentClicked(item)"
+                [ngClass]="{ 'selected': item['departmentId'] === selectedDeptId}">
+                <app-department-card [item]="item"></app-department-card>
+            </div>
+        </div>
+    </div>
+</div>

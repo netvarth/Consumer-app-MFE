@@ -1,0 +1,73 @@
+<div class="payment-summary" *ngIf="paymentDetails['amountToPay'] > 0 || paymentDetails.showPrice">
+    <div class="payment-summary__rows">
+        <ng-container *ngIf="paymentDetails.showPrice">
+            <div class="payment-summary__row" *ngIf="paymentDetails.servicePrice">
+                <span class="payment-summary__label">{{'Service Price' | translate}}</span>
+                <span class="payment-summary__value">{{paymentDetails.servicePrice | currency:'&#8377; '}}</span>
+            </div>
+            <div class="payment-summary__row payment-summary__row--discount"
+                *ngIf="paymentDetails.jdnDiscount > 0">
+                <span class="payment-summary__label">JDN</span>
+                <span class="payment-summary__value">-{{paymentDetails.jdnDiscount | currency:'&#8377; '}}</span>
+            </div>
+            <ng-container *ngFor="let jcoupon of paymentDetails.jCouponList | keyvalue">
+            <div class="payment-summary__row payment-summary__row--discount"
+                 *ngIf="isCouponApplied(jcoupon)">
+                <span class="payment-summary__label">{{jcoupon.key}}</span>
+                <span class="payment-summary__value"
+                    [class.payment-summary__value--zero]="jcoupon.value.value === '0.0'">-{{jcoupon.value.value |
+                    currency:'&#8377; '}}</span>
+            </div>
+        </ng-container>
+            <ng-container *ngFor="let coupon of paymentDetails.proCouponList | keyvalue">
+            <div class="payment-summary__row payment-summary__row--discount"
+                 *ngIf="isCouponApplied(coupon)">
+                <span class="payment-summary__label">{{coupon.key}}</span>
+                <span class="payment-summary__value"
+                    [class.payment-summary__value--zero]="coupon.value.value === '0.0'">-{{coupon.value.value |
+                    currency:'&#8377; '}}</span>
+            </div>
+        </ng-container>
+            <div class="payment-summary__row" *ngIf="paymentDetails.netTaxAmount">
+                <span class="payment-summary__label">{{'Tax' | translate}}</span>
+                <span class="payment-summary__value">+{{paymentDetails.netTaxAmount | currency:'&#8377; '}}</span>
+            </div>
+            <div class="payment-summary__row payment-summary__row--total" *ngIf="paymentDetails.netTotal > 0">
+                <span class="payment-summary__label">{{'Net Total' | translate}}</span>
+                <span class="payment-summary__value">{{paymentDetails.netTotal | currency:'&#8377; '}}</span>
+            </div>
+            <div class="payment-summary__row" *ngIf="paymentDetails.roundOffAmount != 0">
+                <span class="payment-summary__label">Round Off</span>
+                <span class="payment-summary__value">{{ paymentDetails.roundOffAmount > 0 ? '+₹' : '₹' }}{{ paymentDetails.roundOffAmount | number: '1.2-2' }}</span>
+            </div>
+        </ng-container>
+
+        <div class="payment-summary__row" *ngIf="paymentDetails['amountToPay'] > 0 && convenientFee > 0">
+            <span class="payment-summary__label">{{'Convenient Fee' | translate}}</span>
+            <span class="payment-summary__value">+{{convenientFee | currency:'&#8377; '}}</span>
+        </div>
+
+        <div class="payment-summary__row" *ngIf="paymentMode && paymentDetails['amountToPay'] > 0 && gatewayFee > 0">
+            <span class="payment-summary__label">{{'Gateway Fee' | translate}}</span>
+            <span class="payment-summary__value">+{{gatewayFee | currency:'&#8377; '}}</span>
+        </div>
+
+        <div class="payment-summary__row payment-summary__row--due" *ngIf="paymentDetails['amountToPay'] > 0">
+            <span class="payment-summary__label">{{'Payment Required Now' | translate}}</span>
+            <span class="payment-summary__value">{{paymentDetails['amountToPay'] | currency:'&#8377; '}}</span>
+        </div>
+    </div>
+
+    <div class="payment-summary__notes" *ngIf="paymentDetails['amountToPay'] > 0">
+        <div class="payment-summary__note">{{'Booking will be confirmed only after the payment' | translate}}</div>
+        <ng-container *ngIf="service.taxable">
+            <div class="payment-summary__note"
+                *ngIf="paymentDetails.totalDiscount > 0">{{'Any discounts and taxes will be applied only in the final bill' | translate}}</div>
+            <div class="payment-summary__note"
+                *ngIf="paymentDetails.totalDiscount === 0">{{'Taxes will be applied only in the final bill' | translate}}</div>
+        </ng-container>
+        <ng-container *ngIf="!service.taxable">
+            <div class="payment-summary__note" *ngIf="paymentDetails.totalDiscount > 0">{{'Any discounts will be applied only in the final bill' | translate}}</div>
+        </ng-container>
+    </div>
+</div>

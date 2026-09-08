@@ -1,0 +1,43 @@
+<div class="modal-body">
+    <div class="col-md-12 col-12 col-sm-12 lnk mt-4">
+        {{'Apply Coupon Code' | translate}}</div>
+    <div class="col-12 col-sm-12 col-md-12 col-lg-12 mt-4">
+        <div class="col-md-12 col-sm-12 col-lg-12 col-12 p-0" *ngIf="showCouponWB">
+            <div class="col-md-12 col-sm-12 col-lg-12 col-12 form-level-settings applybill p-0">
+                <i class="icon-bell"></i>{{applied_inbilltime | translate}}
+            </div>
+            <div class="width-60">
+                <div class="input-group">
+                    <input [ngClass]="{'invalid':!couponValid}" (keydown)="clearCouponErrors()"
+                        placeholder="Enter coupon code" type="text" class="form-control" [(ngModel)]="selectedCoupon">
+                </div>
+            </div>
+            <div class="col-md-12 col-sm-12 col-lg-12 col-12 p-0" style="color: red;"
+                *ngIf="couponError !== null">
+                {{couponError}}</div>
+            <div class="col-md-12 col-12 col-sm-12 col-lg-12 p-0 mt-2 mb-4">
+            </div>
+        </div>
+        <div class="col-md-12 col-sm-12 col-lg-12 col-12 my-4 pt-2"
+            *ngIf="couponsList && couponsList.length>0">
+            <div class="col-md-12 col-sm-12 col-lg-12 col-12 p-0"
+                *ngFor="let coupon of couponsList let i=index">
+                <div class="col-md-12 col-sm-12 col-lg-12 col-12 p-0 coupon-add-msg">
+                    <div class="col-md-5 col-sm-7 col-7 col-lg-4 p-0">
+                        {{coupon.couponCode}} </div>
+                    <div class="col-md-7 col-sm-5 col-5 col-lg-8 delteTC">
+                        <span><a *ngIf="coupon.instructions" (click)="toggleterms(i)"
+                                class="pointer-cursor lnk read-more-checkin">{{'Read T&C' | translate}} </a></span>
+                        <span><a class="pointer-cursor lnk"><i class="pointer-cursor icon-delete ms-2 lnk"
+                                    (click)="removeJCoupon(i)" [matTooltipClass]="tooltipcls"
+                                    [matTooltip]="'Remove Coupon'"></i></a></span>
+                    </div>
+                </div>
+                <div class="col-md-12 col-sm-12 col-lg-12 col-12 mt-2 pre-instr p-0"
+                    *ngIf="coupon.showme">
+                    {{coupon.instructions}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

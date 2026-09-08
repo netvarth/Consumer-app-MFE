@@ -1,0 +1,100 @@
+.cstmHeader {
+    // background: #0D2348;
+    // color: #ffffff !important;
+    font-size: 18px !important;
+    padding: 15px;
+    padding-left: 10px;
+    font-weight: 800 !important;
+    height: 3rem;
+    border-radius: 3px;
+}
+.selected {
+    background-color: #F1FFFF;
+    border: 1.62763px solid #0D2348 !important;
+    border-radius: 5px;
+}
+.mainFlexService {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 50px;
+}
+.mainFlexService_service {
+    width: 30%;
+    padding: 10px !important;
+    border: 1.62763px solid #e1e7f1 !important;
+    border-radius: 5px;
+}
+.mainFlexService_service.selected {
+    border: 1.62763px solid #0D2348 !important;
+}
+.dualBtn {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding-top: 5px;
+    -webkit-box-shadow: -2px -8px 6px -7px rgba(0,0,0,0.24);
+-moz-box-shadow: -2px -8px 6px -7px rgba(0,0,0,0.24);
+box-shadow: -2px -8px 6px -7px rgba(0,0,0,0.24);
+}
+.confirmBtn {
+    background: #0D2348;
+    border-radius: 3.25709px;
+    border: none;
+    outline: none;
+    padding: 10px;
+    width: 9rem;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 14px;
+    color: #FFFFFF;
+}
+.backBtn {
+    background: #E5E8E8;
+    border-radius: 3.25709px;
+    border: none;
+    outline: none;
+    padding: 10px;
+    width: 8rem;
+    text-align: center;
+    text-transform: uppercase;
+    color: #A9A9A9;
+}
+@media (min-width: 768px) {
+    .department-container {
+        max-height: calc(100vh - 150px);
+        overflow: auto;
+    }
+    .dualBtn {
+        position: sticky;
+        bottom: 0;
+        background: #fff;
+        left: 0;
+        padding: 10px 0 15px 0;
+    }
+}
+
+@media (max-width: 767px) {
+    .mainFlexService_service {
+        width: 95% !important;
+        margin: auto;
+    }
+    .cstmHeader {
+        height: 4rem;
+    }
+    .dualBtn {
+        // margin-bottom: 20px !important;
+        justify-content: center !important;
+        position: fixed;
+        padding: 10px;
+        bottom: 0;
+        background: #fff;
+    }
+    .mgn-sm-bt-60 {
+        margin-bottom: 60px;
+    }
+    .mainFlexService {
+        gap: 15px !important;
+    }
+    
+}

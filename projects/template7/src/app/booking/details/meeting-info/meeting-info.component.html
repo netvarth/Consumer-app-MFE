@@ -1,0 +1,25 @@
+<div class="mt-2">
+    <div *ngIf="callingChannel === 'Zoom' || callingChannel==='GoogleMeet' || callingChannel === 'VideoCall'" class="serviceCstmText lineHeight">
+        {{' Follow these instructions to join the video call:' | translate}}
+        <div>{{'1: You will receive an alert that the '}}{{callingChannel}}{{' call  has started.' | translate}}</div>
+        <div>{{'2: When it is your turn, click on the following link -' | translate}}    
+           <a class="meetingLinkJOin" *ngIf="meetingInfo && meetingInfo.joiningUrl"
+                href="{{meetingInfo.joiningUrl}}" target="blank">{{meetingInfo.joiningUrl}}</a>
+        </div>
+        <div style="font-size: smaller" *ngIf="callingChannel==='Zoom'">
+            {{'(If you do not have Zoom installed you will be prompted to install Zoom)' | translate}}
+        </div>
+        <div style="font-size: smaller" *ngIf="callingChannel==='GoogleMeet'">
+            {{'(If you are not already signed into google you must sign in)' | translate}}
+        </div>
+        <div>{{'3. Wait for the video call to start' | translate}}</div>
+    </div>
+    <div class="serviceCstmText lineHeight" *ngIf="callingChannel === 'WhatsApp'">
+        {{'* When it is time for your call, you will receive a ' + callingChannel + ' '+ callingMode + 'call on' | translate}}
+        {{callingNumber}}.<br>
+        {{'Please remember to keep your phone'+'s internet connection on.' | translate}}
+    </div>
+    <div class="serviceCstmText lineHeight" *ngIf="callingChannel === 'Phone'">
+        {{' * When it is time for your call, you will receive a call on ' | translate}} {{callingNumber}}
+    </div>
+</div>

@@ -1,0 +1,150 @@
+.qrpage {
+  background-color: #f0f0f0;
+  width: 500px;
+  border: 1px;
+  padding: 5px;
+  margin: 10px;
+  text-align: center;
+  box-sizing: content-box;
+  border-radius: 25px;
+  max-height: 250px;
+}
+
+.txt-qr1 {
+  color: #1e90ff !important;
+  display: flex;
+  justify-content: center;
+}
+
+.textcenter {
+  text-align: center;
+}
+
+.coupon-outer {
+  padding-top: 10px;
+}
+
+.btndownload {
+  background-color: #1e90ff;
+  border: none;
+  color: #fff;
+  padding: 12px 30px;
+  cursor: pointer;
+  font-size: 20px;
+  border-radius: 25px;
+  text-decoration: none;
+}
+
+.jld-link-pad {
+  padding: 15px 0 4px !important;
+}
+
+label {
+  display: inline-block;
+  max-width: 100%;
+  margin-bottom: 5px;
+  font-weight: 700;
+}
+
+a {
+  color: #3c8dbc;
+}
+
+.mat-dialog-title {
+  margin: 0;
+  padding: 15px 20px;
+  font-weight: 500;
+  font-size: 1.25rem;
+  font-weight: 600;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#1873f2", endColorstr="#00aef2", GradientType=0);
+  color: #fff;
+  position: relative !important;
+}
+
+.modal_close i:before {
+  font-family: custom-ynw !important;
+  content: "\69";
+  font-size: 1rem !important;
+  width: 20px;
+  height: 20px;
+  font-weight: 600;
+}
+
+label {
+  font-size: .875rem;
+  font-weight: 600;
+}
+
+a:hover {
+  color: #222223;
+  text-decoration: none !important;
+}
+
+.mat-dialog-title {
+  height: 60px !important;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+::ng-deep .sb-circles-dark .sb-wrapper {
+  color: #fff !important;
+  background: transparent !important;
+  min-width: unset !important;
+  height: unset !important;
+}
+
+::ng-deep .sb-content {
+  align-items: center;
+  flex-direction: column;
+}
+
+::ng-deep .sb-wrapper {
+  font-size: inherit !important;
+  cursor: pointer !important;
+  position: relative !important;
+  outline: 0 !important;
+  min-width: 4.125em !important;
+  height: 2.5em !important;
+  border: none !important;
+  border-radius: 1px !important;
+  padding: 0 !important;
+  line-height: 2.571em !important;
+  background-color: transparent !important;
+  -webkit-print-color-adjust: exact !important;
+}
+
+::ng-deep .sb-circles-dark .sb-wrapper .sb-icon {
+  background-color: #2e4057 !important;
+  background-color: var(--button-color) !important;
+  box-shadow: 0 3px 5px -1px rgb(0 0 0 / 20%), 0 6px 10px 0 rgb(0 0 0 / 14%), 0 1px 18px 0 rgb(0 0 0 / 12%) !important;
+  font-size: 1.4em !important;
+  width: 2.5em !important;
+  height: 2.5em !important;
+  border-radius: 50% !important;
+  padding: 5px;
+}
+
+::ng-deep .sb-wrapper .sb-icon,
+::ng-deep .sb-wrapper .sb-text {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  user-select: none !important;
+}
+
+::ng-deep .sb-circles-dark .sb-wrapper .sb-text {
+  color: var(--button-color) !important;
+  font-size: .8em !important;
+  margin-top: 5px !important;
+  border-radius: 1em !important;
+  width: 100% !important;
+  height: 1.8em !important;
+  line-height: 1.8em !important;
+  padding: 0 !important;
+}
+
+::ng-deep .sb-button {
+  margin: var(--sb-margin) !important;
+}

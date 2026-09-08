@@ -1,0 +1,51 @@
+<section class="card" id="pageTop">
+    <div class="title-gb no-padding">
+        <div class="dash-head">
+            <div> <i class="fa fa-arrow-left colorHeaderIcon" aria-hidden="true"
+                    (click)="goBack()"></i>&nbsp;&nbsp;{{headerCaption}}</div>
+        </div>
+    </div>
+</section>
+<section *ngIf="actionString === 'deparment'">
+    <ng-container *ngFor="let sp of deptApptServices">
+        <div class="bus-item-New" *ngIf="sp['item']['serviceAvailability']">
+            <app-service-card [theme]="" [item]="sp" [terminology]='terminologiesjson' [loc]="selectedLocation"
+                (actionPerformed)="cardClicked($event)" [cardName]="cardName" [domain]="domain">
+            </app-service-card>
+        </div>
+    </ng-container>
+    <ng-container *ngFor="let sp of deptCheckinServices">
+        <div class="bus-item-New" *ngIf="sp['item']['serviceAvailability']">
+            <app-service-card [theme]="" [item]="sp" [terminology]='terminologiesjson' [loc]="selectedLocation"
+                (actionPerformed)="cardClicked($event)" [cardName]="cardName" [domain]="domain">
+            </app-service-card>
+        </div>
+    </ng-container>
+</section>
+<section *ngIf="actionString === 'custom'">
+    <ng-container *ngIf="customAction.actions && customAction.actions.action && customAction.actions.action.length > 0">
+        <div *ngFor="let actionList of customAction.actions.action">
+            <div class="bus-item-New" [ngClass]="theme?theme:''">
+                <div class="card-outer-cont card box-rounded">
+                    <div class="pointer-cursor name" (click)="cardClicked(actionList)">
+                        <h5 class="line-clamp-ln2 mgn-bt-5">{{actionList.title}}</h5>
+                    </div>
+                    <div class="no-padding card-inner-img-cont">
+                        <div class="img-circle">
+                            <img class="img-responsive" [src]="actionList.image" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+</section>
+<section *ngIf="actionString === 'deparments'">
+    <ng-container *ngFor="let sp of activeDepartments">
+        <div class="bus-item-New">
+            <app-department-card [theme]="" [item]="sp" [terminology]='terminologiesjson' [loc]="selectedLocation"
+                (actionPerformed)="cardClicked($event)" [cardName]="cardName" [domain]="domain">
+            </app-department-card>
+        </div>
+    </ng-container>
+</section>

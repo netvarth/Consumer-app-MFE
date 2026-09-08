@@ -1,0 +1,37 @@
+<div class="service-icon"
+    *ngIf="service.serviceType === 'virtualService' || service.serviceType === 'videoService'">
+    <i class="fa phon-icon cstmServiceIcon"
+        *ngIf="service.virtualCallingModes && service.virtualCallingModes[0] && 
+        service.virtualCallingModes[0].callingMode && service.virtualCallingModes[0].callingMode === 'Phone'"></i>
+    <i class="fa meet-icon cstmServiceIcon"
+        *ngIf="service.virtualCallingModes && service.virtualCallingModes[0] && 
+        service.virtualCallingModes[0].callingMode && service.virtualCallingModes[0].callingMode === 'GoogleMeet'"></i>
+    <i class="fa zoom-icon cstmServiceIcon"
+        *ngIf="service.virtualCallingModes && service.virtualCallingModes[0] && 
+        service.virtualCallingModes[0].callingMode && service.virtualCallingModes[0].callingMode === 'Zoom'"></i>
+    <i class="fa jvideo-icon jvideo-icon-s jvideo-icon-mgm5 cstmServiceIcon"
+        *ngIf="service.virtualCallingModes  && service.virtualCallingModes[0] && 
+        service.virtualCallingModes[0].callingMode && service.virtualCallingModes[0].callingMode === 'VideoCall'"></i>
+    <i class="fa wtsapaud-icon cstmServiceIcon"
+        *ngIf="service.virtualCallingModes && service.virtualCallingModes[0] && 
+        (service.virtualCallingModes[0].callingMode && service.virtualCallingModes[0].callingMode === 'WhatsApp') 
+        && (service.virtualServiceType && service.virtualServiceType ==='audioService')"></i>
+    <i class="fa wtsapvid-icon cstmServiceIcon"
+        *ngIf="service.virtualCallingModes && service.virtualCallingModes[0] && 
+        service.virtualCallingModes[0].callingMode && service.virtualCallingModes[0].callingMode === 'WhatsApp' && 
+        service.virtualServiceType && service.virtualServiceType ==='videoService'"></i>
+</div>
+<div class="service-icon" *ngIf="service.servicegallery && service.servicegallery.length > 0">
+    <img class="cstmServiceIcon"
+        *ngIf="service.servicegallery[0].thumbUrl"
+        [src]="service['servicegallery'][0]['thumbUrl']" alt=" Service Image">
+</div>
+<div class="service-icon"
+    *ngIf="service.serviceType !== 'virtualService' && service.serviceType === 'physicalService' && booking.providerAccount.serviceSector.domain !== 'religiousPriests'">
+    <img class="cstmServiceIcon" src="{{cdnPath}}assets/images/meeting_Artboard.png" alt="Physical Service Image">
+</div>
+<div class="service-icon"
+    *ngIf="service.serviceType !== 'virtualService' && service.serviceType === 'physicalService' && booking.providerAccount.serviceSector.domain === 'religiousPriests'">
+    <img class="cstmServiceIcon" src="{{cdnPath}}assets/images/hindu-temple-clipart.jpg" alt="Physical Service Image">
+</div>
+<div class="serviceName">{{service?.name | capitalizeFirst}}</div>

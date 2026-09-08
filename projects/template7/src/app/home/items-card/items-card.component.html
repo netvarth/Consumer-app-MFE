@@ -1,0 +1,46 @@
+<div class="items-card-wrap p-0" [ngClass]="theme">
+    <div class="items-grid">
+        <article class="item-card pointer-cursor" *ngFor="let item of items | slice:0:10" (click)="viewItems(item)">
+            <div class="item-media">
+                <img *ngIf="item?.spItemDto?.attachments?.[0]?.s3path"
+                    [src]="item.spItemDto.attachments[0].s3path" [alt]="item?.spItem?.name || item?.spItemDto?.name">
+                <img *ngIf="!item?.spItemDto?.attachments?.length"
+                    src="{{cdnPath}}assets/images/rx-order/items/Items.svg" [alt]="item?.spItem?.name || item?.spItemDto?.name">
+                <div class="product-actions">
+                    <button
+                        class="product-like-btn"
+                        type="button"
+                        aria-label="Add to wishlist"
+                        pTooltip="Add to wishlist"
+                        tooltipPosition="top"
+                        (click)="onWishlist(item, $event)">
+                        <img class="actionImge" [src]="isWishlisted(item) ? (cdnPath + 'assets/images/wishlist.png') : (cdnPath + 'assets/images/like.png')" />
+                    </button>
+                    <button
+                        class="product-cart-btn"
+                        type="button"
+                        aria-label="Add to cart"
+                        *ngIf="!cartDisabled"
+                        pTooltip="Add to cart"
+                        tooltipPosition="top"
+                        (click)="$event.stopPropagation(); addToCart(item, $event)">
+                        <img  class="actionImge" [src]="cdnPath + 'assets/images/icons/addtocart.png'" alt="Change address" />
+                    </button>
+                </div>
+            </div>
+            <div class="item-meta">
+                <div class="item-title">{{ item?.spItem?.name || item?.spItemDto?.name }}</div>
+                <!-- <div class="item-subtitle" *ngIf="item?.spItemDto?.shortDesc">
+                    {{ item.spItemDto.shortDesc }}
+                </div> -->
+                <div class="item-price-row">
+                    <span class="item-price">Rs. {{ item?.price | number:'1.0-0' }}</span>
+                    <span class="item-mrp" *ngIf="item?.showMrp && item?.mrp && item?.mrp > item?.price">Rs. {{ item.mrp | number:'1.0-0' }}</span>
+                    <span class="item-off" *ngIf="item?.showMrp && item?.mrp && (((item.mrp - item.price) / item.mrp) * 100) > 0">
+                        {{ ((item.mrp - item.price) / item.mrp) * 100 | number:'1.0-0' }}% OFF
+                    </span>
+                </div>
+            </div>
+        </article>
+    </div>
+</div>

@@ -1,0 +1,17 @@
+<div class="bus-item-N" *ngFor="let service of memberService_arr">
+    <div class="d-flex justify-content-between no-padding-small">
+        <div class="service">
+            <h5>{{service.memberShipService.displayName}}</h5>
+            <p class="mt-2 line-clamp-ln3">{{service.memberShipService.description}}</p>
+        </div>
+        <img class="img-responsive" src="{{cdnPath}}assets/images/registration.svg" alt="Physical Service Image"/>
+    </div>
+    <div #enroll class="mt-5" style="height: 50px !important;">
+        <button *ngIf="!service.status" class="Enroll-btn" mat-button #btnEnroll
+            (click)="memberEnroll(service.memberShipService.id)">Register</button>
+        <p class="submit" *ngIf="service && service.status ==='Hold'">Your application is submitted for registration.
+        </p>
+        <p class="rejected" *ngIf="service && service.status ==='Rejected'">Your application is rejected</p>
+        <p class="submit" *ngIf="service && service.status ==='Approved'">Your application is approved</p>
+    </div>
+</div>

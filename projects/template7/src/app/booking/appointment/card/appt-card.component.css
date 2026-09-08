@@ -1,0 +1,133 @@
+.mgn-rt-5 {
+    margin-right: 5px !important;
+}
+.line-clamp {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+  }
+  .mgl-auto {
+    margin-left: auto !important;
+}
+.serv-name {
+    text-overflow: ellipsis;
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.green {
+    color: green !important;
+}
+.m-hgt-50 {
+    min-height: 50px;
+}
+.bg-cover {
+    height: 200px;
+    background-attachment: fixed;
+    margin-bottom: 20px;
+}
+.mt-80 {
+    margin-top: 80px;
+}
+.svg-align {
+    overflow: hidden;
+    vertical-align: middle;
+}
+.ansr {
+    color: #7E8299 !important;
+    padding-left: 30px;
+    margin-bottom: 20px;
+}
+.svg-icon.svg-icon-success svg g [fill] {
+    -webkit-transition: fill 0.3s ease;
+    transition: fill 0.3s ease;
+    fill: #1BC5BD !important;
+  }
+  
+  .consumer-dash .grid-card button:disabled {
+    background-color: grey !important;
+}
+
+app-appt-card, app-wl-card {
+    height: 100%;
+    overflow: auto;
+}
+.jvideo-icon {
+    margin-bottom: -5px !important;
+}
+
+.consumer-dash .grid-card .mat-grid-tile {
+    cursor: pointer;
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,.16),0 2px 10px 0 rgba(0,0,0,.12)!important;
+    border-radius: 5px;
+    background: #fff;
+}
+.consumer-dash .grid-card .pad-lt-40 {
+    padding-left: 40px;
+}
+.consumer-dash .grid-card .ordr_no {
+    color: #000 !important;
+    font-weight: 600;
+}
+.font-size-9 {
+    font-size: .9rem!important;
+}
+.consumer-dash .grid-card .wrap_txt {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.consumer-dash .grid-card .sp_name {
+    color: #183e79 !important;
+    font-weight: 600;
+}
+.consumer-dash .grid-card .prov_lbl {
+    font-size: .8rem !important;
+    color: grey !important;
+    flex: 1;
+}
+.serv-name {
+    text-overflow: ellipsis;
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+}
+@media (min-width: 500px){
+.serv-name {
+    width: 300px!important;
+}
+}
+.grid-card .appt-icon {
+    position: relative;
+    width: 45px;
+    margin-top: 7px;
+    margin-left: 10px;
+    padding: 4px;
+    border-radius: 20%;
+}
+.rupee-font {
+    font-family: Arial,Helvetica,sans-serif!important;
+}
+
+.timezone {
+    font-size: 0.75rem;
+    color: green;
+    margin-left: 2px;
+}
+.fit_in {
+    height: 100%;
+    overflow: auto;
+}
+.grid-container {
+    display: grid;
+    grid-template-columns: 50% 50%;
+}
+.grid-container > div {
+    padding: 5px 8px;
+}
+
+.loc-cls {
+    color: #fff;
+    font-size: .8rem;
+}

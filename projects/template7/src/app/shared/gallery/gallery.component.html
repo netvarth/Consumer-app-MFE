@@ -1,0 +1,57 @@
+
+<div class="cr1">
+    <h5 *ngIf="source!=='gallery'">{{gallery_view_caption}}</h5>
+    <div class="no-dta" *ngIf="!image_list_popup || image_list_popup.length == 0">
+        <p>{{havent_added_cap}} {{photo_cap}} </p>
+        <span class="cs-btn bt3" (click)="editImageGallery()">{{add_now_cap}}</span>
+    </div>
+    <div class="ph-gal-bx" *ngIf="image_list_popup && image_list_popup.length > 0">
+        <ul class="ph-gal">
+            <ng-container *ngFor="let file of image_list_popup;let i = index">
+                <li *ngIf="i<2" [class.gallery-li]="image_list_popup.length === 2">
+                    <div class="galbx">
+                        <span class="mbt">
+                            <button type="button" mat-icon-button [matMenuTriggerFor]="menu" id="btnMenu">
+                                <mat-icon>more_vert</mat-icon>
+                            </button>
+                            <mat-menu #menu="matMenu">
+                                <button id="btnDelete" type="button" mat-menu-item (click)="confirmDelete(file, i)">
+                                    <i class="icon-delete"></i>
+                                    <span>{{delete_btn}}</span>
+                                </button>
+                            </mat-menu>
+                        </span>
+                        <div class="img-h" (click)="openGallery(file)">
+                            <div class="overlay-y"></div><img [attr.data-src]="file.source" [src]="file.source" *ngIf="file.source" alt=""/>
+                        </div>
+                    </div>
+                </li>
+            </ng-container>
+            <li *ngIf="image_list_popup.length>2">
+                <div class="galbx">
+                    <span class="mre" (click)="openGallery(image_list_popup[2])"
+                        *ngIf="(image_list_popup.length-3)>0">+{{(image_list_popup.length-3)}}</span>
+                    <div class="img-h" *ngIf="(image_list_popup.length-3)>0"><img *ngIf="image_list_popup[2].source"
+                            [src]="image_list_popup[2].source" [attr.data-src]="image_list_popup[2].source" alt=""/></div>
+                    <span class="mbt" *ngIf="(image_list_popup.length-3)==0">
+                        <button type="button" mat-icon-button [matMenuTriggerFor]="menu" id="btnMenu">
+                            <mat-icon>more_vert</mat-icon>
+                        </button>
+                        <mat-menu #menu="matMenu">
+                            <button id="btnDelete" type="button" mat-menu-item (click)="confirmDelete(image_list_popup[2], 2)">
+                                <i class="icon-delete"></i>
+                                <span>{{delete_btn}}</span>
+                            </button>
+                        </mat-menu>
+                    </span>
+                    <div class="img-h" (click)="openGallery(image_list_popup[2])"
+                        *ngIf="(image_list_popup.length-3)==0">
+                        <div class="overlay-y"></div><img *ngIf="image_list_popup[2].source"
+                            [src]="image_list_popup[2].source"  [attr.data-src]="image_list_popup[2].source" alt=""/>
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <span (click)="editImageGallery()" class="addbt" *ngIf="status=='ACTIVE' && !page"></span>
+    </div>
+</div>

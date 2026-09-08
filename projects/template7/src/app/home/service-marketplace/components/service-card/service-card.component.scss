@@ -1,0 +1,15 @@
+:host { display: block; }
+.service-card { display: grid; grid-template-columns: minmax(0, 1fr) 132px; gap: 14px; padding: 18px 0 16px; border-bottom: 1px solid #e5e5e5; }
+.service-copy { min-width: 0; }
+h2 { margin: 0 0 5px; color: #090909; font-size: 19px; line-height: 1.25; font-weight: 700; }
+p { margin: 0 0 11px; color: #5f6673; font-size: 16px; line-height: 1.15; }
+strong { display: block; color: #090909; font-size: 14px; line-height: 1.3; }
+.discount { display: inline-flex; align-items: center; gap: 10px; max-width: 100%; margin-top: 9px; padding: 8px 12px; border-radius: 8px; color: #fa460b; background: #fff2ec; font-size: 14px; line-height: 1.2; }
+.discount i { flex: 0 0 auto; font-size: 16px; }
+.service-media { align-self: start; position: relative; height: 132px; overflow: hidden; border-radius: 11px; background: #f2f2f2; }
+.service-media img { display: block; width: 100%; height: 100%; }
+.image-fallback { display: grid; place-items: center; height: 100%; color: #bbb; font-size: 32px; }
+.service-media button { position: absolute; right: 0; bottom: 0; width: 100%; min-height: 45px; padding: 8px; border: 0; border-radius: 10px 10px 0 0; background: #000; color: #fff; font-size: 16px; font-weight: 700; cursor: pointer; }
+.service-media button:focus-visible { outline: 3px solid #fb4300; outline-offset: -4px; }
+@media (max-width: 350px) { .service-card { grid-template-columns: minmax(0,1fr) 112px; gap: 10px; } .service-media { height: 124px; } }
+@media (min-width: 600px) { .service-card { grid-template-columns: minmax(0,1fr) 180px; } .service-media { height: 150px; } h2 { font-size: 22px; } p { font-size: 17px; } }

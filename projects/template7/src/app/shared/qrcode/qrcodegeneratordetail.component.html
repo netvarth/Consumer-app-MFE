@@ -1,0 +1,39 @@
+<form [ngClass]="this.data.theme">
+    <h1 class="mat-dialog-title">
+        <button mat-dialog-close class="modal_close" tabindex="-1" id="btn_close">
+            <i class="fa fa-window-close" aria-hidden="true"></i>
+        </button>
+    </h1>
+    <div class="qrpage" style="width: auto !important;padding: 10px !important;" *ngIf="!readMore"><label
+            style="color:dodgerblue; font-size: 30px;">{{bname}}</label><br>
+        {{ about | slice:0:64 }}
+        <span class="service-names pointer" (click)="showSpec()" *ngIf="!readMore && about.length > 64"><a>show
+                more...</a></span>
+    </div>
+    <div class="qrpage" style="width: auto !important;padding: 10px !important;" *ngIf="readMore"><label
+            style="color:dodgerblue; font-size: 30px;">{{bname}}</label><br>
+        {{ about }}
+        <span class="service-names pointer" (click)="showSpec()" *ngIf="readMore"><a>show less...</a></span>
+    </div>
+    <label class="txt-qr1">Scan QR Code</label>
+    <mat-dialog-content>
+        <div class="coupon-outer textcenter" *ngIf="qr_code_oId" #qrCodeOnlineId style="margin-top: -40px">
+            <div>
+                <qrcode id="print-section" [qrdata]="qr_value" [width]="256" [errorCorrectionLevel]="'M'"></qrcode>
+                <span><span>{{wpath}}{{accuid}}<span *ngIf="userId">/{{userId}}</span></span></span>
+            </div>
+            <div class="coupon-outer">
+                <a class="btndownload" (click)="downloadQRCode()"><i
+                        class="fa fa-download" aria-hidden="true" style="padding-right: 2px;"></i>Download</a>
+            </div>
+            <div class="jld-link-pad">
+                <div class="mt-4">
+                    <label>Share Via</label>
+                    <share-buttons style="font-size: 10px !important" [theme]="'circles-dark'"
+                        [include]="['facebook','whatsapp','email','telegram','copy']" [url]="shareLink"
+                        [autoSetMeta]="true" [image]="qrCodePath" [showIcon]="true" [showText]="true"></share-buttons>
+                </div>
+            </div>
+        </div>
+    </mat-dialog-content>
+</form>

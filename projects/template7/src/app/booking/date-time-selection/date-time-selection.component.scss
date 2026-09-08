@@ -1,0 +1,226 @@
+.selectDateTimetXt {
+    font-size: 16px !important;
+    padding: 8px;
+    padding-left: 10px;
+    font-weight: 600 !important;
+    height: 4rem !important;
+    border-bottom: none !important;
+    border-radius: 3px;
+}
+
+.selectedTimne {
+    color: #0D2348 !important;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.availableTimeTxt {
+    width: 100%;
+    color: #0D2348 !important;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.dateFlex {
+    display: flex;
+    gap: 5px;
+    width: 100%;
+    margin-left: 1rem;
+}
+
+.mainflex {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin-top: 10px;
+}
+
+.mainFlexdate {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.timeSlotCstm {
+    color: #000000;
+    font-weight: 600;
+    font-size: 16px;
+    display: none;
+}
+
+.slotPicker {
+    height: 29.5rem !important;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid #DEE1E6;
+    border-radius: 7.14577px;
+    overflow: auto;
+    padding: 5px;
+}
+
+.dualBtn {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding-top: 5px;
+    // -webkit-box-shadow: -2px -8px 6px -7px rgba(0, 0, 0, 0.24);
+    // -moz-box-shadow: -2px -8px 6px -7px rgba(0, 0, 0, 0.24);
+    // box-shadow: -2px -8px 6px -7px rgba(0, 0, 0, 0.24);
+}
+
+.confirmBtn {
+    background: #0D2348;
+    border-radius: 3.25709px;
+    border: none;
+    outline: none;
+    padding: 10px;
+    width: 9rem;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 14px;
+    color: #FFFFFF;
+}
+
+.backBtn {
+    background: #E5E8E8;
+    border-radius: 3.25709px;
+    border: none;
+    outline: none;
+    padding: 10px;
+    width: 8rem;
+    text-align: center;
+    text-transform: uppercase;
+    color: #A9A9A9;
+}
+
+.datePicker {
+        width: 50%;
+}
+
+@media (max-width: 767px) {
+    .selectDateTimetXt {
+        font-size: 16px !important;
+        padding: 8px;
+        padding-left: 10px;
+        font-weight: 600 !important;
+        height: 4rem !important;
+        border-bottom: none !important;
+        border-radius: 3px;
+    }
+
+    .availableTimeTxt {
+        display: none;
+    }
+
+    .mainflex {
+        flex-wrap: wrap;
+        background: #FFFFFF !important;
+        border: 0.369149px solid #E5E5E5 !important;
+        box-shadow: 0px 1.4766px 4.06064px rgba(0, 0, 0, 0.12) !important;
+    }
+
+    .datePicker {
+        padding: 0px !important;
+        width: 100% !important;
+    }
+
+    .timeSlotCstm {
+        display: block !important;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        letter-spacing: 1px;
+    }
+
+    .slotPicker {
+        border-radius: 0px !important;
+        height: 100% !important;
+        padding: 15px;
+    }
+
+    .dualBtn {
+        margin-bottom: 20px !important;
+        justify-content: center !important;
+    }
+}
+
+.service-img {
+    height: 51px !important;
+    width: 51px !important;
+    filter: drop-shadow(0px 2.13343px 2.13343px #FFFFFF) !important;
+    border-radius: 30px !important;
+    background-color: #FFFFFF !important;
+    box-shadow: 0 4px 8px rgb(0 0 0 / 20%), 0 6px 20px rgb(0 0 0 / 19%);
+}
+
+.card {
+    background: rgba(240, 242, 246, 0.81) !important;
+    border-radius: 8px !important;
+    width: 100% !important;
+
+}
+
+.service-info-info {
+    font-weight: 500 !important;
+    font-size: 10px !important;
+    color: #1e4079;
+}
+
+.user-head {
+    font-weight: inherit !important;
+    font-size: 1.175rem;
+    margin: 0px !important;
+}
+
+.sepcialization {
+    font-weight: 300 !important;
+    font-size: .9rem;
+    color: #9296A0 !important;
+}
+
+.user-detail {
+    display: flex;
+}
+
+.wtsapvid-icon,
+.meet-icon,
+.phon-icon,
+.wtsapaud-icon {
+    height: 51px !important;
+    width: 51px !important;
+    margin-top: -8px;
+}
+
+.details {
+    margin-bottom: 0px !important;
+    margin-top: 5px !important;
+    padding-left: 10px !important;
+}
+
+.zoom-icon {
+    height: 51px !important;
+    width: 51px !important;
+    margin-left: 8px !important;
+    top: 0px !important;
+}
+
+.wtsapvid-icon {
+    border-radius: 50px;
+}
+
+.jvideo-icon,
+.jvideo-icon-s,
+.jvideo-icon-mgm5 {
+    height: 51px !important;
+    width: 51px !important;
+}
+
+ul.service-ul li {
+    flex: 1 0 25%;
+    list-style: none;
+    margin: 0;
+    padding: 15px 15px 15px 60px;
+}
+
+.service-li-title {
+    color: #2653b7;
+}

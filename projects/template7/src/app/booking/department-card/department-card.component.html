@@ -1,0 +1,14 @@
+<div class="" >
+    <div class="deptImgInfo text-center" *ngIf="item && item['departmentLogo'] && item['departmentLogo'][0] && 
+                                      item['departmentLogo'][0]['s3path']">
+        <img class="cstmServiceIcon" src="{{item['departmentLogo'][0]['s3path']}}" />
+    </div>
+    <div class="deptImgInfo text-center" *ngIf="item && item['departmentLogo'] && !item['departmentLogo'][0]">
+        <img class="cstmServiceIcon" src="{{cdnPath}}assets/images/webP/health-dept.webp" />
+    </div>
+    <div class="deptName" *ngIf="item && item['departmentName']">
+        {{item['departmentName']}}
+    </div>
+    <div class="deptName description" *ngIf="item && item['departmentDescription']">
+        {{item['departmentDescription']}}</div>
+</div>

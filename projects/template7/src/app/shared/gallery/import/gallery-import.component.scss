@@ -1,0 +1,73 @@
+.select-wrapper {
+  display: block;
+}
+
+.bt2 {
+  text-transform: uppercase;
+}
+
+app-field-error-display .sts-msg.error {
+  padding: 10px 15px;
+  background: #f24949;
+  color: #fff;
+  font-weight: 500;
+  text-align: center;
+}
+
+.icon-delete:before {
+  content: "\4b";
+}
+
+.upload-doc {
+  border: 2px dashed #999;
+  text-align: center;
+  padding: 20px;
+  cursor: pointer;
+  transition: all .3s;
+}
+
+.upload-doc label {
+  font-size: 1rem;
+  color: #222223;
+  padding: 0;
+  margin-bottom: 10px;
+}
+
+.upload-doc .select-wrapper {
+  margin: 0 auto;
+  background: transparent;
+  position: relative;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+}
+
+.upload-doc .select-wrapper:before {
+  font-family: custom-ynw !important;
+  content: "\4d";
+  position: absolute;
+  display: flex;
+  width: 30px;
+  height: 30px;
+  align-items: center;
+  font-size: 1.875rem;
+  cursor: pointer;
+}
+
+.upload-doc .select-wrapper #image_src {
+  display: none;
+}
+
+@media only screen and (max-width: 575px) {
+  .upload-doc label {
+    font-size: 14px !important;
+  }
+
+
+}
+.cancel-btn {
+  padding:7px 20px 7px 20px !important;
+  background: #dbdbdb;
+  border:1px solid #dbdbdb;
+  color: #667667;
+ }

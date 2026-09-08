@@ -1,0 +1,23 @@
+.emailError{
+    color:red;
+}
+ 
+.col-xs-12, .col-lg-12, .col-md-12 {
+    position: relative;
+    min-height: 1px;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+.input-group {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    width: 100%;
+}
+.updateemail, label {
+    font-size: .875rem;
+}
+.form-control:last-child {
+    border-radius: 0px !important;
+}

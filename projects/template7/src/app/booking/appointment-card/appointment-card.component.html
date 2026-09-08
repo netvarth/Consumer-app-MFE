@@ -1,0 +1,101 @@
+<div>
+
+    <div *ngIf="service">
+        <div class="service-icon serviceAlign"
+            *ngIf="service && service.virtualServiceType && service.virtualServiceType=== 'videoService'">
+            <i class="fa phon-icon cstmServiceIconServiceInfo"
+                *ngIf="service  && service.virtualCallingModes && service.virtualCallingModes[0] && 
+                service.virtualCallingModes[0].callingMode && service.virtualCallingModes[0].callingMode === 'Phone'"></i>
+            <i class="fa meet-icon cstmServiceIconServiceInfo"
+                *ngIf="service  && service.virtualCallingModes && service.virtualCallingModes[0] && 
+                service.virtualCallingModes[0].callingMode && service.virtualCallingModes[0].callingMode === 'GoogleMeet'"></i>
+            <i class="fa zoom-icon cstmServiceIconServiceInfo"
+                *ngIf="service  && service.virtualCallingModes && service.virtualCallingModes[0] && 
+                service.virtualCallingModes[0].callingMode && service.virtualCallingModes[0].callingMode === 'Zoom'"></i>
+            <i class="fa jvideo-icon jvideo-icon-s jvideo-icon-mgm5 cstmServiceIconServiceInfo"
+                *ngIf="service  &&  service.virtualCallingModes  && service.virtualCallingModes[0] && 
+                service.virtualCallingModes[0].callingMode && service.virtualCallingModes[0].callingMode === 'VideoCall'"></i>
+            <i class="fa wtsapaud-icon cstmServiceIconServiceInfo"
+                *ngIf="service  && service.virtualCallingModes && service.virtualCallingModes[0] && 
+                (service.virtualCallingModes[0].callingMode && service.virtualCallingModes[0].callingMode === 'WhatsApp') && 
+                (service.virtualServiceType && service.virtualServiceType ==='audioService')"></i>
+            <i class="fa wtsapvid-icon cstmServiceIconServiceInfo"
+                *ngIf="service  && service.virtualCallingModes && service.virtualCallingModes[0] && 
+                service.virtualCallingModes[0].callingMode && service.virtualCallingModes[0].callingMode === 'WhatsApp' && 
+                service.virtualServiceType && service.virtualServiceType ==='videoService'"></i>
+        </div>
+        <div *ngIf="service && service.virtualServiceType && service.virtualServiceType=== 'audioService'"
+            class="service-icon serviceAlign">
+            <i class="fa meet-icon cstmServiceIconServiceInfo"
+                *ngIf="service  && service.virtualCallingModes && service.virtualCallingModes[0] && 
+                service.virtualCallingModes[0].callingMode && service.virtualCallingModes[0].callingMode === 'GoogleMeet'"></i>
+            <i class="fa wtsapaud-icon cstmServiceIconServiceInfo"
+                *ngIf="service  && service.virtualCallingModes && service.virtualCallingModes[0] && 
+                (service.virtualCallingModes[0].callingMode && 
+                service.virtualCallingModes[0].callingMode === 'WhatsApp') && 
+                (service.virtualServiceType && service.virtualServiceType ==='audioService')"></i>
+            <i class="fa phon-icon cstmServiceIconServiceInfo"
+                *ngIf="service  && service.virtualCallingModes && service.virtualCallingModes[0] &&
+                 (service.virtualCallingModes[0].callingMode && 
+                 service.virtualCallingModes[0].callingMode === 'Phone') && 
+                 (service.virtualServiceType && service.virtualServiceType ==='audioService')"></i>
+        </div>
+        <div class="service-icon" *ngIf="service && service.servicegallery && service.servicegallery.length > 0
+                                  && service.serviceType === 'physicalService'">
+            <img class="cstmServiceIcon" [src]="service.servicegallery[0].thumbUrl" alt=" Service Image">
+        </div>
+        
+        <div class="service-icon"
+            *ngIf="(!service.servicegallery || service.servicegallery.length===0) && service.serviceType && service.serviceType === 'physicalService'">
+            <img class="cstmServiceIcon" src="{{cdnPath}}assets/images/meeting_Artboard.png" alt="Physical Service Image">
+        </div>
+    </div>
+    <div class="serviceName " *ngIf="service && service.name">
+        {{service.name}}
+        <p class="description line-clamp" *ngIf="service && service['description']">
+            {{service['description']}}</p>
+    </div>
+    <div class="priceSection">
+        <div  class="ammount">    
+              <div *ngIf="service?.paymentDescription && service?.paymentDescription != ''">
+                 <mat-icon matTooltip="{{ service.paymentDescription }}" class="info-icon">
+                    info_outline
+                </mat-icon>
+            </div>        
+            <div *ngIf="service && service.totalAmount" class="feeTxt">{{'Service fee' | translate}}</div>
+            <div *ngIf="service && isInternational && service.supportInternationalConsumer" class="serviceammount rupee-font">{{service.internationalAmount | currency:'&#8377;'}}</div>&nbsp;
+            <div *ngIf="service && ((!service.supportInternationalConsumer && service.totalAmount) || (!isInternational  && service.totalAmount))" class="serviceammount rupee-font">{{service.totalAmount | currency:'&#8377;'}}</div>&nbsp;                       
+        </div>
+        <div *ngIf="!loggedInUser && service.supportInternationalConsumer" class="feeTxt hint">{{'Price may vary for international ' + consumer_label + 's' | translate}}</div>
+        <div *ngIf="service.isPrePayment" class="prepaymentNow">
+            <div class="empty"></div>
+            <div class="prepaymentAc rupee-font">{{'Amount Required Now ' |
+                translate}}
+                <!-- &nbsp;{{service.minPrePaymentAmount|
+                currency:'&#8377;'}} -->
+                <span class="bold price rupee-font service-li-value"
+                *ngIf="service && service.prePaymentType === 'percentage'">{{service.minPrePaymentAmount}}{{percentage_symbol}}
+                of Service Price</span>
+              <span class="bold price rupee-font service-li-value"
+                *ngIf="service && service.prePaymentType === 'fixed'">{{service.minPrePaymentAmount
+                | currency:'&#8377;'}}</span>
+            </div>
+            <div class="empty"></div>
+        </div>
+        <div *ngIf="!service.isPrePayment" class="prepaymentNow">
+            <div class="empty"></div>
+            <div class="prepaymentAc">{{'No advance payment required' | translate}}</div>
+            <div class="empty"></div>
+        </div>
+    </div>
+    <div class="serviceFlex mt-4">
+        <div class="est" *ngIf="timings">
+            <div class="estText">{{timingCaption | translate}}</div>
+            <div class="dateTimeavailable">{{timings}}</div>
+        </div>
+        <div class="availablity" [ngClass]="timings?'bord-left':''">
+            <div class="availabiliotytxt" *ngIf="personsAheadText">{{personsAheadCaption | translate}}</div>
+            <div class="dateTimeavailable" *ngIf="personsAheadText">{{personsAheadText}}</div>
+        </div>
+    </div>
+</div>

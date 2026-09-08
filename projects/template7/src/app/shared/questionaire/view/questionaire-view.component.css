@@ -1,0 +1,7 @@
+.p-5 {
+    padding: 5px !important
+}
+
+table td,  table th, table tr{
+    border: 1px solid #ddd;
+}

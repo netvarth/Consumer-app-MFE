@@ -1,0 +1,36 @@
+ul,
+li {
+  list-style-type: none;
+  padding-left: 5px;
+}
+.attachment a:link,
+.attachment a:active,
+.attachment a:visited {
+  color: #008566;
+  text-decoration: none;
+}
+.fa-image {
+  font-size: 17px !important;
+}
+.attachment a:hover {
+  color: #008566;
+  text-decoration: underline;
+}
+/* .imgIcon {
+  height: 20px !important;
+  width: 20px !important;
+} */
+.imgIcon, img{
+  width: 120px !important;
+  height: 120px !important; 
+  display: table-caption;
+}
+li {
+  float: left !important;
+}
+@media (max-width:575px){
+  .imgIcon, img{
+    width: 80px !important;
+    height: 80px !important;
+  }
+}

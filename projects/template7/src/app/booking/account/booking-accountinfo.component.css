@@ -1,0 +1,29 @@
+.title b{
+    color: #000 !important;
+}
+.rounded-circle {
+    border-radius: 50% !important;
+  }
+.shadow-sm {
+    box-shadow: 0 .1rem 1rem .25rem rgba(0,0,0,.05)!important;
+}
+.m-5 {
+  margin: 3rem!important;
+}
+h3 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+h6 {
+  margin-bottom: 10px;
+} 
+@media (min-width: 768px) and (max-width: 991px){
+h6 {
+    font-size: .8rem!important;
+}
+}
+@media  (max-width: 575px){
+  .a,.b {
+      font-size: 14px!important;
+  }
+  }

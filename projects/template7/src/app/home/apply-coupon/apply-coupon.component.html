@@ -1,0 +1,20 @@
+<div class="col-md-12 col-12 col-sm-12 p-0 lnk mt-1 ">
+    <div class="coupon-area d-flex justify-content-between">
+        <div class="coupon-head">
+            <input (change)="couponCheck($event)" type="checkbox" class="ckbx pull-left me-2"
+                style="margin: 0px;">{{'Use Coupon Code' | translate}}
+        </div>
+        <div class="coupons-icon" (click)="openCoupons()">
+            <i class="fa fa-tags  me-2"></i>{{'Coupons' | translate}}
+        </div>
+    </div>
+    <div class="input-group">
+        <div *ngIf="couponChecked == true" class="mt-4">
+            <div class="input-group-append">
+                <input [ngClass]="{'invalid':!couponValid}"
+                    placeholder="Enter coupon code" type="text" class="form-control coupon-code" [(ngModel)]="selectedCoupon">
+                <button id="btnApply" class="btn bt3 btn-default coupon-apply-btn" (click)="applyCoupons()" type="button">Add</button>
+            </div>
+        </div>
+    </div>
+</div>

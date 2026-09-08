@@ -1,0 +1,101 @@
+<div id="page" *ngIf="templateJson">
+  <!-- Optional cover -->
+  <div class="home-cover-wrap" *ngIf="templateJson?.homepagecover">
+    <img class="home-cover" [src]="templateJson.homepagecover" alt="Homepage cover" loading="eager" decoding="async"
+      (click)="createappoinment()" />
+  </div>
+  <!-- Section header: Upcoming Bookings -->
+
+  <div class="section-bar bookings-bar"
+    *ngIf="templateJson && nextBooking && !isBookingCancelled(nextBooking) && !isBookingCompleted(nextBooking)">
+    <div class="section-left">
+      <span class="icon-bg"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+      <span class="title">Upcoming Bookings</span>
+    </div>
+    <button type="button" class="view-all" *ngIf="hasMultipleActiveBookings()" (click)="onViewAllBookings()">View
+      More</button>
+  </div>
+
+
+    <!-- Coming soon section -->
+  <section class="section-block coming-soon-section">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">{{ templateJson?.section1?.comingSoon?.title}}</p>
+      </div>
+    </div>
+    <div class="coming-grid">
+      <article class="coming-card" *ngFor="let card of comingSoonCards" [style.--accent]="card.accent || '#FFE0CC'"
+        (click)="onComingSoonCard(card)">
+        <img *ngIf="card.image" class="coming-image" [src]="card.image" [alt]="card.title" loading="lazy"
+          decoding="async">
+        <div class="coming-visual" *ngIf="!card.image">
+          <i class="fa" [ngClass]="card.icon || 'fa-paw'"></i>
+        </div>
+      </article>
+    </div>
+  </section>
+
+
+  <div class="mgn-up-10 m-3 mgn-bt-10 pad-bt-10 grid-card"
+    *ngIf="templateJson && nextBooking && !isBookingCancelled(nextBooking) && !isBookingCompleted(nextBooking)">
+    <mat-grid-list [cols]="1" rowHeight="300px" [gutterSize]="'10px'">
+      <mat-grid-tile (click)="showBookingDetails(nextBooking, nextBookingType || 'today')">
+        <ng-container *ngIf="nextBooking.apptStatus">
+          <app-appt-card [booking]="nextBooking" [type]="nextBookingType || 'today'" [smallDevice]="smallDevice"
+            (actionPerformed)="cardClicked($event)"></app-appt-card>
+        </ng-container>
+  
+      </mat-grid-tile>
+    </mat-grid-list>
+  </div>
+  <div class="ratingcard-wrap" *ngIf="templateJson?.trustFeatures">
+    <img class="ratingcard-img" [src]="templateJson?.trustFeatures" loading="lazy" decoding="async">
+  </div>
+  <div class="offercard-wrap" *ngIf="templateJson?.offerBanner" (click)="createappoinment()">
+    <img class="ratingcard-img" [src]="templateJson?.offerBanner" loading="lazy" decoding="async">
+  </div>
+  
+  
+  <div class="ratingcard-wrap" *ngIf="templateJson?.ratingcard">
+    <img class="ratingcard-img" [src]="templateJson?.ratingcard" loading="lazy" decoding="async">
+  </div>
+
+
+  <!-- Blogs section -->
+  <section class="section-block blog-section" *ngIf="blogConfig?.showBlogs && filteredBlogs.length">
+    <div class="section-head blog-head">
+      <div>
+        <p class="eyebrow">{{ blogConfig?.blogsCaption || 'Our Blogs' }}</p>
+      </div>
+      <button type="button" class="view-all" *ngIf="blogConfig?.showMoreBlogs && blogConfig?.moreBlogsLink"
+        (click)="openBlog({ link: blogConfig.moreBlogsLink })">
+        {{ blogConfig?.moreBlogsCaption || 'View All' }}
+      </button>
+    </div>
+
+    <div class="blog-filters" *ngIf="blogFilters.length">
+      <button type="button" class="filter-chip" *ngFor="let filter of blogFilters"
+        [class.active]="activeBlogFilter === filter.key" (click)="selectBlogFilter(filter.key)">
+        {{ filter.label }}
+      </button>
+    </div>
+
+    <div class="blog-list">
+      <article class="blog-row" *ngFor="let blog of filteredBlogs" (click)="openBlog(blog)">
+        <img [src]="blog.image" [alt]="blog.title" loading="lazy" decoding="async">
+        <div class="blog-body">
+          <div class="blog-meta">
+            <span class="blog-date"><i class="fa fa-calendar"></i>{{ blog.date }}</span>
+          </div>
+          <h3>{{ blog.title.slice(0,35) }}...</h3>
+          <h2>{{ blog.description.slice(0,50) }}...</h2>
+        </div>
+      </article>
+    </div>
+    <div>
+      <span class="more_blogs" (click)="moreblogs()">View More Blogs</span>
+    </div>
+  </section>
+
+</div>

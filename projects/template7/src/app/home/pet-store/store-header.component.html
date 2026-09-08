@@ -1,0 +1,19 @@
+<header class="store-header" [style.background-image]="config.backgroundImage ? 'url(' + config.backgroundImage + ')' : null">
+  <div class="store-header__row">
+    <img class="store-header__logo" *ngIf="config.logo" [src]="config.logo" [alt]="config.logoAlt || 'Pet store'">
+    <span class="store-header__logo-fallback" *ngIf="!config.logo" aria-label="Chota Boss">CHOTA<br>BOSS</span>
+    <button type="button" class="store-header__location" [disabled]="!config.locationLink" (click)="action.emit(config.locationLink || '')">
+      <i class="fa fa-map-marker" aria-hidden="true"></i>
+      <span><small>{{ config.locationLabel || 'Deliver at' }}</small><strong>{{ config.locationValue || 'Home' }} <i class="fa fa-angle-down" aria-hidden="true"></i></strong></span>
+    </button>
+    <div class="store-header__actions">
+      <button type="button" (click)="action.emit(config.cartLink || 'order/cart')" aria-label="Cart"><i class="fa fa-shopping-bag" aria-hidden="true"></i></button>
+      <button type="button" (click)="action.emit(config.profileLink || 'profile')" aria-label="Profile"><i class="fa fa-user" aria-hidden="true"></i></button>
+    </div>
+  </div>
+  <form class="store-header__search" (ngSubmit)="search.emit()" role="search">
+    <img *ngIf="searchIcon" [src]="searchIcon" alt="">
+    <input #queryInput [value]="searchQuery" (input)="updateSearch(queryInput.value)"
+      [placeholder]="config.searchPlaceholder || 'Search'" aria-label="Search the pet store">
+  </form>
+</header>

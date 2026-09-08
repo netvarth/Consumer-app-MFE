@@ -1,0 +1,65 @@
+<section class="cons-inbox no-padding-small">
+    <div class="consumer-dashhome p-0">
+
+        <div class="qnrsec" *ngFor="let qnr of groupedQnr | keyvalue: asIsOrder">
+            <div class="form-group card mgn-0 p-5" *ngFor="let group of qnr.value">
+
+                <label class="col-12 quest">{{group.question.label}}</label>
+                <div *ngIf="group.answerLine.answer['plainText']">
+                    {{group.answerLine.answer['plainText']}}
+                </div>
+                <div *ngIf="group.answerLine.answer['number']">{{group.answerLine.answer['number']}}</div>
+                <div *ngIf="group.answerLine.answer['date']">{{group.answerLine.answer['date'] | date: newDateFormat}}</div>
+                <div *ngIf="group.answerLine.answer['bool']">
+                    {{group.answerLine.answer['bool']=='true'?'Yes':'No'}}
+                </div>
+                <div *ngIf="group.answerLine.answer['list']">
+                    {{group.answerLine.answer['list'].toString()}}
+                </div>
+                <div *ngIf="group.answerLine.answer['fileUpload']" class="d-flex">
+                    <div class="dzimage pointer-cursor" *ngFor="let file of group.answerLine.answer['fileUpload']">
+                        <img class="img_fit" [src]="getImg(file.s3path, file)" (click)="openFile(file.s3path)">
+                    </div>
+                </div>
+                <div *ngIf="group.answerLine.answer['dataGrid'] && group.answerLine.answer['dataGrid'].length == 0">
+                    --
+                </div>
+                <div *ngIf="group.answerLine.answer['dataGrid'] && group.answerLine.answer['dataGrid'].length > 0">
+                    <div class="table-responsive" >
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th *ngFor="let colHead of group.question.dataGridProperties.dataGridColumns">
+                                        {{colHead.label}}
+                                    </th>
+                                </tr>
+                                <tr *ngFor="let row of group.answerLine.answer['dataGrid']">
+                                    <td *ngFor="let columnData of row.dataGridColumn">
+                                        <div *ngIf="columnData['column']['plainText']">
+                                            {{columnData['column']['plainText']}}
+                                        </div>
+                                        <div *ngIf="columnData['column']['number']">{{columnData['column']['number']}}
+                                        </div>
+                                        <div *ngIf="columnData['column']['date']">{{columnData['column']['date'] | date:newDateFormat}}</div>
+                                        <div *ngIf="columnData['column']['bool']">
+                                            {{columnData['column']['bool']=='true'?'Yes':'No'}}
+                                        </div>
+                                        <div *ngIf="columnData['column']['list']">
+                                            {{columnData['column']['list'].toString()}}
+                                        </div>
+                                        <div *ngIf="columnData['column']['fileUpload']" class="d-flex">
+                                            <div class="dzimage pointer-cursor"
+                                                *ngFor="let file of columnData['column']['fileUpload']">
+                                                <img class="img_fit" [src]="getImg(file.s3path, file)" (click)="openFile(file.s3path)">
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

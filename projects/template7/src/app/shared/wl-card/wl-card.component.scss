@@ -1,0 +1,649 @@
+.mgn-rt-5 {
+    margin-right: 5px !important;
+}
+
+.line-clamp {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+}
+
+.mgl-auto {
+    margin-left: auto !important;
+}
+
+.serv-name {
+    text-overflow: ellipsis;
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.serv-width {
+    max-width: 40%;
+}
+
+.con-width {
+    max-width: 60%;
+}
+
+.green {
+    color: green !important;
+}
+
+.m-hgt-50 {
+    min-height: 50px;
+}
+
+.bg-cover {
+    height: 200px;
+    background-attachment: fixed;
+    margin-bottom: 20px;
+}
+
+.mt-80 {
+    margin-top: 80px;
+}
+
+.svg-align {
+    overflow: hidden;
+    vertical-align: middle;
+}
+
+.ansr {
+    color: #7E8299 !important;
+    padding-left: 30px;
+    margin-bottom: 20px;
+}
+
+.svg-icon.svg-icon-success svg g [fill] {
+    -webkit-transition: fill 0.3s ease;
+    transition: fill 0.3s ease;
+    fill: #1BC5BD !important;
+}
+
+.consumer-dash .grid-card button:disabled {
+    background-color: grey !important;
+}
+
+app-appt-card,
+app-wl-card {
+    height: 100%;
+    overflow: auto;
+}
+
+.prescpBtn {
+    justify-content: space-between;
+
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #06227c !important;
+
+}
+
+/* new ui css start */
+/* * //new ui css start */
+.marginCstm-5 {
+    margin-left: 35px;
+}
+
+.providerName {
+    color: #000000 !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+}
+
+.providerDeatils {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e5e5e5;
+    padding: 15px;
+    color: #000000;
+    font-weight: 600;
+}
+
+.providerLoc {
+    color: #9F9F9F;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.meetingBtn {
+    background: #45C3D3;
+    border: 1.43669px solid #45C3D3;
+    border-radius: 5px;
+    outline: none;
+    padding: 8px;
+    color: #ffffff;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.dayNameOnly {
+    color: #222222;
+    font-weight: 600;
+    height: 2.5rem;
+    padding-top: 10px;
+    font-size: 14px;
+}
+
+.dayOnly {
+    // height: 5.5rem;
+    border-bottom: 0.45px dashed #D8D8D8;
+    padding-top: 5px;
+    color: #222222;
+    font-size: 30px;
+    font-weight: 600;
+    width: 4rem;
+}
+
+.monthYear {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    align-items: center;
+    background: #45C3D3;
+    border-radius: 5.37037px 5.37037px 0px 0px;
+    width: 40%;
+    height: 2rem;
+}
+
+.monthName {
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.yearName {
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.dateOtherStatusInfo {
+    display: flex;
+    gap: 15px;
+    margin: 5px;
+    background: #FFFFFF;
+    border-bottom: 1px solid #E5E5E5;
+    // flex-wrap: wrap;
+}
+
+.dateinfotf {
+    width: 25%;
+    background: #F6F6F6;
+    border-right: 1px solid #E5E5E5;
+    padding: 10px;
+    text-align: center;
+}
+
+.dateInfo {
+    text-align: -webkit-center;
+}
+
+.dayDaYName {
+    width: 40%;
+    background: #FFFFFF;
+    box-shadow: 0px 4.2963px 4.2963px rgb(0 0 0 / 25%);
+    border-radius: 5.37037px;
+    /* height: 4rem; */
+}
+
+.serviceIconInfo {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.serviceName {
+    color: #000000;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.more_opt {
+    margin-right: 10px;
+}
+
+.calendaropen {
+    display: flex;
+    grid-gap: 10px;
+    gap: 10px;
+    align-items: center;
+    margin-top: 5px;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+}
+
+.calendarTxt {
+    color: #478AFA;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.exhInfoFlex {
+    display: flex;
+    margin-top: 5px;
+    align-items: center;
+    gap: 15px;
+}
+
+.cstmTxt {
+    color: #999999;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.cstmTxtInfo {
+    color: #232121;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.marginCstm {
+    margin-left: 18px;
+}
+
+.todayOnly {
+    font-size: 20px !important;
+}
+
+.marginCstm-2 {
+    margin-left: 24px;
+}
+
+.disableTxt {
+    color: #F06D63;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.enableTxt {
+    color: #08B675;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.serviceOtherInfo {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    width: 75%;
+}
+
+.marginCstm-3 {
+    margin-left: 39px;
+}
+
+.presFlex {
+    display: flex;
+    margin: 5px;
+    gap: 10px;
+    align-items: center;
+}
+
+.dwnldImg {
+    height: 15px;
+    object-fit: cover;
+}
+
+.presCstm {
+    color: #45C3D3;
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.presBtn {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    align-items: center;
+    padding: 12px;
+    outline: none;
+    border: 1.43669px solid #45C3D3;
+    border-radius: 4.75758px;
+    background: #ffffff;
+    cursor: pointer;
+}
+
+.presPaidFlex {
+    display: flex;
+    /* justify-content: space-between; */
+    align-items: center;
+    margin: 10px;
+    gap: 10px;
+    position: relative;
+}
+
+.ammountFlex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 30px;
+}
+
+.amountDueBtn {
+    background: #F06D63;
+    border: 1.43669px solid #F06D63;
+    border-radius: 4.75758px;
+    padding: 10px;
+    outline: none;
+    color: #ffffff;
+    font-family: 'Roboto';
+    font-style: normal;
+}
+
+.amountPaid {
+    color: #F06D63;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.serviceChargeTxt {
+    color: #F06D63;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.serviceCharge {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    align-items: center;
+}
+
+.serviceMoreOpt {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* for small device ui start */
+.dateinfotfSmall {
+    width: 100%;
+    background: #F6F6F6;
+    border-right: 1px solid #E5E5E5;
+    padding: 10px;
+    text-align: center;
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.monthYearSmall {
+    display: flex;
+    justify-content: center;
+    grid-gap: 10px;
+    gap: 10px;
+    align-items: center;
+    background: #45C3D3;
+    border-radius: 5.37037px 5.37037px 0px 0px;
+    width: 70%;
+    height: 3rem;
+}
+
+.dayDaYNameSmall {
+    width: 68.5%;
+    background: #FFFFFF;
+    box-shadow: 0px 4.2963px 4.2963px rgb(0 0 0 / 25%);
+    border-radius: 5.37037px;
+}
+
+.dayNameOnlysmall {
+    color: #222222;
+    font-weight: 600;
+    height: 2.5rem;
+    padding-top: 7px;
+}
+
+.dayOnlySmall {
+    height: 3rem;
+    border-bottom: 0.45px dashed #D8D8D8;
+    // padding-top: 3px;
+    color: #222222;
+    font-size: 30px;
+    font-weight: 600;
+    width: 7rem;
+}
+
+.dateInfoSmall {
+    text-align: -webkit-center;
+    width: 69%;
+    margin-left: -25px;
+}
+
+.cstmWidth {
+    width: 100%;
+}
+
+.serviceNameSmall {
+    color: #000000;
+    font-size: 16px;
+    font-weight: 600;
+    text-align: left;
+}
+
+.calendarTxtsmall {
+    color: #478AFA;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.providerNameLocSmall {
+    padding: 5px;
+}
+
+.padcstm {
+    padding: 5px;
+}
+
+.marginCstmSmall {
+    margin-left: 38px;
+}
+
+.presBtnSmall {
+    padding: 8px !important;
+}
+
+.amountDueBtnSmall {
+    padding: 8px;
+    width: 10rem;
+}
+
+.meetingBtnInfoSmall {
+    margin: 5px;
+}
+
+.presFlexSmall {
+    // justify-content: center !important
+    justify-content: space-between !important;
+}
+
+.ammountFlexSmall {
+    justify-content: center !important;
+}
+
+.presCstmSmall {
+    font-size: 13px;
+}
+
+.meetingBtnsmall {
+    width: 15rem;
+}
+
+.ammountFlexsmall {
+    justify-content: center !important;
+}
+
+.serviceIconInfoSmall {
+    gap: 7px !important;
+    align-items: center !important;
+}
+
+.cstmTxtSmall {
+    width: 31%;
+}
+
+.pad-1 {
+    padding: 10px;
+}
+
+.serviceChargeTxtSmall {
+    color: #808080;
+}
+
+.serviceChargesmall {
+    margin: 5px;
+}
+
+.cstmWlCard {
+    background: #FFFFFF;
+    border: 1px solid #E5E5E5;
+    box-shadow: 0px 4px 11px rgb(0 0 0 / 12%);
+    border-radius: 5px;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.exhInfoFlexGap {
+    gap: 0px !important;
+}
+
+$cstmWidthServiceIcon: 50px;
+
+.jvideo-icon-s {
+    width: $cstmWidthServiceIcon !important;
+}
+
+.wtsapaud-icon {
+    width: $cstmWidthServiceIcon !important;
+}
+
+.zoom-icon {
+    width: $cstmWidthServiceIcon !important;
+}
+
+.phon-icon {
+    width: $cstmWidthServiceIcon !important;
+}
+
+.meet-icon {
+    width: $cstmWidthServiceIcon !important;
+}
+
+.wtsapvid-icon {
+    width: $cstmWidthServiceIcon !important;
+}
+
+
+.exhInfoFlexCstmGap {
+    gap: 55px !important;
+}
+
+@media (max-width: 768px) {
+    .greenc {
+        font-size: 15px !important;
+        margin-left: -3px !important;
+    }
+
+    .red {
+        font-size: 15px !important;
+        margin-left: -3px !important;
+    }
+
+    .cstmMargin-6 {
+        margin-left: 38px;
+    }
+
+    .cstmMargin-7 {
+        margin-left: 8px;
+    }
+
+    .dayOnlySmall,
+    .dayDaYName,
+    .monthYear {
+        width: auto;
+    }
+}
+.greenc {
+    font-size: 14px !important;
+    color: #00cc96;
+}
+
+$serviceIconBGwidth: 60px !important;
+$serviceIconBGborder: 0.825833px solid #D7E7F9 !important;
+$serviceIconBGfilter: drop-shadow(0px 3.30333px 3.30333px rgba(0, 0, 0, 0.25)) !important;
+$serviceIconBGborderRadius: 50% !important;
+$serviceIconBGboxShadow: 0 4px 8px rgb(0 0 0 / 20%), 0 6px 20px rgb(0 0 0 / 19%) !important;
+$serviceIconBGheight: 60px !important;
+
+.serviceIcon {
+    width: $serviceIconBGwidth;
+    border: $serviceIconBGborder;
+    filter: $serviceIconBGfilter;
+    border-radius: $serviceIconBGborderRadius;
+    box-shadow: $serviceIconBGboxShadow;
+    height: $serviceIconBGheight;
+}
+
+.icon-favourite-filled:before {
+    content: "\27";
+}
+
+.field-head {
+    width: 85px;
+}
+
+::ng-deep .cstmWlCard .more_opt {
+    position: relative !important;
+}
+::ng-deep .mat-mdc-menu-item-text {
+    display: flex;
+    align-items: center;
+}
+.ribbon {
+    position: absolute;
+    padding: 0 .5em;
+    font-size: .8rem;
+    z-index: 10;
+    margin: 0 0 0 -.625em;
+    line-height: 2em;
+    min-width: 25%;
+    max-width: -webkit-fit-content;
+    max-width: -moz-fit-content;
+    max-width: fit-content;
+    color: #edf2fc;
+    font-weight: 600;
+    border-radius: 0 .156em .156em 0;
+    background: #031c6e;
+    box-shadow: -1px 2px 3px #00000080;
+  }
+  .book_stats {
+    font-weight: 600;
+    color: #673ab7f2;
+    margin-top: auto !important;
+    margin-bottom: auto;
+  }
+
+.ribbon::after {
+    content: "";
+    position: absolute;
+    border-style: solid;
+}
+
+.ribbon::after {
+    right: -1em;
+    border-width: .99em 1em 1em 3em;
+    border-color: #06227c transparent #06227c #06227c;
+    z-index: -1;
+    box-shadow: 0 8px 6px -6px #00000085;
+}
+.cstmWlCard .mat-mdc-menu-panel .mat-mdc-menu-content .mat-mdc-menu-item i {
+    margin-top: 0 !important;
+    font-size: 1.25rem !important;
+}
