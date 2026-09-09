@@ -102,6 +102,8 @@ export class ExtendHttpInterceptor implements HttpInterceptor {
 
     const sessionToken = this.lStorageService.getitemfromLocalStorage('c_authorizationToken');
     const browserSession = isBrowserSessionToken(sessionToken);
+    const isLoginOrSignup = request.method === 'POST'
+      && /(?:^|\/)consumer(?:\/login)?$/.test(request.url.split('?')[0].replace(/\/+$/, ''));
     if (skipAuthorization) {
       headers = headers.delete('Authorization').delete('AuthToken');
       const appId = this.lStorageService.getitemfromLocalStorage('appId');
@@ -113,14 +115,17 @@ export class ExtendHttpInterceptor implements HttpInterceptor {
       }
     } else if (isRefreshCall) {
       headers = headers.delete('AuthToken');
-      const refreshToken = this.lStorageService.getitemfromLocalStorage('refreshToken');
-      if (refreshToken && !isBrowserSessionToken(refreshToken)) headers = headers.set('Authorization', refreshToken);
+      // OAuth consumes the raw authn proof, including browser tokens. Also
+      // recover sessions saved before switch began retaining that refresh proof.
+      const refreshToken = this.lStorageService.getitemfromLocalStorage('refreshToken')
+        || (browserSession ? sessionToken : null);
+      if (refreshToken) headers = headers.set('Authorization', refreshToken);
       else headers = headers.delete('Authorization');
     } else {
       headers = headers.delete('Authorization').delete('AuthToken');
-      // A browser session descriptor is not a header credential. Sending it
-      // overrides the valid cookie session and produces "Invalid Token format".
-      if (sessionToken && !browserSession) {
+      // Login/signup consume the raw authn proof. Protected endpoints instead
+      // use the browser cookie; sending the proof there gives "Invalid Token format".
+      if (sessionToken && (!browserSession || isLoginOrSignup)) {
         headers = headers.set('Authorization', sessionToken);
       } else if (!browserSession) {
         const appId = this.lStorageService.getitemfromLocalStorage('appId');

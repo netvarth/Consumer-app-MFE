@@ -1,8 +1,8 @@
 /**
  * Browser login/switch responses can contain a base64 session descriptor instead
- * of an Authorization credential. These sessions authenticate with HttpOnly
- * cookies, just like normal browser login. This only selects the transport;
- * the server must still validate the session.
+ * of a credential for protected API calls. Login and OAuth refresh accept this
+ * authn proof in Authorization; profile/cart calls use the resulting HttpOnly
+ * cookie session. This only selects the transport; the server validates login.
  *
  * Keep this stateless helper outside src, which native federation shares as
  * @consumer/cross-tenant. Each app must bundle it without requiring a newer

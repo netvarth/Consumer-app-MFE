@@ -116,8 +116,19 @@ export class CrossTenantSsoService {
     }
 
     try {
-      const response = await this.switchAccount(target);
-      const profile = await this.requestProfile(response.token);
+      let response = await this.switchAccount(target);
+      let profile: Record<string, any>;
+      try {
+        profile = await this.requestProfile(response.token);
+      } catch (error) {
+        const refreshToken = this.sessionRefreshToken(response);
+        if (this.httpStatus(error) !== 419 || !refreshToken) throw error;
+        // This HttpBackend client bypasses the shell interceptor. Recover the
+        // target session here, using its proof rather than the source account's
+        // stored refresh token. Retry the profile once before publishing login.
+        response = { ...response, ...await this.requestSessionRefresh(refreshToken) };
+        profile = await this.requestProfile(response.token);
+      }
       if (response.providerConsumer != null && String(response.providerConsumer) !== String(profile['id'])) {
         throw new Error('Account switch did not activate the target customer session');
       }
@@ -187,8 +198,9 @@ export class CrossTenantSsoService {
   private installSession(response: CrossTenantSwitchResponse, accountId: string): void {
     this.accountState.clearActiveAuthentication();
     localStorage.setItem('c_authorizationToken', JSON.stringify(response.token));
-    if (typeof response.refreshToken === 'string' && response.refreshToken.trim()) {
-      localStorage.setItem('refreshToken', JSON.stringify(response.refreshToken));
+    const refreshToken = this.sessionRefreshToken(response);
+    if (refreshToken) {
+      localStorage.setItem('refreshToken', JSON.stringify(refreshToken));
     } else {
       localStorage.removeItem('refreshToken');
     }
@@ -217,6 +229,26 @@ export class CrossTenantSsoService {
       throw new Error('Provider session returned no customer profile');
     }
     return profile;
+  }
+
+  private sessionRefreshToken(response: CrossTenantSwitchResponse): string | null {
+    return this.normalizeSessionToken(response.refreshToken)
+      ?? (isBrowserSessionToken(response.token) ? response.token : null);
+  }
+
+  private async requestSessionRefresh(refreshToken: string): Promise<{ token: string; refreshToken: string }> {
+    const response = await firstValueFrom(this.http.post<{ token?: string; refreshToken?: string }>(
+      this.apiUrl('consumer/oauth/token/refresh'),
+      null,
+      {
+        // OAuth accepts the authn proof; protected profile/cart endpoints do not.
+        headers: new HttpHeaders({ Authorization: refreshToken, Accept: 'application/json', BOOKING_REQ_FROM: 'CUSTOM_APP' }),
+        withCredentials: true
+      }
+    ).pipe(timeout(10000)));
+    const token = this.normalizeSessionToken(response?.token);
+    if (!token) throw new Error('Target session refresh returned no token');
+    return { token, refreshToken: this.normalizeSessionToken(response.refreshToken) ?? token };
   }
 
   private hydrateUser(user: Record<string, any>, profile: Record<string, any>): Record<string, any> {
