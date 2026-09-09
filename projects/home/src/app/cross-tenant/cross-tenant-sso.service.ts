@@ -3,7 +3,8 @@ import { Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { timeout } from 'rxjs/operators';
 import { AccountService, ConsumerService, SharedService } from 'jconsumer-shared';
-import { CrossTenantJourneyService, isBrowserSessionToken, PlatformTokenStore } from '@consumer/cross-tenant';
+import { CrossTenantJourneyService, PlatformTokenStore } from '@consumer/cross-tenant';
+import { isBrowserSessionToken } from '../../../../cross-tenant/helpers/browser-session-token';
 import { AccountStateCoordinator } from './account-state-coordinator.service';
 
 export interface CrossTenantSwitchResponse {

@@ -13,7 +13,8 @@ import { catchError, switchMap, timeout, tap, map, finalize, shareReplay } from 
 import { Router } from '@angular/router';
 import { AuthService, LocalStorageService, SharedService } from 'jconsumer-shared';
 import { AccountService } from './account.service';
-import { ACTIVE_ACCOUNT_KEY, CrossTenantLogoutService, isBrowserSessionToken, PlatformTokenStore } from '@consumer/cross-tenant';
+import { ACTIVE_ACCOUNT_KEY, CrossTenantLogoutService, PlatformTokenStore } from '@consumer/cross-tenant';
+import { isBrowserSessionToken } from '../../../cross-tenant/helpers/browser-session-token';
 
 interface MaintenanceStatus {
   maintenanceMode: boolean;
