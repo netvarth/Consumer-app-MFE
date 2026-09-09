@@ -8,6 +8,9 @@ import { CrossTenantSsoService } from './cross-tenant-sso.service';
 
 describe('CrossTenantSsoService', () => {
   const api = 'https://api.example/v1/rest/';
+  const browserToken = btoa(JSON.stringify({
+    acc: '128621', app: 'browser', isl: 'TEST_BROWSER_SESSION', dev: 'browser', typ: 'authn'
+  }));
   let service: CrossTenantSsoService;
   let http: HttpTestingController;
   let state: AccountStateCoordinator;
@@ -61,6 +64,56 @@ describe('CrossTenantSsoService', () => {
     expect(request.request.headers.has('Authorization')).toBeFalse();
     request.flush({ token: 'TARGET', status: 'signed_in' });
     flushMicrotasks();
+  }));
+
+  for (const status of ['signed_in', 'provisioned']) {
+    it(`validates the ${status} browser switch using cookies before installing the user`, fakeAsync(() => {
+      seedSession('127427');
+      storage.setitemonLocalStorage('login', true);
+      storage.setitemonLocalStorage('logout', true);
+      storage.setitemonLocalStorage('refreshToken', 'SOURCE_REFRESH');
+      let ready = false;
+      service.prepareForTargetAccount('128621', 'subapp').then(() => ready = true);
+      http.expectOne(api + 'consumer/login/switch').flush({
+        id: 482, providerConsumer: 219232, userType: 8, accStatus: 'ACTIVE',
+        firstName: 'Target', lastName: 'Customer', userName: 'Target Customer',
+        token: browserToken, status
+      });
+      flushMicrotasks();
+
+      const profile = http.expectOne(api + 'spconsumer');
+      expect(profile.request.headers.has('Authorization')).toBeFalse();
+      expect(profile.request.headers.has('AuthToken')).toBeFalse();
+      expect(profile.request.withCredentials).toBeTrue();
+      expect(ready).toBeFalse();
+      profile.flush({ id: 219232, firstName: 'Target', lastName: 'Customer' });
+      flushMicrotasks();
+      expect(ready).toBeTrue();
+      expect(state.getActiveAccount()).toBe('128621');
+      expect(storage.getitemfromLocalStorage('c_authorizationToken')).toBe(browserToken);
+      expect(JSON.parse(storage.getitemfromLocalStorage('ynw-credentials'))).toEqual({ accountId: '128621' });
+      expect(groups.getitemFromGroupStorage('jld_scon')).toEqual(jasmine.objectContaining({
+        id: 482, providerConsumer: 219232, userName: 'Target Customer', token: browserToken, status
+      }));
+      expect(storage.getitemfromLocalStorage('login')).toBeNull();
+      expect(storage.getitemfromLocalStorage('logout')).toBeNull();
+      expect(storage.getitemfromLocalStorage('refreshToken')).toBeNull();
+      expect(platform.get()).toBe('P1');
+    }));
+  }
+
+  it('rejects a browser switch when cookies still identify the source customer', fakeAsync(() => {
+    seedSession('127427');
+    service.prepareForTargetAccount('128621', 'subapp');
+    http.expectOne(api + 'consumer/login/switch').flush({
+      token: browserToken, status: 'signed_in', providerConsumer: 219232
+    });
+    flushMicrotasks();
+    http.expectOne(api + 'spconsumer').flush({ id: 101, firstName: 'Source' });
+    flushMicrotasks();
+    expect(storage.getitemfromLocalStorage('ynw-credentials')).toBeNull();
+    expect(groups.getitemFromGroupStorage('jld_scon')).toBeUndefined();
+    expect(platform.get()).toBe('P1');
   }));
 
   it('installs a complete customer only after the target profile is available', fakeAsync(() => {
@@ -130,10 +183,12 @@ describe('CrossTenantSsoService', () => {
     expect(platform.get()).toBe('P1');
   }));
 
-  it('never installs an incomplete session when profile retrieval fails', fakeAsync(() => {
+  it('does not install a browser switch when profile cookie validation fails', fakeAsync(() => {
     seedSession('11');
     service.prepareForTargetAccount('22', 'provider');
-    http.expectOne(api + 'consumer/login/switch').flush({ token: 'TARGET', status: 'signed_in' });
+    http.expectOne(api + 'consumer/login/switch').flush({
+      token: browserToken, status: 'signed_in', providerConsumer: 219232
+    });
     flushMicrotasks();
     http.expectOne(api + 'spconsumer').flush(null, { status: 422, statusText: 'Rejected' });
     flushMicrotasks();

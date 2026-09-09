@@ -1,4 +1,5 @@
 export * from './lib/cross-tenant.constants';
+export * from './lib/browser-session-token';
 export * from './lib/cross-tenant-journey.service';
 export * from './lib/cross-tenant-logout.service';
 export * from './lib/document-navigation.service';

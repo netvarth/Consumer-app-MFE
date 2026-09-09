@@ -13,7 +13,7 @@ import { catchError, switchMap, timeout, tap, map, finalize, shareReplay } from 
 import { Router } from '@angular/router';
 import { AuthService, LocalStorageService, SharedService } from 'jconsumer-shared';
 import { AccountService } from './account.service';
-import { ACTIVE_ACCOUNT_KEY, CrossTenantLogoutService, PlatformTokenStore } from '@consumer/cross-tenant';
+import { ACTIVE_ACCOUNT_KEY, CrossTenantLogoutService, isBrowserSessionToken, PlatformTokenStore } from '@consumer/cross-tenant';
 
 interface MaintenanceStatus {
   maintenanceMode: boolean;
@@ -99,28 +99,29 @@ export class ExtendHttpInterceptor implements HttpInterceptor {
       params = params.set('location', this.lStorageService.getitemfromLocalStorage('c-location'));
     }
 
+    const sessionToken = this.lStorageService.getitemfromLocalStorage('c_authorizationToken');
+    const browserSession = isBrowserSessionToken(sessionToken);
     if (skipAuthorization) {
-      const sessionToken = this.lStorageService.getitemfromLocalStorage('c_authorizationToken');
       headers = headers.delete('Authorization').delete('AuthToken');
       const appId = this.lStorageService.getitemfromLocalStorage('appId');
       const installId = this.lStorageService.getitemfromLocalStorage('installId');
-      if (appId && installId) {
+      if (!browserSession && appId && installId) {
         headers = headers.set('Authorization', `${appId}-${installId}`);
-      } else if (sessionToken) {
+      } else if (sessionToken && !browserSession) {
         headers = headers.set('Authorization', sessionToken);
       }
     } else if (isRefreshCall) {
       headers = headers.delete('AuthToken');
       const refreshToken = this.lStorageService.getitemfromLocalStorage('refreshToken');
-      if (refreshToken) headers = headers.set('Authorization', refreshToken);
+      if (refreshToken && !isBrowserSessionToken(refreshToken)) headers = headers.set('Authorization', refreshToken);
       else headers = headers.delete('Authorization');
     } else {
       headers = headers.delete('Authorization').delete('AuthToken');
-      // Use auth token for normal calls
-      const authToken = this.lStorageService.getitemfromLocalStorage('c_authorizationToken');
-      if (authToken) {
-        headers = headers.set('Authorization', authToken);
-      } else {
+      // A browser session descriptor is not a header credential. Sending it
+      // overrides the valid cookie session and produces "Invalid Token format".
+      if (sessionToken && !browserSession) {
+        headers = headers.set('Authorization', sessionToken);
+      } else if (!browserSession) {
         const appId = this.lStorageService.getitemfromLocalStorage('appId');
         const installId = this.lStorageService.getitemfromLocalStorage('installId');
         if (appId && installId) {

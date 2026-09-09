@@ -100,6 +100,43 @@ describe('ExtendHttpInterceptor cross-tenant integration', () => {
     expect(values.get('c_authorizationToken')).toBe('SESSION');
   });
 
+  it('uses cookies for browser session descriptors on profile, cart and logout requests', async () => {
+    const token = btoa(JSON.stringify({ app: 'browser', isl: 'TEST_SESSION', typ: 'authn' }));
+    values.set('c_authorizationToken', token);
+    // A remembered device identity must not override the selected browser session.
+    values.set('appId', 'APP');
+    values.set('installId', 'INSTALL');
+    const handler = { handle: (request: HttpRequest<any>) => {
+      expect(request.headers.has('Authorization')).toBeFalse();
+      expect(request.headers.has('AuthToken')).toBeFalse();
+      expect(request.withCredentials).toBeTrue();
+      return of(new HttpResponse({ body: true }));
+    } } as HttpHandler;
+    await firstValueFrom(interceptor.intercept(new HttpRequest('GET', 'spconsumer'), handler));
+    await firstValueFrom(interceptor.intercept(new HttpRequest('POST', 'consumer/cart', {}), handler));
+    await firstValueFrom(interceptor.intercept(new HttpRequest('DELETE', 'consumer/login'), handler));
+  });
+
+  it('does not send a browser session descriptor as a refresh credential', async () => {
+    values.set('refreshToken', btoa(JSON.stringify({ app: 'browser', isl: 'TEST_SESSION', typ: 'authn' })));
+    const handler = { handle: (request: HttpRequest<any>) => {
+      expect(request.headers.has('Authorization')).toBeFalse();
+      expect(request.withCredentials).toBeTrue();
+      return of(new HttpResponse({ body: true }));
+    } } as HttpHandler;
+    await firstValueFrom(interceptor.intercept(new HttpRequest('POST', 'consumer/oauth/token/refresh', null), handler));
+  });
+
+  it('preserves signed credentials even when their payload describes a browser session', async () => {
+    const token = btoa(JSON.stringify({ app: 'browser', isl: 'TEST_SESSION', typ: 'authn' })) + '.signature';
+    values.set('c_authorizationToken', token);
+    const handler = { handle: (request: HttpRequest<any>) => {
+      expect(request.headers.get('Authorization')).toBe(token);
+      return of(new HttpResponse({ body: true }));
+    } } as HttpHandler;
+    await firstValueFrom(interceptor.intercept(new HttpRequest('GET', 'spconsumer'), handler));
+  });
+
   it('uses the refresh token only for a session refresh request', async () => {
     values.set('c_authorizationToken', 'SESSION');
     values.set('refreshToken', 'REFRESH');

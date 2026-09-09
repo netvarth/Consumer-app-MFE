@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { timeout } from 'rxjs/operators';
 import { AccountService, ConsumerService, SharedService } from 'jconsumer-shared';
-import { CrossTenantJourneyService, PlatformTokenStore } from '@consumer/cross-tenant';
+import { CrossTenantJourneyService, isBrowserSessionToken, PlatformTokenStore } from '@consumer/cross-tenant';
 import { AccountStateCoordinator } from './account-state-coordinator.service';
 
 export interface CrossTenantSwitchResponse {
@@ -117,6 +117,9 @@ export class CrossTenantSsoService {
     try {
       const response = await this.switchAccount(target);
       const profile = await this.requestProfile(response.token);
+      if (response.providerConsumer != null && String(response.providerConsumer) !== String(profile['id'])) {
+        throw new Error('Account switch did not activate the target customer session');
+      }
       const user = this.hydrateUser(response, profile);
       // Publish the target session and profile together before its UI loads.
       this.clearRuntimeAccountState();
@@ -198,6 +201,7 @@ export class CrossTenantSsoService {
       if (response[field] !== undefined && response[field] !== null) credentials[field] = response[field];
     });
     this.writeSharedStorageObject('ynw-credentials', credentials);
+    localStorage.removeItem('login');
     localStorage.removeItem('logout');
     localStorage.removeItem('googleToken');
   }
@@ -205,7 +209,7 @@ export class CrossTenantSsoService {
   private async requestProfile(token: string | null): Promise<Record<string, any>> {
     const headers = new HttpHeaders({ Accept: 'application/json', BOOKING_REQ_FROM: 'CUSTOM_APP' });
     const profile = await firstValueFrom(this.http.get<Record<string, any>>(this.apiUrl('spconsumer'), {
-      headers: token ? headers.set('Authorization', token) : headers,
+      headers: token && !isBrowserSessionToken(token) ? headers.set('Authorization', token) : headers,
       withCredentials: true
     }).pipe(timeout(10000)));
     if (!profile || typeof profile !== 'object' || !profile['id']) {
