@@ -1,4 +1,5 @@
 import { HomeCard, HomeImage, HomeLink, HomePosition, HomeSection, TemplateHomeConfig } from './template-home.models';
+import { validatedProviderLink } from '@consumer/cross-tenant';
 
 type JsonObject = Record<string, any>;
 const object = (value: unknown): JsonObject => value !== null && typeof value === 'object' && !Array.isArray(value) ? value : {};
@@ -50,7 +51,8 @@ export function normalizeHomeLink(value: unknown, purpose: 'category' | 'product
   const invalid = (): null => { diagnostics.push(`${key}: unresolved or unsupported navigation target`); return null; };
   if ('url' in data) {
     if (purpose !== 'footer' || key !== 'home' || 'route' in data) return invalid();
-    const url = safeHomeUrl(data['url'] === '__PARENT_APP_HOME_URL__' ? parentUrl : data['url']);
+    const target = data['url'] === '__PARENT_APP_HOME_URL__' ? parentUrl : data['url'];
+    const url = validatedProviderLink(target) || safeHomeUrl(target);
     return url ? { url } : invalid();
   }
   if (!Array.isArray(data['route']) || !data['route'].every(segment)) return invalid();

@@ -1,7 +1,7 @@
 import { Injectable, isDevMode } from '@angular/core';
 import { Router, UrlTree } from '@angular/router';
 import { SharedService } from 'jconsumer-shared';
-import { CrossTenantJourneyService, DocumentNavigationService } from '@consumer/cross-tenant';
+import { CrossTenantJourneyService, DocumentNavigationService, validatedProviderLink } from '@consumer/cross-tenant';
 import { normalizeTemplateHome } from './template-home.config';
 import { HomeFooterItem, HomeLink, TemplateHomeConfig } from './template-home.models';
 
@@ -104,9 +104,14 @@ export class TemplateHomeState {
   private parentUrl(routeId: string): string {
     const marker = this.journey.get();
     if (!marker || !routeId || typeof window === 'undefined') return '';
-    const provider = new URL(marker.lastProviderUrl, window.location.origin);
+    const providerUrl = validatedProviderLink(marker.lastProviderUrl);
+    if (!providerUrl) return '';
+    const provider = new URL(providerUrl);
     // Only use a journey belonging to the currently loaded provider.
-    if (provider.pathname.replace(/\/$/, '') !== `/capp/${routeId}`) return '';
+    const currentProvider = validatedProviderLink(`/${routeId}`);
+    const providerPath = provider.pathname.replace(/\/$/, '');
+    if (providerPath !== `/capp/${routeId}`
+      && (!currentProvider || providerPath !== new URL(currentProvider).pathname.replace(/\/$/, ''))) return '';
     return new URL(marker.returnTo, window.location.origin).href;
   }
 }

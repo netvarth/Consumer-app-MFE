@@ -61,8 +61,12 @@ export class CrossTenantJourneyService {
     if (typeof value !== 'string' || typeof window === 'undefined') return false;
     try {
       const url = new URL(value, window.location.origin);
+      const home = validatedProviderLink(`/${hubCustomId}`);
+      const homePath = home ? new URL(home).pathname.replace(/\/$/, '') : '';
       return url.origin === window.location.origin
-        && (url.pathname === `/capp/${hubCustomId}` || url.pathname.startsWith(`/capp/${hubCustomId}/`));
+        && !url.username && !url.password
+        && ((!!homePath && (url.pathname === homePath || url.pathname.startsWith(`${homePath}/`)))
+          || url.pathname === `/capp/${hubCustomId}` || url.pathname.startsWith(`/capp/${hubCustomId}/`));
     } catch {
       return false;
     }

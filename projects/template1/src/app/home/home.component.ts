@@ -2,6 +2,7 @@ import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, ViewChil
 import { ActivatedRoute, Router } from '@angular/router';
 import { AccountService, AuthService, ConsumerService, GroupStorageService, LocalStorageService, OrderService, SharedService, SubscriptionService, ThemeService } from 'jconsumer-shared';
 import { Subscription } from 'rxjs';
+import { persistDeviceIdentity } from '../../../../cross-tenant/helpers/device-identity.service';
 
 @Component({
   selector: 'app-home',
@@ -54,11 +55,8 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       if (qparams && qparams['callback']) {
         this.callback = qparams['callback'];
       }
-      if (qparams && qparams['inst_id']) {
-        this.lStorageService.setitemonLocalStorage('installId', qparams['inst_id']);
-      }
+      persistDeviceIdentity(qparams, this.lStorageService);
       if (qparams && qparams['app_id']) {
-        this.lStorageService.setitemonLocalStorage('appId', qparams['app_id']);
         this.lStorageService.setitemonLocalStorage('dash_visible', true)
       }
 

@@ -16,10 +16,44 @@ describe('ConsumerAuthService shared library integration', () => {
     storage = new LocalStorageService();
     const session = new SessionStorageService();
     groups = new GroupStorageService(session, storage);
-    api = { httpDelete: jasmine.createSpy().and.returnValue(of(true)) };
-    auth = new ConsumerAuthService(api, storage, session, groups, new CrossTenantLogoutService(new PlatformTokenStore()));
+    api = { httpDelete: jasmine.createSpy().and.returnValue(of(true)), httpPost: jasmine.createSpy() };
+    const platformTokens = new PlatformTokenStore();
+    auth = new ConsumerAuthService(api, storage, session, groups, new CrossTenantLogoutService(platformTokens), platformTokens);
   });
   afterEach(() => { localStorage.clear(); sessionStorage.clear(); });
+
+  it('saves the login platform identity before login subscribers run', async () => {
+    api.httpPost.and.returnValue(of({ providerConsumer: 201, platform_token: 'platformToken-P1' }));
+    await auth.consumerLogin({ accountId: 22 });
+    expect(localStorage.getItem('platform_token')).toBe('P1');
+    expect(auth.isLoggedIn()).toBeTrue();
+  });
+
+  it('captures platform identity when embedded authentication installs login data directly', () => {
+    auth.setLoginData({ providerConsumer: 201, platformToken: 'P1' }, { accountId: 22 });
+    expect(localStorage.getItem('platform_token')).toBe('P1');
+    expect(auth.isLoggedIn()).toBeTrue();
+  });
+
+  it('captures OTP identity and preserves it when the subsequent login has only a session token', async () => {
+    api.httpPost.and.returnValue(of({ platformToken: 'P1', token: 'OTP_SESSION' }));
+    auth.verifyConsumerOTP('login', '123456').subscribe(() => {
+      expect(localStorage.getItem('platform_token')).toBe('P1');
+    });
+    api.httpPost.and.returnValue(of({ providerConsumer: 201, token: 'PROVIDER_SESSION' }));
+    await auth.consumerLogin({ accountId: 22 });
+    expect(localStorage.getItem('platform_token')).toBe('P1');
+  });
+
+  it('captures platform rotation from a successful refresh only', async () => {
+    localStorage.setItem('platform_token', 'P1');
+    api.httpPost.and.returnValue(throwError(() => new HttpErrorResponse({ status: 401, error: { platform_token: 'BAD' } })));
+    await expectAsync(auth.refreshToken()).toBeRejected();
+    expect(localStorage.getItem('platform_token')).toBe('P1');
+    api.httpPost.and.returnValue(of({ platform_token: 'P2', token: 'SESSION' }));
+    await auth.refreshToken();
+    expect(localStorage.getItem('platform_token')).toBe('P2');
+  });
 
   it('rejects credentials without a provider customer', async () => {
     storage.setitemonLocalStorage('ynw-credentials', JSON.stringify({ accountId: 22 }));

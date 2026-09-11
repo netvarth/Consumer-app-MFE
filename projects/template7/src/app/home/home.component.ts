@@ -2,6 +2,7 @@ import { Component, DoCheck, ElementRef, HostListener, OnDestroy, OnInit, Render
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { AccountService, AuthService, ConsumerService, GroupStorageService, LocalStorageService, OrderService, SharedService, SubscriptionService, ThemeService } from 'jconsumer-shared';
 import { Subscription } from 'rxjs';
+import { persistDeviceIdentity } from '../../../../cross-tenant/helpers/device-identity.service';
 import { TRANSIENT_ACCOUNT_KEYS } from '@consumer/cross-tenant';
 import { TemplateHomeState } from './template-home/template-home-state.service';
 
@@ -84,11 +85,8 @@ export class HomeComponent implements OnInit, DoCheck, OnDestroy {
       if (qparams && qparams['callback']) {
         this.callback = qparams['callback'];
       }
-      if (qparams && qparams['inst_id']) {
-        this.lStorageService.setitemonLocalStorage('installId', qparams['inst_id']);
-      }
+      persistDeviceIdentity(qparams, this.lStorageService);
       if (qparams && qparams['app_id']) {
-        this.lStorageService.setitemonLocalStorage('appId', qparams['app_id']);
         this.lStorageService.setitemonLocalStorage('dash_visible', true)
       }
 

@@ -157,7 +157,7 @@ export class StoreSelectionComponent implements OnInit {
   }
 
   private currentHubUrl(): string {
-    return `${window.location.pathname}${window.location.search}${window.location.hash}`;
+    return validatedProviderLink(`/${this.currentCustomId()}`) || window.location.href;
   }
 
   private routeUrl(link: string): string {

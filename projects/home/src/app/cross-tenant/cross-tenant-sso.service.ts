@@ -1,10 +1,12 @@
 import { HttpBackend, HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, isDevMode } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { timeout } from 'rxjs/operators';
 import { AccountService, ConsumerService, SharedService } from 'jconsumer-shared';
 import { CrossTenantJourneyService, PlatformTokenStore } from '@consumer/cross-tenant';
 import { isBrowserSessionToken } from '../../../../cross-tenant/helpers/browser-session-token';
+import { DeviceIdentityService } from '../../../../cross-tenant/helpers/device-identity.service';
+import { normalizeStorageString } from '../../../../cross-tenant/helpers/normalize-storage-string';
 import { AccountStateCoordinator } from './account-state-coordinator.service';
 
 export interface CrossTenantSwitchResponse {
@@ -14,6 +16,16 @@ export interface CrossTenantSwitchResponse {
   refreshToken?: string;
   status: 'signed_in' | 'provisioned';
   [key: string]: unknown;
+}
+
+export class CrossTenantSessionError extends Error {
+  constructor(
+    message = 'Account switch succeeded but the target authenticated session could not be validated.',
+    override readonly cause?: unknown
+  ) {
+    super(message);
+    this.name = 'CrossTenantSessionError';
+  }
 }
 
 @Injectable({ providedIn: 'root' })
@@ -29,8 +41,11 @@ export class CrossTenantSsoService {
     private readonly journey: CrossTenantJourneyService,
     private readonly accountState: AccountStateCoordinator,
     private readonly accountService: AccountService,
-    private readonly consumerService: ConsumerService
+    private readonly consumerService: ConsumerService,
+    private readonly deviceIdentity: DeviceIdentityService
   ) {
+    // Keep source-account interceptors and automatic refresh out of the transition.
+    // Every request below selects its own credentials until validation succeeds.
     this.http = new HttpClient(backend);
   }
 
@@ -102,7 +117,11 @@ export class CrossTenantSsoService {
         // A persisted token/credential pair is not proof that its cookie or
         // provider session still exists. Validate before rendering account/cart UI.
         const profile = await this.requestProfile(this.currentSessionToken());
-        this.writeUserProfile(this.hydrateUser(this.readUser(), profile));
+        const user = this.readUser();
+        if (user['providerConsumer'] != null && String(user['providerConsumer']) !== String(profile['id'])) {
+          throw new CrossTenantSessionError('Stored session resolved to a different provider consumer.');
+        }
+        this.writeUserProfile(this.hydrateUser(user, profile));
         this.accountState.setActiveAccount(target);
         return;
       } catch {
@@ -116,44 +135,19 @@ export class CrossTenantSsoService {
     }
 
     try {
-      let response = await this.switchAccount(target);
-      let profile: Record<string, any>;
-      try {
-        profile = await this.requestProfile(response.token);
-      } catch (error) {
-        const refreshToken = this.sessionRefreshToken(response);
-        if (this.httpStatus(error) !== 419 || !refreshToken) throw error;
-        // This HttpBackend client bypasses the shell interceptor. Recover the
-        // target session here, using its proof rather than the source account's
-        // stored refresh token. Retry the profile once before publishing login.
-        response = { ...response, ...await this.requestSessionRefresh(refreshToken) };
-        profile = await this.requestProfile(response.token);
-      }
-      if (response.providerConsumer != null && String(response.providerConsumer) !== String(profile['id'])) {
-        throw new Error('Account switch did not activate the target customer session');
-      }
-      const user = this.hydrateUser(response, profile);
-      // Publish the target session and profile together before its UI loads.
+      const response = await this.switchAccount(target);
+      // Store the target's login details directly from switch. A profile request
+      // using the app's device identity can still describe the base account.
       this.clearRuntimeAccountState();
       this.accountState.transitionTo(target);
-      this.installSession(user as CrossTenantSwitchResponse, target);
+      this.installSession(response, target);
       this.accountState.setActiveAccount(target);
       this.journey.clear();
     } catch (error) {
-      const status = this.httpStatus(error);
-      console.warn(`[CrossTenantSso] Account switch failed target=${target} status=${status}`);
-      // A target can reject access without invalidating the platform identity.
-      // Only a rejection from platform-token refresh may clear that identity.
-      if (status === 401 || status === 422) this.journey.clear();
-      // Navigation has already moved to the target application. Keeping the
-      // source account's session here creates a false logged-in state and
-      // sends its token to target-account endpoints (the observed 422).
-      this.clearRuntimeAccountState();
-      this.accountState.transitionTo(target);
-      // transitionTo is intentionally a no-op for the current account. Failed
-      // recovery must still remove its credentials and incomplete user record.
-      this.accountState.clearActiveAuthentication();
-      this.accountState.setActiveAccount(target);
+      this.diagnostic('switch failed', { target, status: this.httpStatus(error) });
+      // Preserve source credentials/cart ownership. The guard must stop target
+      // rendering so these credentials cannot be used by the rejected app.
+      throw error;
     }
   }
 
@@ -188,6 +182,11 @@ export class CrossTenantSsoService {
       throw new Error('Account switch returned an unsupported status');
     }
     const refreshToken = this.normalizeSessionToken(response.refreshToken);
+    this.diagnostic('switch response', {
+      target: accountId, status: response.status,
+      tokenClassification: isBrowserSessionToken(sessionToken) ? 'browser-authn' : 'api-token',
+      explicitRefreshTokenPresent: !!refreshToken
+    });
     return {
       ...response,
       token: sessionToken,
@@ -197,7 +196,11 @@ export class CrossTenantSsoService {
 
   private installSession(response: CrossTenantSwitchResponse, accountId: string): void {
     this.accountState.clearActiveAuthentication();
-    localStorage.setItem('c_authorizationToken', JSON.stringify(response.token));
+    // Browser apps keep using appId/installId for request authorization.
+    // Their returned token remains part of the login details in jld_scon.
+    if (!isBrowserSessionToken(response.token)) {
+      localStorage.setItem('c_authorizationToken', JSON.stringify(response.token));
+    }
     const refreshToken = this.sessionRefreshToken(response);
     if (refreshToken) {
       localStorage.setItem('refreshToken', JSON.stringify(refreshToken));
@@ -220,20 +223,38 @@ export class CrossTenantSsoService {
   }
 
   private async requestProfile(token: string | null): Promise<Record<string, any>> {
-    const headers = new HttpHeaders({ Accept: 'application/json', BOOKING_REQ_FROM: 'CUSTOM_APP' });
-    const profile = await firstValueFrom(this.http.get<Record<string, any>>(this.apiUrl('spconsumer'), {
-      headers: token && !isBrowserSessionToken(token) ? headers.set('Authorization', token) : headers,
-      withCredentials: true
-    }).pipe(timeout(10000)));
+    let headers = new HttpHeaders({ Accept: 'application/json', BOOKING_REQ_FROM: 'CUSTOM_APP' });
+    const apiToken = token && !isBrowserSessionToken(token) ? token : null;
+    // Also support direct SSO callers which do not pass through the route guard.
+    if (!apiToken) this.deviceIdentity.bootstrapFromCurrentUrl();
+    const { appId, installId } = this.deviceIdentity.getIdentity();
+    const authorization = apiToken || (appId && installId ? `${appId}-${installId}` : null);
+    if (authorization) headers = headers.set('Authorization', authorization);
+    this.diagnostic('profile request', {
+      tokenType: !token ? 'NONE' : apiToken ? 'API_TOKEN' : 'BROWSER_AUTHN',
+      appIdPresent: !!appId, installIdPresent: !!installId,
+      authMode: apiToken ? 'API_TOKEN' : authorization ? 'DEVICE_IDENTITY' : 'COOKIE_ONLY',
+      hasAuthorization: headers.has('Authorization')
+    });
+    let profile: Record<string, any>;
+    try {
+      const result = await firstValueFrom(this.http.get<Record<string, any>>(this.apiUrl('spconsumer'), {
+        headers, withCredentials: true, observe: 'response'
+      }).pipe(timeout(10000)));
+      this.diagnostic('profile result', { status: result.status });
+      profile = result.body!;
+    } catch (error) {
+      this.diagnostic('profile result', { status: this.httpStatus(error) });
+      throw error;
+    }
     if (!profile || typeof profile !== 'object' || !profile['id']) {
-      throw new Error('Provider session returned no customer profile');
+      throw new CrossTenantSessionError('Provider session returned no customer profile');
     }
     return profile;
   }
 
   private sessionRefreshToken(response: CrossTenantSwitchResponse): string | null {
-    return this.normalizeSessionToken(response.refreshToken)
-      ?? (isBrowserSessionToken(response.token) ? response.token : null);
+    return this.normalizeSessionToken(response.refreshToken);
   }
 
   private async requestSessionRefresh(refreshToken: string): Promise<{ token: string; refreshToken: string }> {
@@ -241,14 +262,15 @@ export class CrossTenantSsoService {
       this.apiUrl('consumer/oauth/token/refresh'),
       null,
       {
-        // OAuth accepts the authn proof; protected profile/cart endpoints do not.
+        // This must be an explicit backend refresh credential, never an authn descriptor.
         headers: new HttpHeaders({ Authorization: refreshToken, Accept: 'application/json', BOOKING_REQ_FROM: 'CUSTOM_APP' }),
         withCredentials: true
       }
     ).pipe(timeout(10000)));
     const token = this.normalizeSessionToken(response?.token);
     if (!token) throw new Error('Target session refresh returned no token');
-    return { token, refreshToken: this.normalizeSessionToken(response.refreshToken) ?? token };
+    // If no rotation is supplied, retain the explicit credential used above.
+    return { token, refreshToken: this.normalizeSessionToken(response.refreshToken) ?? refreshToken };
   }
 
   private hydrateUser(user: Record<string, any>, profile: Record<string, any>): Record<string, any> {
@@ -343,24 +365,20 @@ export class CrossTenantSsoService {
   }
 
   private currentSessionToken(): string | null {
+    return this.getNormalizedStorageString('c_authorizationToken');
+  }
+
+  private getNormalizedStorageString(key: string): string | null {
     return this.normalizeSessionToken(
-      this.parseStorageValue(localStorage.getItem('c_authorizationToken'))
+      this.parseStorageValue(localStorage.getItem(key))
     );
   }
 
+  private diagnostic(event: string, metadata: Record<string, unknown>): void {
+    if (isDevMode()) console.debug(`[CrossTenantSso] ${event}`, metadata);
+  }
+
   private normalizeSessionToken(token: unknown): string | null {
-    if (typeof token !== 'string') return null;
-    let value = token.trim();
-    if (value.startsWith('"') && value.endsWith('"')) {
-      try {
-        const parsed = JSON.parse(value);
-        if (typeof parsed !== 'string') return null;
-        value = parsed.trim();
-      } catch {
-        return null;
-      }
-    }
-    if (!value || /^(?:null|undefined|\[object Object\])$/i.test(value)) return null;
-    return /[\u0000-\u001f\u007f]/.test(value) ? null : value;
+    return normalizeStorageString(token);
   }
 }

@@ -23,6 +23,7 @@ describe('Shell login -> switch -> cart -> logout integration', () => {
   it('uses the configured auth adapter and the target customer/session throughout', fakeAsync(() => {
     localStorage.clear();
     sessionStorage.clear();
+    spyOn(window, 'alert');
     TestBed.configureTestingModule({ providers: [
       ...appConfig.providers,
       provideHttpClientTesting(),
@@ -46,6 +47,8 @@ describe('Shell login -> switch -> cart -> logout integration', () => {
     expect(auth.isLoggedIn()).toBeTrue();
     storage.setitemonLocalStorage('cartData', { owner: '11' });
     storage.setitemonLocalStorage('c_authorizationToken', 'SOURCE_SESSION');
+    storage.setitemonLocalStorage('appId', 'APP123');
+    storage.setitemonLocalStorage('installId', 'INSTALL456');
 
     TestBed.inject(CrossTenantSsoService).prepareForTargetAccount('22', 'provider');
     const switching = http.expectOne(api + 'consumer/login/switch');
@@ -57,16 +60,16 @@ describe('Shell login -> switch -> cart -> logout integration', () => {
     });
     flushMicrotasks();
     const profile = http.expectOne(api + 'spconsumer');
-    expect(profile.request.headers.has('Authorization')).toBeFalse();
+    expect(profile.request.headers.get('Authorization')).toBe('APP123-INSTALL456');
     expect(profile.request.withCredentials).toBeTrue();
     profile.flush({ id: 201, firstName: 'Target', lastName: 'Customer' });
     flushMicrotasks();
 
-    // Reopening the target validates the persisted cookie session without
-    // attempting a second switch or sending its descriptor as Authorization.
+    // Reopening validates the session using available device identity + cookies;
+    // the persisted descriptor itself is not evidence of a server session.
     TestBed.inject(CrossTenantSsoService).prepareForTargetAccount('22', 'provider');
     const restoredProfile = http.expectOne(api + 'spconsumer');
-    expect(restoredProfile.request.headers.has('Authorization')).toBeFalse();
+    expect(restoredProfile.request.headers.get('Authorization')).toBe('APP123-INSTALL456');
     expect(restoredProfile.request.withCredentials).toBeTrue();
     restoredProfile.flush({ id: 201, firstName: 'Target', lastName: 'Customer' });
     flushMicrotasks();
@@ -88,7 +91,7 @@ describe('Shell login -> switch -> cart -> logout integration', () => {
         { getallWishlistItems: () => of([]), clear: () => undefined, getIds: () => [] } as any
       );
       const headerCart = http.expectOne(api + 'consumer/cart/procon/201');
-      expect(headerCart.request.headers.has('Authorization')).toBeFalse();
+      expect(headerCart.request.headers.get('Authorization')).toBe(browserToken);
       expect(headerCart.request.withCredentials).toBeTrue();
       headerCart.flush([]);
       expect(header.isLoggedIn).toBeTrue();
@@ -111,14 +114,14 @@ describe('Shell login -> switch -> cart -> logout integration', () => {
     }).subscribe();
     const cart = http.expectOne(api + 'consumer/cart');
     expect(cart.request.body.providerConsumer.id).toBe(201);
-    expect(cart.request.headers.has('Authorization')).toBeFalse();
+    expect(cart.request.headers.get('Authorization')).toBe(browserToken);
     expect(cart.request.withCredentials).toBeTrue();
     expect(cart.request.headers.has('AuthToken')).toBeFalse();
     cart.flush({ uid: 'TARGET_CART' });
 
     auth.doLogout();
     const logout = http.expectOne(api + 'consumer/login');
-    expect(logout.request.headers.has('Authorization')).toBeFalse();
+    expect(logout.request.headers.get('Authorization')).toBe(browserToken);
     expect(logout.request.withCredentials).toBeTrue();
     logout.flush(true);
     flushMicrotasks();
