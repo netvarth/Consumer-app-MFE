@@ -13,10 +13,10 @@ export function validatedProviderLink(value: unknown, currentOrigin?: string, ba
     const basePath = base.pathname.replace(/\/?$/, '/');
     // Configured /:account links are app-relative, including when the shell is
     // deployed below /capp/. Do not resolve them against the current page.
-    if (/^\/[a-z0-9_-]+\/?$/i.test(raw)) {
-      return new URL(raw.slice(1), `${origin}${basePath}`).href;
-    }
-    const url = new URL(raw, origin);
+    const isAccountLink = /^\/[a-z0-9_-]+\/?(?:\?[^#]*)?$/i.test(raw);
+    const url = isAccountLink
+      ? new URL(raw.slice(1), `${origin}${basePath}`)
+      : new URL(raw, origin);
     if (url.protocol !== 'http:' && url.protocol !== 'https:') return null;
     const isSameOrigin = url.origin === origin;
     // Local MFE shells may run on a different port from the current app. Honor
