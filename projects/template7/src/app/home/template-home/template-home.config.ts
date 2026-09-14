@@ -123,8 +123,12 @@ export function normalizeTemplateHome(template: unknown, hidePrice = false, pare
   if (enabled(footer)) config.footer = sorted(footer['items'], diagnostics).map(item => ({
     key: label(item['key']), label: label(item['label']),
     icon: /^fa-[a-z-]+$/.test(label(item['icon'])) ? item['icon'] : 'fa-circle-o',
-    link: normalizeHomeLink(item['link'], 'footer', diagnostics, label(item['key']), parentUrl)
+    link: label(item['key']) === 'home' ? { route: [], queryParams: {} }
+      : normalizeHomeLink(item['link'], 'footer', diagnostics, label(item['key']), parentUrl)
   }));
+  if (config.footer.some(item => item.key === 'home')) {
+    config.layout.activeFooterKey = 'home';
+  }
   if (!config.footer.some(item => item.key === config.layout.activeFooterKey && item.link?.route)) {
     // Infer the home selection from JSON when the explicit key is absent or invalid.
     const rootItem = config.footer.find(item => item.link?.route?.length === 0);
