@@ -9,6 +9,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { DropdownModule } from 'primeng/dropdown';
 import { ErrrorMessageModule, LoadingSpinnerModule, PhoneInputModule } from 'jconsumer-shared';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { ErrrorMessageModule, LoadingSpinnerModule, PhoneInputModule } from 'jco
     MatSelectModule,
     MatOptionModule,
     DropdownModule,
+    TranslateModule,
     ErrrorMessageModule
   ],
   exports: [

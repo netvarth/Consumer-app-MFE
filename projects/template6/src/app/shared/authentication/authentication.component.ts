@@ -20,8 +20,7 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
   private readonly googleButtonNewOpts = {
     theme: 'outline',
     size: 'large',
-    shape: 'rectangular',
-    width: 370,
+    shape: 'pill',
     logo_alignment: 'center' as const,
     text: 'signin_with'
   };
@@ -64,6 +63,9 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
   resetCounterVal;
   refreshTime = 30;
   cronHandle: Subscription;
+  heading = "Let's Start";
+  subHeading = '';
+  alignClass: any;
   resend_otp_opt_active_cap = 'Resend OTP option will be active in';
   seconds_cap = 'seconds'
   title: any;
@@ -155,6 +157,9 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
     if (!this.accountConfig) {
       this.accountConfig = this.sharedService.getAccountConfig();
     }
+    this.heading = this.accountConfig?.login?.heading || "Let's Start";
+    this.subHeading = this.accountConfig?.login?.subHeading || '';
+    this.alignClass = this.accountConfig?.login?.align;
     if (this.templateConfig && this.templateConfig.theme) {
       this.theme = this.templateConfig.theme;
     }
@@ -744,50 +749,26 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
     if (!this.googleBtnNew?.nativeElement) {
       return;
     }
-    // this.renderGisButton(this.googleBtnNew, this.googleButtonNewOpts);
-    // const renderResponsive = () => {
-    //   if (!this.googleBtnNew?.nativeElement) {
-    //     return;
-    //   }
-    //   const width = this.calculateResponsiveGoogleWidth(this.googleBtnNew.nativeElement);
-    //   const options = { ...this.googleButtonNewOpts, width };
-    //   this.renderGisButton(this.googleBtnNew, options);
-    // };
-    // renderResponsive();
-    // setTimeout(renderResponsive, 0);
-    // setTimeout(renderResponsive, 0);
-    // if (!this.googleBtnNewResizeUnlisten) {
-    //   this.googleBtnNewResizeUnlisten = this.renderer.listen('window', 'resize', () => {
-    //     if (this.googleBtnNewResizeDebounce) {
-    //       window.clearTimeout(this.googleBtnNewResizeDebounce);
-    //     }
-    //     this.googleBtnNewResizeDebounce = window.setTimeout(() => renderResponsive(), 0);
-    //   });
-    // }
-    const targetDrive = this.googleBtnNew?.nativeElement;
-    const sourceButton = document.getElementById('targeted');
-
-  if (!targetDrive || !sourceButton) return;
-
-  // 1. Create the observer
-  const resizeObserver = new ResizeObserver(entries => {
-    for (let entry of entries) {
-      // Get the current width of your "Continue" button
-      const currentWidth = entry.contentRect.width;
-
-      // Google buttons must be between 200 and 400
-      const safeWidth = Math.round(Math.min(Math.max(currentWidth, 200), 400));
-
-      // 2. Re-render the Google button with the exact same width
-      const options = { ...this.googleButtonNewOpts, width: safeWidth };
+    const renderResponsive = () => {
+      if (!this.googleBtnNew?.nativeElement) {
+        return;
+      }
+      const width = this.calculateResponsiveGoogleWidth(this.googleBtnNew.nativeElement);
+      const options = { ...this.googleButtonNewOpts, width };
       this.renderGisButton(this.googleBtnNew, options);
+    };
+    renderResponsive();
+    setTimeout(renderResponsive, 0);
+    setTimeout(renderResponsive, 0);
+    if (!this.googleBtnNewResizeUnlisten) {
+      this.googleBtnNewResizeUnlisten = this.renderer.listen('window', 'resize', () => {
+        if (this.googleBtnNewResizeDebounce) {
+          window.clearTimeout(this.googleBtnNewResizeDebounce);
+        }
+        this.googleBtnNewResizeDebounce = window.setTimeout(() => renderResponsive(), 0);
+      });
     }
-  });
-
-  // 3. Start watching your "Continue" button
-  resizeObserver.observe(sourceButton);
   }
-
   private calculateResponsiveGoogleWidth(element: HTMLElement): number {
     const container = element.parentElement || element;
     const availableWidth = container?.getBoundingClientRect().width || element.getBoundingClientRect().width;
@@ -795,11 +776,10 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
     if (!availableWidth || Number.isNaN(availableWidth)) {
       return fallbackWidth;
     }
-    const minWidth = 200;
+    const minWidth = 120;
     const maxWidth = 400;
     return Math.round(Math.min(Math.max(availableWidth, minWidth), maxWidth));
   }
-
   private renderGisButton(target: ElementRef<HTMLElement>, opts: any) {
     if (!target?.nativeElement) {
       return;
