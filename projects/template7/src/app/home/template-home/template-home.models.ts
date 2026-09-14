@@ -52,6 +52,7 @@ export interface HomeHero {
 export interface HomeServices extends HomeSection {
   showTitle: boolean;
   coverImage: HomeImage | null;
+  coverLink: HomeLink | null;
 }
 
 export interface HomeFooterItem {

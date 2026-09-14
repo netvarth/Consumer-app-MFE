@@ -256,7 +256,19 @@
   pointer-events: none;
 }
 
+.services-cover-link {
+  position: absolute;
+  inset: 0;
+}
+
+.services-cover-link:focus-visible {
+  outline: 3px solid #235eb9;
+  outline-offset: -3px;
+}
+
 .services-section>h2 {
+  position: relative;
+  pointer-events: none;
   text-align: center;
   font-size: clamp(24px, 5.3cqw, 35px);
   line-height: 1.25;
@@ -274,12 +286,15 @@
 }
 
 .service-grid {
+  position: relative;
+  pointer-events: none;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: clamp(15px, 3.7cqw, 25px);
 }
 
 .service-card {
+  pointer-events: auto;
   display: block;
   min-width: 0;
   // The card's border, text, photo and button are all part of its artwork.

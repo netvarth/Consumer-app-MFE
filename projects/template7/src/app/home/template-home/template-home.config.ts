@@ -188,7 +188,9 @@ export function normalizeTemplateHome(template: unknown, hidePrice = false, pare
     const normalized = section(services, 'service');
     if (normalized) config.services = {
       ...normalized, showTitle: services['showTitle'] !== false && services['coverContainsTitle'] !== true,
-      coverImage: services['coverImage'] ? image(services['coverImage'], 644, 610) : null
+      coverImage: services['coverImage'] ? image(services['coverImage'], 644, 610) : null,
+      coverLink: object(services['coverImage'])['link'] != null
+        ? normalizeHomeLink(object(services['coverImage'])['link'], 'service', diagnostics, 'services cover') : null
     };
   }
   return config;

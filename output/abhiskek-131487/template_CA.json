@@ -1,0 +1,413 @@
+{
+  "template": "template7",
+  "logo": "https://jaldeeui.s3.ap-south-1.amazonaws.com/131487/logo.png",
+  "theme": "mediExpat",
+  "loginstyle": "new",
+  "headerTitle": "<p><strong><span style=\"color:rgb(3,87,147);\">Jaldee Vets QA</span></strong></p>",
+  "headerDescription": "",
+  "branchFilterUser": false,
+  "branchFilterService": false,
+  "loginRequired": false,
+  "showEnquiry": false,
+  "homePage": {
+    "schemaVersion": 1,
+    "enabled": true,
+    "type": "service",
+    "layout": {
+      "contentMaxWidth": 654,
+      "pageBackground": "#FFFFFF",
+      "activeFooterKey": "services"
+    },
+    "store": {
+      "enabled": true,
+      "hero": {
+        "enabled": true,
+        "image": {
+          "src": "https://jaldeeui.s3.ap-south-1.amazonaws.com/131487/home_assets/homeCover.png",
+          "alt": "Pet Store — Fast Delivery from Your Nearby Pet Store",
+          "fit": "contain",
+          "width": 393,
+          "height": 305
+        },
+        "search": {
+          "enabled": true,
+          "placeholder": "Search for “Pet Food”",
+          "ariaLabel": "Search pet store products",
+          "position": {
+            "leftPercent": 4.84,
+            "topPercent": 4.59,
+            "widthPercent": 90.32,
+            "heightPercent": 18.07
+          },
+          "link": {
+            "route": [
+              "items"
+            ],
+            "queryParams": {}
+          },
+          "queryParameter": "query"
+        }
+      },
+      "categories": {
+        "enabled": true,
+        "title": "Categories",
+        "items": [
+          {
+            "key": "food",
+            "enabled": true,
+            "sortOrder": 1,
+            "label": "Food",
+            "image": {
+              "src": "https://jaldeeui.s3.ap-south-1.amazonaws.com/131487/home_assets/category-food.png",
+              "alt": "Food",
+              "fit": "contain"
+            },
+            "link": {
+              "route": [
+                "items"
+              ],
+              "queryParams": {
+                "categoryId": "__CATEGORY_FOOD_ID__"
+              }
+            }
+          },
+          {
+            "key": "accessories",
+            "enabled": true,
+            "sortOrder": 2,
+            "label": "Accessories",
+            "image": {
+              "src": "https://jaldeeui.s3.ap-south-1.amazonaws.com/131487/home_assets/category-accessories.png",
+              "alt": "Accessories",
+              "fit": "contain"
+            },
+            "link": {
+              "route": [
+                "items"
+              ],
+              "queryParams": {
+                "categoryId": "__CATEGORY_ACCESSORIES_ID__"
+              }
+            }
+          },
+          {
+            "key": "supplements",
+            "enabled": true,
+            "sortOrder": 3,
+            "label": "Supplements",
+            "image": {
+              "src": "https://jaldeeui.s3.ap-south-1.amazonaws.com/131487/home_assets/category-supplements.png",
+              "alt": "Supplements",
+              "fit": "contain"
+            },
+            "link": {
+              "route": [
+                "items"
+              ],
+              "queryParams": {
+                "categoryId": "__CATEGORY_SUPPLEMENTS_ID__"
+              }
+            }
+          },
+          {
+            "key": "toys",
+            "enabled": true,
+            "sortOrder": 4,
+            "label": "Toys",
+            "image": {
+              "src": "https://jaldeeui.s3.ap-south-1.amazonaws.com/131487/home_assets/category-toys.png",
+              "alt": "Toys",
+              "fit": "contain"
+            },
+            "link": {
+              "route": [
+                "items"
+              ],
+              "queryParams": {
+                "categoryId": "__CATEGORY_TOYS_ID__"
+              }
+            }
+          }
+        ]
+      },
+      "bestSellers": {
+        "enabled": true,
+        "title": "Best Seller Products",
+        "currency": {
+          "code": "INR",
+          "locale": "en-IN",
+          "minimumFractionDigits": 2,
+          "maximumFractionDigits": 2
+        },
+        "showPrices": true,
+        "items": [
+          {
+            "key": "best-seller-1",
+            "enabled": true,
+            "sortOrder": 1,
+            "name": "Trial Pack - 2 Pouches of 80g",
+            "price": 108.15,
+            "image": {
+              "src": "https://jaldeeui.s3.ap-south-1.amazonaws.com/131487/home_assets/product1.png",
+              "alt": "Trial Pack - 2 Pouches of 80g",
+              "fit": "contain"
+            },
+            "link": {
+              "route": [
+                "item",
+                "__TRIAL_PACK_ENCID__"
+              ],
+              "queryParams": {
+                "itemEncid": "__TRIAL_PACK_ENCID__"
+              }
+            }
+          },
+          {
+            "key": "best-seller-2",
+            "enabled": true,
+            "sortOrder": 2,
+            "name": "Value Pack - 5 Pouches of 80g",
+            "price": 114.5,
+            "image": {
+              "src": "https://jaldeeui.s3.ap-south-1.amazonaws.com/131487/home_assets/product2.png",
+              "alt": "Value Pack - 5 Pouches of 80g",
+              "fit": "contain"
+            },
+            "link": {
+              "route": [
+                "item",
+                "__VALUE_PACK_ENCID__"
+              ],
+              "queryParams": {
+                "itemEncid": "__VALUE_PACK_ENCID__"
+              }
+            }
+          },
+          {
+            "key": "best-seller-3",
+            "enabled": true,
+            "sortOrder": 3,
+            "name": "Trial Pack - 2 Pouches of 80g",
+            "price": 108.15,
+            "image": {
+              "src": "https://jaldeeui.s3.ap-south-1.amazonaws.com/131487/home_assets/product3.png",
+              "alt": "Trial Pack - 2 Pouches of 80g",
+              "fit": "contain"
+            },
+            "link": {
+              "route": [
+                "item",
+                "__TRIAL_PACK_ENCID__"
+              ],
+              "queryParams": {
+                "itemEncid": "__TRIAL_PACK_ENCID__"
+              }
+            }
+          },
+          {
+            "key": "best-seller-4",
+            "enabled": true,
+            "sortOrder": 4,
+            "name": "Value Pack - 5 Pouches of 80g",
+            "price": 114.5,
+            "image": {
+              "src": "https://jaldeeui.s3.ap-south-1.amazonaws.com/131487/home_assets/product4.png",
+              "alt": "Value Pack - 5 Pouches of 80g",
+              "fit": "contain"
+            },
+            "link": {
+              "route": [
+                "item",
+                "__VALUE_PACK_ENCID__"
+              ],
+              "queryParams": {
+                "itemEncid": "__VALUE_PACK_ENCID__"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "service": {
+      "enabled": true,
+      "hero": {
+        "enabled": true,
+        "image": {
+          "src": "https://jaldeeui.s3.ap-south-1.amazonaws.com/131487/home_assets/service-hero.png",
+          "alt": "Choose Your Service And Book Your Appointment. Choose your preferred time, and enjoy a seamless experience from booking to completion.",
+          "fit": "contain",
+          "width": 644,
+          "height": 1188
+        },
+        "action": {
+          "enabled": true,
+          "ariaLabel": "Book Your Appointment",
+          "link": {
+            "route": [
+              "appointment"
+            ],
+            "queryParams": {
+              "loc_id": "105072",
+              "service_id": "20290"
+            }
+          },
+          "hotspot": {
+            "leftPercent": 18.3,
+            "topPercent": 24.8,
+            "widthPercent": 63,
+            "heightPercent": 6.4
+          }
+        }
+      },
+      "services": {
+        "enabled": true,
+        "title": "Services",
+        "showTitle": true,
+        "coverImage": {
+          "src": "https://jaldeeui.s3.ap-south-1.amazonaws.com/131487/home_assets/service-cover.png",
+          "alt": "",
+          "fit": "contain",
+          "width": 644,
+          "height": 610,
+          "link": {
+            "route": [
+              "appointment"
+            ],
+            "queryParams": {
+              "loc_id": "105072",
+              "service_id": "20290"
+            }
+          }
+        },
+        "coverContainsTitle": false,
+        "layout": {
+          "columnsMobile": 2,
+          "columnsDesktop": 3,
+          "cardImageAspectRatio": "4 / 3"
+        },
+        "cards": [
+          {
+            "key": "consultation",
+            "enabled": true,
+            "sortOrder": 1,
+            "title": "Online Vet Consultation",
+            "description": "",
+            "image": {
+              "src": "https://jaldeeui.s3.ap-south-1.amazonaws.com/131487/home_assets/service-consultation.png",
+              "alt": "Online Vet Consultation",
+              "fit": "contain"
+            },
+            "link": {
+              "route": [
+                "appointment"
+              ],
+              "queryParams": {
+                "loc_id": "105072",
+                "service_id": "20291"
+              }
+            }
+          },
+          {
+            "key": "grooming",
+            "enabled": true,
+            "sortOrder": 2,
+            "title": "Pet Grooming",
+            "description": "",
+            "image": {
+              "src": "https://jaldeeui.s3.ap-south-1.amazonaws.com/131487/home_assets/service-grooming.png",
+              "alt": "Pet Grooming",
+              "fit": "contain"
+            },
+            "link": {
+              "route": [
+                "appointment"
+              ],
+              "queryParams": {
+                "loc_id": "105072",
+                "service_id": "20290"
+              }
+            }
+          },
+          {
+            "key": "boarding",
+            "enabled": true,
+            "sortOrder": 3,
+            "title": "Pet Boarding",
+            "description": "",
+            "image": {
+              "src": "https://jaldeeui.s3.ap-south-1.amazonaws.com/131487/home_assets/service-boarding.png",
+              "alt": "Pet Boarding",
+              "fit": "contain"
+            },
+            "link": {
+              "route": [
+                "appointment"
+              ],
+              "queryParams": {
+                "loc_id": "105072",
+                "service_id": "20291"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "context": "subApp"
+  },
+  "navigation": {
+    "footer": {
+      "enabled": true,
+      "items": [
+        {
+          "key": "home",
+          "label": "Home",
+          "icon": "fa-home",
+          "enabled": true,
+          "sortOrder": 1,
+          "link": {
+            "url": ""
+          }
+        },
+        {
+          "key": "bookings",
+          "label": "Bookings",
+          "icon": "fa-calendar",
+          "enabled": true,
+          "sortOrder": 2,
+          "link": {
+            "route": [
+              "bookings"
+            ],
+            "queryParams": {}
+          }
+        },
+        {
+          "key": "aboutus",
+          "label": "About Us",
+          "icon": "fa-paw",
+          "enabled": true,
+          "sortOrder": 4,
+          "link": {
+            "route": [
+              "about"
+            ],
+            "queryParams": {}
+          }
+        },
+        {
+          "key": "support",
+          "label": "Support",
+          "icon": "fa-headphones",
+          "enabled": true,
+          "sortOrder": 5,
+          "link": {
+            "route": [
+              "support"
+            ],
+            "queryParams": {}
+          }
+        }
+      ]
+    }
+  }
+}
