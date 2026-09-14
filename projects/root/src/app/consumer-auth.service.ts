@@ -61,8 +61,8 @@ export class ConsumerAuthService extends AuthService {
     } catch {
       // Local sign-out must finish even when the server is unavailable.
     } finally {
-      // AuthService.doLogout() calls clearLocalstorage(), which erases the
-      // platform identity and every other provider's saved cart.
+      // Clear web/native platform identity while preserving other providers' carts.
+      this.platformTokens.clear();
       this.tenantLogout.clearProviderState();
       this.sendMessage({ ttype: 'refresh', action: false });
     }

@@ -169,10 +169,15 @@ export class CrossTenantSsoService {
   private async requestSwitch(accountId: number | string): Promise<CrossTenantSwitchResponse> {
     const token = this.platformTokens.get();
     if (!token) throw new Error('No platform token is available');
+    // This client bypasses interceptors, so switch must supply device identity itself.
+    this.deviceIdentity.bootstrapFromCurrentUrl();
+    const { appId, installId } = this.deviceIdentity.getIdentity();
+    let headers = new HttpHeaders({ authtoken: token, 'Content-Type': 'application/json' });
+    if (appId && installId) headers = headers.set('Authorization', `${appId}-${installId}`);
     const response = await firstValueFrom(this.http.post<CrossTenantSwitchResponse>(
       this.apiUrl('consumer/login/switch'),
       { accountId },
-      this.requestOptions(token)
+      { headers, withCredentials: true }
     ).pipe(timeout(10000)));
     const sessionToken = this.normalizeSessionToken(response?.token);
     if (!response || !sessionToken) {
