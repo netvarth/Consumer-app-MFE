@@ -15,6 +15,18 @@
     <button type="button" class="view-all" *ngIf="hasMultipleActiveBookings()" (click)="onViewAllBookings()">View
       More</button>
   </div>
+    <div class="mgn-up-10 m-3 mgn-bt-10 pad-bt-10 grid-card"
+    *ngIf="templateJson && nextBooking && !isBookingCancelled(nextBooking) && !isBookingCompleted(nextBooking)">
+    <mat-grid-list [cols]="1" rowHeight="300px" [gutterSize]="'10px'">
+      <mat-grid-tile (click)="showBookingDetails(nextBooking, nextBookingType || 'today')">
+        <ng-container *ngIf="nextBooking.apptStatus">
+          <app-appt-card [booking]="nextBooking" [type]="nextBookingType || 'today'" [smallDevice]="smallDevice"
+            (actionPerformed)="cardClicked($event)"></app-appt-card>
+        </ng-container>
+  
+      </mat-grid-tile>
+    </mat-grid-list>
+  </div>
 
 
     <!-- Coming soon section -->
@@ -37,18 +49,7 @@
   </section>
 
 
-  <div class="mgn-up-10 m-3 mgn-bt-10 pad-bt-10 grid-card"
-    *ngIf="templateJson && nextBooking && !isBookingCancelled(nextBooking) && !isBookingCompleted(nextBooking)">
-    <mat-grid-list [cols]="1" rowHeight="300px" [gutterSize]="'10px'">
-      <mat-grid-tile (click)="showBookingDetails(nextBooking, nextBookingType || 'today')">
-        <ng-container *ngIf="nextBooking.apptStatus">
-          <app-appt-card [booking]="nextBooking" [type]="nextBookingType || 'today'" [smallDevice]="smallDevice"
-            (actionPerformed)="cardClicked($event)"></app-appt-card>
-        </ng-container>
-  
-      </mat-grid-tile>
-    </mat-grid-list>
-  </div>
+
   <div class="ratingcard-wrap" *ngIf="templateJson?.trustFeatures">
     <img class="ratingcard-img" [src]="templateJson?.trustFeatures" loading="lazy" decoding="async">
   </div>

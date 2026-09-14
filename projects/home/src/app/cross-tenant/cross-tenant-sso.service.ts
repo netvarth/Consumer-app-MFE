@@ -172,7 +172,7 @@ export class CrossTenantSsoService {
     // This client bypasses interceptors, so switch must supply device identity itself.
     this.deviceIdentity.bootstrapFromCurrentUrl();
     const { appId, installId } = this.deviceIdentity.getIdentity();
-    let headers = new HttpHeaders({ authtoken: token, 'Content-Type': 'application/json' });
+    let headers = new HttpHeaders({ authtoken: `platformToken-${token}`, 'Content-Type': 'application/json' });
     if (appId && installId) headers = headers.set('Authorization', `${appId}-${installId}`);
     const response = await firstValueFrom(this.http.post<CrossTenantSwitchResponse>(
       this.apiUrl('consumer/login/switch'),
@@ -201,9 +201,10 @@ export class CrossTenantSsoService {
 
   private installSession(response: CrossTenantSwitchResponse, accountId: string): void {
     this.accountState.clearActiveAuthentication();
-    // Browser apps keep using appId/installId for request authorization.
-    // Their returned token remains part of the login details in jld_scon.
-    if (!isBrowserSessionToken(response.token)) {
+    const { appId, installId } = this.deviceIdentity.getIdentity();
+    // Keep device-based authorization after switching when both IDs are available.
+    // The returned token remains part of the login details in jld_scon.
+    if (!(appId && installId) && !isBrowserSessionToken(response.token)) {
       localStorage.setItem('c_authorizationToken', JSON.stringify(response.token));
     }
     const refreshToken = this.sessionRefreshToken(response);
