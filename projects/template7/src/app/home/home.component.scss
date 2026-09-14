@@ -167,8 +167,6 @@
 .sub-app-shell .parent-footer-nav { padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)); }
 .sub-app-shell .parent-footer-nav a { font-size: clamp(12px, 3vw, 20px); gap: 7px; padding: 7px 2px; }
 .sub-app-shell .parent-footer-nav i { font-size: clamp(24px, 4.8vw, 33px); width: 1.1em; height: 1.1em; }
-.sub-app-home .header-container { position: sticky; height: auto; }
-.sub-app-home .panel-body { margin-top: 0; min-height: 0; }
 /* welcome popup overlay */
 .welcome-overlay {
   position: fixed;

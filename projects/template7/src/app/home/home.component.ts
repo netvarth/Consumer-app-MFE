@@ -85,6 +85,10 @@ export class HomeComponent implements OnInit, DoCheck, OnDestroy {
       if (qparams && qparams['callback']) {
         this.callback = qparams['callback'];
       }
+      const shellApp = qparams?.['shellapp'];
+      if (typeof shellApp === 'string' && /^\/[a-zA-Z0-9_-]+\/?$/.test(shellApp)) {
+        this.lStorageService.setitemonLocalStorage('shellapp', shellApp);
+      }
       persistDeviceIdentity(qparams, this.lStorageService);
       if (qparams && qparams['app_id']) {
         this.lStorageService.setitemonLocalStorage('dash_visible', true)
@@ -302,13 +306,9 @@ export class HomeComponent implements OnInit, DoCheck, OnDestroy {
   }
 
   get showParentFooter(): boolean {
-    if (this.homeState.isSubApp) return !this.hideFooter && this.homeState.config.footer.length > 0;
-    if (this.hideFooter || !this.footerItems.length) return false;
-    const petStoreRoute = this.templateJson?.petStorePage?.route || 'pet-store';
-    if (this.router.url.split('?')[0].includes(`/${petStoreRoute}`)) {
-      return this.templateJson?.petStorePage?.layout?.useParentFooterNavigation !== false;
-    }
-    return true;
+    // Match template 4 for both sub-app and legacy home pages.
+    if (!this.homeState.isRoot || this.hideFooter) return false;
+    return this.homeState.isSubApp ? this.homeState.config.footer.length > 0 : this.footerItems.length > 0;
   }
 
   navigateFooter(item: any): void {

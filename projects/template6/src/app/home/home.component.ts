@@ -246,12 +246,10 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   }
 
   get showParentFooter(): boolean {
-    if (this.hideFooter || !this.footerItems.length) return false;
-    const petStoreRoute = this.templateJson?.petStorePage?.route || 'pet-store';
-    if (this.router.url.split('?')[0].includes(`/${petStoreRoute}`)) {
-      return this.templateJson?.petStorePage?.layout?.useParentFooterNavigation !== false;
-    }
-    return true;
+    const routeId = String(this.sharedService.getRouteID() || '').replace(/^\/+|\/+$/g, '');
+    const path = this.router.url.split(/[?#]/)[0].replace(/\/$/, '');
+    // Match template 4: the navigation footer belongs only to the home page.
+    return !!routeId && path === `/${routeId}` && !this.hideFooter && this.footerItems.length > 0;
   }
 
   navigateFooter(item: any): void {

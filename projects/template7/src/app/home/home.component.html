@@ -8,14 +8,14 @@
       </div>
     </div>
 <section id="busPageId" class="content bus-page no-padding loginpg" [ngClass]="theme"
-    [class.sub-app-shell]="homeState.isSubApp" [class.sub-app-home]="homeState.isSubApp && homeState.isRoot"
+    [class.sub-app-shell]="homeState.isSubApp"
     [class.sub-app-footer-visible]="homeState.isSubApp && showParentFooter">
     <div class="bus-page-header" *ngIf="!loginRequired">
         <div class="panel panel-default">
 
             <div #header class="header-container" *ngIf="header && !isImmersiveRoute">
               <ng-container *ngFor="let accountKey of [accountId]">
-                <app-header [locations]="locations" [templateConfig]="config" [homeRoot]="homeState.isSubApp && homeState.isRoot"
+                <app-header [locations]="locations" [templateConfig]="config"
                   *ngIf="locations && locations.length > 0 && homeState.config.status !== 'loading'"></app-header>
               </ng-container>
             </div>

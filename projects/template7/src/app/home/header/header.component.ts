@@ -40,7 +40,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   hideBookings: boolean;
   header: boolean = true;
   @Input() locations;
-  @Input() homeRoot = false;
   @Input() set templateConfig(value: any) {
     this.config = value;
     if (value?.homePage?.context === 'subApp' && value.logo) this.logo = value.logo;
@@ -570,6 +569,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.router.navigateByUrl(dashboardUrl);
   }
   gotoActiveHome(isLoggedOut?: boolean) {
+    const shellApp = this.lStorageService.getitemfromLocalStorage('shellapp');
+    if (!isLoggedOut && typeof shellApp === 'string' && /^\/[a-zA-Z0-9_-]+\/?$/.test(shellApp)) {
+      // Reload the account while preserving the application's base path (e.g. /capp/).
+      window.location.href = new URL(shellApp.substring(1), document.baseURI).href;
+      return;
+    }
     const source = this.lStorageService.getitemfromLocalStorage('source');
     console.log("Source:", source);
     if (source) {
