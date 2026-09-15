@@ -343,11 +343,13 @@ export class DetailsComponent implements OnInit, OnDestroy {
       return;
     }
     if (this.callingChannel === 'VideoCall') {
-      if (bookingInfo.videoCallButton && bookingInfo.videoCallButton !== 'DISABLED') {
+      if (bookingInfo.videoCallButton === 'ENABLED') {
         const bookingEncId = this.booking['isAppointment'] ? bookingInfo.appointmentEncId : bookingInfo.checkinEncId;
-        if (bookingEncId && this.activeUser?.primaryPhoneNumber) {
-          this.router.navigate([this.sharedService.getRouteID(), 'meeting', this.activeUser.primaryPhoneNumber, bookingEncId]);
+        if (!bookingEncId) {
+          this.toastService.showError('Unable to open the video call. Please refresh your booking and try again.');
+          return;
         }
+        this.router.navigate([this.sharedService.getRouteID(), 'meeting', bookingEncId]);
       }
       return;
     }

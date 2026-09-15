@@ -797,10 +797,14 @@ export class MyBookingsComponent implements OnInit, OnDestroy {
   }
 
   btnJoinVideoClicked(booking, event) {
-    event.stopPropagation();
-    let bookingID = booking.apptStatus ? booking.appointmentEncId : booking.checkinEncId;
-    if (booking.videoCallButton && booking.videoCallButton !== 'DISABLED') {
-      this.router.navigate([this.sharedService.getRouteID(), 'meeting', this.activeUser.primaryPhoneNumber, bookingID]);
+    event?.stopPropagation();
+    if (booking?.videoCallButton === 'ENABLED') {
+      const bookingID = booking.apptStatus ? booking.appointmentEncId : booking.checkinEncId;
+      if (!bookingID) {
+        this.toastService.showError('Unable to open the video call. Please refresh your bookings and try again.');
+        return false;
+      }
+      this.router.navigate([this.sharedService.getRouteID(), 'meeting', bookingID]);
     }
     return false;
   }
@@ -1402,24 +1406,6 @@ export class MyBookingsComponent implements OnInit, OnDestroy {
     return this.pickFirst(b?.customerName, b?.consumer?.firstName, b?.patientName, 'Self') as string;
   }
    showBookingDetails(booking, type?) {
-    let bookingID = booking.apptStatus ? booking.uid : booking.uid;
-    this.router.navigate([this.sharedService.getRouteID(), 'booking', bookingID]);
-    
-    let queryParams = {};
-    if (booking.apptStatus) {
-      queryParams['uuid'] = booking.uid;
-      queryParams['type'] = type;
-      const navigationExtras: NavigationExtras = {
-        queryParams: queryParams
-      };
-      this.router.navigate([this.customId, 'apptdetails'], navigationExtras);
-    } else if (booking.waitlistStatus) {
-      queryParams['uuid'] = booking.ynwUuid;
-      queryParams['type'] = type;
-      const navigationExtras: NavigationExtras = {
-        queryParams: queryParams
-      };
-      this.router.navigate([this.customId, 'checkindetails'], navigationExtras);
-    }
+    this.bookingDetails(booking);
   }
 }

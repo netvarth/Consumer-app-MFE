@@ -43,6 +43,7 @@ const routes: Routes = [
       { path: 'privacy-policy', loadChildren: () => import('./legal/legal.module').then(m => m.LegalModule) },
       { path: 'service/:serid', loadChildren: () => import('./service-page/service-page.module').then(m => m.ServicePageModule) },
       { path: 'meeting/:phonenumber/:id', loadChildren: () => import('./live-chat/live-chat.module').then(m => m.LiveChatModule)},
+      { path: 'meeting/:id', loadChildren: () => import('./live-chat/live-chat.module').then(m => m.LiveChatModule)},
       { path: 'history', loadChildren: () => import('./history/history.module').then(m => m.ConsumerHistoryModule) },
     ]
   }
