@@ -26,8 +26,7 @@
       </form>
       <ng-container *ngIf="hero.action as action">
         <a *ngIf="action.link && hero.image.src && !failedImages.has('hero')" class="hero-action" [routerLink]="homeState.tree(action.link)"
-          [attr.aria-label]="action.ariaLabel" [style.left.%]="action.position.leftPercent" [style.top.%]="action.position.topPercent"
-          [style.width.%]="action.position.widthPercent" [style.height.%]="action.position.heightPercent"></a>
+          [attr.aria-label]="action.ariaLabel"></a>
         <a *ngIf="action.link && (!hero.image.src || failedImages.has('hero'))" class="fallback-action" [routerLink]="homeState.tree(action.link)">{{ action.ariaLabel }}</a>
       </ng-container>
     </section>
@@ -58,9 +57,6 @@
 
     <section *ngIf="config.services as services" class="services-section" aria-labelledby="services-title">
       <img *ngIf="services.coverImage?.src && !failedImages.has('cover')" class="services-cover" [src]="services.coverImage.src" alt="" loading="lazy" (error)="imageFailed('cover')">
-      <a *ngIf="services.coverLink && services.coverImage?.src && !failedImages.has('cover')"
-        class="services-cover-link" [routerLink]="homeState.tree(services.coverLink)"
-        [attr.aria-label]="services.coverImage.alt || 'Book an appointment'"></a>
       <h2 *ngIf="services.showTitle && services.title" id="services-title">{{ services.title }}</h2>
       <div class="service-grid">
         <a *ngFor="let card of services.items; trackBy: trackCard" class="service-card" [routerLink]="homeState.tree(card.link)"

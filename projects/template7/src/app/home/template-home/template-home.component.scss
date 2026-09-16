@@ -121,7 +121,12 @@
 
 .hero-action {
   position: absolute;
-  border-radius: 999px;
+  inset: 0;
+}
+
+.hero-action:focus-visible {
+  outline: 3px solid #235eb9;
+  outline-offset: -3px;
 }
 
 .fallback-action {
@@ -254,16 +259,6 @@
   object-fit: cover;
   z-index: -1;
   pointer-events: none;
-}
-
-.services-cover-link {
-  position: absolute;
-  inset: 0;
-}
-
-.services-cover-link:focus-visible {
-  outline: 3px solid #235eb9;
-  outline-offset: -3px;
 }
 
 .services-section>h2 {
