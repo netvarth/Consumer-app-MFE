@@ -15,15 +15,14 @@
           <i class="fa fa-picture-o" aria-hidden="true"></i><span>{{ hero.image.alt || 'Banner image unavailable' }}</span>
         </div>
       </ng-template>
-      <form *ngIf="hero.search as search" class="hero-search" role="search" (ngSubmit)="submitSearch()"
+      <div *ngIf="hero.search as search" class="hero-search" role="search"
         [style.left.%]="search.position.leftPercent" [style.top.%]="search.position.topPercent"
         [style.width.%]="search.position.widthPercent" [style.height.%]="search.position.heightPercent">
-        <button type="submit" [attr.aria-label]="search.ariaLabel" [disabled]="!search.link">
-          <svg viewBox="0 0 28 28" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.8"/><path d="m18 18 7 7M21 2v6M18 5h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-        </button>
-        <input type="search" name="query" [(ngModel)]="searchText" [placeholder]="search.placeholder"
-          [attr.aria-label]="search.ariaLabel" [disabled]="!search.link" autocomplete="off">
-      </form>
+        <app-item-search [accountID]="accountId" [catalogEncids]="selectedCatalogs" [autoFocusOnMobile]="false"
+          [placeholder]="search.placeholder" [ariaLabel]="search.ariaLabel" [disabled]="!search.link"
+          [hero]="true" [resetKey]="revision" (selectedItemsEmit)="onItemSearchSelected($event)">
+        </app-item-search>
+      </div>
       <ng-container *ngIf="hero.action as action">
         <a *ngIf="action.link && hero.image.src && !failedImages.has('hero')" class="hero-action" [routerLink]="homeState.tree(action.link)"
           [attr.aria-label]="action.ariaLabel"></a>

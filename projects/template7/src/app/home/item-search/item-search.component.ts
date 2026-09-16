@@ -1,6 +1,7 @@
-import { Component, EventEmitter, HostListener, Input, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnChanges, OnDestroy, Output, ViewChild } from '@angular/core';
 import { OrderService } from 'jconsumer-shared';
 import { AutoComplete } from 'primeng/autocomplete';
+import { Subscription } from 'rxjs';
 
 
 
@@ -14,10 +15,16 @@ interface AutoCompleteCompleteEvent {
   templateUrl: './item-search.component.html',
   styleUrls: ['./item-search.component.scss']
 })
-export class ItemSearchComponent {
+export class ItemSearchComponent implements OnChanges, OnDestroy {
   @Input() catalogEncids;
   @Input() accountID: any;
   @Input() autoFocusOnMobile: boolean = true;
+  @Input() placeholder = 'what are you looking for?';
+  @Input() ariaLabel = 'Search products';
+  @Input() disabled = false;
+  @Input() hero = false;
+  @Input() resetKey = 0;
+  private searchSubscription?: Subscription;
   @Output() selectedItemsEmit = new EventEmitter<any>;
   @ViewChild('autocomplete') autocomplete!: AutoComplete;
   selectedItems: any = [];
@@ -26,6 +33,17 @@ export class ItemSearchComponent {
   constructor(
     private orderService : OrderService
   ) {
+  }
+
+  ngOnChanges(): void {
+    this.searchSubscription?.unsubscribe();
+    this.selectedItem = '';
+    this.filteredItems = [];
+    this.autocomplete?.hide();
+  }
+
+  ngOnDestroy(): void {
+    this.searchSubscription?.unsubscribe();
   }
 
   ngAfterViewInit(): void {
@@ -51,29 +69,30 @@ export class ItemSearchComponent {
   }
 
   onItemSelected(event: any) {
+    if (this.disabled) return;
     console.log("event",event)
     this.selectedItem = '';
     event.name ? event.name = this.capitalizeFirstLetter(event.name) : '';
     this.selectedItemsEmit.emit(event);
   }
-  onSearchSubmit(event: any): boolean {
-    console.log("event",event)
-    console.log("eventthis.selectedItem",this.selectedItem)
-    if(((event.which === 13 || event.keyCode === 13) || (event.which === 1 || event.keyCode === 1)) && this.selectedItem) {
-      event.query = this.selectedItem;
-      this.selectedItemsEmit.emit(event);
-      return true;
-    } else {
-      return false;
-    }
+  onSearchSubmit(): boolean {
+    const query = typeof this.selectedItem === 'string' ? this.selectedItem.trim() : '';
+    if (this.disabled || !query) return false;
+    this.autocomplete?.hide();
+    this.selectedItemsEmit.emit({ query });
+    return true;
   }
   filterItems(event: AutoCompleteCompleteEvent) {
-    let query = event.query.toLowerCase();
-    if (event.query && this.accountID) {
-      this.orderService.searchSpItem(this.accountID, query,this.catalogEncids)
-        .subscribe((data: any) => {
-          this.filteredItems = data;
+    this.searchSubscription?.unsubscribe();
+    const query = event.query.trim().toLowerCase();
+    if (!this.disabled && query && this.accountID) {
+      this.searchSubscription = this.orderService.searchSpItem(this.accountID, query, this.catalogEncids)
+        .subscribe({
+          next: (data: any) => { this.filteredItems = data; },
+          error: () => { this.filteredItems = []; }
         });
+    } else {
+      this.filteredItems = [];
     }
   }
 

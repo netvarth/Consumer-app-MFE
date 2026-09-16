@@ -1,5 +1,6 @@
 import { Component, Input, OnChanges } from '@angular/core';
 import { Router } from '@angular/router';
+import { SharedService } from 'jconsumer-shared';
 import { HomeCard, TemplateHomeConfig } from './template-home.models';
 import { TemplateHomeState } from './template-home-state.service';
 
@@ -11,21 +12,26 @@ import { TemplateHomeState } from './template-home-state.service';
 export class TemplateHomeComponent implements OnChanges {
   @Input() config!: TemplateHomeConfig;
   @Input() revision = 0;
-  searchText = '';
+  accountId: any;
+  selectedCatalogs: string[] = [];
   failedImages = new Set<string>();
 
-  constructor(public homeState: TemplateHomeState, private router: Router) {}
+  constructor(public homeState: TemplateHomeState, private router: Router, private shared: SharedService) {}
 
   ngOnChanges(): void {
-    this.searchText = '';
+    this.accountId = this.shared.getAccountID();
+    this.selectedCatalogs = this.shared.getTemplateJSON()?.extras?.selectedCatalogs || [];
     this.failedImages = new Set<string>();
   }
 
-  submitSearch(): void {
-    const query = this.searchText.trim();
+  onItemSearchSelected(event: any): void {
     const link = this.config.hero?.search?.link;
-    if (!query || !link) return;
-    const tree = this.homeState.tree({ ...link, queryParams: { ...link.queryParams, query } });
+    if (!link) return;
+    const query = typeof event?.query === 'string' ? event.query.trim() : '';
+    const encId = event?.value?.encId;
+    const target = query ? { ...link, queryParams: { ...link.queryParams, query } }
+      : typeof encId === 'string' && encId ? { route: ['item', encId] } : null;
+    const tree = this.homeState.tree(target);
     if (tree) void this.router.navigateByUrl(tree);
   }
 

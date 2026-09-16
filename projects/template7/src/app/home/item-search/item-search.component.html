@@ -1,7 +1,8 @@
-<div class="lucene-search" style="position: relative;">
-  <p-autoComplete #autocomplete [suggestions]="filteredItems" placeholder="what are you looking for?"
+<div class="lucene-search" [class.hero-search-control]="hero" style="position: relative;">
+  <p-autoComplete #autocomplete [suggestions]="filteredItems" [placeholder]="placeholder"
+    [ariaLabel]="ariaLabel" [disabled]="disabled"
     (completeMethod)="filterItems($event)" [(ngModel)]="selectedItem" (onSelect)="onItemSelected($event)"
-    (keydown.enter)="autocomplete.hide();onSearchSubmit($event)"
+    (keydown.enter)="onSearchSubmit()"
     [style]="{'width':'100%'}" [inputStyle]="{'width':'100%'}">
     <ng-template let-item pTemplate="item">
       <div>
@@ -20,7 +21,9 @@
       </div>
     </ng-template>
   </p-autoComplete>
-  <i class="fa fa-search pointer-cursor"       
-     (click)="onSearchSubmit($event)">
-  </i>
+  <button type="button" class="search-submit" [attr.aria-label]="ariaLabel" [disabled]="disabled"
+    (click)="onSearchSubmit()">
+    <i *ngIf="!hero" class="fa fa-search" aria-hidden="true"></i>
+    <svg *ngIf="hero" viewBox="0 0 28 28" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.8"/><path d="m18 18 7 7M21 2v6M18 5h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+  </button>
 </div>

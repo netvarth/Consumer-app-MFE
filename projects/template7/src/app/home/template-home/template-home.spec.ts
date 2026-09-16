@@ -3,6 +3,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CommonModule } from '@angular/common';
+import { By } from '@angular/platform-browser';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of, Subject } from 'rxjs';
 import { AccountService, AuthService, ConsumerService, GroupStorageService, LocalStorageService, OrderService, SharedService, SubscriptionService, ThemeService } from 'jconsumer-shared';
 import { CrossTenantJourneyService, DocumentNavigationService } from '@consumer/cross-tenant';
@@ -12,6 +14,7 @@ import { TemplateHomeModule } from './template-home.module';
 import { TemplateHomeState } from './template-home-state.service';
 import { HomeEntryComponent } from '../root/home-entry.component';
 import { HomeComponent } from '../home.component';
+import { ItemSearchComponent } from '../item-search/item-search.component';
 
 function fixtureConfig(): any {
   return {
@@ -199,8 +202,9 @@ describe('Template 7 renderer and tenant navigation', () => {
     shared = { getTemplateJSON: () => raw, getRouteID: () => routeId, getAccountInfo: () => account,
       getAccountID: () => account.id, getAccountConfig: () => ({}) };
     await TestBed.configureTestingModule({
-      imports: [TemplateHomeModule, RouterTestingModule],
+      imports: [TemplateHomeModule, RouterTestingModule, NoopAnimationsModule],
       providers: [TemplateHomeState, { provide: SharedService, useValue: shared },
+        { provide: OrderService, useValue: { searchSpItem: jasmine.createSpy('searchSpItem').and.returnValue(of([])) } },
         { provide: CrossTenantJourneyService, useValue: { get: () => null } },
         { provide: DocumentNavigationService, useValue: { assign: jasmine.createSpy('assign') } }]
     }).compileComponents();
@@ -222,18 +226,35 @@ describe('Template 7 renderer and tenant navigation', () => {
 
   it('submits a trimmed search with an encoded ampersand and ignores whitespace', () => {
     const navigate = spyOn(router, 'navigateByUrl').and.resolveTo(true);
-    component.componentInstance.searchText = '   ';
-    component.componentInstance.submitSearch();
+    const search: ItemSearchComponent = component.debugElement.query(By.directive(ItemSearchComponent)).componentInstance;
+    search.selectedItem = '   ';
+    search.onSearchSubmit();
     expect(navigate).not.toHaveBeenCalled();
     const input: HTMLInputElement = component.nativeElement.querySelector('input');
     input.value = ' food & treats ';
     input.dispatchEvent(new Event('input'));
-    component.nativeElement.querySelector('form').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    component.nativeElement.querySelector('.search-submit').click();
     expect(router.parseUrl(router.serializeUrl(navigate.calls.mostRecent().args[0] as any)).queryParams).toEqual({ query: 'food & treats' });
   });
 
+  it('searches the current account and configured catalogs and opens a selected product', () => {
+    raw.extras = { selectedCatalogs: ['pet-food'] };
+    state.sync();
+    component.componentRef.setInput('config', state.config);
+    component.componentRef.setInput('revision', state.revision);
+    component.detectChanges();
+    const search: ItemSearchComponent = component.debugElement.query(By.directive(ItemSearchComponent)).componentInstance;
+    search.filterItems({ originalEvent: new Event('input'), query: ' FOOD ' });
+    expect(TestBed.inject(OrderService).searchSpItem).toHaveBeenCalledWith(1, 'food', ['pet-food']);
+    const navigate = spyOn(router, 'navigateByUrl').and.resolveTo(true);
+    search.onItemSelected({ value: { encId: 'abc=+123', name: 'Pet food' } });
+    const parsed = router.parseUrl(router.serializeUrl(navigate.calls.mostRecent().args[0] as any));
+    expect(parsed.root.children['primary'].segments.map(item => item.path)).toEqual(['test-tenant', 'item', 'abc=+123']);
+  });
+
   it('resets search and image failures on config reload and hides all empty sections', () => {
-    component.componentInstance.searchText = 'old';
+    const search: ItemSearchComponent = component.debugElement.query(By.directive(ItemSearchComponent)).componentInstance;
+    search.selectedItem = 'old';
     component.componentInstance.imageFailed('hero');
     raw.homePage.store.hero.enabled = false;
     raw.homePage.store.categories.items = [];
@@ -242,7 +263,7 @@ describe('Template 7 renderer and tenant navigation', () => {
     component.componentRef.setInput('config', state.config);
     component.componentRef.setInput('revision', state.revision);
     component.detectChanges();
-    expect(component.componentInstance.searchText).toBe('');
+    expect(component.debugElement.query(By.directive(ItemSearchComponent))).toBeNull();
     expect(component.componentInstance.failedImages.size).toBe(0);
     expect(component.nativeElement.querySelector('section')).toBeNull();
   });
@@ -353,9 +374,13 @@ describe('Template 7 root isolation', () => {
     legacyInstances = 0;
     const home = { config: normalizeTemplateHome(null), revision: 0 };
     await TestBed.configureTestingModule({
-      imports: [CommonModule, TemplateHomeModule, RouterTestingModule],
+      imports: [CommonModule, TemplateHomeModule, RouterTestingModule, NoopAnimationsModule],
       declarations: [HomeEntryComponent, LegacyHomeProbe],
-      providers: [{ provide: TemplateHomeState, useValue: { ...home, tree: () => null } }]
+      providers: [
+        { provide: TemplateHomeState, useValue: { ...home, tree: () => null } },
+        { provide: SharedService, useValue: { getAccountID: () => 1, getTemplateJSON: () => fixtureConfig() } },
+        { provide: OrderService, useValue: { searchSpItem: () => of([]) } }
+      ]
     }).compileComponents();
     const state = TestBed.inject(TemplateHomeState);
     const entry = TestBed.createComponent(HomeEntryComponent);

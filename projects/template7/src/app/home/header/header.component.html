@@ -19,7 +19,8 @@
     </div>
 
     <div class="actions">
-      <button type="button" class="icon-btn wishlist-btn" (click)="redirectto('wishlist')" aria-label="Wishlist">
+      <button type="button" class="icon-btn wishlist-btn" (click)="redirectto('wishlist')" aria-label="Wishlist"
+        *ngIf="config.homePage?.type !== 'service'">
         <i class="fa fa-heart-o"></i>
         <span *ngIf="wishlistCount > 0" class="cart-count wishlist-count">{{ wishlistCount }}</span>
       </button>
@@ -31,7 +32,8 @@
       </span>
 
 
-      <button type="button" class="icon-btn cart-btn" (click)="goToCart()" *ngIf="isCartVisible" aria-label="Cart">
+      <button type="button" class="icon-btn cart-btn" (click)="goToCart()"
+        *ngIf="config.homePage?.type !== 'service' && isCartVisible" aria-label="Cart">
         <!-- <i class="fa fa-shopping-cart"></i> -->
         <img class="actionImge" src="{{cdnPath}}assets/images/myjaldee/shopping-cart.png" />
         <span *ngIf="cartCount > 0" class="cart-count">{{ cartCount }}</span>
