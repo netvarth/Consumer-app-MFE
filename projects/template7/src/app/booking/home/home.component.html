@@ -1,4 +1,4 @@
-<div class="p-3 d-flex shadow flex-row header container" [ngClass]="theme">
+<div class="p-3 d-flex shadow flex-row header container" [ngClass]="theme" *ngIf="loggedIn">
     <div class="my-auto align-items-center d-flex" (click)="goBack('back')" *ngIf="showBackArrow">
         <a class=""><i class="fa fa-arrow-left"></i>&emsp;</a>
         <!-- <div class="ms-2 backHeader">{{'Back' | translate}}</div> -->
