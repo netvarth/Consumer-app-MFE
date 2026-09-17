@@ -36,6 +36,8 @@ The S3 URLs were validated locally and installed as supplied; their HTTP availab
 
 Footer labels, icons, destinations, visibility and order come from `navigation.footer.items`. Placeholder and malformed targets render without an href. Catalog detail and checkout continue to use existing server-backed logic and authoritative prices.
 
+For both store and service footers, `icon` accepts a Font Awesome name such as `fa-home`, an HTTP(S) SVG URL, or a local `assets/...svg` path. Use the plain URL string, without Markdown link syntax, for example `"icon": "https://jaldeeuiscale.s3.ap-south-1.amazonaws.com/155835/order-history.svg"`. SVGs render as single-colour alpha masks: inactive grey (`#9ca3af`) and active orange (`#f4510b`), matching the label even when the SVG has a fixed fill colour. Remote SVG hosting must permit cross-origin GET requests (CORS). Use artwork with a transparent background; all opaque parts form the icon shape. Invalid icon values retain the circle fallback.
+
 Set `homePage.layout.activeFooterKey` to the key of the tab to highlight on the homepage: `services` for the service configuration or `shop` for the store configuration. The corresponding item links to `{"route": []}`. If the active key is omitted, disabled or invalid, the enabled root link supplies the default. Keys and labels are not inferred from the page type.
 
 For a store, replace the Bookings entry in `navigation.footer.items` with:

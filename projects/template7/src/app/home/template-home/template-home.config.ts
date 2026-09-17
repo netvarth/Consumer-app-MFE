@@ -33,6 +33,17 @@ function image(value: unknown, width = 1, height = 1): HomeImage {
   };
 }
 
+function footerIcon(value: unknown): { icon: string; iconMask?: string } {
+  const name = label(value);
+  if (/^fa-[a-z-]+$/.test(name)) return { icon: name };
+  const source = image({ src: name }).src;
+  if (source && /\.svg$/i.test(new URL(source, 'https://local.invalid/').pathname)) {
+    // Use alpha as the shape so even SVGs with fixed fills inherit the tab colour.
+    return { icon: '', iconMask: `url(${JSON.stringify(source)})` };
+  }
+  return { icon: 'fa-circle-o' };
+}
+
 function position(value: unknown, defaults: number[]): HomePosition {
   const data = object(value);
   const left = bounded(data['leftPercent'], defaults[0], 0, 100);
@@ -122,7 +133,7 @@ export function normalizeTemplateHome(template: unknown, hidePrice = false, pare
   const footer = object(object(data['navigation'])['footer']);
   if (enabled(footer)) config.footer = sorted(footer['items'], diagnostics).map(item => ({
     key: label(item['key']), label: label(item['label']),
-    icon: /^fa-[a-z-]+$/.test(label(item['icon'])) ? item['icon'] : 'fa-circle-o',
+    ...footerIcon(item['icon']),
     link: label(item['key']) === 'home' ? { route: [], queryParams: {} }
       : normalizeHomeLink(item['link'], 'footer', diagnostics, label(item['key']), parentUrl)
   }));

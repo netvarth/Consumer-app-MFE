@@ -58,6 +58,7 @@ export interface HomeFooterItem {
   key: string;
   label: string;
   icon: string;
+  iconMask?: string;
   link: HomeLink | null;
 }
 

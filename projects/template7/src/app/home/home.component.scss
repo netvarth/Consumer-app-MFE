@@ -149,11 +149,25 @@
 }
 
 .parent-footer-nav img,
+.parent-footer-nav .footer-svg-icon,
 .parent-footer-nav i {
   width: 24px;
   height: 24px;
   object-fit: contain;
   font-size: 22px;
+}
+
+.parent-footer-nav .footer-svg-icon {
+  display: inline-block;
+  flex-shrink: 0;
+  background-color: currentColor;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  mask-mode: alpha;
 }
 
 .parent-footer-nav button.active-nav, .parent-footer-nav a.active-nav { color: #f4510b; }
@@ -166,7 +180,8 @@
 .sub-app-footer-visible .panel-body { padding-bottom: var(--sub-app-footer-height, calc(82px + env(safe-area-inset-bottom, 0px))) !important; }
 .sub-app-shell .parent-footer-nav { padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)); }
 .sub-app-shell .parent-footer-nav a { font-size: clamp(12px, 3vw, 20px); gap: 7px; padding: 7px 2px; }
-.sub-app-shell .parent-footer-nav i { font-size: clamp(24px, 4.8vw, 33px); width: 1.1em; height: 1.1em; }
+.sub-app-shell .parent-footer-nav i,
+.sub-app-shell .parent-footer-nav .footer-svg-icon { font-size: clamp(24px, 4.8vw, 33px); width: 1.1em; height: 1.1em; }
 /* welcome popup overlay */
 .welcome-overlay {
   position: fixed;
