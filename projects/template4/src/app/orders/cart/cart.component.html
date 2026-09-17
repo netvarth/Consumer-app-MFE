@@ -33,9 +33,9 @@
                                     <ng-template pTemplate="header" *ngIf="!smallDevice">
                                         <tr>
                                             <th class="">Item</th>
-                                            <th class="text-center">GST</th>
+                                            <th class="text-center" *ngIf="shouldShowPriceDetails(items)">GST</th>
                                             <th class="text-center">Quantity</th>
-                                            <th class="text-start">Total</th>
+                                            <th class="text-start" *ngIf="shouldShowPriceDetails(items)">Total</th>
                                         </tr>
                                     </ng-template>
                                     <ng-template *ngIf="!smallDevice" pTemplate="body" let-item>
@@ -58,7 +58,7 @@
                                                     </div>
                                                     <div>
                                                         <div class="fw-bold item-name">{{item.spItem.name}}</div>
-                                                        <div class="d-flex price-section">
+                                                        <div class="d-flex price-section" *ngIf="shouldShowPriceDetails(items)">
                                                             <span class="netPrice">₹{{item.taxableAmount}}</span>
                                                         </div>
                                                     </div>
@@ -72,7 +72,7 @@
                                                     </ul>
                                                 </div>
                                             </td>
-                                            <td class="text-center">
+                                            <td class="text-center" *ngIf="shouldShowPriceDetails(items)">
                                                 <div *ngIf="item?.taxPercentage" class="fw-bold">{{item.taxPercentage}}%
                                                 </div>
                                                 <div *ngIf="!item?.taxPercentage" class="fw-bold">-</div>
@@ -93,7 +93,7 @@
                                                     <!-- <div class="remove" (click)="removeItem(item.uid)">Remove</div> -->
                                                 </div>
                                             </td>
-                                            <td class="text-end">
+                                            <td class="text-end" *ngIf="shouldShowPriceDetails(items)">
                                                 <div class="d-flex justify-content-between align-items-center gap-5">
                                                     <div class="fw-bold">₹{{getAmountInDecimalPoints(item.netRate)}}
                                                     </div>
@@ -127,7 +127,7 @@
                                                             <div class="remove pe-2" (click)="removeItem(item)"><i
                                                                     class="fa fa-trash"></i></div>
                                                         </div>
-                                                        <div class="pb-2 item_price">₹{{item.taxableAmount}}<span
+                                                        <div class="pb-2 item_price" *ngIf="shouldShowPriceDetails(items)">₹{{item.taxableAmount}}<span
                                                                 *ngIf="item.taxPercentage">+({{item?.taxPercentage}}% of
                                                                 GST)</span></div>
                                                         <div class="inputnumber d-flex">
@@ -142,7 +142,7 @@
                                                                 (ngModelChange)="onQuantityChange($event, item)"
                                                                 (onFocus)="onInputFocus($event)">
                                                             </p-inputNumber>
-                                                            <div class="fw-bold">₹{{item.netRate}}</div>
+                                                            <div class="fw-bold" *ngIf="shouldShowPriceDetails(items)">₹{{item.netRate}}</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -155,22 +155,22 @@
                     </div>
                     <div *ngIf="cartDataHome" class="cart-container-section1">
                         <div [ngClass]="!mediumDevice && smallDevice?'card':'p-4'">
-                            <div *ngIf="isCouponsAvailable" class="coupon-section mb-3 col-md-12 col-12 col-sm-12 ">
+                            <div *ngIf="isCouponsAvailable && shouldShowPriceDetails(items)" class="coupon-section mb-3 col-md-12 col-12 col-sm-12 ">
                                 <app-apply-coupon [s3CouponsList]="s3CouponsList"
                                     (actionPerformed)="couponActionPerformed($event)"></app-apply-coupon>
                             </div>
-                            <div *ngIf="cartDataHome.netTotal && cartDataHome.netTotal > 0"
+                            <div *ngIf="shouldShowPriceDetails(items) && cartDataHome.netTotal && cartDataHome.netTotal > 0"
                                 class="d-flex justify-content-between total mt-2">
                                 <div>Total</div>
                                 <div>₹{{getAmountInDecimalPoints(cartDataHome.netTotal)}}</div>
                             </div>
-                            <div *ngIf="cartDataHome.taxTotal && cartDataHome.taxTotal > 0"
+                            <div *ngIf="shouldShowPriceDetails(items) && cartDataHome.taxTotal && cartDataHome.taxTotal > 0"
                                 class="d-flex justify-content-between total mt-2">
                                 <div>Tax Total</div>
                                 <div>₹{{getAmountInDecimalPoints(cartDataHome.taxTotal)}}</div>
                             </div>
                             <div
-                                *ngIf="cartDataHome && cartDataHome.providerCoupons &&  cartDataHome.providerCoupons.length > 0">
+                                *ngIf="shouldShowPriceDetails(items) && cartDataHome && cartDataHome.providerCoupons &&  cartDataHome.providerCoupons.length > 0">
                                 <div class="d-flex coupon-text mt-2 justify-content-between"
                                     *ngFor="let coupon of cartDataHome.providerCoupons">
                                     <span scope="row" class="fw-bold border-none">
@@ -182,7 +182,7 @@
                                     </span>
                                 </div>
                             </div>
-                            <div *ngIf="cartDataHome.netRate" class="d-flex justify-content-between total mt-2">
+                            <div *ngIf="shouldShowPriceDetails(items) && cartDataHome.netRate" class="d-flex justify-content-between total mt-2">
                                 <div>Net Total</div>
                                 <div>₹{{getAmountInDecimalPoints(cartDataHome.netRate)}}</div>
                             </div>
@@ -220,9 +220,9 @@
                                     <ng-template pTemplate="header" *ngIf="!smallDevice">
                                         <tr>
                                             <th class="">Item</th>
-                                            <th class="text-center">GST</th>
+                                            <th class="text-center" *ngIf="shouldShowPriceDetails(storeItems)">GST</th>
                                             <th class="text-center">Quantity</th>
-                                            <th class="text-start">Total</th>
+                                            <th class="text-start" *ngIf="shouldShowPriceDetails(storeItems)">Total</th>
                                         </tr>
                                     </ng-template>
                                     <ng-template *ngIf="!smallDevice" pTemplate="body" let-item>
@@ -245,7 +245,7 @@
                                                     </div>
                                                     <div>
                                                         <div class="fw-bold item-name">{{item.spItem.name}}</div>
-                                                        <div class="d-flex price-section">
+                                                        <div class="d-flex price-section" *ngIf="shouldShowPriceDetails(storeItems)">
                                                             <span class="netPrice">₹{{item.taxableAmount}}</span>
                                                         </div>
                                                     </div>
@@ -259,7 +259,7 @@
                                                     </ul>
                                                 </div>
                                             </td>
-                                            <td class="text-center">
+                                            <td class="text-center" *ngIf="shouldShowPriceDetails(storeItems)">
                                                 <div *ngIf="item?.taxPercentage" class="fw-bold">{{item.taxPercentage}}%
                                                 </div>
                                                 <div *ngIf="!item?.taxPercentage" class="fw-bold">-</div>
@@ -280,7 +280,7 @@
                                                     <!-- <div class="remove" (click)="removeItem(item.uid)">Remove</div> -->
                                                 </div>
                                             </td>
-                                            <td class="text-end">
+                                            <td class="text-end" *ngIf="shouldShowPriceDetails(storeItems)">
                                                 <div class="d-flex justify-content-between align-items-center gap-5">
                                                     <div class="fw-bold">₹{{getAmountInDecimalPoints(item.netRate)}}
                                                     </div>
@@ -314,7 +314,7 @@
                                                             <div class="remove pe-2" (click)="removeItem(item)"><i
                                                                     class="fa fa-trash"></i></div>
                                                         </div>
-                                                        <div class="pb-2 item_price">₹{{item.taxableAmount}}<span
+                                                        <div class="pb-2 item_price" *ngIf="shouldShowPriceDetails(storeItems)">₹{{item.taxableAmount}}<span
                                                                 *ngIf="item.taxPercentage">+({{item?.taxPercentage}}% of
                                                                 GST)</span></div>
                                                         <div class="inputnumber d-flex">
@@ -329,7 +329,7 @@
                                                                 (ngModelChange)="onQuantityChange($event, item)"
                                                                 (onFocus)="onInputFocus($event)">
                                                             </p-inputNumber>
-                                                            <div class="fw-bold">₹{{item.netRate}}</div>
+                                                            <div class="fw-bold" *ngIf="shouldShowPriceDetails(storeItems)">₹{{item.netRate}}</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -342,22 +342,22 @@
                     </div>
                     <div *ngIf="cartDataStore" class="cart-container-section1">
                         <div [ngClass]="!mediumDevice && smallDevice?'card':'p-4'">
-                            <div *ngIf="isCouponsAvailable" class="coupon-section mb-3 col-md-12 col-12 col-sm-12 ">
+                            <div *ngIf="isCouponsAvailable && shouldShowPriceDetails(storeItems)" class="coupon-section mb-3 col-md-12 col-12 col-sm-12 ">
                                 <app-apply-coupon [s3CouponsList]="s3CouponsList"
                                     (actionPerformed)="couponActionPerformed($event)"></app-apply-coupon>
                             </div>
-                            <div *ngIf="cartDataStore.netTotal && cartDataStore.netTotal > 0"
+                            <div *ngIf="shouldShowPriceDetails(storeItems) && cartDataStore.netTotal && cartDataStore.netTotal > 0"
                                 class="d-flex justify-content-between total mt-2">
                                 <div>Total</div>
                                 <div>₹{{getAmountInDecimalPoints(cartDataStore.netTotal)}}</div>
                             </div>
-                            <div *ngIf="cartDataStore.taxTotal && cartDataStore.taxTotal > 0"
+                            <div *ngIf="shouldShowPriceDetails(storeItems) && cartDataStore.taxTotal && cartDataStore.taxTotal > 0"
                                 class="d-flex justify-content-between total mt-2">
                                 <div>Tax Total</div>
                                 <div>₹{{getAmountInDecimalPoints(cartDataStore.taxTotal)}}</div>
                             </div>
                             <div
-                                *ngIf="cartDataStore && cartDataStore.providerCoupons &&  cartDataStore.providerCoupons.length > 0">
+                                *ngIf="shouldShowPriceDetails(storeItems) && cartDataStore && cartDataStore.providerCoupons &&  cartDataStore.providerCoupons.length > 0">
                                 <div class="d-flex coupon-text mt-2 justify-content-between"
                                     *ngFor="let coupon of cartDataStore.providerCoupons">
                                     <span scope="row" class="fw-bold border-none">
@@ -369,7 +369,7 @@
                                     </span>
                                 </div>
                             </div>
-                            <div *ngIf="cartDataStore.netRate" class="d-flex justify-content-between total mt-2">
+                            <div *ngIf="shouldShowPriceDetails(storeItems) && cartDataStore.netRate" class="d-flex justify-content-between total mt-2">
                                 <div>Net Total</div>
                                 <div>₹{{getAmountInDecimalPoints(cartDataStore.netRate)}}</div>
                             </div>

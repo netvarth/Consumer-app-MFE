@@ -756,6 +756,23 @@ confirm() {
   getAttributeValues(attributes: any): string[] {
     return Object.values(attributes);
   }
+
+  shouldShowPriceDetails(items: any[] = []): boolean {
+    if (!Array.isArray(items) || items.length === 0) {
+      return false;
+    }
+    return !items.some((item) => this.isOnlinePriceHidden(item));
+  }
+
+  private isOnlinePriceHidden(item: any): boolean {
+    const showPriceOnOnlineOrder = item?.showPriceOnOnlineOrder
+      ?? item?.spItem?.showPriceOnOnlineOrder
+      ?? item?.spItemDto?.showPriceOnOnlineOrder
+      ?? item?.catalogItem?.showPriceOnOnlineOrder
+      ?? item?.catalogItem?.spItem?.showPriceOnOnlineOrder
+      ?? item?.catalogItem?.spItemDto?.showPriceOnOnlineOrder;
+    return showPriceOnOnlineOrder === false;
+  }
   getPrimaryButtonLabel(): string {
   if (this.isProcessing) return 'Please wait...';
   return this.isReadyForPayment ? 'Pay' : 'Continue';

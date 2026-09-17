@@ -336,6 +336,13 @@ export class CartComponent implements OnInit {
     return Math.max(totalMrp - totalPrice, 0);
   }
 
+  shouldShowPriceDetails(items: any[] = []): boolean {
+    if (!Array.isArray(items) || items.length === 0) {
+      return false;
+    }
+    return !items.some((item) => this.isOnlinePriceHidden(item));
+  }
+
   getCouponDiscount(cartData: any): number {
     if (!cartData?.providerCoupons?.length) {
       return 0;
@@ -1061,6 +1068,16 @@ export class CartComponent implements OnInit {
       || item?.catalogItem?.spItem?.itemType?.typeName
       || item?.catalogItem?.spItemDto?.itemType?.typeName
       || '';
+  }
+
+  private isOnlinePriceHidden(item: any): boolean {
+    const showPriceOnOnlineOrder = item?.showPriceOnOnlineOrder
+      ?? item?.spItem?.showPriceOnOnlineOrder
+      ?? item?.spItemDto?.showPriceOnOnlineOrder
+      ?? item?.catalogItem?.showPriceOnOnlineOrder
+      ?? item?.catalogItem?.spItem?.showPriceOnOnlineOrder
+      ?? item?.catalogItem?.spItemDto?.showPriceOnOnlineOrder;
+    return showPriceOnOnlineOrder === false;
   }
  clearCartNote() {
     this.cartNote = '';

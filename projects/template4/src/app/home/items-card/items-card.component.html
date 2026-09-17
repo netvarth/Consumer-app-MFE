@@ -20,7 +20,7 @@
                         </div>
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <span class="item-rate">₹{{item.price}}</span>&nbsp;&nbsp;<span *ngIf="item.showMrp && item.mrp" class="item-mrp">₹{{item.mrp}}</span>
+                                <span class="item-rate" *ngIf="item.price !== null && item.price !== undefined && item.price !== ''">₹{{item.price}}</span>&nbsp;&nbsp;<span *ngIf="item.showMrp && item.mrp" class="item-mrp">₹{{item.mrp}}</span>
                             </div>
                             <div>
                                 <button pRipple type="button" class="btn-buy btn-primary" id="btnAddToCart" (click)="addToCart(item, $event)">Add</button>

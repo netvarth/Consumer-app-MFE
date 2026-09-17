@@ -34,7 +34,7 @@
                     {{ item.spItemDto.shortDesc }}
                 </div> -->
                 <div class="item-price-row">
-                    <span class="item-price">Rs. {{ item?.price | number:'1.0-0' }}</span>
+                    <span class="item-price" *ngIf="item?.price !== null && item?.price !== undefined && item?.price !== ''">Rs. {{ item?.price | number:'1.0-0' }}</span>
                     <span class="item-mrp" *ngIf="item?.showMrp && item?.mrp && item?.mrp > item?.price">Rs. {{ item.mrp | number:'1.0-0' }}</span>
                     <span class="item-off" *ngIf="item?.showMrp && item?.mrp && (((item.mrp - item.price) / item.mrp) * 100) > 0">
                         {{ ((item.mrp - item.price) / item.mrp) * 100 | number:'1.0-0' }}% OFF

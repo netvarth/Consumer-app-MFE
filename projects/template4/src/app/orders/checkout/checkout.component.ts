@@ -606,6 +606,23 @@ export class CheckoutComponent implements OnInit {
     return Object.values(attributes);
   }
 
+  shouldShowPriceDetails(items: any[] = []): boolean {
+    if (!Array.isArray(items) || items.length === 0) {
+      return false;
+    }
+    return !items.some((item) => this.isOnlinePriceHidden(item));
+  }
+
+  private isOnlinePriceHidden(item: any): boolean {
+    const showPriceOnOnlineOrder = item?.showPriceOnOnlineOrder
+      ?? item?.spItem?.showPriceOnOnlineOrder
+      ?? item?.spItemDto?.showPriceOnOnlineOrder
+      ?? item?.catalogItem?.showPriceOnOnlineOrder
+      ?? item?.catalogItem?.spItem?.showPriceOnOnlineOrder
+      ?? item?.catalogItem?.spItemDto?.showPriceOnOnlineOrder;
+    return showPriceOnOnlineOrder === false;
+  }
+
   getItemUnitName(item: any): string {
     return item?.itemUnit?.unitName
       || item?.itemUnit?.unitCode
