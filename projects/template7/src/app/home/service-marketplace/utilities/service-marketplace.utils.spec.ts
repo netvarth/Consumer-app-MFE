@@ -38,6 +38,24 @@ describe('service marketplace utilities', () => {
     expect(getFilteredStores(config, 'later', 'groom')).toEqual([]);
   });
 
+  it('matches every assigned location while preserving action and enabled filters', () => {
+    const multiLocationConfig: ServiceMarketplaceConfig = {
+      ...config,
+      stores: [
+        { id: 'multi', name: 'Multi', locationId: ['mumbai', 'thrissur'], actionKeys: ['groom'], enabled: true, distanceKm: 5 },
+        { id: 'single', name: 'Single', locationId: 'mumbai', actionKeys: ['groom'], enabled: true, distanceKm: 2 },
+        { id: 'off', name: 'Off', locationId: ['mumbai', 'thrissur'], actionKeys: ['groom'], enabled: false },
+        { id: 'other-action', name: 'Other', locationId: ['mumbai', 'thrissur'], actionKeys: ['board'], enabled: true }
+      ]
+    };
+
+    expect(getFilteredStores(multiLocationConfig, 'mumbai', 'groom').map((item) => item.id)).toEqual(['multi', 'single']);
+    expect(getFilteredStores(multiLocationConfig, 'thrissur', 'groom').map((item) => item.id)).toEqual(['multi']);
+    expect(getFilteredStores(multiLocationConfig, 'jaipur', 'groom')).toEqual([]);
+    expect(getFilteredStores(multiLocationConfig, 'mum', 'groom')).toEqual([]);
+    expect(getFilteredStores(multiLocationConfig, 'near-you', 'groom').map((item) => item.id)).toEqual(['single', 'multi']);
+  });
+
   it('resolves stores and enabled services safely', () => {
     expect(getStoreById(config, 'first')?.name).toBe('First');
     expect(getStoreById(config, 'off')).toBeUndefined();

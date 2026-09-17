@@ -28,7 +28,9 @@ export function getFilteredStores(
   actionKey: string
 ): MarketplaceStore[] {
   const stores = enabledAndSorted(config.stores).filter((store) => {
-    const matchesLocation = locationId === 'near-you' || store.locationId === locationId;
+    const matchesLocation = locationId === 'near-you' || (Array.isArray(store.locationId)
+      ? store.locationId.includes(locationId)
+      : store.locationId === locationId);
     const matchesAction = !actionKey || (store.actionKeys || []).includes(actionKey);
     return matchesLocation && matchesAction;
   });

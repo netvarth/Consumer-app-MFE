@@ -71,7 +71,7 @@ export interface MarketplaceStore {
   id: string;
   name: string;
   shortName?: string;
-  locationId: string;
+  locationId: string | string[];
   actionKeys: string[];
   cardImage?: string;
   cardImageAlt?: string;
