@@ -128,6 +128,26 @@ export class DetailsComponent implements OnInit{
     return parseFloat(amount).toFixed(2);
   }
 
+  shouldShowPriceDetails(items: any[] = []): boolean {
+    if (this.orderData?.orderStatus === 'ORDER_COMPLETED') {
+      return true;
+    }
+    if (!Array.isArray(items) || items.length === 0) {
+      return false;
+    }
+    return !items.some((item) => this.isOnlinePriceHidden(item));
+  }
+
+  private isOnlinePriceHidden(item: any): boolean {
+    const showPriceOnOnlineOrder = item?.showPriceOnOnlineOrder
+      ?? item?.spItem?.showPriceOnOnlineOrder
+      ?? item?.spItemDto?.showPriceOnOnlineOrder
+      ?? item?.catalogItem?.showPriceOnOnlineOrder
+      ?? item?.catalogItem?.spItem?.showPriceOnOnlineOrder
+      ?? item?.catalogItem?.spItemDto?.showPriceOnOnlineOrder;
+    return showPriceOnOnlineOrder === false;
+  }
+
   gotoHome() {
     this.router.navigate([this.sharedService.getRouteID()])
   }

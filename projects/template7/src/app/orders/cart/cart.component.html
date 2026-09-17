@@ -62,7 +62,8 @@
                                         <span>Options: {{ getDisplayAttributes(item).join(', ') }}</span>
                                         <!-- <i class="fa fa-caret-down" aria-hidden="true"></i> -->
                                     </div>
-                                    <div class="cart-item-price">
+                                    <div class="cart-item-price"
+                                        *ngIf="shouldShowPriceDetails(items) && item?.price !== null && item?.price !== undefined && item?.price !== ''">
                                         <span class="cart-item-net">₹{{getAmountInDecimalPoints(item.netRate)}}</span>
                                         <span class="cart-item-mrp" *ngIf="item?.showMrp && item?.mrp && item?.mrp > item?.price">₹{{item.mrp | number:'1.0-0'}}</span>
                                         <span class="cart-item-off" *ngIf="item?.showMrp && item?.mrp && (((item.mrp - item.price) / item.mrp) * 100) > 0">
@@ -99,24 +100,24 @@
                                 placeholder="Have a special request? Add customisations or notes for your order here."></textarea>
                         </div>
                         <div class="cart-summary">
-                            <div *ngIf="isCouponsAvailable" class="coupon-section mb-3 col-md-12 col-12 col-sm-12">
+                            <div *ngIf="isCouponsAvailable && shouldShowPriceDetails(items)" class="coupon-section mb-3 col-md-12 col-12 col-sm-12">
                                 <app-apply-coupon [s3CouponsList]="s3CouponsList" [appliedCoupons]="getAppliedCoupons()" [loggedIn]="loggedIn"
                                     (actionPerformed)="couponActionPerformed($event)"></app-apply-coupon>
                             </div>
-                            <div class="summary-title">Price Details ({{items.length}} {{items.length ===1? 'Item' :'Items'}})</div>
-                            <div class="summary-row" *ngIf="(cartDataHome?.netTotal ?? getItemsTotalMrp(items)) > 0">
+                            <div class="summary-title" *ngIf="shouldShowPriceDetails(items)">Price Details ({{items.length}} {{items.length ===1? 'Item' :'Items'}})</div>
+                            <div class="summary-row" *ngIf="shouldShowPriceDetails(items) && (cartDataHome?.netTotal ?? getItemsTotalMrp(items)) > 0">
                                 <span>Net Total</span>
                                 <span>₹{{getAmountInDecimalPoints(cartDataHome?.netTotal ?? getItemsTotalMrp(items))}}</span>
                             </div>
-                            <div class="summary-row" *ngIf="cartDataHome.taxTotal && cartDataHome.taxTotal > 0">
+                            <div class="summary-row" *ngIf="shouldShowPriceDetails(items) && cartDataHome.taxTotal && cartDataHome.taxTotal > 0">
                                 <span>Tax</span>
                                 <span>₹{{getAmountInDecimalPoints(cartDataHome.taxTotal)}}</span>
                             </div>
-                            <div class="summary-row discount-row" *ngIf="getItemsDiscount(items) > 0">
+                            <div class="summary-row discount-row" *ngIf="shouldShowPriceDetails(items) && getItemsDiscount(items) > 0">
                                 <span>Discount on MRP</span>
                                 <span>- ₹{{getAmountInDecimalPoints(getItemsDiscount(items))}}</span>
                             </div>
-                            <div class="summary-row" *ngIf="isCouponsAvailable">
+                            <div class="summary-row" *ngIf="isCouponsAvailable && shouldShowPriceDetails(items)">
                                 <span>Coupon Discount</span>
                                 <span *ngIf="getCouponDiscount(cartDataHome) > 0" class="summary-discount">
                                     - ₹{{getAmountInDecimalPoints(getCouponDiscount(cartDataHome))}}
@@ -142,19 +143,19 @@
                                     </button>
                                 </div>
                             </div>
-                            <div class="summary-row" *ngIf="getDeliveryCharges(cartDataHome) > 0">
+                            <div class="summary-row" *ngIf="shouldShowPriceDetails(items) && getDeliveryCharges(cartDataHome) > 0">
                                 <span>Delivery Charge</span>
                                 <span>₹{{getAmountInDecimalPoints(getDeliveryCharges(cartDataHome))}}</span>
                             </div>
-                            <div class="summary-row" *ngIf="getPlatformFee(cartDataHome) > 0">
+                            <div class="summary-row" *ngIf="shouldShowPriceDetails(items) && getPlatformFee(cartDataHome) > 0">
                                 <span>Platform Fee</span>
                                 <span>₹{{getAmountInDecimalPoints(getPlatformFee(cartDataHome))}}</span>
                             </div>
                             <div class="d-flex justify-content-between free mt-2"
-                                *ngIf="cartDataHome?.amountForFreeDelivery > 0" style="color: #1fbb72;">
+                                *ngIf="shouldShowPriceDetails(items) && cartDataHome?.amountForFreeDelivery > 0" style="color: #1fbb72;">
                                 <div>Add &#8377;{{ cartDataHome?.amountForFreeDelivery | number: '1.2-2' }} more to your cart to unlock <strong>FREE</strong> delivery.</div>
                             </div>
-                            <div class="summary-total" *ngIf="cartDataHome.netRate">
+                            <div class="summary-total" *ngIf="shouldShowPriceDetails(items) && cartDataHome.netRate">
                                 <span>Total Amount</span>
                                 <span>₹{{getAmountInDecimalPoints(cartDataHome.netRate)}}</span>
                             </div>
@@ -229,7 +230,8 @@
                                         <span>Options: {{ getDisplayAttributes(item).join(', ') }}</span>
                                         <!-- <i class="fa fa-caret-down" aria-hidden="true"></i> -->
                                     </div>
-                                    <div class="cart-item-price">
+                                    <div class="cart-item-price"
+                                        *ngIf="shouldShowPriceDetails(storeItems) && item?.price !== null && item?.price !== undefined && item?.price !== ''">
                                         <span class="cart-item-net">₹{{getAmountInDecimalPoints(item.netRate)}}</span>
                                         <span class="cart-item-mrp" *ngIf="item?.showMrp && item?.mrp && item?.mrp > item?.price">₹{{item.mrp | number:'1.0-0'}}</span>
                                         <span class="cart-item-off" *ngIf="item?.showMrp && item?.mrp && (((item.mrp - item.price) / item.mrp) * 100) > 0">
@@ -253,25 +255,25 @@
                     </div>
                     <div *ngIf="cartDataStore" class="cart-container-section1 cart-right">
                         <div class="cart-summary">
-                            <div class="summary-title">Coupons</div>
-                            <div *ngIf="isCouponsAvailable" class="coupon-section mb-3 col-md-12 col-12 col-sm-12">
+                            <div class="summary-title" *ngIf="shouldShowPriceDetails(storeItems)">Coupons</div>
+                            <div *ngIf="isCouponsAvailable && shouldShowPriceDetails(storeItems)" class="coupon-section mb-3 col-md-12 col-12 col-sm-12">
                                 <app-apply-coupon [s3CouponsList]="s3CouponsList" [appliedCoupons]="getAppliedCoupons()" [loggedIn]="loggedIn"
                                     (actionPerformed)="couponActionPerformed($event)"></app-apply-coupon>
                             </div>
-                            <div class="summary-title">Price Details ({{storeItems.length}} Item)</div>
-                            <div class="summary-row" *ngIf="(cartDataStore?.netTotal ?? getItemsTotalMrp(storeItems)) > 0">
+                            <div class="summary-title" *ngIf="shouldShowPriceDetails(storeItems)">Price Details ({{storeItems.length}} Item)</div>
+                            <div class="summary-row" *ngIf="shouldShowPriceDetails(storeItems) && (cartDataStore?.netTotal ?? getItemsTotalMrp(storeItems)) > 0">
                                 <span>Net Total</span>
                                 <span>₹{{getAmountInDecimalPoints(cartDataStore?.netTotal ?? getItemsTotalMrp(storeItems))}}</span>
                             </div>
-                            <div class="summary-row" *ngIf="cartDataStore.taxTotal && cartDataStore.taxTotal > 0">
+                            <div class="summary-row" *ngIf="shouldShowPriceDetails(storeItems) && cartDataStore.taxTotal && cartDataStore.taxTotal > 0">
                                 <span>Tax</span>
                                 <span>₹{{getAmountInDecimalPoints(cartDataStore.taxTotal)}}</span>
                             </div>
-                            <div class="summary-row discount-row" *ngIf="getItemsDiscount(storeItems) > 0">
+                            <div class="summary-row discount-row" *ngIf="shouldShowPriceDetails(storeItems) && getItemsDiscount(storeItems) > 0">
                                 <span>Discount on MRP</span>
                                 <span>- ₹{{getAmountInDecimalPoints(getItemsDiscount(storeItems))}}</span>
                             </div>
-                            <div class="summary-row" *ngIf="isCouponsAvailable">
+                            <div class="summary-row" *ngIf="isCouponsAvailable && shouldShowPriceDetails(storeItems)">
                                 <span>Coupon Discount</span>
                                 <span *ngIf="getCouponDiscount(cartDataStore) > 0" class="summary-discount">
                                     - ₹{{getAmountInDecimalPoints(getCouponDiscount(cartDataStore))}}
@@ -297,11 +299,11 @@
                                     </button>
                                 </div>
                             </div>
-                            <div class="summary-row" *ngIf="getPlatformFee(cartDataStore) > 0">
+                            <div class="summary-row" *ngIf="shouldShowPriceDetails(storeItems) && getPlatformFee(cartDataStore) > 0">
                                 <span>Platform Fee</span>
                                 <span>₹{{getAmountInDecimalPoints(getPlatformFee(cartDataStore))}}</span>
                             </div>
-                            <div class="summary-total" *ngIf="cartDataStore.netRate">
+                            <div class="summary-total" *ngIf="shouldShowPriceDetails(storeItems) && cartDataStore.netRate">
                                 <span>Total Amount</span>
                                 <span>₹{{getAmountInDecimalPoints(cartDataStore.netRate)}}</span>
                             </div>

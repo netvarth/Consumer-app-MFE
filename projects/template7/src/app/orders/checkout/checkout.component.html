@@ -161,7 +161,7 @@
                     <div class="item-name">
                       {{ item.spItem.name }}
                     </div>
-                    <div class="item-price">
+                    <div class="item-price" *ngIf="shouldShowPriceDetails(items)">
                       <span class="netPrice">
                         ₹{{ item.price | number: '1.2-2' }}
                       </span>
@@ -180,7 +180,7 @@
                 </div>
               </td>
               <td class="text-end">
-                <div class="fw-bold">
+                <div class="fw-bold" *ngIf="shouldShowPriceDetails(items)">
                   ₹{{ item.netTotal | number: '1.2-2' }}
                 </div>
               </td>
@@ -191,7 +191,7 @@
 
       <!-- Payment methods (redesigned payment-modes component used here) -->
       <section
-        *ngIf="orderSummary && ((orderData && orderData.amountDue > 0) || (cartData && (cartData.netRate > 0 || cartData.netTotal > 0)))"
+        *ngIf="shouldShowPriceDetails(items) && orderSummary && ((orderData && orderData.amountDue > 0) || (cartData && (cartData.netRate > 0 || cartData.netTotal > 0)))"
         class="payment-section desktop-payment">
         <h3 class="payment-title">Payment Method</h3>
         <p class="payment-subtitle">Choose how you want to pay</p>
@@ -236,10 +236,10 @@
           <div class="summary-count">
             {{ items.length }} ITEM<span *ngIf="items.length > 1">S</span>
           </div>
-          <div class="summary-total-row">
+          <div class="summary-total-row" *ngIf="shouldShowPriceDetails(items)">
             <div class="summary-total-text">
               <div class="summary-total-label">Order Total</div>
-              <div class="summary-total-amount">
+              <div class="summary-total-amount" *ngIf="shouldShowPriceDetails(items)">
                 ₹{{ getDisplayedTotal() | number: '1.2-2' }}
               </div>
             </div>
@@ -248,7 +248,7 @@
               <i class="fa" [ngClass]="showSummaryDetails ? 'fa-angle-up' : 'fa-angle-down'" aria-hidden="true"></i>
             </button>
           </div>
-          <ng-container *ngIf="showSummaryDetails; else firstOnly">
+          <ng-container *ngIf="!shouldShowPriceDetails(items) || showSummaryDetails; else firstOnly">
             <div class="summary-product-list">
               <div class="summary-product-card" *ngFor="let item of items">
                 <div class="summary-product-image">
@@ -276,7 +276,7 @@
                     {{ item.spItem?.itemCategory?.categoryName }}
                   </div>
                 </div>
-                <div class="product-price">
+                <div class="product-price" *ngIf="shouldShowPriceDetails(items)">
                   &#8377;{{ item.netTotal | number: '1.0-2' }}
                 </div>
               </div>
@@ -340,30 +340,30 @@
 
 
         <div class="summary-pricing">
-          <div class="summary-pricing-header">Price Details</div>
-          <div class="pricing-row">
+          <div class="summary-pricing-header" *ngIf="shouldShowPriceDetails(items)">Price Details</div>
+          <div class="pricing-row" *ngIf="shouldShowPriceDetails(items)">
             <span>Total</span>
             <span>
               &#8377;{{ getTotalBeforeTax() | number: '1.2-2' }}
             </span>
           </div>
-          <div class="pricing-row">
+          <div class="pricing-row" *ngIf="shouldShowPriceDetails(items)">
             <span>Tax Total</span>
             <span>&#8377;{{ getTaxTotalAmount() | number: '1.2-2' }}</span>
           </div>
-          <div class="pricing-row" *ngIf="getDeliveryChargesAmount() > 0">
+          <div class="pricing-row" *ngIf="shouldShowPriceDetails(items) && getDeliveryChargesAmount() > 0">
             <span>Delivery Charge</span>
             <span>&#8377;{{ getDeliveryChargesAmount() | number: '1.2-2' }}</span>
           </div>
-          <div class="pricing-row" *ngIf="cartData?.amountForFreeDelivery > 0" style="color: #1fbb72;">
+          <div class="pricing-row" *ngIf="shouldShowPriceDetails(items) && cartData?.amountForFreeDelivery > 0" style="color: #1fbb72;">
             <span>Add &#8377;{{ cartData?.amountForFreeDelivery | number: '1.2-2' }} more to unlock <strong>FREE</strong> delivery.</span>
             <span></span>
           </div>
-          <div class="pricing-row">
+          <div class="pricing-row" *ngIf="shouldShowPriceDetails(items)">
             <span>Total With Tax</span>
             <span>&#8377;{{ getNetTotalWithTax() | number: '1.2-2' }}</span>
           </div>
-          <div class="pricing-coupons">
+          <div class="pricing-coupons" *ngIf="shouldShowPriceDetails(items)">
             <div class="pricing-row coupon-row" *ngFor="let coupon of cartData.providerCoupons">
               <span class="coupon-code">
                 {{ coupon.couponCode }} (coupon)
@@ -385,15 +385,15 @@
             <span>Net Total</span>
             <span>&#8377;{{ getNetTotalAfterCoupons() | number: '1.2-2' }}</span>
           </div> -->
-          <div class="pricing-row" *ngIf="hasPaymentCharges()">
+          <div class="pricing-row" *ngIf="shouldShowPriceDetails(items) && hasPaymentCharges()">
             <span>Convenience Fee</span>
             <span>&#8377;{{ getConvenienceFeeAmount() | number: '1.2-2' }}</span>
           </div>
-          <div class="pricing-row" *ngIf="hasPaymentCharges()">
+          <div class="pricing-row" *ngIf="shouldShowPriceDetails(items) && hasPaymentCharges()">
             <span>Gateway Fee</span>
             <span>&#8377;{{ getGatewayFeeAmount() | number: '1.2-2' }}</span>
           </div>
-          <div class="pricing-row total-row" *ngIf="hasPaymentCharges()">
+          <div class="pricing-row total-row" *ngIf="shouldShowPriceDetails(items) && hasPaymentCharges()">
             <span>Amount Due</span>
             <span>&#8377;{{ getAmountPaid() | number: '1.2-2' }}</span>
           </div>
@@ -418,7 +418,7 @@
         Pay &#8377;{{ getPayableAmount() | number: '1.0-2' }}
       </ng-container>
       <ng-template #desktopContinueLabel>
-        {{ getPrimaryButtonLabel() }}
+        {{ shouldShowPriceDetails(items) ? getPrimaryButtonLabel() : 'Confirm' }}
       </ng-template>
     </ng-template>
   </button>
@@ -432,9 +432,9 @@
   *ngIf="orderSummary && ((orderData && orderData.amountDue > 0) || (cartData && (cartData.netRate > 0 || cartData.netTotal > 0)))"
   class="mobile-payment-bar">
   <div class="mobile-payment-inner">
-    <div class="mobile-payment-controls" [class.pay-step]="isPayStep()">
+    <div class="mobile-payment-controls" [class.pay-step]="isPayStep() || !shouldShowPriceDetails(items)">
       
-      <div class="mobile-payment-select" *ngIf="!isPayStep()">
+      <div class="mobile-payment-select" *ngIf="!isPayStep() && shouldShowPriceDetails(items)">
         <app-payment-modes
           [paymentModes]="indian_payment_modes"
           [indianPaymentModes]="indian_payment_modes"
@@ -497,7 +497,7 @@
             Please wait...
           </ng-container>
           <ng-template #continueLabel>
-            Continue
+            {{ shouldShowPriceDetails(items) ? 'Continue' : 'Confirm' }}
           </ng-template>
         </button>
       </ng-template>

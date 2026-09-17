@@ -137,35 +137,35 @@
                             </div>
                         </div>
                         <div>
-                            <div *ngIf="item.netTotal" class="price">₹{{getAmountInDecimalPoints(item.netTotal)}}</div>
+                            <div *ngIf="shouldShowPriceDetails(orderData.itemDtoList) && item.netTotal" class="price">₹{{getAmountInDecimalPoints(item.netTotal)}}</div>
                             <button *ngIf="orderData.orderStatus == 'ORDER_COMPLETED'" type="button" class="add-review-btn mt-1"
                                 (click)="openReviewPopup(item)">{{hasItemReview(item?.encId) ? 'Reviewed' : 'Add Review'}}</button>
                         </div>
                     </div>
                 </div>
                 <div class="d-flex justify-content-end mt-2">
-                    <div class="col-12 col-md-6 no-padding-small">
+                    <div class="col-12 col-md-6 no-padding-small" *ngIf="shouldShowPriceDetails(orderData.itemDtoList)">
                         <div class=" order-card">
-                            <div class="d-flex justify-content-between total mt-2">
+                            <div class="d-flex justify-content-between total mt-2" *ngIf="shouldShowPriceDetails(orderData.itemDtoList)">
                                 <div>Total</div>
                                 <div class="fw-bold">₹{{getAmountInDecimalPoints(orderData.netTotal)}}</div>
                             </div>
-                            <div *ngIf="orderData.taxTotal && orderData.taxTotal > 0"
+                            <div *ngIf="shouldShowPriceDetails(orderData.itemDtoList) && orderData.taxTotal && orderData.taxTotal > 0"
                                 class="d-flex justify-content-between total mt-2">
                                 <div>Tax Total</div>
                                 <div class="fw-bold">₹{{getAmountInDecimalPoints(orderData.taxTotal)}}</div>
                             </div>
-                            <div *ngIf="orderData.netTotalWithTax && orderData.taxTotal && orderData.taxTotal > 0"
+                            <div *ngIf="shouldShowPriceDetails(orderData.itemDtoList) && orderData.netTotalWithTax && orderData.taxTotal && orderData.taxTotal > 0"
                                 class="d-flex justify-content-between total mt-2">
                                 <div>Net Total With Tax</div>
                                 <div class="fw-bold">₹{{getAmountInDecimalPoints(orderData.netTotalWithTax)}}</div>
                             </div>
-                            <div *ngIf="orderData.deliveryCharges && orderData.deliveryCharges > 0"
+                            <div *ngIf="shouldShowPriceDetails(orderData.itemDtoList) && orderData.deliveryCharges && orderData.deliveryCharges > 0"
                                 class="d-flex justify-content-between total mt-2">
                                 <div>Delivery Charge</div>
                                 <div class="fw-bold">(+)₹{{getAmountInDecimalPoints(orderData.deliveryCharges)}}</div>
                             </div>
-                            <div *ngIf="orderData && orderData?.discounts.length > 0">
+                            <div *ngIf="shouldShowPriceDetails(orderData.itemDtoList) && orderData && orderData?.discounts.length > 0">
                                 <div class="d-flex coupon-text mt-2 justify-content-between"
                                     *ngFor="let coupon of orderData.discounts">
                                     <span scope="row" class="fw-bold border-none">
@@ -175,7 +175,7 @@
                                     </span>
                                 </div>
                             </div>
-                            <div *ngIf="orderData && orderData.providerCoupons.length > 0">
+                            <div *ngIf="shouldShowPriceDetails(orderData.itemDtoList) && orderData && orderData.providerCoupons.length > 0">
                                 <div class="d-flex coupon-text mt-2 justify-content-between"
                                     *ngFor="let coupon of orderData.providerCoupons">
                                     <span scope="row" class="fw-bold border-none">
@@ -185,7 +185,7 @@
                                     </span>
                                 </div>
                             </div>
-                            <div *ngIf="orderData.roundedValue && orderData.roundedValue != 0"
+                            <div *ngIf="shouldShowPriceDetails(orderData.itemDtoList) && orderData.roundedValue && orderData.roundedValue != 0"
                                 class="d-flex justify-content-between total mt-2">
                                 <div>Rounded Value</div>
                                 <div class="fw-bold rupee-font">
@@ -193,21 +193,21 @@
                                     '1.2-2' }}
                                 </div>
                             </div>
-                            <div class="d-flex justify-content-between total mt-2">
+                            <div class="d-flex justify-content-between total mt-2" *ngIf="shouldShowPriceDetails(orderData.itemDtoList)">
                                 <div>Net Total</div>
                                 <div class="fw-bold">₹{{getAmountInDecimalPoints(orderData.netRate)}}</div>
                             </div>
-                            <div *ngIf="orderData.processingFee > 0" class="d-flex justify-content-between total mt-2">
+                            <div *ngIf="shouldShowPriceDetails(orderData.itemDtoList) && orderData.processingFee > 0" class="d-flex justify-content-between total mt-2">
                                 <div>Processing Fee</div>
                                 <div class="fw-bold">₹{{getAmountInDecimalPoints(orderData.processingFee)}}</div>
                             </div>
-                            <div *ngIf="orderData.amountPaidWithProcessingFee"
+                            <div *ngIf="shouldShowPriceDetails(orderData.itemDtoList) && orderData.amountPaidWithProcessingFee"
                                 class="d-flex justify-content-between total mt-2">
                                 <div>Amount Paid</div>
                                 <div class="fw-bold">
                                     ₹{{getAmountInDecimalPoints(orderData.amountPaidWithProcessingFee)}}</div>
                             </div>
-                            <div *ngIf="orderData.orderStatus != 'ORDER_PREPAYMENT_PENDING' && orderData.invoiceGenerated"
+                            <div *ngIf="shouldShowPriceDetails(orderData.itemDtoList) && orderData.orderStatus != 'ORDER_PREPAYMENT_PENDING' && orderData.invoiceGenerated"
                                 class="mt-3" [ngClass]="smallmobileDevice?'btn-margin':''">
                                 <button pButton pRipple type="button" class="btn-confirm p-button-primary btn-primary"
                                     (click)="viewInvoice()" id="btnInvoice">Invoice</button>
