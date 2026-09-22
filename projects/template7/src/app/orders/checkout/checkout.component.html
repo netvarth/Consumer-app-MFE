@@ -191,7 +191,7 @@
 
       <!-- Payment methods (redesigned payment-modes component used here) -->
       <section
-        *ngIf="shouldShowPriceDetails(items) && orderSummary && ((orderData && orderData.amountDue > 0) || (cartData && (cartData.netRate > 0 || cartData.netTotal > 0)))"
+        *ngIf="shouldShowPriceDetails(items) && canShowPaymentActions"
         class="payment-section desktop-payment">
         <h3 class="payment-title">Payment Method</h3>
         <p class="payment-subtitle">Choose how you want to pay</p>
@@ -400,7 +400,8 @@
         </div>
 
         <!-- CTA -->
-      <div class="summary-cta">
+      <div class="summary-cta"
+        [class.mobile-hidden]="orderSummary || (addressComponent?.isSmallDevice && !addressComponent?.isEditable && addressComponent?.addedAddresses?.length > 0)">
   <button
     pButton
     pRipple
@@ -429,12 +430,12 @@
 </div>
 
 <div
-  *ngIf="orderSummary && ((orderData && orderData.amountDue > 0) || (cartData && (cartData.netRate > 0 || cartData.netTotal > 0)))"
+  *ngIf="!isCartLoading && hasCheckoutItems && orderSummary"
   class="mobile-payment-bar">
   <div class="mobile-payment-inner">
-    <div class="mobile-payment-controls" [class.pay-step]="isPayStep() || !shouldShowPriceDetails(items)">
+    <div class="mobile-payment-controls" [class.pay-step]="isPayStep() || !shouldShowPriceDetails(items) || !canShowPaymentActions">
       
-      <div class="mobile-payment-select" *ngIf="!isPayStep() && shouldShowPriceDetails(items)">
+      <div class="mobile-payment-select" *ngIf="!isPayStep() && shouldShowPriceDetails(items) && canShowPaymentActions">
         <app-payment-modes
           [paymentModes]="indian_payment_modes"
           [indianPaymentModes]="indian_payment_modes"
@@ -497,7 +498,7 @@
             Please wait...
           </ng-container>
           <ng-template #continueLabel>
-            {{ shouldShowPriceDetails(items) ? 'Continue' : 'Confirm' }}
+            {{ shouldShowPriceDetails(items) ? getPrimaryButtonLabel() : 'Confirm' }}
           </ng-template>
         </button>
       </ng-template>

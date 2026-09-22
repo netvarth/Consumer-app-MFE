@@ -775,6 +775,7 @@ confirm() {
   }
   getPrimaryButtonLabel(): string {
   if (this.isProcessing) return 'Please wait...';
+  if (!this.isReadyForPayment && this.orderSummary && this.getPayableAmount() <= 0) return 'Confirm';
   return this.isReadyForPayment ? 'Pay' : 'Continue';
 }
   isPayStep(): boolean {
