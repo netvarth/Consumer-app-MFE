@@ -57,10 +57,12 @@ export class ConsumerAuthService extends AuthService {
 
   override async doLogout(): Promise<void> {
     try {
+      this.storage.setitemonLocalStorage('logout', true);
       await firstValueFrom(this.consumerLogout().pipe(timeout(10000)));
     } catch {
       // Local sign-out must finish even when the server is unavailable.
     } finally {
+      this.storage.removeitemfromLocalStorage('logout');
       // Clear web/native platform identity while preserving other providers' carts.
       this.platformTokens.clear();
       this.tenantLogout.clearProviderState();
