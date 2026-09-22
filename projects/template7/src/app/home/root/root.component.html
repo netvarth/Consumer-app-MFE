@@ -49,12 +49,14 @@
       </mat-grid-tile>
     </mat-grid-list>
   </div>
-  <div class="ratingcard-wrap" *ngIf="templateJson?.trustFeatures">
-    <img class="ratingcard-img" [src]="templateJson?.trustFeatures" loading="lazy" decoding="async">
-  </div>
+
   <div class="offercard-wrap" *ngIf="templateJson?.offerBanner" (click)="createappoinment()">
     <img class="ratingcard-img" [src]="templateJson?.offerBanner" loading="lazy" decoding="async">
   </div>
+  <div class="ratingcard-wrap" *ngIf="templateJson?.trustFeatures">
+    <img class="ratingcard-img" [src]="templateJson?.trustFeatures" loading="lazy" decoding="async">
+  </div>
+  
   
   
   <div class="ratingcard-wrap" *ngIf="templateJson?.ratingcard">

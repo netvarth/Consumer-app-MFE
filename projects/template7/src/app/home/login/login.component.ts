@@ -248,8 +248,13 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewChecked {
         const activeUser = _this.lStorageService.getitemfromLocalStorage('jld_scon');
         if (!activeUser) {
           console.log("55557");
+          let authToken = _this.lStorageService.getitemfromLocalStorage('c_authorizationToken');
+          _this.lStorageService.removeitemfromLocalStorage('c_authorizationToken');
           _this.authService.doLogout().then(
             () => {
+              if (authToken) {
+                _this.lStorageService.setitemonLocalStorage('c_authorizationToken', authToken);
+              }
               _this.authService.login(credentials).then(() => {
                 // _this.ngZone.run(
                 //   () => {
@@ -496,6 +501,7 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewChecked {
                 if (!isLoggedIn) {
                   let authToken = _this.lStorageService.getitemfromLocalStorage('c_authorizationToken');
                   console.log("55558");
+                  _this.lStorageService.removeitemfromLocalStorage('c_authorizationToken');
                   _this.authService.doLogout().then(
                     () => {
                       this.lStorageService.setitemonLocalStorage('c_authorizationToken', authToken);
@@ -766,7 +772,12 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewChecked {
       if (error.status === 401 && error.error === 'Session Already Exist') {
         const activeUser = this.lStorageService.getitemfromLocalStorage('jld_scon');
         if (!activeUser) {
+          let authToken = this.lStorageService.getitemfromLocalStorage('c_authorizationToken');
+          this.lStorageService.removeitemfromLocalStorage('c_authorizationToken');
           this.authService.doLogout().then(() => {
+            if (authToken) {
+              this.lStorageService.setitemonLocalStorage('c_authorizationToken', authToken);
+            }
             this.authService.login(credentials).then((retryResponse) => {
               console.log("Login Retry Response:", retryResponse);
               this.lStorageService.removeitemfromLocalStorage('c_authorizationToken');
