@@ -1,3 +1,34 @@
+:host {
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.address-card,
+.address-form,
+.form-section,
+.form-grid,
+.field {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+:host ::ng-deep app-phone-input {
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+}
+
+:host ::ng-deep app-phone-input .phone-input-wrapper,
+:host ::ng-deep app-phone-input .iti,
+:host ::ng-deep app-phone-input input {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
 .saved-addresses {
   background: #ffffff;
   // border: 1px solid #e5e7eb;
@@ -149,12 +180,12 @@
 
 .form-grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: 12px;
 }
 
 .form-grid.two-col {
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
   gap: 12px 14px;
 }
 
@@ -172,8 +203,10 @@
 
 .field input,
 .field textarea,
-::ng-deep ngx-intl-tel-input input {
+:host ::ng-deep app-phone-input input {
   width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   background: #ffffff;
   border: 1px solid #e5e7eb !important;
   border-radius: 6px !important;
@@ -182,11 +215,11 @@
   color: #1f2933 !important;
 }
 
-::ng-deep ngx-intl-tel-input .iti {
+:host ::ng-deep app-phone-input .iti {
   width: 100% !important;
 }
 
-::ng-deep ngx-intl-tel-input input:focus {
+:host ::ng-deep app-phone-input input:focus {
   outline: none !important;
   border-color: #c86a34 !important;
   box-shadow: 0 0 0 2px rgba(200, 106, 52, 0.15) !important;
@@ -292,7 +325,7 @@
   }
 
   .form-grid.two-col {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
     gap: 10px 12px;
   }
 
@@ -313,7 +346,7 @@
 
   .field input,
   .field textarea,
-  ::ng-deep ngx-intl-tel-input input {
+  :host ::ng-deep app-phone-input input {
     padding: 9px 11px;
     font-size: 12px !important;
   }
@@ -442,7 +475,7 @@
   }
 
   .form-grid.two-col {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 10px;
   }
 
@@ -456,7 +489,7 @@
 
   .field input,
   .field textarea,
-  ::ng-deep ngx-intl-tel-input input {
+  :host ::ng-deep app-phone-input input {
     padding: 8px 10px;
     font-size: 12px !important;
   }
@@ -636,9 +669,9 @@
 
   .field input,
   .field textarea,
-  ::ng-deep ngx-intl-tel-input input {
+  :host ::ng-deep app-phone-input input {
     padding: 7px 9px;
-    font-size: 15px !important;
+    font-size: 16px !important;
     border-radius: 4px !important;
   }
 

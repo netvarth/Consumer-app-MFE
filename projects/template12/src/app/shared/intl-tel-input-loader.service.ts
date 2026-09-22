@@ -7,6 +7,8 @@ import { EnvironmentService, SharedService } from 'jconsumer-shared';
 export class IntlTelInputLoaderService {
   private readySubject = new BehaviorSubject<boolean>(false);
   readonly ready$ = this.readySubject.asObservable();
+  private failedSubject = new BehaviorSubject<boolean>(false);
+  readonly failed$ = this.failedSubject.asObservable();
   private loading = false;
 
   constructor(
@@ -24,52 +26,79 @@ export class IntlTelInputLoaderService {
     return path.endsWith('/') ? path : `${path}/`;
   }
 
-  private load(): void {
+  load(): void {
     if (this.readySubject.value || this.loading) {
       return;
     }
     this.loading = true;
+    this.failedSubject.next(false);
 
     const cdnBase = this.ensureTrailingSlash(this.sharedService.getCDNPath() || 'https://jaldeeassets-test.s3.ap-south-1.amazonaws.com/');
     const intlPath = this.ensureTrailingSlash(this.environmentService.getEnvironment('INTL_TEL_INPUT_PATH') || 'global/intl-tel-input/');
     const basePath = intlPath.startsWith('http') ? intlPath : `${cdnBase}${intlPath}`;
     const cssUrl = `${basePath}css/intlTelInput.min.css`;
-    const jsUrl = `${basePath}js/intlTelInput.min.js`;
+    // Keep CSS external so its relative flag URLs resolve against the CDN.
+    // Match the formatting utility version used by the shared phone control.
+    const utilsUrl = 'https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js';
+    Promise.all([
+      this.loadAsset('intl-tel-input-css', cssUrl, 'link',
+        () => !!(this.document.getElementById('intl-tel-input-css') as HTMLLinkElement)?.sheet),
+      this.loadAsset('intl-tel-input-utils', utilsUrl, 'script',
+        () => typeof (this.document.defaultView as any)?.intlTelInputUtils?.formatNumber === 'function')
+    ]).then(() => {
+      this.loading = false;
+      this.readySubject.next(true);
+    }).catch(() => {
+      this.loading = false;
+      this.failedSubject.next(true);
+    });
+  }
 
-    const cssId = 'intl-tel-input-css';
-    const jsId = 'intl-tel-input-js';
-
-    const markReady = () => {
-      if (!this.readySubject.value) {
-        this.readySubject.next(true);
-      }
-    };
-
-    const existingCss = this.document.getElementById(cssId) as HTMLLinkElement | null;
-    if (existingCss) {
-      if (existingCss.sheet) {
-        markReady();
+  private loadAsset(id: string, url: string, tag: 'link' | 'script', isReady: () => boolean): Promise<void> {
+    if (isReady()) {
+      return Promise.resolve();
+    }
+    let element = this.document.getElementById(id) as HTMLLinkElement | HTMLScriptElement;
+    if (element?.dataset['intlLoadState'] === 'error') {
+      element.remove();
+      element = null;
+    }
+    const isNew = !element;
+    if (isNew) {
+      element = this.document.createElement(tag);
+      element.id = id;
+      if (tag === 'link') {
+        (element as HTMLLinkElement).rel = 'stylesheet';
+        (element as HTMLLinkElement).href = url;
       } else {
-        existingCss.addEventListener('load', markReady, { once: true });
-        existingCss.addEventListener('error', markReady, { once: true });
+        (element as HTMLScriptElement).src = url;
+        (element as HTMLScriptElement).async = true;
       }
-    } else {
-      const link = this.document.createElement('link');
-      link.id = cssId;
-      link.rel = 'stylesheet';
-      link.href = cssUrl;
-      link.onload = markReady;
-      link.onerror = markReady;
-      this.document.head.appendChild(link);
     }
-
-    if (!this.document.getElementById(jsId)) {
-      const script = this.document.createElement('script');
-      script.id = jsId;
-      script.src = jsUrl;
-      script.async = true;
-      script.defer = true;
-      this.document.body.appendChild(script);
-    }
+    return new Promise<void>((resolve, reject) => {
+      const cleanup = () => {
+        element.removeEventListener('load', onLoad);
+        element.removeEventListener('error', onError);
+      };
+      const onError = () => {
+        cleanup();
+        element.dataset['intlLoadState'] = 'error';
+        reject(new Error('Unable to load phone input asset'));
+      };
+      const onLoad = () => {
+        if (!isReady()) {
+          onError();
+          return;
+        }
+        cleanup();
+        element.dataset['intlLoadState'] = 'loaded';
+        resolve();
+      };
+      element.addEventListener('load', onLoad, { once: true });
+      element.addEventListener('error', onError, { once: true });
+      if (isNew) {
+        this.document.head.appendChild(element);
+      }
+    });
   }
 }
