@@ -21,6 +21,9 @@ export class ConsumerAuthService extends AuthService {
   override setLoginData(data: any, credentials: any): void {
     this.savePlatformToken(data);
     super.setLoginData(data, credentials);
+    // The shared service's automatic retry bypasses component success callbacks.
+    // Consume the temporary OTP/login credential before it notifies subscribers.
+    this.storage.removeitemfromLocalStorage('c_authorizationToken');
   }
 
   override verifyConsumerOTP(purpose: any, otp: any) {
