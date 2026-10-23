@@ -94,7 +94,7 @@
                                             <span class="item-rate">₹{{item.price}}</span>&nbsp;&nbsp;<span *ngIf="item.showMrp && item.mrp" class="item-mrp">₹{{item.mrp}}</span>
                                         </div>
                                         <div>
-                                            <button pRipple type="button" class="btn-buy btn-primary" id="btnAdd" (click)="addToCart($event,item)">Add</button>
+                                            <button pRipple type="button" class="btn-buy btn-primary" id="btnAdd" (click)="$event.stopPropagation(); addToCart($event,item)">Add</button>
                                             <!-- <button *ngIf="item && item.itemNature =='VIRTUAL_ITEM'" pRipple type="button" class="btn-buy btn-primary" id="btnAdd" (click)="addToCart($event,item)">View Options</button> -->
                                         </div>
                                     </div>

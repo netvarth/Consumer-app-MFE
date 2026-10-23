@@ -1344,8 +1344,35 @@ export class ItemComponent implements OnInit, OnDestroy {
     this.router.navigate([this.sharedService.getRouteID(), 'item', item.encId]);
   }
 
+  getItemUnitItems(item: any): any[] {
+    if (!item) return [];
+    const directUnits = item?.unitItems
+      || item?.catalogItem?.unitItems
+      || item?.spItem?.unitItems
+      || item?.spItemDto?.unitItems
+      || item?.catalogItem?.spItemDto?.unitItems;
+    if (Array.isArray(directUnits) && directUnits.length > 0) return directUnits;
+    const singleItems = item?.singleItems
+      || item?.catalogItem?.singleItems
+      || item?.spItemDto?.singleItems;
+    if (Array.isArray(singleItems) && singleItems.length > 0) {
+      const collectedUnits: any[] = [];
+      singleItems.forEach((si: any) => {
+        if (Array.isArray(si?.unitItems) && si.unitItems.length > 0) {
+          collectedUnits.push(...si.unitItems);
+        } else if (si) {
+          collectedUnits.push(si);
+        }
+      });
+      if (collectedUnits.length > 0) return collectedUnits;
+    }
+    const fallbackUnits = item?.sellingUnits || item?.catalogItem?.sellingUnits || item?.spItemDto?.sellingUnits || item?.units;
+    if (Array.isArray(fallbackUnits) && fallbackUnits.length > 0) return fallbackUnits;
+    return [];
+  }
+
   cartActionPerformed(input: any) {
-    if (input.action == 'addToCart' && !this.isVirtualCatalogItem(input.value)) {
+    if (input.action == 'addToCart' && this.getItemUnitItems(input.value).length <= 1) {
       this.addCatalogItemToCart(input.value);
       return;
     }

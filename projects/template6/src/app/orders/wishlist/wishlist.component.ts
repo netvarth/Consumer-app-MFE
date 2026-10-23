@@ -285,43 +285,136 @@ export class WishlistComponent implements OnInit, OnDestroy {
     this.router.navigate([this.sharedService.getRouteID(), 'item', item.encId], navigationExtras);
   }
 
+  getItemUnitItems(item: any): any[] {
+    if (!item) {
+      return [];
+    }
+
+    // 1. Direct unitItems on item or its wrappers (if non-empty)
+    const directUnits = item?.unitItems
+      || item?.catalogItem?.unitItems
+      || item?.spItem?.unitItems
+      || item?.spItemDto?.unitItems
+      || item?.catalogItem?.spItemDto?.unitItems;
+    if (Array.isArray(directUnits) && directUnits.length > 0) {
+      return directUnits;
+    }
+
+    // 2. Unit items inside singleItems
+    const singleItems = item?.singleItems
+      || item?.catalogItem?.singleItems
+      || item?.spItemDto?.singleItems;
+    if (Array.isArray(singleItems) && singleItems.length > 0) {
+      const collectedUnits: any[] = [];
+      singleItems.forEach((si: any) => {
+        if (Array.isArray(si?.unitItems) && si.unitItems.length > 0) {
+          collectedUnits.push(...si.unitItems);
+        } else if (si) {
+          collectedUnits.push(si);
+        }
+      });
+      if (collectedUnits.length > 0) {
+        return collectedUnits;
+      }
+    }
+
+    // 3. Fallback to sellingUnits / units
+    const fallbackUnits = item?.sellingUnits
+      || item?.catalogItem?.sellingUnits
+      || item?.spItemDto?.sellingUnits
+      || item?.units;
+    if (Array.isArray(fallbackUnits) && fallbackUnits.length > 0) {
+      return fallbackUnits;
+    }
+
+    return [];
+  }
+
+  hasMultipleSellingUnits(item: any): boolean {
+    const unitItems = this.getItemUnitItems(item);
+    return unitItems.length > 1;
+  }
+
+  shouldRedirectToDetails(item: any): boolean {
+    if (!item) {
+      return false;
+    }
+    const unitItems = this.getItemUnitItems(item);
+    if (unitItems.length > 1) {
+      return true;
+    }
+    const attrs = item?.itemAttributes
+      || item?.spItemDto?.itemAttributes
+      || item?.catalogItem?.itemAttributes
+      || [];
+    if (Array.isArray(attrs) && attrs.length > 0) {
+      const hasOptions = attrs.some((a: any) =>
+        (Array.isArray(a?.values) && a.values.length > 1) ||
+        (Array.isArray(a?.attributeValues) && a.attributeValues.length > 1)
+      );
+      if (hasOptions) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   addToCart($event?: any, item?: any) {
-    if (item && item.itemNature === 'VIRTUAL_ITEM') {
-      item.itemNature = 'VIRTUAL_ITEM';
-    } else {
+    if (this.shouldRedirectToDetails(item)) {
       if ($event) {
         $event.preventDefault();
         $event.stopPropagation();
       }
-      const _this = this;
-      if (item) {
-        this.selectedItem = item;
-      }
-      this.itemDeliveryType =
-        this.selectedItem?.deliveryType ||
-        (this.selectedItem?.homeDelivery ? 'HOME_DELIVERY' : 'STORE_PICKUP');
-      if (this.selectedItem && !this.selectedItem.deliveryType && this.selectedItem.homeDelivery) {
-        const dialogWidth = '500px';
-        const deliveryDialogRef = this.dialogService.open(DeliverySelectionComponent, {
-          header: 'Select Delivery Type',
-          width: dialogWidth,
-          contentStyle: { "max-height": "500px", "overflow": "auto" },
-          baseZIndex: 10000,
-          styleClass: 'custom-dialogs',
-          data: {
-            theme: this.theme
-          }
-        });
+      this.viewItems(item, item.encId);
+      return;
+    }
+    if ($event) {
+      $event.preventDefault();
+      $event.stopPropagation();
+    }
+    const unitItems = this.getItemUnitItems(item);
+    const singleUnit = unitItems.length === 1 ? unitItems[0] : null;
+    const targetItem = singleUnit
+      ? {
+          ...item,
+          ...singleUnit,
+          encId: singleUnit.encId || item.encId,
+          price: (singleUnit.price !== undefined && singleUnit.price !== null && singleUnit.price !== 0) ? singleUnit.price : (item.price || singleUnit.price),
+          mrp: (singleUnit.mrp !== undefined && singleUnit.mrp !== null && singleUnit.mrp !== 0) ? singleUnit.mrp : (item.mrp || singleUnit.mrp),
+          taxableAmount: (singleUnit.taxableAmount !== undefined && singleUnit.taxableAmount !== null && singleUnit.taxableAmount !== 0) ? singleUnit.taxableAmount : (item.taxableAmount || singleUnit.taxableAmount),
+          taxAmount: singleUnit.taxAmount ?? item.taxAmount,
+          homeDelivery: singleUnit.homeDelivery ?? item.homeDelivery,
+          storePickup: singleUnit.storePickup ?? item.storePickup
+        }
+      : item;
 
-        deliveryDialogRef.onClose.subscribe((result: any) => {
-          if (result) {
-            this.itemDeliveryType = result;
-            this.proceedWithAddToCart(item);
-          }
-        });
-      } else {
-        this.proceedWithAddToCart(item);
-      }
+    if (targetItem) {
+      this.selectedItem = targetItem;
+    }
+    this.itemDeliveryType =
+      this.selectedItem?.deliveryType ||
+      (this.selectedItem?.homeDelivery ? 'HOME_DELIVERY' : 'STORE_PICKUP');
+    if (this.selectedItem && !this.selectedItem.deliveryType && this.selectedItem.homeDelivery) {
+      const dialogWidth = '500px';
+      const deliveryDialogRef = this.dialogService.open(DeliverySelectionComponent, {
+        header: 'Select Delivery Type',
+        width: dialogWidth,
+        contentStyle: { "max-height": "500px", "overflow": "auto" },
+        baseZIndex: 10000,
+        styleClass: 'custom-dialogs',
+        data: {
+          theme: this.theme
+        }
+      });
+
+      deliveryDialogRef.onClose.subscribe((result: any) => {
+        if (result) {
+          this.itemDeliveryType = result;
+          this.proceedWithAddToCart(targetItem);
+        }
+      });
+    } else {
+      this.proceedWithAddToCart(targetItem);
     }
   }
 
